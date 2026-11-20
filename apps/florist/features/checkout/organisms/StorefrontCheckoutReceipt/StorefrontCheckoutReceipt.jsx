@@ -57,6 +57,7 @@ export function StorefrontCheckoutReceipt({change, card, sheba, last4, reference
               label={last4.label}
               hint={last4.hint}
               error={last4.error}
+              disabled={last4.disabled}
               inputMode="numeric"
               maxLength={4}
               dir="ltr"
@@ -69,6 +70,8 @@ export function StorefrontCheckoutReceipt({change, card, sheba, last4, reference
               onChange={reference.onChange}
               label={reference.label}
               hint={reference.hint}
+              error={reference.error}
+              disabled={reference.disabled}
               inputMode="numeric"
               dir="ltr"
             />

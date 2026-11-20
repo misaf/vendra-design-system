@@ -183,6 +183,16 @@ export function vfCopy(S) {
         unconfirmed: 'We couldn’t confirm your order',
         unconfirmedBody:
           'Check your messages before trying again: if the order went through, its confirmation is there. Your bag is preserved.',
+        apiErrors: {
+          offline: 'You’re offline. Reconnect before trying again.',
+          network: 'The connection was lost. Check your connection.',
+          timeout: 'The checkout service took too long to respond.',
+          conflict: 'Your order may still be processing. Wait a moment before trying again.',
+          server: 'Checkout is temporarily unavailable. Try again later.',
+          validation: 'Review your order details before trying again.',
+          bag: 'Review your bag',
+          delivery: 'Review delivery details'
+        },
         retry: 'Try again',
         other: 'Choose another method',
         openWa: 'Open order in WhatsApp',
@@ -236,6 +246,16 @@ export function vfCopy(S) {
         unconfirmed: 'ثبت سفارش شما تأیید نشد',
         unconfirmedBody:
           'پیش از تلاش دوباره پیام‌هایتان را بررسی کنید: اگر سفارش ثبت شده باشد، تأیید آن را آنجا می‌بینید. سبد شما حفظ شده است.',
+        apiErrors: {
+          offline: 'آفلاین هستید. پیش از تلاش دوباره به اینترنت وصل شوید.',
+          network: 'ارتباط قطع شد. اتصال اینترنت را بررسی کنید.',
+          timeout: 'پاسخ سرویس پرداخت طول کشید.',
+          conflict: 'ممکن است سفارش هنوز در حال پردازش باشد. کمی صبر کنید و دوباره تلاش کنید.',
+          server: 'سرویس ثبت سفارش موقتاً در دسترس نیست. بعداً دوباره تلاش کنید.',
+          validation: 'پیش از تلاش دوباره اطلاعات سفارش را بررسی کنید.',
+          bag: 'بررسی سبد خرید',
+          delivery: 'بررسی اطلاعات ارسال'
+        },
         retry: 'تلاش دوباره',
         other: 'انتخاب روش دیگر',
         openWa: 'باز کردن سفارش در واتس‌اپ',

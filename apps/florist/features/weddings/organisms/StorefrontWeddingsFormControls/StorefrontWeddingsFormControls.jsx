@@ -16,7 +16,7 @@ export function StorefrontWeddingsFormControls({
   return (
     <DS.Card padding={24}>
       <div className="tw:flex tw:flex-col tw:gap-4">
-        <DS.ErrorSummary id="vf-wedding-errors" errors={problems} />
+        <DS.ErrorSummary id="vf-wedding-errors" errors={problems} data-vf-keep-focus />
         <div className="vf-weddings-fields tw:grid tw:gap-4 tw:[grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))]">
           <DS.Input
             id="vf-wname"
@@ -28,7 +28,9 @@ export function StorefrontWeddingsFormControls({
             error={name.error}
           />
           <DS.Input
+            id="vf-wemail"
             label={email.label}
+            error={email.error}
             value={email.value}
             onChange={email.onChange}
             type="email"
@@ -78,6 +80,7 @@ export function StorefrontWeddingsFormControls({
           value={message.value}
           onChange={message.onChange}
           label={message.label}
+          error={message.error}
           hint={message.hint}
           multiline={true}
           rows={4}

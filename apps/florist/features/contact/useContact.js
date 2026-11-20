@@ -10,6 +10,7 @@ import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {vfNow} from '../../shared/platform/environment.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
 import {vfFloristData} from '../../shared/services/structured-data.js';
+import {vfInquiryFailure} from '../../shared/services/integrations/api-errors.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
 // A signed-in customer starts with their own name, mobile and email filled in.
 function vfContactPrefill() {
@@ -20,8 +21,8 @@ function vfContactPrefill() {
 }
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
-// The checked fields in form order, with their ids.
 const FIELDS = [
+  ['name', 'vf-cname'],
   ['phone', 'vf-cphone'],
   ['email', 'vf-cemail'],
   ['msg', 'vf-cmsg']
@@ -33,6 +34,7 @@ export function useContact(props) {
       sent: false,
       email: '',
       apiError: '',
+      apiFields: {},
       busy: false,
       msg: '',
       name: '',
@@ -88,7 +90,20 @@ function vals(page) {
         }
       ]
     : [];
-  const field = key => value => page.setState({[key]: value, apiError: ''});
+  const localErrors = Object.fromEntries(
+    FIELDS.filter(([key]) => s.submitted && invalid[key]).map(([key]) => [key, C[key + 'Err']])
+  );
+  const fieldErrors = {...localErrors, ...s.apiFields};
+  const problems = FIELDS.filter(([key]) => fieldErrors[key]).map(([key, target]) => ({
+    text: fieldErrors[key],
+    target
+  }));
+  const field = key => value =>
+    page.setState(current => {
+      const apiFields = {...current.apiFields};
+      delete apiFields[key];
+      return {[key]: value, apiFields};
+    });
   // The studio on a read-only map (PlacesMap), with the store's tiles and the vendored Leaflet.
   const placesView = {
     places,
@@ -136,7 +151,7 @@ function vals(page) {
     busy: s.busy,
     email: s.email,
     setEmail: field('email'),
-    emailErr: s.submitted && invalid.email ? C.emailErr : undefined,
+    emailErr: fieldErrors.email,
     sent: s.sent,
     notSent: !s.sent,
     editMessage: () => {
@@ -146,21 +161,17 @@ function vals(page) {
       S.focus('vf-cmsg');
     },
     name: s.name,
+    nameErr: fieldErrors.name,
     phone: s.phone,
     setName: field('name'),
     setPhone: field('phone'),
     phoneHint: C.phoneHint,
-    phoneErr: s.submitted && invalid.phone ? C.phoneErr : undefined,
+    phoneErr: fieldErrors.phone,
     msg: s.msg,
     setMsg: field('msg'),
-    msgErr: s.submitted && invalid.msg ? C.msgErr : undefined,
+    msgErr: fieldErrors.msg,
     // After a failed send, what to fix in form order, each linking to its field.
-    problems: s.submitted
-      ? FIELDS.filter(([key]) => invalid[key]).map(([key, target]) => ({
-          text: {phone: C.phoneErr, email: C.emailErr, msg: C.msgErr}[key],
-          target
-        }))
-      : [],
+    problems,
     send: () => {
       page.setState({
         submitted: true
@@ -175,6 +186,7 @@ function vals(page) {
         page.setState({
           sent: true,
           busy: false,
+          apiFields: {},
           apiError: '',
           submitted: false
         });
@@ -186,6 +198,7 @@ function vals(page) {
       }
       page.setState({
         busy: true,
+        apiFields: {},
         apiError: ''
       });
       return vfRuntime.api
@@ -198,12 +211,12 @@ function vals(page) {
           preferredLocale: vfRuntime.api.preferredLocale()
         })
         .then(success)
-        .catch(() =>
-          page.setState({
-            busy: false,
-            apiError: C.integrationError
-          })
-        );
+        .catch(error => {
+          const {fields, apiError} = vfInquiryFailure(error, S.lang);
+          const wrong = FIELDS.filter(([key]) => fields[key]);
+          page.setState({busy: false, apiFields: fields, apiError});
+          S.focus(wrong.length > 1 ? 'vf-contact-errors' : wrong[0]?.[1] || 'vf-contact-api-error');
+        });
     }
   };
 }

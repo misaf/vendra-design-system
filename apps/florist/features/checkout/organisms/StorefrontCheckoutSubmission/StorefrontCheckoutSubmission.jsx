@@ -26,9 +26,11 @@ export function StorefrontCheckoutSubmission({whatsapp, processing, failure, saf
       ) : null}
       {failure.visible ? (
         <>
-          <DS.Alert tone="danger" title={failure.title}>
-            <>{failure.body}</>
-          </DS.Alert>
+          <div id="vf-checkout-submit-error" tabIndex={-1} data-vf-keep-focus>
+            <DS.Alert tone="danger" title={failure.title}>
+              <>{failure.body}</>
+            </DS.Alert>
+          </div>
           <div className="tw:flex tw:gap-3">
             <DS.Button onClick={failure.retry.onClick}>
               <>{failure.retry.label}</>

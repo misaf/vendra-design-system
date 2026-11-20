@@ -4,7 +4,6 @@ export function vfCopy(S) {
     en: {
       demoTitle: 'Demo preview complete',
       demoBody: 'Nothing was sent. This demo does not contact the studio or request a reply.',
-      integrationError: 'Could not send your message. Your draft is saved; please try again.',
       emailLabel: 'Email (optional)',
       eb: 'Contact',
       hA: 'Visit the',
@@ -36,7 +35,6 @@ export function vfCopy(S) {
       demoTitle: 'پیش‌نمایش آزمایشی کامل شد',
       demoBody:
         'پیامی ارسال نشد. این نسخهٔ نمایشی با استودیو تماس نمی‌گیرد و پاسخی دریافت نمی‌شود.',
-      integrationError: 'ارسال پیام ناموفق بود. متن شما حفظ شده؛ دوباره تلاش کنید.',
       emailLabel: 'ایمیل (اختیاری)',
       eb: 'تماس',
       hA: 'به استودیو',

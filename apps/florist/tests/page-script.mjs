@@ -129,6 +129,7 @@ const sharedFiles = [
   'shared/domain/wallet.js',
   'shared/domain/payments.js',
   'shared/domain/payment-api.js',
+  'shared/services/integrations/api-errors.js',
   'shared/services/integrations/api.js',
   'shared/services/integrations/analytics.js',
   'shared/services/integrations/runtime.js',

@@ -213,7 +213,9 @@ function vals(page) {
   const invalid = {...vfErrors(delivery, live), slot: !!date && slot == null};
   const update = patch => page._update(patch);
   const errors = C.errors;
-  const shown = key => s.submitted && invalid[key];
+  const serverErrors = st?.checkoutErrors?.delivery || {};
+  const fieldError = (key, local = errors[key]) =>
+    serverErrors[key] || (s.submitted && invalid[key] ? local : undefined);
   const pinned = vfValidLocation(delivery.location);
   // A signed-in customer can fill the delivery from an address saved in their account.
   const phone = vfAccountPhone();
@@ -292,9 +294,7 @@ function vals(page) {
         phone: value
       }),
     setAddress: value =>
-      update({
-        address: value
-      }),
+      update(s.mapFailed ? {address: value, location: delivery.location} : {address: value}),
     setSender: value =>
       update({
         sender: value
@@ -303,15 +303,13 @@ function vals(page) {
       update({
         senderPhone: value
       }),
-    nameError: shown('name') ? errors.name : undefined,
-    phoneError: shown('phone') ? errors.phone : undefined,
-    senderError: shown('sender') ? errors.sender : undefined,
-    senderPhoneError: shown('senderPhone') ? errors.senderPhone : undefined,
-    addressError: shown('address')
-      ? s.mapFailed
-        ? errors.addressFull
-        : errors.address
-      : undefined,
+    nameError: fieldError('name'),
+    phoneError: fieldError('phone'),
+    senderError: fieldError('sender'),
+    senderPhoneError: fieldError('senderPhone'),
+    addressError:
+      (s.mapFailed && serverErrors.location) ||
+      fieldError('address', s.mapFailed ? errors.addressFull : errors.address),
     addressLabel: s.mapFailed ? C.addressFull : C.address2,
     addressHint: s.mapFailed ? undefined : C.addressHint,
     mapOk: !s.mapFailed,
@@ -319,13 +317,9 @@ function vals(page) {
     pinStatus: pinned
       ? C.pinSet.replace('{location}', vfLocationText(delivery.location, fa))
       : C.pinHint,
-    pinError: shown('location')
-      ? errors.location
-      : invalid.outside
-        ? errors.outside
-        : s.locateFailed
-          ? C.locateFailed
-          : '',
+    pinError:
+      fieldError('location') ||
+      (invalid.outside ? errors.outside : s.locateFailed ? C.locateFailed : ''),
     // With a map, the pin decides the zone; the select is only the fallback when the map fails.
     zoneText: pinned && !invalid.outside ? zoneLabel(z) : '',
     zoneStatus: pinned && !invalid.outside ? C.zoneSet + deliveryHint : C.zonePending,
@@ -373,15 +367,32 @@ function vals(page) {
         page._update({noMap: true});
       }
     },
-    problems: s.submitted ? problems : [],
+    problems: [
+      ...[
+        ['name', 'vf-name'],
+        ['phone', 'vf-phone'],
+        ['location', s.mapFailed ? 'vf-address' : 'vf-map'],
+        ['address', 'vf-address'],
+        ['date', 'vf-date'],
+        ['slot', 'vf-slot']
+      ]
+        .filter(([key]) => serverErrors[key])
+        .map(([key, target]) => ({text: serverErrors[key], target})),
+      ...(s.submitted
+        ? problems.filter(problem => !serverErrors.slot || problem.target !== 'vf-slot')
+        : [])
+    ],
+    checkoutBagError: st?.checkoutErrors?.bag,
     deliveryReview: !date ? C.noDelivery : deliveryChanged(date, slot) ? C.deliveryChanged : '',
     preparationNotice: !vfBagSameDay(live) ? C.preparationNotice : '',
-    slotError: shown('slot') ? errors.slot : undefined,
+    dateError: serverErrors.date,
+    slotError: fieldError('slot'),
     toDelivery: () => {
       if (live.some(l => !vfLineAvailable(l)) || !quantitiesValid) return;
       // A changed price stops here, beside its line, before the customer goes on.
       if (page._reprice().length) return;
       page._seenPrices();
+      st?.clearCheckoutBagError?.();
       stepTo('delivery');
     },
     backToBag: e => {
@@ -404,6 +415,10 @@ function vals(page) {
       page.setState({submitted: true});
       if (deliveryChanged(currentDate, currentSlot)) {
         S.focus('vf-delivery-changed');
+        return;
+      }
+      if (Object.keys(serverErrors).length) {
+        S.focus('vf-errors');
         return;
       }
       if (problems.length || currentSlot == null) {

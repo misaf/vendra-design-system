@@ -49,7 +49,12 @@ export function View({v}) {
                     onChange: v.setName,
                     error: v.nameErr
                   }}
-                  email={{label: v.t?.emailLabel, value: v.email, onChange: v.setEmail}}
+                  email={{
+                    label: v.t?.emailLabel,
+                    value: v.email,
+                    onChange: v.setEmail,
+                    error: v.emailErr
+                  }}
                   phone={{
                     label: v.t?.phone,
                     value: v.phone,
@@ -80,7 +85,8 @@ export function View({v}) {
                     label: v.t?.msg,
                     hint: v.t?.msgHint,
                     value: v.notes,
-                    onChange: v.setNotes
+                    onChange: v.setNotes,
+                    error: v.msgErr
                   }}
                   send={{label: v.t?.send, onClick: v.send, busy: v.busy}}
                 />
@@ -94,7 +100,13 @@ export function View({v}) {
               ) : null}
             </>
           }
-          feedback={v.apiError ? <DS.Alert tone="danger" title={v.apiError} /> : null}
+          feedback={
+            v.apiError ? (
+              <div id="vf-wedding-api-error" tabIndex={-1} data-vf-keep-focus>
+                <DS.Alert tone="danger" title={v.apiError} />
+              </div>
+            ) : null
+          }
         />
       }
       sticky={<></>}

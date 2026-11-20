@@ -4,11 +4,12 @@ import * as DS from '../../../../shell/ds.js';
 export function StorefrontContactFormControls({problems, name, phone, email, message, send}) {
   return (
     <div className="tw:flex tw:flex-col tw:gap-4">
-      <DS.ErrorSummary id="vf-contact-errors" errors={problems} />
+      <DS.ErrorSummary id="vf-contact-errors" errors={problems} data-vf-keep-focus />
       <DS.Input
         id="vf-cname"
         value={name.value}
         onChange={name.onChange}
+        error={name.error}
         label={name.label}
         autoComplete="name"
       />

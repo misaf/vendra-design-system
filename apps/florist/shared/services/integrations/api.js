@@ -2,6 +2,7 @@
 // base = '' → demo mode: nothing is sent, calls resolve as if they succeeded.
 import {vfAccountLocale, vfCustomerId} from '../../domain/account-data.js';
 import {VF_PRODUCTS, vfProductId} from '../../domain/catalog.js';
+import {vfApiFields} from './api-errors.js';
 import {VF_STORE} from '../../domain/store-config.js';
 import {
   vfCheckoutResultFromApi,
@@ -27,9 +28,8 @@ export function vfCreateApi() {
   // checkout or an inquiry does more work on the server.
   A.timeouts = {read: 10000, write: 20000};
   // Every failure carries `kind`: 'offline' (the device was offline, so nothing was sent), 'timeout'
-  // (no answer in time), 'network' (the connection failed) or 'http' (the server answered with an
-  // error `status`). After a timeout or a network failure the server may still have done the work,
-  // so callers must not say it failed for certain.
+  // (no answer in time), 'network' (the connection failed) or an HTTP failure with its status.
+  // A timeout or connection failure can occur after the server has accepted the work.
   const failure = (kind, message, extra = {}) =>
     Object.assign(
       /** @type {Error & {kind: string, status?: number, body?: any}} */ (new Error(message)),
@@ -54,6 +54,9 @@ export function vfCreateApi() {
           method,
           headers: {
             Accept: 'application/ld+json',
+            ...(typeof document !== 'undefined' && document.documentElement?.lang
+              ? {'Accept-Language': document.documentElement.lang}
+              : {}),
             ...(body ? {'Content-Type': 'application/json'} : {}),
             ...(idempotencyKey ? {'Idempotency-Key': idempotencyKey} : {})
           },
@@ -67,14 +70,24 @@ export function vfCreateApi() {
           ? failure('timeout', 'Request timed out')
           : failure(offline ? 'offline' : 'network', message);
       }
+      const data = r.status === 204 ? null : await r.json().catch(() => null);
+      if (timedOut) throw failure('timeout', 'Request timed out');
       if (!r.ok) {
-        const e = failure('http', 'HTTP ' + r.status, {status: r.status});
-        try {
-          e.body = await r.json();
-        } catch {}
-        throw e;
+        const kind =
+          r.status === 422
+            ? 'validation'
+            : r.status === 409
+              ? 'conflict'
+              : r.status >= 500
+                ? 'server'
+                : 'http';
+        throw failure(kind, 'HTTP ' + r.status, {
+          status: r.status,
+          body: data,
+          ...(kind === 'validation' ? {fields: vfApiFields(data)} : {})
+        });
       }
-      return r.status === 204 ? null : await r.json().catch(() => null);
+      return data;
     } finally {
       clearTimeout(timer);
     }

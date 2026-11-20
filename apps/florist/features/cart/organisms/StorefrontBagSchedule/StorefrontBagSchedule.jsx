@@ -34,26 +34,29 @@ export function StorefrontBagSchedule({title, preparationNotice, review, day, sl
           <DS.Alert tone="warning" title={review} />
         </div>
       )}
-      <DS.ChoiceGroup
-        ref={dayFieldset}
-        className="vf-bag-days"
-        legend={day.label}
-        minTileWidth={104}
-        value={day.value}
-        onChange={day.onChange}
-      >
-        {day.options.map((d, $index) => (
-          <React.Fragment key={$index}>
-            <DS.ChoiceTile
-              size="sm"
-              value={d?.value}
-              label={d?.label}
-              description={d?.desc}
-              disabled={d?.off}
-            />
-          </React.Fragment>
-        ))}
-      </DS.ChoiceGroup>
+      <div id="vf-date" tabIndex={-1} data-vf-keep-focus>
+        <DS.ChoiceGroup
+          ref={dayFieldset}
+          className="vf-bag-days"
+          legend={day.label}
+          error={day.error}
+          minTileWidth={104}
+          value={day.value}
+          onChange={day.onChange}
+        >
+          {day.options.map((d, $index) => (
+            <React.Fragment key={$index}>
+              <DS.ChoiceTile
+                size="sm"
+                value={d?.value}
+                label={d?.label}
+                description={d?.desc}
+                disabled={d?.off}
+              />
+            </React.Fragment>
+          ))}
+        </DS.ChoiceGroup>
+      </div>
       <div id="vf-slot" tabIndex={-1} data-vf-keep-focus>
         <DS.ChoiceGroup
           legend={slot.label}

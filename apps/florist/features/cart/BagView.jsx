@@ -1,5 +1,6 @@
 // StorefrontBag: the page inside the storefront shell.
 import React from 'react';
+import * as DS from '../../shell/ds.js';
 import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontBagDeliveryLayout} from './layouts/StorefrontBagDeliveryLayout/StorefrontBagDeliveryLayout.jsx';
 import {StorefrontBagLayout} from './layouts/StorefrontBagLayout/StorefrontBagLayout.jsx';
@@ -71,6 +72,11 @@ export function View({v}) {
           items={
             v.hasItems ? (
               <>
+                {v.onBag && v.checkoutBagError ? (
+                  <div id="vf-checkout-bag-error" tabIndex={-1} data-vf-keep-focus>
+                    <DS.Alert tone="danger">{v.checkoutBagError}</DS.Alert>
+                  </div>
+                ) : null}
                 {v.onBag ? (
                   <StorefrontBagItems
                     lines={asList(v.lines)}
@@ -157,6 +163,7 @@ export function View({v}) {
                       review={v.deliveryReview}
                       day={{
                         label: v.t?.day,
+                        error: v.dateError,
                         value: v.date,
                         onChange: v.setDate,
                         options: asList(v.days)

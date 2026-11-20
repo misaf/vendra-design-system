@@ -223,6 +223,7 @@ function vfSiteInitial(props, address = props.initialUrl) {
     },
     cardAddition: null,
     checkoutPending: false,
+    checkoutErrors: null,
     checkoutNotice: null,
     order: privateState.order || null,
     lastOrder: privateState.lastOrder || privateState.order || null,
@@ -337,6 +338,7 @@ export function useStorefrontSession(props) {
         customers,
         cardAddition: null,
         checkoutNotice: null,
+        checkoutErrors: null,
         announcement: ''
       });
       const guarded = vfGuardRoute(page.state, {...page.state.routeInfo, view: page.state.route});
@@ -558,6 +560,14 @@ function vals(page) {
       saved: s.saved,
       delivery: s.delivery,
       checkoutPending: s.checkoutPending,
+      checkoutErrors: s.checkoutErrors,
+      setCheckoutErrors: errors => page.setState({checkoutErrors: errors}),
+      clearCheckoutBagError: () =>
+        page.setState(current =>
+          current.checkoutErrors?.bag
+            ? {checkoutErrors: {...current.checkoutErrors, bag: ''}}
+            : null
+        ),
       beginCheckout: () => {
         if (page.state.checkoutPending) return false;
         page.setState({checkoutPending: true});
@@ -583,13 +593,19 @@ function vals(page) {
           });
       },
       setDelivery: patch =>
-        page.setState(p => ({
-          delivery: {
-            ...p.delivery,
-            ...patch
-          },
-          order: null
-        })),
+        page.setState(p => {
+          const checkoutErrors = p.checkoutErrors;
+          const deliveryErrors = Object.fromEntries(
+            Object.entries(checkoutErrors?.delivery || {}).filter(
+              ([key]) => !Object.hasOwn(patch, key)
+            )
+          );
+          return {
+            delivery: {...p.delivery, ...patch},
+            checkoutErrors: checkoutErrors && {...checkoutErrors, delivery: deliveryErrors},
+            order: null
+          };
+        }),
       reorder: (order, mode = 'replace') =>
         page.setState(current => {
           const bag = vfReorderBag(order.lines, current.bag, mode);
