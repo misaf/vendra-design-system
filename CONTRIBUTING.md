@@ -27,7 +27,7 @@ Run one unit suite from the repository root with `node --test tests/api-contract
 
 - **Edit:** tenant specs in `src/design-system/tokens/tenants/*.json`, base token CSS, and the hand-written email templates in `src/communications/templates/email/email-templates.js`.
 - **Generate and commit:** tenant CSS, `tokens/tenants.css`, `tokens/theme.schema.json`, `tokens/design/`, `.generated/tenant-slugs.js`, `.generated/tenants.js`, `.generated/tenant-email-themes.js`, and generated brand assets under `public/assets/`. Run `npm run generate`; `npm run check` rejects stale output. The email templates import tenant palettes from the generated module; generation never rewrites template source.
-- **Build only, do not commit:** `.next/`, `.generated/export/`, and prepared gallery/fixture files under `public/` outside `public/assets/`. The build and development commands recreate these.
+- **Build only, do not commit:** `.next/`, `.generated/export/`, and prepared gallery/fixture files under `public/` outside `public/assets/`. Run `npm run dev:gallery` to prepare the gallery and fixtures, including the email preview. Run `npm run build:demo` to write the demo export to `.generated/export/`.
 
 ## Demo deployment
 
