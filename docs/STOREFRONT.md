@@ -17,7 +17,7 @@ Start at the feature you want to change. Next.js route files in `src/app/` selec
 | State shared by cart, customer, and checkout across routes | `src/storefront/session/` |
 | Laravel transport and browser integrations | `src/platform/` |
 
-Route groups are omitted from public URLs. The checkout group serves `/en/bag/` and `/en/checkout/`. The root document mounts the session coordinator above the locale segment, so draft state survives route and language changes.
+Each route folder corresponds to a URL segment. For example, `[locale]/bag/page.tsx` serves `/en/bag/` and `/fa/bag/`. The root document mounts the session coordinator above the locale segment, so draft state survives route and language changes.
 
 ## Editing a page
 
@@ -31,7 +31,7 @@ Use `src/storefront/<capability>/` for the rules, sample data, and shared biling
 
 The import checker allows capability modules to use each other, platform helpers, pure design-system utilities, and generated tenant data. Browser services may use these capabilities. Reusable controls and presentational route components receive business data through props. `npm test` checks these import boundaries and detects cycles.
 
-**Adding a page:** add a folder and `page.tsx` in the appropriate `src/app/[locale]/` route group. Keep the screen, state, copy, styles, and tests with the owning capability under `src/storefront/`. Place feature-owned UI in its `components/` directory. Register the storefront URL in `src/storefront/shell/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
+**Adding a page:** add a folder and `page.tsx` under `src/app/[locale]/`, matching the URL path. Keep the screen, state, copy, styles, and tests with the owning capability under `src/storefront/`. Place feature-owned UI in its `components/` directory. Register the storefront URL in `src/storefront/shell/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
 
 ## Commands
 
@@ -159,7 +159,7 @@ Storefront components may have the same pair beside them under their route or in
 
 `.generated/` is generated; never edit it.
 
-- **`src/app/[locale]/`** owns localized pages and layouts. The `(shop)`, `(checkout)`, `(account)`, and `(content)` route groups organize pages by area. `presentation/` serves the counter display. The root document keeps the session alive across groups and language switches. `src/app/_server/` builds the initial route and metadata and is the home for future request-scoped Laravel integration.
+- **`src/app/[locale]/`** owns localized pages and layouts. Its folders follow the customer-facing URLs. `presentation/` serves the counter display. The root document keeps the session alive across routes and language switches. `src/app/_server/` builds the initial route and metadata and is the home for future request-scoped Laravel integration.
 - **Public URLs** use `/<locale>/` in links, canonical and alternate tags, and the sitemap.
 - **Navigation:** `tools/next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
 - **Build** uses `build:app` for the Node-hosted app and `build:demo` for the static reference demo. The demo exports every known address through Next.js to `.generated/export/`. It serves the design system’s fonts and tenant CSS at their existing public paths.
