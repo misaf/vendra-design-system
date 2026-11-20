@@ -25,6 +25,21 @@ A route's `page.tsx` imports its screen. For checkout, `src/storefront/checkout/
 
 Keep English and Persian keys and list shapes in sync in `copy.js`. Unit tests check parity.
 
+Keep route composition beside the screen and hook, outside `components/`. For example, `CheckoutView.jsx` composes `shell/components/Shell.jsx` with checkout-owned components and `pricing/components/StorefrontOrderSummaryCard/`. Those components receive the data and callbacks assembled by the checkout hook through props.
+
+### Import boundaries
+
+The checker in [`tools/app-dependencies.mjs`](../tools/app-dependencies.mjs) classifies UI by **directory**, not by a `View.jsx` suffix:
+
+- Files under a capability's `components/` directory, including nested feature folders such as `checkout/order-checkout/components/`, are presentational UI.
+- Under `shell/components/`, nested component folders such as `StorefrontStepProgress/` are presentational UI. Files directly in `shell/components/`, such as the `Shell.jsx` coordinator, are not; neither shared form may import `src/app/` route modules.
+- Presentational UI may import React, reusable design-system UI (outside the gallery), `shell/ui/` helpers, and other presentational UI. It may not import capability rules, integration services, or route coordinators directly; pass their results and actions as props instead.
+- `shell/ui/` helpers may also import capability rules and `qrcode-generator`, but not presentational UI or integration services.
+
+An adjacent route-level file such as `CheckoutView.jsx` is not subject to the presentational import restriction. That is where the route composes the shell and feature components, not a reason to move business logic into a reusable component. Missing local imports, import cycles, and forbidden storefront globals are still checked across runtime modules.
+
+Run `node --test tests/app-dependencies.test.mjs` to check the runtime graph and the allowed/rejected import scenarios. Reusable design-system UI has its own stricter dependency policy; see [UI ownership](UI.md).
+
 ## Business capabilities
 
 Use `src/storefront/<capability>/` for the rules, sample data, and shared bilingual copy a capability owns. For example, change cutoff and slot rules in `delivery/delivery-window.js`, the reference schedule in `delivery/delivery-schedule.js`, totals and discounts in `pricing/order-totals.js`, checkout payload assembly in `checkout/checkout-request.js`, and opening hours in `store/opening-hours.js`. Import rules and types from the owning capability. The guideline cards use `src/design-system/gallery/commerce-adapter.js` to access those same rules.
@@ -152,7 +167,7 @@ Storefront components may have the same pair beside them under their route or in
 
 - **`src/app/[locale]/`** owns localized pages and layouts. Its folders follow the customer-facing URLs. `presentation/` serves the counter display. `src/app/_document/` owns the storefront document, session, screen wrapper, and page metadata markup. `src/app/_routing/` builds the initial route and metadata. `src/app/_live-catalog/` renders the request-scoped Laravel catalog.
 - **Public URLs** use `/<locale>/` in links, canonical and alternate tags, and the sitemap.
-- **Navigation:** `tools/next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
+- **Navigation:** [`src/app/_document/StorefrontSession.tsx`](../src/app/_document/StorefrontSession.tsx) owns the App Router adapter. Its `AppLink` supplies `next/link` through `StorefrontLinkContext` for internal page links; anchors, downloads, external targets, and runtime order-tracking links retain native anchors. The session's `navigate` callback uses the router for pathname changes. For query-only changes on the current pathname (search, filters, and form steps), it uses `history.pushState` or `history.replaceState` and immediately calls `values.receiveAddress`, updating controlled inputs without fetching route data. `SearchState` observes Next.js pathname/search changes and feeds the address back into the session. React Aria links receive the session navigation through `VendraProvider`.
 - **Build** uses `npm run build` for the Node-hosted app and `npm run build:demo` for the static reference demo. The demo exports every known address through Next.js to `.generated/export/`. Turbopack bundles the storefront styles and fonts directly from source, runs Tailwind through PostCSS, and loads Leaflet on demand. The standalone fixtures compile their own stylesheet files when starting `dev:gallery`. The asset preparation step writes tenant stylesheets to `public/` and clears generated fixture files.
 - **Components:** the app imports them from `src/design-system/` directly. The guideline cards (`src/design-system/gallery/**/*.card.jsx`) import `src/design-system/gallery/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Tests** keep feature-specific tests next to the feature and put live-server and static-export smoke specs in [`e2e/smoke/`](../e2e/smoke/). The existing browser fixtures and screenshot baselines remain under `e2e/`.
