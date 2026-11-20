@@ -4,6 +4,8 @@ import {ArchFrame} from '../../../../../design-system/components/ArchFrame/ArchF
 import {Price} from '../../../../../design-system/components/Price/Price.jsx';
 
 export function StorefrontSearchResults({countLabel, results}) {
+  'use memo';
+
   return (
     <div className="vf-search-results tw:flex tw:flex-col">
       <div role="status" className="vf-search-result-count tw:text-sm tw:text-quiet tw:mb-2">

@@ -37,6 +37,8 @@ export function ProductCard({
   ref,
   ...rest
 }) {
+  'use memo';
+
   const text = useMessages('ProductCard', messages, {placeholder, favorite: favLabel});
   const photos = (images && images.length ? images : image ? [image] : []).map(photo =>
     typeof photo === 'string' ? {src: photo} : photo

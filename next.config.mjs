@@ -21,6 +21,8 @@ export default function config() {
     // Next.js references the current build's route validators through next-env.d.ts.
     experimental: {strictRouteTypes: true},
     agentRules: false,
+    // Some storefront hooks read a mutable page object. Opt in where props drive rendering.
+    reactCompiler: {compilationMode: 'annotation'},
     basePath,
     trailingSlash: true,
     poweredByHeader: false,
