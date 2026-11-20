@@ -1,5 +1,5 @@
 import React from 'react';
-import {BlogCard} from '../../../../../../components/ui/patterns/molecules/BlogCard/BlogCard.jsx';
+import {BlogCard} from '../../../../../../ui/components/BlogCard/BlogCard.jsx';
 
 export function StorefrontJournalFeatured({title, image, excerpt, meta, cta, href}) {
   return (

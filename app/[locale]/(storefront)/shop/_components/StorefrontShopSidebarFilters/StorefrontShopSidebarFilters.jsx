@@ -1,8 +1,8 @@
 import React from 'react';
-import {Chip} from '../../../../../../components/ui/patterns/atoms/Chip/Chip.jsx';
-import {RangeSlider} from '../../../../../../components/ui/patterns/atoms/RangeSlider/RangeSlider.jsx';
-import {Select} from '../../../../../../components/ui/components/Select/Select.jsx';
-import {Switch} from '../../../../../../components/ui/patterns/atoms/Switch/Switch.jsx';
+import {Chip} from '../../../../../../ui/components/Chip/Chip.jsx';
+import {RangeSlider} from '../../../../../../ui/components/RangeSlider/RangeSlider.jsx';
+import {Select} from '../../../../../../ui/components/Select/Select.jsx';
+import {Switch} from '../../../../../../ui/components/Switch/Switch.jsx';
 
 export function StorefrontShopSidebarFilters({occasion, date, price, stock}) {
   return (

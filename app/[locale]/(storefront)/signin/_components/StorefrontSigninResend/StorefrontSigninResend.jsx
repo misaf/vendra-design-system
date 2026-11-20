@@ -1,5 +1,5 @@
 import React from 'react';
-import {ResendCode} from '../../../../../../components/ui/patterns/molecules/ResendCode/ResendCode.jsx';
+import {ResendCode} from '../../../../../../ui/components/ResendCode/ResendCode.jsx';
 
 export function StorefrontSigninResend({seconds, onResend, resentText}) {
   return (

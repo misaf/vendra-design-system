@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
 import {StorefrontPageHeading} from '../../../../../../components/storefront/StorefrontPageHeading/StorefrontPageHeading.jsx';
 
 export function StorefrontWeddingsHeading({eyebrow, title, accent, intro, plan, whatsapp}) {

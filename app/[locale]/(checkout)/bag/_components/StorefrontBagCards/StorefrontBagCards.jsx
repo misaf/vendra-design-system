@@ -1,7 +1,7 @@
 import React from 'react';
-import {Alert} from '../../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
+import {Alert} from '../../../../../../ui/components/Alert/Alert.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
 
 export function StorefrontBagCards({labels, notice, lines}) {
   return (

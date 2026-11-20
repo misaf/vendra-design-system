@@ -1,9 +1,9 @@
 import React from 'react';
-import {Badge} from '../../../../../../components/ui/patterns/atoms/Badge/Badge.jsx';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Card} from '../../../../../../components/ui/patterns/atoms/Card/Card.jsx';
-import {DetailList} from '../../../../../../components/ui/patterns/molecules/DetailList/DetailList.jsx';
-import {EmptyState} from '../../../../../../components/ui/patterns/molecules/EmptyState/EmptyState.jsx';
+import {Badge} from '../../../../../../ui/components/Badge/Badge.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Card} from '../../../../../../ui/components/Card/Card.jsx';
+import {DetailList} from '../../../../../../ui/components/DetailList/DetailList.jsx';
+import {EmptyState} from '../../../../../../ui/components/EmptyState/EmptyState.jsx';
 import {StorefrontStepProgress} from '../../../../../../components/storefront/StorefrontStepProgress/StorefrontStepProgress.jsx';
 
 export function StorefrontCheckoutConfirmation({progress, heading, status, rows, account, links}) {

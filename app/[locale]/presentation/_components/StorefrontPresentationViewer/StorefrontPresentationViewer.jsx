@@ -1,9 +1,9 @@
 import React from 'react';
-import {Button} from '../../../../../components/ui/components/Button/Button.jsx';
-import {Chip} from '../../../../../components/ui/patterns/atoms/Chip/Chip.jsx';
-import {IconButton} from '../../../../../components/ui/components/IconButton/IconButton.jsx';
-import {Lightbox} from '../../../../../components/ui/patterns/organisms/Lightbox/Lightbox.jsx';
-import {Price} from '../../../../../components/ui/patterns/atoms/Price/Price.jsx';
+import {Button} from '../../../../../ui/components/Button/Button.jsx';
+import {Chip} from '../../../../../ui/components/Chip/Chip.jsx';
+import {IconButton} from '../../../../../ui/components/IconButton/IconButton.jsx';
+import {Lightbox} from '../../../../../ui/components/Lightbox/Lightbox.jsx';
+import {Price} from '../../../../../ui/components/Price/Price.jsx';
 
 export function StorefrontPresentationViewer({
   items,

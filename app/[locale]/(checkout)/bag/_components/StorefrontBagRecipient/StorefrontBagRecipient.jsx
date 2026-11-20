@@ -1,7 +1,7 @@
 import React from 'react';
-import {Chip} from '../../../../../../components/ui/patterns/atoms/Chip/Chip.jsx';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
-import {PhoneInput} from '../../../../../../components/ui/patterns/atoms/PhoneInput/PhoneInput.jsx';
+import {Chip} from '../../../../../../ui/components/Chip/Chip.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
+import {PhoneInput} from '../../../../../../ui/components/PhoneInput/PhoneInput.jsx';
 
 export function StorefrontBagRecipient({title, saved, name, phone}) {
   return (

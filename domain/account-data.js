@@ -5,7 +5,7 @@ import {vfLatin} from './formatting.js';
 import {VF_STORE} from './store-config.js';
 import {commerce} from './commerce.js';
 import {vfNow, vfStoredValue} from '../shared/platform/environment.js';
-import {dates} from '../components/ui/patterns/utils/dates.js';
+import {dates} from '../ui/utils/dates.js';
 export function vfAccountPhone() {
   try {
     return vfStoredValue('vf-account-phone') || '';

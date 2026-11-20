@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card} from '../../../../../../components/ui/patterns/atoms/Card/Card.jsx';
+import {Card} from '../../../../../../ui/components/Card/Card.jsx';
 
 export function StorefrontAccountBalanceOverview({title, amount, status}) {
   return (

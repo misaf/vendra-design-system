@@ -534,7 +534,7 @@ function page(name, c, props = {}) {
             ? [dir + '/' + e.name]
             : []
       );
-  const cards = ['components/ui/patterns', 'guidelines', 'communications', 'e2e/fixtures']
+  const cards = ['ui/components', 'guidelines', 'communications', 'e2e/fixtures']
     .flatMap(htmlFiles)
     .filter(f => read(f).startsWith('<!-- @dsCard'));
   assert.ok(cards.length >= 30, 'found ' + cards.length + ' cards');

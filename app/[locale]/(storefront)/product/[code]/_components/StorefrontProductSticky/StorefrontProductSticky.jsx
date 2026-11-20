@@ -1,6 +1,6 @@
 import React from 'react';
-import {Button} from '../../../../../../../components/ui/components/Button/Button.jsx';
-import {Price} from '../../../../../../../components/ui/patterns/atoms/Price/Price.jsx';
+import {Button} from '../../../../../../../ui/components/Button/Button.jsx';
+import {Price} from '../../../../../../../ui/components/Price/Price.jsx';
 
 export function StorefrontProductSticky({summary, add}) {
   return (

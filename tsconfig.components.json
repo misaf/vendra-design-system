@@ -12,7 +12,7 @@
   },
   "include": [
     "domain/commerce.d.ts",
-    "components/ui/**/*.d.ts",
+    "ui/**/*.d.ts",
     "tests/fixtures/component-types.tsx",
     "tests/fixtures/theme-types.mts"
   ]

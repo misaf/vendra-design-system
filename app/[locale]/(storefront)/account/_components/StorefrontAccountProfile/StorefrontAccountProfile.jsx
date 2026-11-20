@@ -1,9 +1,9 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {ErrorSummary} from '../../../../../../components/ui/patterns/molecules/ErrorSummary/ErrorSummary.jsx';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
-import {Select} from '../../../../../../components/ui/components/Select/Select.jsx';
-import {Switch} from '../../../../../../components/ui/patterns/atoms/Switch/Switch.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {ErrorSummary} from '../../../../../../ui/components/ErrorSummary/ErrorSummary.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
+import {Select} from '../../../../../../ui/components/Select/Select.jsx';
+import {Switch} from '../../../../../../ui/components/Switch/Switch.jsx';
 
 export function StorefrontAccountProfile({problems, name, phone, email, language, sms, save}) {
   return (

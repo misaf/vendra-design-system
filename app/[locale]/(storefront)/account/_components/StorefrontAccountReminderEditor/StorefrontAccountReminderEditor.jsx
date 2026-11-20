@@ -1,7 +1,7 @@
 import React from 'react';
-import {DatePicker} from '../../../../../../components/ui/components/DatePicker/DatePicker.jsx';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
-import {Select} from '../../../../../../components/ui/components/Select/Select.jsx';
+import {DatePicker} from '../../../../../../ui/components/DatePicker/DatePicker.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
+import {Select} from '../../../../../../ui/components/Select/Select.jsx';
 
 export function StorefrontAccountReminderEditor({name, occasion, date, before, channel}) {
   return (

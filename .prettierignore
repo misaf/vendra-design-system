@@ -6,8 +6,8 @@ e2e/__screenshots__/
 e2e/test-results/
 e2e/playwright-report/
 tests/fixtures/vendra-openapi.json
-components/ui/tokens/
-components/ui/storefront.css
+ui/tokens/
+ui/storefront.css
 **/package-lock.json
 # HTML pages and partials keep their exact whitespace: it is rendered, and the generator
 # writes marked regions into the storefront pages.

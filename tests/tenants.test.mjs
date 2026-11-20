@@ -9,7 +9,7 @@ import {tenantSpecs, tenantOutputs, validateFontFiles} from '../tools/tenants.mj
 import {VF_EMAIL} from '../communications/email-templates.js';
 import {vfBrand, vfBrandHead, vfBrandHtml, vfBrandLinks} from '../domain/brand.js';
 import {VF_STORE} from '../domain/store-config.js';
-import theme from '../components/ui/tokens/tenant-theme.js';
+import theme from '../ui/tokens/tenant-theme.js';
 import {vfServerRender} from '../shared/platform/environment.js';
 
 const root = path.resolve(import.meta.dirname, '..');
@@ -26,7 +26,7 @@ function distance(a, b) {
 }
 
 // 1. The Vendra spec reproduces the hand-tuned default palette in tokens/colors.css.
-const colors = fs.readFileSync(path.join(root, 'components/ui/tokens/colors.css'), 'utf8');
+const colors = fs.readFileSync(path.join(root, 'ui/tokens/colors.css'), 'utf8');
 const vendra = theme.tokens(theme.VENDRA).ramps;
 for (const name of Object.keys(vendra).filter(n => !n.startsWith('--stem-'))) {
   const declared = colors.match(new RegExp(name + ':(#[0-9A-F]{6})', 'i'))[1];
@@ -37,9 +37,7 @@ for (const name of Object.keys(vendra).filter(n => !n.startsWith('--stem-'))) {
 }
 
 // 2. Generation is deterministic, keeps the base colours and applies overrides.
-const clay = JSON.parse(
-  fs.readFileSync(path.join(root, 'components/ui/tokens/tenants/clay.json'), 'utf8')
-);
+const clay = JSON.parse(fs.readFileSync(path.join(root, 'ui/tokens/tenants/clay.json'), 'utf8'));
 assert.equal(theme.css('clay', clay), theme.css('clay', clay));
 const ramps = theme.tokens(clay).ramps;
 assert.equal(ramps['--peony-500'], clay.colours.accent);
@@ -114,7 +112,7 @@ const accepts = spec => {
   }
 };
 assert.deepEqual(
-  JSON.parse(fs.readFileSync(path.join(root, 'components/ui/tokens/theme.schema.json'), 'utf8')),
+  JSON.parse(fs.readFileSync(path.join(root, 'ui/tokens/theme.schema.json'), 'utf8')),
   schema,
   'tokens/theme.schema.json is current (run the build)'
 );
@@ -219,7 +217,7 @@ for (const name of [
   }
   assert.match(
     faces[0],
-    /url\('\.\.\/\.\.\/\.\.\/\.\.\/assets\/tenants\/clay\/fonts\/yekan-latin\.woff2'\) format\('woff2'\);unicode-range:U\+0000-00FF/
+    /url\('\.\.\/\.\.\/\.\.\/assets\/tenants\/clay\/fonts\/yekan-latin\.woff2'\) format\('woff2'\);unicode-range:U\+0000-00FF/
   );
   assert.match(faces[1], /yekan-arabic\.woff2'\) format\('woff2'\);unicode-range:U\+0600-06FF/);
   assert.ok(generated.indexOf('@font-face') < generated.indexOf('[data-tenant="clay"]'));

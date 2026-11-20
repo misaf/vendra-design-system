@@ -1,8 +1,8 @@
 import React from 'react';
-import {Icon} from '../../../../../components/ui/components/Icon/Icon.jsx';
-import {IconButton} from '../../../../../components/ui/components/IconButton/IconButton.jsx';
-import {Picture} from '../../../../../components/ui/patterns/atoms/Picture/Picture.jsx';
-import {Price} from '../../../../../components/ui/patterns/atoms/Price/Price.jsx';
+import {Icon} from '../../../../../ui/components/Icon/Icon.jsx';
+import {IconButton} from '../../../../../ui/components/IconButton/IconButton.jsx';
+import {Picture} from '../../../../../ui/components/Picture/Picture.jsx';
+import {Price} from '../../../../../ui/components/Price/Price.jsx';
 
 function DisplayPhoto({product, onLoaded, onFailed, ...props}) {
   const ref = React.useRef(null);

@@ -1,7 +1,7 @@
 import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
-import {AnnouncementBar} from '../../ui/patterns/molecules/AnnouncementBar/AnnouncementBar.jsx';
-import {Icon} from '../../ui/components/Icon/Icon.jsx';
+import {AnnouncementBar} from '../../../ui/components/AnnouncementBar/AnnouncementBar.jsx';
+import {Icon} from '../../../ui/components/Icon/Icon.jsx';
 
 export function StorefrontAnnouncement({label, closeLabel, onClose, text, phoneText, link}) {
   if (!text) return null;

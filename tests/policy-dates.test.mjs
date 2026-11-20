@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import {VF_POLICY_UPDATED} from '../app/[locale]/(storefront)/policy/copy.js';
 import {VF_POLICIES} from '../shared/services/routing.js';
-import {dates} from '../components/ui/patterns/utils/dates.js';
+import {dates} from '../ui/utils/dates.js';
 
 assert.deepEqual(
   Object.keys(VF_POLICY_UPDATED).sort(),

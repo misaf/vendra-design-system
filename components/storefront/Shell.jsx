@@ -2,11 +2,11 @@
 // keeps only the provider, skip link and notices.
 import React from 'react';
 import {vfBrandUrl} from '../../domain/brand.js';
-import {BottomTabBar} from '../ui/patterns/organisms/BottomTabBar/BottomTabBar.jsx';
-import {LiveRegion} from '../ui/patterns/atoms/LiveRegion/LiveRegion.jsx';
-import {OfflineNotice} from '../ui/patterns/molecules/OfflineNotice/OfflineNotice.jsx';
-import {SkipLink} from '../ui/patterns/atoms/SkipLink/SkipLink.jsx';
-import {VendraProvider} from '../ui/components/VendraProvider/VendraProvider.jsx';
+import {BottomTabBar} from '../../ui/components/BottomTabBar/BottomTabBar.jsx';
+import {LiveRegion} from '../../ui/components/LiveRegion/LiveRegion.jsx';
+import {OfflineNotice} from '../../ui/components/OfflineNotice/OfflineNotice.jsx';
+import {SkipLink} from '../../ui/components/SkipLink/SkipLink.jsx';
+import {VendraProvider} from '../../ui/components/VendraProvider/VendraProvider.jsx';
 import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontLayout} from './StorefrontLayout/StorefrontLayout.jsx';
 import {StorefrontBottomBar} from './StorefrontBottomBar/StorefrontBottomBar.jsx';

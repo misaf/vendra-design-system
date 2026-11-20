@@ -1,13 +1,10 @@
 // Storefront commerce rules: import { commerce } (guidelines/card-runtime.js also exposes it as window.AG_COMMERCE for the cards).
 // Pure functions: every tenant value (zones, promo codes, balance rules, delivery schedule, API records)
 // comes in as an argument, so a tenant storefront runs them on its own data from the Vendra API.
-// Amounts are in Toman. No imports: storefront pages load this before the component bundle.
+// Amounts are in Toman.
+import {latin, mobile, phone} from '../ui/utils/input.js';
+import {validLocation, pinLocation} from '../ui/utils/coordinates.js';
 
-// Persian and Arabic digits → Latin.
-const latin = value =>
-  String(value ?? '')
-    .replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
-    .replace(/[٠-٩]/g, digit => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)));
 const persianDigits = value => String(value).replace(/\d/g, digit => '۰۱۲۳۴۵۶۷۸۹'[digit]);
 
 // A product code typed any way: case, spaces, dashes and digit scripts don't matter.
@@ -43,33 +40,7 @@ const promoCode = value =>
   latin(value || '')
     .replace(/\s/g, '')
     .toUpperCase();
-const phone = value => latin(value || '').replace(/[\s()-]/g, '');
-// An Iranian mobile number in its one stored form, 09xxxxxxxxx, however it was typed: 0912…, 912…,
-// +98 912…, 98912… or 0098 912…, with Persian or Arabic digits, spaces, dashes, dots or brackets.
-// '' when it isn't a mobile number (letters or other characters never pass).
-const mobile = value => {
-  const text = latin(value || '').trim();
-  if (!text || /[^\d\s+().-]/.test(text)) return '';
-  let digits = text.replace(/\D/g, '');
-  if (digits.startsWith('0098')) digits = digits.slice(4);
-  else if (digits.startsWith('98') && digits.length === 12) digits = digits.slice(2);
-  if (/^9\d{9}$/.test(digits)) digits = '0' + digits;
-  return /^09\d{9}$/.test(digits) ? digits : '';
-};
 const isMobile = value => mobile(value) !== '';
-
-const validLocation = location =>
-  !!location &&
-  Number.isFinite(location.lat) &&
-  Number.isFinite(location.lng) &&
-  Math.abs(location.lat) <= 90 &&
-  Math.abs(location.lng) <= 180;
-
-// A map point rounded to six decimals (about 10 cm): enough for a front door, and tidy in stored orders.
-const pinLocation = point => {
-  const round = value => Math.round(value * 1e6) / 1e6;
-  return {lat: round(point.lat), lng: round(point.lng)};
-};
 
 // Links that show a place in Neshan, Balad and Google Maps, each opening the installed app on
 // phones where the link allows it. Persian visitors mostly drive with Neshan and Balad, so they

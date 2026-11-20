@@ -1,38 +1,29 @@
-// npm run new:component -- <Name> --level atoms|molecules|organisms [--wording] [--no-css]
-// Starts components/ui/patterns/<level>/<Name>/ with every file the repo expects (CLAUDE.md rule 3), so the guards in
-// npm test pass from the first build: the component, its declarations, CSS (added to
-// the design system's components/index.css), README with its Usage section, fixture and spec, and with --wording its
-// built-in English and Persian wording (messages.js, typed in utils/messages.d.ts). It also
-// re-exports the component for the storefront (components/ui/index.js). What it can't know is left as TODO.
+// Generate a reusable component, its browser fixture and spec, and its inventory entries.
 import {execFileSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {levels} from './atomic.mjs';
-import {repo, componentsFolder, uiFolder, uiRoot} from './paths.mjs';
+import {repo, componentsFolder, uiRoot} from './paths.mjs';
 
 const args = process.argv.slice(2);
-const name = args.find(arg => !arg.startsWith('--'));
+const [name, ...options] = args;
 const wording = args.includes('--wording');
 const css = !args.includes('--no-css');
-const level = args[args.indexOf('--level') + 1];
 
 const fail = message => {
   console.error(message);
   process.exit(1);
 };
-if (!name || !/^[A-Z][A-Za-z0-9]+$/.test(name))
-  fail(
-    'Usage: npm run new:component -- <Name> --level atoms|molecules|organisms [--wording] [--no-css]'
-  );
-if (!args.includes('--level') || !levels.includes(level))
-  fail('--level is required: atoms, molecules or organisms. See ATOMIC-DESIGN.md.');
-const existing = [path.join(repo, componentsFolder), path.join(uiRoot, 'components')].flatMap(
-  folder => fs.readdirSync(folder, {recursive: true})
-);
-if (existing.some(file => path.basename(file) === name + '.jsx'))
+if (
+  !name ||
+  !/^[A-Z][A-Za-z0-9]+$/.test(name) ||
+  options.some(option => !['--wording', '--no-css'].includes(option))
+)
+  fail('Usage: npm run new:component -- <Name> [--wording] [--no-css]');
+const existing = fs.readdirSync(path.join(repo, componentsFolder), {recursive: true});
+if (existing.some(file => path.basename(file) === name || path.basename(file) === name + '.jsx'))
   fail('A component named ' + name + ' already exists');
-const componentPath = `${componentsFolder}/${level}/${name}`;
+const componentPath = `${componentsFolder}/${name}`;
 const folder = path.join(repo, componentPath);
 
 const className = 'ag-' + name.replace(/(?<!^)([A-Z])/g, '-$1').toLowerCase();
@@ -130,7 +121,7 @@ export function Fixture() {
 `;
 
 files[name + '.spec.mjs'] = `import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../../../e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../e2e/component-test.mjs';
 
 // TODO: its role and name, keyboard use, wording in both languages and its main props.
 test('renders', async ({page}) => {
@@ -156,17 +147,17 @@ const insertSorted = (file, pattern, line) => {
   fs.writeFileSync(file, lines.join('\n'));
 };
 insertSorted(
-  path.join(repo, 'components/ui/index.js'),
-  /^export \* from '\.\/patterns\//,
-  `export * from '${'./' + path.posix.relative(uiFolder, componentPath)}/${name}.jsx';`
+  path.join(uiRoot, 'index.js'),
+  /^export \* from '\.\/components\//,
+  `export * from '${'./components/' + name}/${name}.jsx';`
 );
 if (css)
   fs.appendFileSync(
     path.join(repo, componentsFolder, 'index.css'),
-    `@import url('${level}/${name}/${name}.css');\n`
+    `@import url('${name}/${name}.css');\n`
   );
 if (wording) {
-  const types = path.join(uiRoot, 'components/utils/messages.d.ts');
+  const types = path.join(uiRoot, 'utils/messages.d.ts');
   const text = fs.readFileSync(types, 'utf8');
   const marker = 'export interface ComponentMessages {\n';
   if (!text.includes(marker)) fail('ComponentMessages not found in ' + types);
@@ -181,14 +172,14 @@ execFileSync(
     '--log-level=warn',
     '--write',
     folder,
-    path.join(repo, 'components/ui/index.js'),
-    path.join(uiRoot, 'components/utils/messages.d.ts')
+    path.join(uiRoot, 'index.js'),
+    path.join(uiRoot, 'utils/messages.d.ts')
   ],
   {stdio: 'inherit'}
 );
 
 console.log(`Created ${componentPath}/ (${Object.keys(files).join(', ')}).
-Added it to components/ui/index.js${css ? ', ' + componentsFolder + '/index.css' : ''}${
+Added it to ui/index.js${css ? ', ' + componentsFolder + '/index.css' : ''}${
   wording ? ' and the ComponentMessages type' : ''
 }.
 
@@ -197,5 +188,5 @@ Next:
      component uses), and add it to a guideline card in guidelines/components/.
   2. npm run format && npm run build
   3. npm run check && npm test
-  4. npx playwright test -c e2e/playwright.config.mjs ../${componentPath}
-     then the whole test:e2e (CLAUDE.md rule 5).`);
+  4. npm run test:e2e:dev -- --project=components ${componentPath}
+     then npm run test:e2e.`);

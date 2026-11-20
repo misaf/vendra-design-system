@@ -4,7 +4,7 @@
 // so a static host serves each one from its own index.html. The path says which page it is; the
 // query only carries state on that page (filters, sorting, steps), added by routing.js.
 import {vfAbsoluteUrl, vfAssetBase, vfLocation} from '../platform/environment.js';
-import {LOCALES} from '../../components/ui/patterns/utils/locales.js';
+import {LOCALES} from '../../ui/utils/locales.js';
 
 export const VF_SEO = (() => {
   const SCREENS = new Set([

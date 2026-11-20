@@ -1,7 +1,7 @@
 // StorefrontPresentation: the counter presentation, full screen without the site's header or footer.
 import React from 'react';
-import {ToastRegion} from '../../../components/ui/patterns/organisms/ToastRegion/ToastRegion.jsx';
-import {VendraProvider} from '../../../components/ui/components/VendraProvider/VendraProvider.jsx';
+import {ToastRegion} from '../../../ui/components/ToastRegion/ToastRegion.jsx';
+import {VendraProvider} from '../../../ui/components/VendraProvider/VendraProvider.jsx';
 import {asList} from '../../../shared/ui/as-list.js';
 import {StorefrontPresentationLayout} from './_components/StorefrontPresentationLayout/StorefrontPresentationLayout.jsx';
 import {StorefrontPresentationCatalog} from './_components/StorefrontPresentationCatalog/StorefrontPresentationCatalog.jsx';

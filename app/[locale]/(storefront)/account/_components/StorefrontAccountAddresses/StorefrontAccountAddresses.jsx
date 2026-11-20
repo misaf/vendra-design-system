@@ -1,6 +1,6 @@
 import React from 'react';
-import {AddressCard} from '../../../../../../components/ui/patterns/molecules/AddressCard/AddressCard.jsx';
-import {PlacesMap} from '../../../../../../components/ui/patterns/organisms/PlacesMap/PlacesMap.jsx';
+import {AddressCard} from '../../../../../../ui/components/AddressCard/AddressCard.jsx';
+import {PlacesMap} from '../../../../../../ui/components/PlacesMap/PlacesMap.jsx';
 
 export function StorefrontAccountAddresses({map, addresses, labels, add}) {
   return (

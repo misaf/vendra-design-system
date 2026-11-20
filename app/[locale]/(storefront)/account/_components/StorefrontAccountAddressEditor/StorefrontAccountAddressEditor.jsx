@@ -1,8 +1,8 @@
 import React from 'react';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
-import {LocationPicker} from '../../../../../../components/ui/patterns/organisms/LocationPicker/LocationPicker.jsx';
-import {PhoneInput} from '../../../../../../components/ui/patterns/atoms/PhoneInput/PhoneInput.jsx';
-import {Select} from '../../../../../../components/ui/components/Select/Select.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
+import {LocationPicker} from '../../../../../../ui/components/LocationPicker/LocationPicker.jsx';
+import {PhoneInput} from '../../../../../../ui/components/PhoneInput/PhoneInput.jsx';
+import {Select} from '../../../../../../ui/components/Select/Select.jsx';
 
 export function StorefrontAccountAddressEditor({label, zone, pin, address, recipient, phone}) {
   return (

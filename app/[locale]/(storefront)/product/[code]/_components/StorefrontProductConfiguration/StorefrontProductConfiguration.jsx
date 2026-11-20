@@ -1,7 +1,7 @@
 import React from 'react';
-import {Checkbox} from '../../../../../../../components/ui/patterns/atoms/Checkbox/Checkbox.jsx';
-import {ChoiceGroup} from '../../../../../../../components/ui/patterns/atoms/ChoiceGroup/ChoiceGroup.jsx';
-import {ChoiceTile} from '../../../../../../../components/ui/patterns/atoms/ChoiceGroup/ChoiceTile.jsx';
+import {Checkbox} from '../../../../../../../ui/components/Checkbox/Checkbox.jsx';
+import {ChoiceGroup} from '../../../../../../../ui/components/ChoiceGroup/ChoiceGroup.jsx';
+import {ChoiceTile} from '../../../../../../../ui/components/ChoiceTile/ChoiceTile.jsx';
 
 export function StorefrontProductConfiguration({
   showSizes,

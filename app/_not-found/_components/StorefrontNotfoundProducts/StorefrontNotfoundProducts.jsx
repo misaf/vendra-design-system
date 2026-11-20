@@ -1,5 +1,5 @@
 import React from 'react';
-import {ProductCard} from '../../../../components/ui/patterns/molecules/ProductCard/ProductCard.jsx';
+import {ProductCard} from '../../../../ui/components/ProductCard/ProductCard.jsx';
 
 export function StorefrontNotfoundProducts({products, photoLabel, saveLabel}) {
   return (

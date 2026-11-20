@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button} from '../components/ui/components/Button/Button.jsx';
-import {DatePicker} from '../components/ui/components/DatePicker/DatePicker.jsx';
-import {Dialog} from '../components/ui/components/Dialog/Dialog.jsx';
-import {Input} from '../components/ui/components/Input/Input.jsx';
-import {VendraProvider} from '../components/ui/components/VendraProvider/VendraProvider.jsx';
+import {Button} from '../ui/components/Button/Button.jsx';
+import {DatePicker} from '../ui/components/DatePicker/DatePicker.jsx';
+import {Dialog} from '../ui/components/Dialog/Dialog.jsx';
+import {Input} from '../ui/components/Input/Input.jsx';
+import {VendraProvider} from '../ui/components/VendraProvider/VendraProvider.jsx';
 
 const params = new URLSearchParams(location.search);
 const themes = ['clay', 'fern'];

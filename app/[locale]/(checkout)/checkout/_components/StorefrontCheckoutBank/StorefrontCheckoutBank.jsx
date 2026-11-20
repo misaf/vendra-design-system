@@ -1,5 +1,5 @@
 import React from 'react';
-import {PaymentStatus} from '../../../../../../components/ui/patterns/organisms/PaymentStatus/PaymentStatus.jsx';
+import {PaymentStatus} from '../../../../../../ui/components/PaymentStatus/PaymentStatus.jsx';
 import {StorefrontStepProgress} from '../../../../../../components/storefront/StorefrontStepProgress/StorefrontStepProgress.jsx';
 
 export function StorefrontCheckoutBank({progress, payment, actions}) {

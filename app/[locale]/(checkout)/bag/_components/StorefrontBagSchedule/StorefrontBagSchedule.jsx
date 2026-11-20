@@ -1,7 +1,7 @@
 import React from 'react';
-import {Alert} from '../../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {ChoiceGroup} from '../../../../../../components/ui/patterns/atoms/ChoiceGroup/ChoiceGroup.jsx';
-import {ChoiceTile} from '../../../../../../components/ui/patterns/atoms/ChoiceGroup/ChoiceTile.jsx';
+import {Alert} from '../../../../../../ui/components/Alert/Alert.jsx';
+import {ChoiceGroup} from '../../../../../../ui/components/ChoiceGroup/ChoiceGroup.jsx';
+import {ChoiceTile} from '../../../../../../ui/components/ChoiceTile/ChoiceTile.jsx';
 
 export function StorefrontBagSchedule({title, preparationNotice, review, day, slot}) {
   const dayFieldset = React.useRef(null);

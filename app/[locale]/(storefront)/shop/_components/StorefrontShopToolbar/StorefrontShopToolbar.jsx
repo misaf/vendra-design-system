@@ -1,8 +1,8 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Chip} from '../../../../../../components/ui/patterns/atoms/Chip/Chip.jsx';
-import {FilterBar} from '../../../../../../components/ui/patterns/molecules/FilterBar/FilterBar.jsx';
-import {Select} from '../../../../../../components/ui/components/Select/Select.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Chip} from '../../../../../../ui/components/Chip/Chip.jsx';
+import {FilterBar} from '../../../../../../ui/components/FilterBar/FilterBar.jsx';
+import {Select} from '../../../../../../ui/components/Select/Select.jsx';
 
 export function StorefrontShopToolbar({
   labels,

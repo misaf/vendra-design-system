@@ -1,5 +1,5 @@
 import React from 'react';
-import {Picture} from '../../../../../../../components/ui/patterns/atoms/Picture/Picture.jsx';
+import {Picture} from '../../../../../../../ui/components/Picture/Picture.jsx';
 
 export function StorefrontPostBlocks({blocks}) {
   return (

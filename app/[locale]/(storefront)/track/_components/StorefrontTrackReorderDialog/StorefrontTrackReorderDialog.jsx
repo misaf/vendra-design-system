@@ -1,9 +1,9 @@
 import React from 'react';
-import {Alert} from '../../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Dialog} from '../../../../../../components/ui/components/Dialog/Dialog.jsx';
-import {Radio} from '../../../../../../components/ui/patterns/atoms/Radio/Radio.jsx';
-import {RadioGroup} from '../../../../../../components/ui/patterns/atoms/RadioGroup/RadioGroup.jsx';
+import {Alert} from '../../../../../../ui/components/Alert/Alert.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Dialog} from '../../../../../../ui/components/Dialog/Dialog.jsx';
+import {Radio} from '../../../../../../ui/components/Radio/Radio.jsx';
+import {RadioGroup} from '../../../../../../ui/components/RadioGroup/RadioGroup.jsx';
 
 export function StorefrontTrackReorderDialog({
   open,

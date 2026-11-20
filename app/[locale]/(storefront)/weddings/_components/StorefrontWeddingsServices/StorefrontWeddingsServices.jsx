@@ -1,6 +1,6 @@
 import React from 'react';
-import {Card} from '../../../../../../components/ui/patterns/atoms/Card/Card.jsx';
-import {Icon} from '../../../../../../components/ui/components/Icon/Icon.jsx';
+import {Card} from '../../../../../../ui/components/Card/Card.jsx';
+import {Icon} from '../../../../../../ui/components/Icon/Icon.jsx';
 
 export function StorefrontWeddingsServices({services}) {
   return (

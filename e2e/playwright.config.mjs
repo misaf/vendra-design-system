@@ -73,11 +73,11 @@ export function projectsForTarget(build) {
       : [
           {
             name: 'components',
-            testDir: '../components/ui/patterns',
+            testDir: '../ui/components',
             testMatch: '*.spec.mjs',
             use: {...devices['Desktop Chrome'], viewport: {width: 1280, height: 900}}
           },
-          // Storefront molecules, organisms and layouts with their own spec
+          // Storefront components and layouts with their own spec
           // (under app/ or components/storefront/), on the storefront fixture host page.
           {
             name: 'storefront-components',

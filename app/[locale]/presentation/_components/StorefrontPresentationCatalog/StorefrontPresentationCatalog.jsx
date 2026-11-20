@@ -1,10 +1,10 @@
 import React from 'react';
-import {Badge} from '../../../../../components/ui/patterns/atoms/Badge/Badge.jsx';
-import {Button} from '../../../../../components/ui/components/Button/Button.jsx';
-import {EmptyState} from '../../../../../components/ui/patterns/molecules/EmptyState/EmptyState.jsx';
-import {IconButton} from '../../../../../components/ui/components/IconButton/IconButton.jsx';
-import {Picture} from '../../../../../components/ui/patterns/atoms/Picture/Picture.jsx';
-import {Price} from '../../../../../components/ui/patterns/atoms/Price/Price.jsx';
+import {Badge} from '../../../../../ui/components/Badge/Badge.jsx';
+import {Button} from '../../../../../ui/components/Button/Button.jsx';
+import {EmptyState} from '../../../../../ui/components/EmptyState/EmptyState.jsx';
+import {IconButton} from '../../../../../ui/components/IconButton/IconButton.jsx';
+import {Picture} from '../../../../../ui/components/Picture/Picture.jsx';
+import {Price} from '../../../../../ui/components/Price/Price.jsx';
 
 export function StorefrontPresentationCatalog({
   tiles,

@@ -1,6 +1,6 @@
 // StorefrontSaved: the page inside the storefront shell.
 import React from 'react';
-import {SectionHeader} from '../../../../components/ui/patterns/molecules/SectionHeader/SectionHeader.jsx';
+import {SectionHeader} from '../../../../ui/components/SectionHeader/SectionHeader.jsx';
 import {asList} from '../../../../shared/ui/as-list.js';
 import {StorefrontSavedLayout} from './_components/StorefrontSavedLayout/StorefrontSavedLayout.jsx';
 import {StorefrontSavedRemovalNotice} from './_components/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx';

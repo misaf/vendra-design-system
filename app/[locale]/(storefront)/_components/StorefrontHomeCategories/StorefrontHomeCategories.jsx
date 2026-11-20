@@ -1,6 +1,6 @@
 import React from 'react';
-import {CategoryCard} from '../../../../../components/ui/patterns/molecules/CategoryCard/CategoryCard.jsx';
-import {SectionHeader} from '../../../../../components/ui/patterns/molecules/SectionHeader/SectionHeader.jsx';
+import {CategoryCard} from '../../../../../ui/components/CategoryCard/CategoryCard.jsx';
+import {SectionHeader} from '../../../../../ui/components/SectionHeader/SectionHeader.jsx';
 import {CollectionCarousel} from '../../../../../shared/ui/collection-carousel.jsx';
 
 export function StorefrontHomeCategories({categories, labels}) {

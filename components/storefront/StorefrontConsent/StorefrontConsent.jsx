@@ -1,6 +1,6 @@
 import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
-import {IconButton} from '../../ui/components/IconButton/IconButton.jsx';
+import {IconButton} from '../../../ui/components/IconButton/IconButton.jsx';
 
 export function StorefrontConsent({
   shown,

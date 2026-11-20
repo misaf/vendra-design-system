@@ -1,6 +1,6 @@
 import React from 'react';
-import {Card} from '../../../../../../components/ui/patterns/atoms/Card/Card.jsx';
-import {OrderTimeline} from '../../../../../../components/ui/patterns/molecules/OrderTimeline/OrderTimeline.jsx';
+import {Card} from '../../../../../../ui/components/Card/Card.jsx';
+import {OrderTimeline} from '../../../../../../ui/components/OrderTimeline/OrderTimeline.jsx';
 
 export function StorefrontTrackProgress({steps, current, status, label, doneLabel}) {
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Chip} from '../../../../../../components/ui/patterns/atoms/Chip/Chip.jsx';
+import {Chip} from '../../../../../../ui/components/Chip/Chip.jsx';
 
 export function StorefrontSearchPopular({title, terms}) {
   return (

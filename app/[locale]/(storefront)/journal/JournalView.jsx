@@ -1,7 +1,7 @@
 // StorefrontJournal: the page inside the storefront shell.
 import React from 'react';
-import {Pagination} from '../../../../components/ui/patterns/molecules/Pagination/Pagination.jsx';
-import {SearchField} from '../../../../components/ui/patterns/molecules/SearchField/SearchField.jsx';
+import {Pagination} from '../../../../ui/components/Pagination/Pagination.jsx';
+import {SearchField} from '../../../../ui/components/SearchField/SearchField.jsx';
 import {asList} from '../../../../shared/ui/as-list.js';
 import {StorefrontJournalLayout} from './_components/StorefrontJournalLayout/StorefrontJournalLayout.jsx';
 import {StorefrontJournalHeading} from './_components/StorefrontJournalHeading/StorefrontJournalHeading.jsx';

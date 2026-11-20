@@ -1,7 +1,7 @@
 import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
-import {Dialog} from '../../ui/components/Dialog/Dialog.jsx';
-import {Button} from '../../ui/components/Button/Button.jsx';
+import {Dialog} from '../../../ui/components/Dialog/Dialog.jsx';
+import {Button} from '../../../ui/components/Button/Button.jsx';
 import {BrandLogo} from '../BrandLogo/BrandLogo.jsx';
 
 export function StorefrontCheckoutHeader({brand, logo = null, homeHref, back, help, leave = null}) {
