@@ -12,6 +12,7 @@ import {LiveRegion} from '../../components/ui/patterns/atoms/LiveRegion/LiveRegi
 import {VendraProvider} from '../../components/ui/components/VendraProvider/VendraProvider.jsx';
 import {PageBoundary} from '../../components/storefront/PageError.jsx';
 import {lazyPage} from './preview-screens.js';
+import {BagRouteScreen} from '../[locale]/(checkout)/bag/BagRouteScreen.jsx';
 import {installTenantTheme, tenantRendered} from '../../components/storefront/tenant-theme.js';
 import {vfApplyTvMode} from '../../shared/services/tv.js';
 import {vfConfigureRendering, vfSetHydrating} from '../../shared/platform/environment.js';
@@ -150,7 +151,7 @@ function Storefront({children, lang}) {
 }
 
 const alternateScreens = {
-  bag: lazyPage('bag'),
+  bag: BagRouteScreen,
   signin: lazyPage('signin'),
   track: lazyPage('track'),
   notfound: lazyPage('notfound')

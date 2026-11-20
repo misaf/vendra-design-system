@@ -1,4 +1,4 @@
 import {storefrontPage} from '@storefront/server/route-page';
-import BagScreen from './BagScreen.jsx';
+import {BagRouteScreen} from './BagRouteScreen.jsx';
 
-export default storefrontPage('bag', BagScreen);
+export default storefrontPage('bag', BagRouteScreen);
