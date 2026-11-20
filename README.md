@@ -105,3 +105,9 @@ npm run test:e2e:dev  # source fixtures, components, guidelines and gateway test
 ```
 
 Where to edit storefront pages, Tailwind conventions and preview URLs: [docs/STOREFRONT.md](./docs/STOREFRONT.md). Preview states and integration boundaries: [Demo behavior](./docs/STOREFRONT.md#demo-behavior).
+
+## License
+
+The project's original software and documentation are available under the [MIT License](./LICENSE).
+Third-party assets retain their own license terms, including [Leaflet](./src/platform/browser/vendor/leaflet/LICENSE),
+[Lucide icons](https://lucide.dev/license), and the bundled fonts under the [SIL Open Font License](https://openfontlicense.org/open-font-license-official-text/).
