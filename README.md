@@ -109,5 +109,7 @@ Where to edit storefront pages, Tailwind conventions and preview URLs: [docs/STO
 ## License
 
 The project's original software and documentation are available under the [MIT License](./LICENSE).
-Third-party assets retain their own license terms, including [Leaflet](./src/platform/browser/vendor/leaflet/LICENSE),
-[Lucide icons](https://lucide.dev/license), and the bundled fonts under the [SIL Open Font License](https://openfontlicense.org/open-font-license-official-text/).
+Bundled third-party assets retain their own license terms.
+
+- Icons and maps ([Lucide](./src/design-system/components/Icon/LICENSE.lucide), [Feather-derived icons](./src/design-system/components/Icon/LICENSE.feather), and [Leaflet](./src/platform/browser/vendor/leaflet/LICENSE)).
+- Fonts under the SIL Open Font License ([Instrument Serif](./src/design-system/assets/fonts/instrument-serif-OFL.txt), [Jost](./src/design-system/assets/fonts/jost-OFL.txt), and [Vazirmatn](./src/design-system/assets/fonts/vazirmatn-OFL.txt)).
