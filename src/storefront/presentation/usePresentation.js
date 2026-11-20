@@ -47,7 +47,7 @@ import {
 import {VF_LINES_PATTERN, vfBagLine, vfLinesParam} from '../cart/cart-lines.js';
 import {vfShell} from '../shell/navigation.js';
 import {vfSeparator} from '../pricing/formatting.js';
-import {vfRouteUrl} from '../shell/routing.js';
+import {vfReadRoute, vfRouteUrl} from '../shell/routing.js';
 import {VF_CATEGORY_COPY} from '../catalog/categories.js';
 import {useLifecycle, usePageLogic} from '../shell/page-state.js';
 import {vfLocation, vfOnServer, vfStoredValue} from '../../platform/browser/environment.js';
@@ -143,6 +143,15 @@ function vfRefreshStock(page) {
     });
 }
 
+// A tag contains either the product page address or the design code.
+function vfScannedProduct(text) {
+  try {
+    const route = vfReadRoute(new URL(text).href);
+    if (route.view === 'product') return vfFindProduct(route.id);
+  } catch {}
+  return vfFindProduct(text.trim());
+}
+
 export function usePresentation(props) {
   const page = usePageLogic(props, page => {
     page.state = {
@@ -193,7 +202,7 @@ export function usePresentation(props) {
       stockAt: 0
     };
     page.display = vfCreateDisplay(page);
-    page.camera = vfCreateCamera(page);
+    page.camera = vfCreateCamera(page, vfScannedProduct);
     page.browsingViewer = vfCreateBrowsingViewer(page);
     page.toasts = new ToastQueue({maxVisibleToasts: 1});
     page._report = text => {

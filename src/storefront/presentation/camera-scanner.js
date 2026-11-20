@@ -1,16 +1,4 @@
-import {vfFindProduct} from '../catalog/catalog.js';
-import {vfReadRoute} from '../shell/routing.js';
-
-// A tag contains either the product page address or the design code.
-function vfScannedProduct(text) {
-  try {
-    const route = vfReadRoute(new URL(text).href);
-    if (route.view === 'product') return vfFindProduct(route.id);
-  } catch {}
-  return vfFindProduct(text.trim());
-}
-
-export function vfCreateCamera(page) {
+export function vfCreateCamera(page, findProduct) {
   let active;
 
   const isCurrent = session =>
@@ -58,7 +46,7 @@ export function vfCreateCamera(page) {
           const [code] = await detector.detect(video);
           if (!isCurrent(session)) return;
           if (code) {
-            const product = vfScannedProduct(code.rawValue);
+            const product = findProduct(code.rawValue);
             if (product) {
               stop();
               page.setState({
