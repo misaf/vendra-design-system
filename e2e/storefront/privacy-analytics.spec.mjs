@@ -136,11 +136,14 @@ test.describe('a first visit', () => {
 
   test('a standalone preview restores focus when reopened consent is dismissed', async ({page}) => {
     await page.goto('/?page=faq');
+    const heading = page.getByRole('heading', {level: 1, name: /^Answers,/});
+    await expect(heading).toBeVisible();
     const banner = page.getByRole('region', {name: 'Your privacy'});
     const close = banner.getByRole('button', {name: 'Close without choosing'});
     await close.click();
     await expect(banner).toHaveCount(0);
     await page.reload();
+    await expect(heading).toBeVisible();
     const settings = page.getByRole('button', {name: 'Cookie settings'});
     await openFooterGroup(page, 'Help');
     await expect(banner).toHaveCount(0);
