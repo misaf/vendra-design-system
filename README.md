@@ -10,7 +10,7 @@
 
 ## Using the storefront design system
 
-The [storefront UI](./docs/UI.md) owns Button, Input, Dialog, DatePicker, and the shared tokens, themes, and fonts. Routes import the controls they use directly. The App Router layout loads the storefront component styles and shared tokens, and `VendraProvider` supplies the locale and client navigation. Run `npm run dev` and open `/guidelines/ui-gallery.html` to try the shared components in Clay and Fern.
+The [storefront UI](./docs/UI.md) owns Button, Input, Dialog, DatePicker, and the shared tokens, themes, and fonts. Routes import the controls they use directly. The App Router layout loads the storefront component styles and shared tokens, and `VendraProvider` supplies the locale and client navigation. Run `npm run dev:gallery` and open `/guidelines/ui-gallery.html` to try the shared components in Clay and Fern.
 
 Tenant themes are generated from `src/design-system/tokens/tenants/<slug>.json`. The storefront theme generator in `src/design-system/tokens/tenant-theme.js` exposes `tenantCss`, `validate`, `checks`, and the design token helpers. It validates slugs, settings, and contrast before generating CSS.
 
@@ -94,7 +94,8 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 
 ```sh
 npm ci                                   # first setup, at the repo root
-npm run dev                             # Next.js development at http://localhost:3000/
+npm run dev                             # Next.js storefront at http://localhost:3000/
+npm run dev:gallery                     # storefront and design-system previews
 npm run build   # design tokens, tenant themes and brand assets
 npm run format  # Prettier
 npm run check   # generated files current + formatting

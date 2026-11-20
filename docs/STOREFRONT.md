@@ -40,6 +40,7 @@ Run from the repo root with Node.js 22 (22.22.2 or later):
 ```sh
 npm ci                                   # install from the root lockfile
 npm run dev                             # Next.js at http://localhost:3000/ → /en/
+npm run dev:gallery                     # storefront and design-system previews
 npm run build   # tenant themes, design tokens and brand assets
 npm run lint    # Next.js, React and TypeScript lint rules for src/app/
 npm run check   # generated output, formatting, ESLint and CSS lint
@@ -92,7 +93,7 @@ also includes Brotli and gzip copies, which the local static preview can serve.
 
 ## Browser tests
 
-`test:e2e` builds the app once and runs storefront tests against the Next.js export, then runs only source fixtures, component specs, guideline cards and gateway tests on the development server. Use `test:e2e:build` or `test:e2e:dev` to run either suite alone. Reports are kept separately in `e2e/playwright-report/build/` and `e2e/playwright-report/dev/`. Tests run on Playwright's bundled Chromium at 390px and 1280px, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
+`test:e2e` builds the app once and runs storefront tests against the Next.js export, then runs only source fixtures, component specs, guideline cards and gateway tests on the development server. Use `test:e2e:build` or `test:e2e:dev` to run either suite alone. The development suite starts `dev:gallery`, which prepares its fixtures automatically. Reports are kept separately in `e2e/playwright-report/build/` and `e2e/playwright-report/dev/`. Tests run on Playwright's bundled Chromium at 390px and 1280px, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
 
 Install the browser after `npm ci` (and after upgrading Playwright), then run the tests:
 
@@ -155,7 +156,7 @@ Component folders in `src/design-system/components/` colocate `<Name>.spec.mjs` 
 
 - **Fixture:** exports `Fixture({lang})`, which renders the component in the states the spec needs, with plain `<output data-test=…>` elements for what callbacks report. The host page `e2e/fixtures/component.html?component=<Name>&lang=en|fa` renders it inside `VendraProvider`, with the page's `lang` and `dir` set.
 - **Spec:** imports `openComponent`, `expectAccessible` and the shared helpers from `e2e/component-test.mjs`. It tests the component's role and name, keyboard use, built-in wording in both languages and its main props, and ends with `expectAccessible` (axe in English and Persian). Use customer-facing names for the tests. The [browser tests](#browser-tests) cover cross-component storefront flows.
-- **Running:** `npx playwright test -c e2e/playwright.config.mjs --project=components` runs them all; add the folder's path to run one (`src/design-system/components/FilterBar`). They run in the `components` project on the dev server, at desktop width; a spec sets another viewport where it matters. The production-build run skips them.
+- **Running:** `npm run test:e2e:dev -- --project=components` runs them all; add the folder's path to run one (`src/design-system/components/FilterBar`). They run in the `components` project on the dev server, at desktop width; a spec sets another viewport where it matters. The production-build run skips them.
 - **Guard:** `npm test` fails when a component folder has no spec that opens its fixture. The development server compiles the fixtures for browser tests.
 
 ### Storefront component tests
@@ -163,7 +164,7 @@ Component folders in `src/design-system/components/` colocate `<Name>.spec.mjs` 
 Storefront components may have the same pair beside them under their route or in `src/storefront/shell/components/` (`<Name>.spec.mjs` and `<Name>.fixture.jsx`). The fixture renders the component with controlled state and explicit English/Persian copy, the way a View would; the spec tests its prop and callback contract (controlled values, `onX` wiring, conditional branches) and ends with `expectStorefrontAccessible`.
 
 - **Host:** `e2e/fixtures/storefront-component.html?component=<Name>&lang=en|fa` loads the storefront's Tailwind, design-system and page styles and renders the fixture inside `VendraProvider`. Specs open it with `openStorefrontComponent` from `e2e/component-test.mjs`.
-- **Running:** `npx playwright test -c e2e/playwright.config.mjs --project=storefront-components` (dev server, desktop width; CI runs it with the development suite).
+- **Running:** `npm run test:e2e:dev -- --project=storefront-components` (dev server, desktop width; CI runs it with the development suite).
 - **Covered:** StorefrontCheckoutMethods, StorefrontCheckoutReceipt, StorefrontCheckoutSubmission, StorefrontBagSchedule, StorefrontBagLocation, StorefrontBagCards, StorefrontAccountEditorDialog and StorefrontPresentationOrder. Remaining coverage is tracked in [#323](https://github.com/misaf/vendra-design-system/issues/323).
 - **Guard:** `tests/component-scaffolding.test.mjs` fails when a spec lacks its fixture (or the reverse), and tracks the existing storefront components awaiting coverage in `tests/storefront-components-without-specs.json`. Remove a name when you add its spec.
 
@@ -174,7 +175,7 @@ Storefront components may have the same pair beside them under their route or in
 - **`src/app/[locale]/`** owns localized pages and layouts. Its folders follow the customer-facing URLs. `presentation/` serves the counter display. `src/app/_document/` owns the storefront document, session, screen wrapper, and page metadata markup. `src/app/_routing/` builds the initial route and metadata. `src/app/_live-catalog/` renders the request-scoped Laravel catalog.
 - **Public URLs** use `/<locale>/` in links, canonical and alternate tags, and the sitemap.
 - **Navigation:** `tools/next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
-- **Build** uses `build:app` for the Node-hosted app and `build:demo` for the static reference demo. The demo exports every known address through Next.js to `.generated/export/`. Turbopack bundles the storefront styles and fonts directly from source, runs Tailwind through PostCSS, and loads Leaflet on demand. The standalone development fixtures compile their own stylesheet files. The asset preparation step writes tenant stylesheets to `public/` and clears generated fixture files.
+- **Build** uses `build:app` for the Node-hosted app and `build:demo` for the static reference demo. The demo exports every known address through Next.js to `.generated/export/`. Turbopack bundles the storefront styles and fonts directly from source, runs Tailwind through PostCSS, and loads Leaflet on demand. The standalone fixtures compile their own stylesheet files when starting `dev:gallery`. The asset preparation step writes tenant stylesheets to `public/` and clears generated fixture files.
 - **Components:** the app imports them from `src/design-system/` directly. The guideline cards (`src/design-system/gallery/**/*.card.jsx`) import `src/design-system/gallery/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Tests** keep feature-specific tests next to the feature and put live-server and static-export smoke specs in [`e2e/smoke/`](../e2e/smoke/). The existing browser fixtures and screenshot baselines remain under `e2e/`.
 

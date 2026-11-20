@@ -6,8 +6,8 @@ How to change the Vendra design system. Find storefront source and tests in [doc
 
 ```sh
 npm ci                                   # install from the root lockfile
-npm run dev                              # Next.js storefront at http://localhost:3000/
-                                        # guideline cards are also available under /guidelines/
+npm run dev                             # Next.js storefront at http://localhost:3000/
+npm run dev:gallery                     # storefront and previews under /guidelines/
 ```
 
 Use Node.js 22 (22.22.2 or later). Local browser tests use Google Chrome, and CI uses Playwright's Linux image.

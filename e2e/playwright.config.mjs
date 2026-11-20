@@ -150,7 +150,7 @@ export default defineConfig({
         timeout: 180000
       }
     : {
-        command: 'npm run dev -- --hostname 127.0.0.1 --port 5173',
+        command: 'npm run dev:gallery -- --hostname 127.0.0.1 --port 5173',
         cwd: '..',
         url: origin + '/',
         reuseExistingServer: false,
