@@ -4,22 +4,22 @@
 
 - **Repo:** [misaf/vendra-design-system](https://github.com/misaf/vendra-design-system) (`master`). Related: [vendra](https://github.com/misaf/vendra) (Laravel platform), [vendra-storefront-florist](https://github.com/misaf/vendra-storefront-florist) (tenant storefront), [vendra-web](https://github.com/misaf/vendra-web) (product site).
 - **Scope:** the customer-facing storefront only. Admin screens live in a separate framework; the storefront reads products, currency, delivery rules, hours and contact details as data.
-- **Live florist pilot:** [roadmap audit and release gates](apps/florist/PILOT-AUDIT.md).
-- **Rules and brand:** [guidelines/brand-guide.md](guidelines/brand-guide.md) covers voice, visual foundations, links vs buttons, routing, accessibility, payments and the release checklist.
-- **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md): setup, the checks every change runs, and `npm run new:component -- Name` for a new component.
+- **Live florist pilot:** [roadmap audit and release gates](./docs/PILOT-AUDIT.md).
+- **Rules and brand:** [guidelines/brand-guide.md](./guidelines/brand-guide.md) covers voice, visual foundations, links vs buttons, routing, accessibility, payments and the release checklist.
+- **Contributing:** [CONTRIBUTING.md](./CONTRIBUTING.md): setup, the checks every change runs, and `npm run new:component -- Name` for a new component.
 
 ## Using the storefront design system
 
-The private [UI workspace](packages/ui/) owns Button, Input, Dialog, DatePicker, and the shared tokens, themes, and fonts. The storefront imports components through `apps/florist/shell/ds.js`. The App Router layout loads the storefront component styles and shared tokens, and `VendraProvider` supplies the locale and client navigation. Run `npm run dev` and open `/guidelines/ui-gallery.html` to try the shared components in Clay and Fern.
+The [storefront UI](./docs/UI.md) owns Button, Input, Dialog, DatePicker, and the shared tokens, themes, and fonts. Routes import the controls they use directly. The App Router layout loads the storefront component styles and shared tokens, and `VendraProvider` supplies the locale and client navigation. Run `npm run dev` and open `/guidelines/ui-gallery.html` to try the shared components in Clay and Fern.
 
-Tenant themes are generated from `packages/ui/tokens/tenants/<slug>.json`. The storefront theme generator in `packages/ui/tokens/tenant-theme.js` exposes `tenantCss`, `validate`, `checks`, and the design token helpers. It validates slugs, settings, and contrast before generating CSS.
+Tenant themes are generated from `components/ui/tokens/tenants/<slug>.json`. The storefront theme generator in `components/ui/tokens/tenant-theme.js` exposes `tenantCss`, `validate`, `checks`, and the design token helpers. It validates slugs, settings, and contrast before generating CSS.
 
-`commerce` holds the storefront rules as pure functions that take the tenant's data: delivery zones and days, totals with promo and balance discounts, the payment methods a store offers (`PAYMENT_METHODS`, `paymentOptions`: each is a feature the store turns on in its settings) and its other optional parts (`STORE_FEATURES`, `storeFeatures`: promo codes, same-day delivery, weddings, journal, reminders, newsletter), the Checkout request and adapters from Vendra API records (`productFromApi`, `orderFromApi`…). The reference templates run on the same functions. Pass the store's IANA `timeZone` in `commerce.deliveryDays` options and as the fifth argument of `commerce.deliverySlots` so dates, cut-offs and slot lead times use the store clock. Omission preserves device-local behavior; invalid zones throw `RangeError`. Opening hours follow the same clock: `commerce.openingStatus(hours, now, timeZone)` says whether the store is open and when that next changes, from weekly hours plus dated exceptions (holidays); `hoursSummary` groups the week for display and `hoursExceptions` lists special hours coming up. The sample store sets `VF_STORE.timeZone` (`Asia/Tehran`) and `VF_STORE.hours` in `apps/florist/shared/domain/store-config.js`; `VF_DELIVERY_TIME_ZONE` follows it.
+`commerce` holds the storefront rules as pure functions that take the tenant's data: delivery zones and days, totals with promo and balance discounts, the payment methods a store offers (`PAYMENT_METHODS`, `paymentOptions`: each is a feature the store turns on in its settings) and its other optional parts (`STORE_FEATURES`, `storeFeatures`: promo codes, same-day delivery, weddings, journal, reminders, newsletter), the Checkout request and adapters from Vendra API records (`productFromApi`, `orderFromApi`…). The reference templates run on the same functions. Pass the store's IANA `timeZone` in `commerce.deliveryDays` options and as the fifth argument of `commerce.deliverySlots` so dates, cut-offs and slot lead times use the store clock. Omission preserves device-local behavior; invalid zones throw `RangeError`. Opening hours follow the same clock: `commerce.openingStatus(hours, now, timeZone)` says whether the store is open and when that next changes, from weekly hours plus dated exceptions (holidays); `hoursSummary` groups the week for display and `hoursExceptions` lists special hours coming up. The sample store sets `VF_STORE.timeZone` (`Asia/Tehran`) and `VF_STORE.hours` in `domain/store-config.js`; `VF_DELIVERY_TIME_ZONE` follows it.
 
 Wrap the app in `VendraProvider` with the page's locale. Components that name their own buttons (Dialog's close, Carousel's arrows, QuantityInput's −/+, DatePicker's calendar…) then use their English or Persian built-in wording (each component's own `messages.js`, so a component carries only its own words), and React Aria formats numbers and dates for that locale. Props still win; `messages` adds a language or changes wording. `navigate` (your router's push) makes the components' links navigate client-side:
 
 ```jsx
-import {VendraProvider} from './ds.js';
+import {VendraProvider} from './components/ui/components/VendraProvider/VendraProvider.jsx';
 
 <VendraProvider
   locale={tenant.locale === 'fa' ? 'fa-IR' : 'en-US'}
@@ -35,11 +35,11 @@ Components take all copy, prices, currency and contact details as props. Run `ch
 ## Tenant themes
 
 - **Tokens only.** Components read semantic tokens (`--accent`, `--surface-*`, `--text-*`, `--radius-arch`). A tenant overrides them under `[data-tenant="<slug>"]`; never fork component CSS.
-- **One JSON per tenant.** `packages/ui/tokens/tenants/<slug>.json` (four colours, five character choices, optional hand-set shades) builds into `<slug>.css` via `packages/ui/tokens/tenant-theme.js`, the same generator as the Theme builder card. Shades are derived in OKLCH.
-- **It overrides:** the palette ramps (`--petal/peony/ink/stem-*`), the semantic aliases, and the character tokens in `packages/ui/tokens/character.css` (display font, case, tracking, control and frame radii). Spacing, type scale, motion, focus ring, status colours and RTL rules are fixed.
+- **One JSON per tenant.** `components/ui/tokens/tenants/<slug>.json` (four colours, five character choices, optional hand-set shades) builds into `<slug>.css` via `components/ui/tokens/tenant-theme.js`, the same generator as the Theme builder card. Shades are derived in OKLCH.
+- **It overrides:** the palette ramps (`--petal/peony/ink/stem-*`), the semantic aliases, and the character tokens in `components/ui/tokens/character.css` (display font, case, tracking, control and frame radii). Spacing, type scale, motion, focus ring, status colours and RTL rules are fixed.
 - **Contrast:** `--accent` 4.5:1 with white text, `--text-accent` 4.5:1 on the page, `--border-input` 3:1, `--focus-ring-on-inverse` 3:1 on the inverse surface.
 - **Samples:** `clay` (terracotta, squared controls, uppercase Jost) and `fern` (teal, pill controls, deliberately near the contrast limits). Preview with `?tenant=<slug>`.
-- **Onboarding:** follow [guidelines/tenant-onboarding.md](guidelines/tenant-onboarding.md) and design the theme in `guidelines/theme-builder.html`.
+- **Onboarding:** follow [guidelines/tenant-onboarding.md](./guidelines/tenant-onboarding.md) and design the theme in `guidelines/theme-builder.html`.
 
 ## Overriding the styles
 
@@ -47,7 +47,7 @@ The design system CSS sits in cascade layers, `vendra.tokens`, `vendra.base` and
 
 ```css
 @layer theme, base, vendra, components, utilities;
-@import './design-system/styles.css';
+@import './components/ui/storefront.css';
 @import 'tailwindcss';
 ```
 
@@ -55,7 +55,7 @@ Two rules stay `!important` on purpose: Persian text is never italic or letter-s
 
 ## Design tokens for other platforms
 
-`tokens.json` holds every token (colours, type, spacing, radii, shadows, motion, character) in the W3C design tokens format: `--peony-500` is `peony.500`, `--accent` is `accent.default`, and semantic tokens are aliases (`success.default` → `{leaf.700}`). A tenant changes only colours and character, so its tokens merge over the base file: the build writes sample tenant tokens to `packages/ui/tokens/design/tenants/<slug>.json`, and a theme from your database converts at runtime with `designTokens(tokens(spec).all)` from `packages/ui/tokens/tenant-theme.js`.
+`tokens.json` holds every token (colours, type, spacing, radii, shadows, motion, character) in the W3C design tokens format: `--peony-500` is `peony.500`, `--accent` is `accent.default`, and semantic tokens are aliases (`success.default` → `{leaf.700}`). A tenant changes only colours and character, so its tokens merge over the base file: the build writes sample tenant tokens to `components/ui/tokens/design/tenants/<slug>.json`, and a theme from your database converts at runtime with `designTokens(tokens(spec).all)` from `components/ui/tokens/tenant-theme.js`.
 
 Style Dictionary (4+) turns them into native code, for example Swift and Jetpack Compose:
 
@@ -63,7 +63,7 @@ Style Dictionary (4+) turns them into native code, for example Swift and Jetpack
 import StyleDictionary from 'style-dictionary';
 
 await new StyleDictionary({
-  source: ['packages/ui/tokens/design/tokens.json', 'tenant.json'],
+  source: ['components/ui/tokens/design/tokens.json', 'tenant.json'],
   platforms: {
     ios: {transformGroup: 'ios-swift', buildPath: 'ios/', files: [{destination: 'Tokens.swift', format: 'ios-swift/class.swift', options: {className: 'VendraTokens'}}]},
     android: {transformGroup: 'compose', buildPath: 'android/', files: [{destination: 'Tokens.kt', format: 'compose/object', options: {className: 'VendraTokens', packageName: 'com.vendra'}}]}
@@ -77,37 +77,31 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 
 | Path | Contents |
 |---|---|
-| `apps/florist/design-system/` | Components, tokens, styles, and fonts compiled by the storefront. |
-| `apps/florist/design-system/components/` | [Atomic Design](ATOMIC-DESIGN.md): atoms, molecules and organisms, one named folder per component. Helpers in `components/utils/`. |
-| `packages/ui/tokens/` | Fonts, colours, type, spacing, effects, base styles, `character.css`, `tenants/`. |
-| `guidelines/` | Foundation and component cards (`@dsCard`), brand guide, Theme builder, tenant onboarding. |
-| `apps/florist/features/*` | Feature screens, state, bilingual copy, styles, and UI. |
-| `apps/florist/shell/` | Shared storefront UI, navigation shell, and commerce session. |
-| `apps/florist/app/[locale]/` | TypeScript routes and layouts for shop, checkout and counter in both languages. |
-| `apps/florist/build/` | Build helpers for prerendered routes, the sitemap, precompression, page CSS, and tenants. |
-| `tools/` | Repo tooling: the build (`build.mjs`, which generates design tokens and tenant themes via `tenants.mjs`/`brand.mjs`), the component generator (`new-component.mjs`) and the Atomic Design and import checks (`atomic.mjs`, `app-dependencies.mjs`); `paths.mjs` names the design system folder. Run through the `npm --prefix apps/florist` scripts. |
-| `apps/florist/shared/` | Routing, SEO, catalogue, delivery rules and shared helpers. |
-| `apps/florist/server/`, `i18n/`, `styles/` | Server route data and metadata, shared bilingual copy, and storefront CSS. |
-| `packages/ui/`, `packages/vendra-api/` | Private workspace boundaries for shared components and tokens, and the typed Laravel client. |
-| `apps/florist/communications/`, `deployment/` | Email/SMS/WhatsApp examples, robots and sitemap samples. |
-| `apps/florist/_vendor/` | Offline React and Babel (7.29.0, hash-verified) for the cards; the window namespace is `VendraDesignSystem`. |
-| `apps/florist/_runtime/`, `packages/ui/tokens/design/` | Generated: never edit. |
-| `assets/` | Storefront and brand assets: logos, social images, app icons, placeholders. |
-| `uploads/` | Storefront OpenAPI spec. |
-| `apps/florist/design-system/styles.css` | Global CSS entry (imports only). `SKILL.md` is the Agent Skill entry. |
+| `app/[locale]/` | Next.js routes with their screens, state, copy, styling and tests. |
+| `components/ui/` | Reusable controls, patterns, design tokens, themes, and fonts. |
+| `components/storefront/` | Header, footer, checkout chrome and UI used across routes. |
+| `domain/`, `session/` | Storefront rules and state shared across routes and locales. |
+| `server/vendra/` | Laravel transport and response adapters. |
+| `shared/`, `i18n/`, `styles/` | Browser helpers, translations, and global styles. |
+| `guidelines/` | Design-system gallery, brand guide and theme builder. |
+| `build/`, `next/`, `tools/` | Build and export helpers, component scaffolding and dependency checks. |
+| `e2e/`, `tests/` | Browser journeys, visual baselines, unit and integration checks. |
+| `assets/` | Public storefront and brand assets copied into the build. |
+| `communications/`, `deployment/`, `uploads/` | Communications templates, deployment examples, and OpenAPI snapshot. |
+| `_runtime/`, `components/ui/tokens/design/` | Generated styles and tokens. |
 
 ## Commands
 
 ```sh
 npm ci                                   # first setup, at the repo root
 npm run dev                             # Next.js development at http://localhost:3000/
-npm --prefix apps/florist run build   # design tokens, Tailwind, tenant CSS, generated template sections
-npm --prefix apps/florist run format  # Prettier
-npm --prefix apps/florist run check   # generated files current + formatting
-npm --prefix apps/florist test        # typecheck and unit tests
-npm --prefix apps/florist run test:e2e  # production storefront, then development fixtures/components
-npm --prefix apps/florist run test:e2e:build  # build once, then storefront/visual/accessibility/performance tests
-npm --prefix apps/florist run test:e2e:dev  # source fixtures, components, guidelines and gateway tests
+npm run build   # design tokens, Tailwind, tenant CSS, generated template sections
+npm run format  # Prettier
+npm run check   # generated files current + formatting
+npm test        # typecheck and unit tests
+npm run test:e2e  # production storefront, then development fixtures/components
+npm run test:e2e:build  # build once, then storefront/visual/accessibility/performance tests
+npm run test:e2e:dev  # source fixtures, components, guidelines and gateway tests
 ```
 
-Where to edit storefront pages, Tailwind conventions and preview URLs: [apps/florist/README.md](apps/florist/README.md). Preview states and integration boundaries: [Demo behavior](apps/florist/README.md#demo-behavior). Working rules: [CLAUDE.md](CLAUDE.md).
+Where to edit storefront pages, Tailwind conventions and preview URLs: [docs/STOREFRONT.md](./docs/STOREFRONT.md). Preview states and integration boundaries: [Demo behavior](./docs/STOREFRONT.md#demo-behavior).

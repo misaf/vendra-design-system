@@ -11,14 +11,14 @@ function layer(file) {
 }
 
 function dependencyViolation(source, target) {
-  if (source.startsWith(uiFolder + '/'))
+  if (source.startsWith(uiFolder + '/') && !source.startsWith(componentsFolder + '/'))
     return target.startsWith(uiFolder + '/')
       ? null
       : `${source} imports outside shared UI: ${target}`;
   const from = layer(source);
   if (!from) return null; // Existing flat components migrate one batch at a time.
   // These storefront controls use pure digit, phone and map-coordinate rules.
-  if (from !== 'foundation' && target === 'apps/florist/shared/domain/commerce.js') return null;
+  if (from !== 'foundation' && target === 'domain/commerce.js') return null;
   const uiComponents = uiFolder + '/components/';
   let to = layer(target);
   if (target.startsWith(uiComponents)) {

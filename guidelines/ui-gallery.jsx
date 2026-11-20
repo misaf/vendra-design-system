@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Button} from '@vendra/ui/Button';
-import {DatePicker} from '@vendra/ui/DatePicker';
-import {Dialog} from '@vendra/ui/Dialog';
-import {Input} from '@vendra/ui/Input';
-import {VendraProvider} from '@vendra/ui/VendraProvider';
+import {Button} from '../components/ui/components/Button/Button.jsx';
+import {DatePicker} from '../components/ui/components/DatePicker/DatePicker.jsx';
+import {Dialog} from '../components/ui/components/Dialog/Dialog.jsx';
+import {Input} from '../components/ui/components/Input/Input.jsx';
+import {VendraProvider} from '../components/ui/components/VendraProvider/VendraProvider.jsx';
 
 const params = new URLSearchParams(location.search);
 const themes = ['clay', 'fern'];

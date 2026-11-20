@@ -51,13 +51,13 @@ jobs:
           node-version: 22
       - run: npm ci
       # Rewrites the screenshots that differ or are missing; the other tests still have to pass.
-      - run: npm --prefix apps/florist run test:e2e:update
+      - run: npm run test:e2e:update
       - name: Commit the new screenshots
         run: |
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add 'apps/florist/e2e/__screenshots__/*-linux.png'
+          git add 'e2e/__screenshots__/*-linux.png'
           if git diff --cached --quiet; then
             echo 'The Linux screenshots are already current.'
           else

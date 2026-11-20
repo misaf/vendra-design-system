@@ -1,0 +1,29 @@
+{
+  // Type-checks the storefront app, pages and shared logic as plain JavaScript and JSX; nothing is
+  // emitted. Unused imports and variables are errors.
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": false,
+    "target": "es2023",
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react",
+    "types": ["react"],
+    "noUnusedLocals": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "shared/**/*",
+    "domain/**/*",
+    "types/*.d.ts",
+    "session/**/*",
+    "components/storefront/**/*",
+    "app/**/*.js",
+    "app/**/*.jsx"
+  ],
+  // Browser specs run in Node under Playwright, like the package components' specs.
+  "exclude": ["app/_components/**", "**/*.spec.mjs", "**/*.test.mjs"]
+}

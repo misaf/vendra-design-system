@@ -6,11 +6,11 @@
 import React from 'react';
 import * as ReactDOM from 'react-dom';
 import {createRoot} from 'react-dom/client';
-import * as components from '../apps/florist/shell/ds.js';
-import {ICON_SVGS} from '@vendra/ui/Icon/paths';
-import {dates} from '../apps/florist/design-system/components/utils/dates.js';
-import {format} from '../apps/florist/design-system/components/utils/format.js';
-import {commerce} from '../apps/florist/shared/domain/commerce.js';
+import * as components from '../components/ui/index.js';
+import {ICON_SVGS} from '../components/ui/components/Icon/icon-svgs.js';
+import {dates} from '../components/ui/patterns/utils/dates.js';
+import {format} from '../components/ui/patterns/utils/format.js';
+import {commerce} from '../domain/commerce.js';
 
 window.React = React;
 window.ReactDOM = {...ReactDOM, createRoot};

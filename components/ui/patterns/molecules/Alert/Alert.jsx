@@ -1,0 +1,62 @@
+'use client';
+
+import React from 'react';
+import {Icon} from '../../../components/Icon/Icon.jsx';
+import {IconButton} from '../../../components/IconButton/IconButton.jsx';
+import {cx} from '../../utils/cx.js';
+import {useMessages} from '../../utils/messages.js';
+import {messages} from './messages.js';
+
+const ALERT_ICONS = {
+  neutral: 'info',
+  info: 'info',
+  warning: 'triangle-alert',
+  danger: 'circle-alert',
+  success: 'circle-check'
+};
+
+// An inline message. danger and warning interrupt screen readers (role="alert"); the others are
+// announced politely (role="status"). `icon={false}` hides the icon.
+export function Alert({
+  tone = 'neutral',
+  icon,
+  title,
+  children,
+  action,
+  onClose,
+  closeLabel,
+  className = '',
+  style,
+  ref,
+  ...rest
+}) {
+  const text = useMessages('Alert', messages, {close: closeLabel});
+  const role = tone === 'danger' || tone === 'warning' ? 'alert' : 'status';
+  return (
+    <div
+      {...rest}
+      ref={ref}
+      role={role}
+      className={cx('ag-alert', 'ag-alert--' + tone, className)}
+      style={style}
+    >
+      {icon !== false && (
+        <Icon
+          name={icon || ALERT_ICONS[tone] || ALERT_ICONS.neutral}
+          size={20}
+          className="ag-alert__icon"
+        />
+      )}
+      <div className="ag-alert__body">
+        <div className="ag-alert__msg">
+          {title && <div className="ag-alert__title">{title}</div>}
+          {children && <div className="ag-alert__text">{children}</div>}
+        </div>
+        {action && <div className="ag-alert__action">{action}</div>}
+      </div>
+      {onClose && (
+        <IconButton icon="x" label={text.close} className="ag-alert__close" onClick={onClose} />
+      )}
+    </div>
+  );
+}

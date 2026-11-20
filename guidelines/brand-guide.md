@@ -15,7 +15,7 @@ The detailed rules behind the design system: the reference tenant, voice, visual
 - **Phone:** +98-9129333034 · `tel:+989129333034`
 - **WhatsApp:** +989129333034 · https://wa.me/989129333034
 - **Instagram:** @misaf1990
-- **Map pin:** `studio` in `apps/florist/shared/domain/store-config.js` (sample; replace with the studio's door)
+- **Map pin:** `studio` in `domain/store-config.js` (sample; replace with the studio's door)
 - **Hours:** daily 08:00–22:00 (fa: همه‌روزه ۰۸:۰۰ تا ۲۲:۰۰)
 - Phone numbers and handles always render LTR (`dir="ltr"`) inside Persian text.
 
@@ -23,7 +23,7 @@ The detailed rules behind the design system: the reference tenant, voice, visual
 This system covers the **customer-facing storefront** only. Admin tasks (products, orders, currency, delivery rules, hours) are managed in a separate framework, so don't design admin screens here. The storefront reads those settings as data.
 
 ## Delivery rules
-Rules are stored per country (`apps/florist/shared/domain/delivery.js`) so more countries can be added later with their own zones, fees, currency and slots. **Current values are SAMPLES — replace with the real ones.**
+Rules are stored per country (`domain/delivery.js`) so more countries can be added later with their own zones, fees, currency and slots. **Current values are SAMPLES — replace with the real ones.**
 **Iran (IR)** — fees in Toman; time slots 08–12, 12–16, 16–20 and 20–22 (the shop is open 08:00–22:00):
 - **Karaj central** (Azimiyeh, Gohardasht, Mehrshahr…): 80,000; same day if ordered before 18:00
 - **Karaj outer** (Fardis, Mohammadshahr, Kamalshahr): 120,000; same day before 16:00
@@ -77,7 +77,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 ## Iconography
 
-- **System:** [Lucide](https://lucide.dev) line icons, bundled locally (`packages/ui/components/Icon/icon-svgs.js`, Lucide 0.460.0; no network — add new icons to that file) and rendered via CSS mask by the `Icon` component so they inherit `currentColor` (in forced-colour modes they take the system text colour instead). **Substitution flag:** no brand icon set was provided; Lucide's thin, rounded line style was picked to match the hand-made mood.
+- **System:** [Lucide](https://lucide.dev) line icons, bundled locally (`components/ui/components/Icon/icon-svgs.js`, Lucide 0.460.0; no network — add new icons to that file) and rendered via CSS mask by the `Icon` component so they inherit `currentColor` (in forced-colour modes they take the system text colour instead). **Substitution flag:** no brand icon set was provided; Lucide's thin, rounded line style was picked to match the hand-made mood.
 - **Style:** outline only, 2px stroke, 16–22px. Ink colour by default; peony (`--text-accent`) only for small value-prop icons.
 - **Common glyphs:** flower-2, leaf, sprout, heart, shopping-bag, search, user, truck, gift, calendar, map-pin, arrow-right, chevron-down, x, plus, minus, check.
 - **No** emoji, icon fonts, PNG icons or unicode glyph icons.
@@ -92,7 +92,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 ## Routing & URLs
 
-`apps/florist/shared/services/seo.js` → `VF_SEO`, an ES module the storefront imports (not part of the package).
+`shared/services/seo.js` → `VF_SEO`, an ES module the storefront imports (not part of the package).
 
 - Scheme: paths under the app's path, `<lang>/<screen>/<id>/` — `en/`, `fa/shop/boxes/`, `en/product/VF-7K2M4Q/`, `en/journal/<postId>/`, `fa/policy/shipping/`, `en/track/<order>/`, `en/moment/<momentId>/`. Home has no screen segment; every path ends in `/`, so a static host serves each from its own `index.html`. The path says which page it is; the query only carries state on it (`?sort=low`, `?step=delivery`, `?q=…`), and pages with query state are noindex or canonicalize to the bare path.
 - Screens: home, shop, product, bag, checkout, contact, search, gifts, moment, saved, track, custom, account, journal, post, care, faq. A storefront adds its own with `seo.register(...)` (the templates register weddings and policy).
@@ -101,7 +101,7 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 - History: `pushState` when the screen changes, `replaceState` when only the language (or an in-page filter) changes, and handle `popstate` for back/forward.
 - `headTags({title, description, image, url, locale, type, alternates:{en,fa}, noindex})` returns `<title>`, the meta description, `og:*`, `twitter:*`, the canonical link, hreflang en/fa/x-default and robots as data; `syncHead(…)` applies them to the document and `headHtml(…)` writes them as HTML, which the build puts in every prerendered page.
 - **noindex** (`noindex, follow`, no hreflang): bag, checkout, confirm, account, track, saved, search, notfound, error.
-- **track** takes an optional `id` = order number (`en/track/VN-10522/`, SAFE pattern). With a known id it shows the order page (`apps/florist/features/tracking/`); otherwise a not-found state (sign in / Your orders, WhatsApp). Always noindex.
+- **track** takes an optional `id` = order number (`en/track/VN-10522/`, SAFE pattern). With a known id it shows the order page (`app/[locale]/(storefront)/track/`); otherwise a not-found state (sign in / Your orders, WhatsApp). Always noindex.
 
 ## Accessibility (WCAG 2.2 AA)
 
@@ -131,7 +131,7 @@ A store turns on only the parts it runs, the way it picks its payment methods. N
 
 ## Storefront release checklist
 
-- [ ] Tenant logos (header, compact and inverse footer), app icons, bilingual manifests and localized share images use approved brand assets. Check EN/FA and phone/desktop; see [tenant onboarding](tenant-onboarding.md).
+- [ ] Tenant logos (header, compact and inverse footer), app icons, bilingual manifests and localized share images use approved brand assets. Check EN/FA and phone/desktop; see [tenant onboarding](./tenant-onboarding.md).
 
 - [ ] Product pages show price and availability. Paid add-ons are never pre-selected.
 - [ ] Every navigation is a real `<a href>` using the URL scheme above; back/forward, reload and deep links restore the screen.
@@ -179,7 +179,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **SearchField:** Input's look with a search icon and a clear button; Esc clears, Enter calls `onSubmit`.
 - **Checkbox**, **Radio** (with `description`), **Switch**.
 - **QuantityInput:** pill −/+ with a `format` hook for Persian digits.
-- **ChoiceGroup** + **ChoiceTile:** radio-like tiles in a `<fieldset>`, with roving focus (both in `apps/florist/design-system/components/atoms/ChoiceGroup/`).
+- **ChoiceGroup** + **ChoiceTile:** radio-like tiles in a `<fieldset>`, with roving focus (both in `components/ui/patterns/atoms/ChoiceGroup/`).
 - **RangeSlider:** two handles (or one), swaps sides in RTL.
 - **DatePicker:** Shamsi/Gregorian toggle with year/month/day selects; shows the equivalent date in the other calendar.
 
@@ -228,12 +228,12 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 - **AddressCard**, **ReminderRow:** account tabs.
 
 **Helpers** (not components)
-- `apps/florist/design-system/components/utils/cx.js` → `cx(...names)`: joins class names and skips empty values.
-- `apps/florist/design-system/components/utils/format.js` → `.format`: `CURRENCIES` (the fixed ones: Toman and Rial), `money(n, {currency, lang, currencies})` (throws for a currency without a rate), `number()`. An ES module: `import {format}` from the package; the storefront imports it.
-- `apps/florist/shared/domain/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The storefront imports it.
-- `apps/florist/design-system/components/utils/dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
-- `apps/florist/shared/services/seo.js` → `VF_SEO` and `apps/florist/shared/services/page-focus.js` → `VF_NAV`: storefront modules; see *Routing & URLs* and *Structured data*.
-- `apps/florist/communications/email-templates.js` → `VF_EMAIL` (an ES module export, as is `VF_NOTIFY` from `notifications.js`): `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, a tenant slug or the palette from `VF_EMAIL.themeFromCSS(el)`.
+- `components/ui/patterns/utils/cx.js` → `cx(...names)`: joins class names and skips empty values.
+- `components/ui/patterns/utils/format.js` → `.format`: `CURRENCIES` (the fixed ones: Toman and Rial), `money(n, {currency, lang, currencies})` (throws for a currency without a rate), `number()`. An ES module: `import {format}` from the package; the storefront imports it.
+- `domain/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The storefront imports it.
+- `components/ui/patterns/utils/dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
+- `shared/services/seo.js` → `VF_SEO` and `shared/services/page-focus.js` → `VF_NAV`: storefront modules; see *Routing & URLs* and *Structured data*.
+- `communications/email-templates.js` → `VF_EMAIL` (an ES module export, as is `VF_NOTIFY` from `notifications.js`): `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, a tenant slug or the palette from `VF_EMAIL.themeFromCSS(el)`.
 - `format`, `dates` and `commerce` also hang off `window.VendraDesignSystem` (as `AG_FORMAT`, `AG_DATES` and `AG_COMMERCE`) for the guideline cards, set only in `guidelines/card-runtime.js`; the storefront and the package import them, and `tools/app-dependencies.mjs` fails any other `window.VF_*` or `window.AG_*` access.
 
 ### Intentional additions
