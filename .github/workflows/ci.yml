@@ -72,9 +72,21 @@ jobs:
           fi
 
   e2e:
-    name: Development fixtures and components
+    name: Development browser tests (${{ matrix.group }})
     needs: [check, changes]
     if: needs.changes.outputs.e2e == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - group: fixtures
+            args: --project=mobile --project=desktop
+          - group: design-system-components
+            args: --project=components
+          - group: storefront-components-1
+            args: --project=storefront-components --shard=1/2
+          - group: storefront-components-2
+            args: --project=storefront-components --shard=2/2
     runs-on: ubuntu-24.04
     timeout-minutes: 75
     container:
@@ -92,12 +104,15 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: npm run test:e2e:dev
-      - name: Keep the report and failing screenshots
-        if: failure()
+      - name: Run Playwright
+        id: playwright
+        # Let Playwright finish its report before the runner's 75-minute job timeout.
+        run: npm run test:e2e:dev -- --global-timeout=3900000 ${{ matrix.args }}
+      - name: Keep the report and failure artifacts
+        if: ${{ !cancelled() && (steps.playwright.outcome == 'success' || steps.playwright.outcome == 'failure') }}
         uses: actions/upload-artifact@v7
         with:
-          name: e2e-report
+          name: e2e-dev-${{ matrix.group }}-report
           path: |
             e2e/playwright-report
             e2e/test-results
@@ -149,8 +164,9 @@ jobs:
   pages-build:
     name: Build the Pages demo
     needs: [check, e2e, e2e-build]
-    # All three suites must succeed. A .github/-only push skips the browser tests and deployment;
-    # run CI manually on master to test and deploy those changes.
+    # Checks, every development matrix job, and production browser tests must succeed.
+    # A .github/-only push skips browser tests and deployment; run CI manually on master
+    # to test and deploy those changes.
     if: >-
       success() && github.ref == 'refs/heads/master' &&
       (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
