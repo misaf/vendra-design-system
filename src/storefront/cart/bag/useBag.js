@@ -349,7 +349,7 @@ function vals(page) {
         });
       }
     })),
-    // The delivery pin (LocationPicker): Leaflet from the vendored copy, tiles from the store's map settings.
+    // The delivery pin (LocationPicker) uses the store's map settings.
     map: {
       change: location => {
         page.setState({locateFailed: false});

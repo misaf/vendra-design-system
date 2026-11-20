@@ -1,7 +1,6 @@
 # Generated, vendored or third-party files.
 **/node_modules/
 .generated/
-src/platform/browser/vendor/
 e2e/__screenshots__/
 e2e/test-results/
 e2e/playwright-report/

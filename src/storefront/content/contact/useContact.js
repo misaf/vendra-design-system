@@ -104,7 +104,7 @@ function vals(page) {
       delete apiFields[key];
       return {[key]: value, apiFields};
     });
-  // The studio on a read-only map (PlacesMap), with the store's tiles and the vendored Leaflet.
+  // The studio on a read-only map (PlacesMap), with the store's tiles.
   const placesView = {
     places,
     load: vfLoadLeaflet,

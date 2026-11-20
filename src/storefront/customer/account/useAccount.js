@@ -539,7 +539,7 @@ function vals(page) {
       ? E.pinSet.replace('{location}', vfLocationText(f.location, S.fa))
       : E.pinHint,
     pinError: s.errors.location || (s.locateFailed ? E.locateFailed : ''),
-    // The address pin (LocationPicker): Leaflet from the vendored copy, tiles from the store's map settings.
+    // The address pin (LocationPicker) uses the store's map settings.
     map: {
       change: location => page._setLocation(location),
       load: vfLoadLeaflet,

@@ -1,4 +1,4 @@
-// Delivery locations: loads the vendored Leaflet on demand for the LocationPicker and PlacesMap
+// Delivery locations: loads Leaflet on demand for the LocationPicker and PlacesMap
 // components, and formats a location.
 // Map tiles and the starting view are set in store-config.js (VF_STORE.map).
 import {VF_FA_DIGITS} from '../pricing/formatting.js';
@@ -36,7 +36,7 @@ export function vfDirections(location, lang) {
   }));
 }
 
-// Loads Leaflet once (from apps/storefront/_vendor/leaflet) and resolves with window.L.
+// Loads the Leaflet browser build once and resolves with window.L.
 // The pending load, shared by every caller until it settles (cleared when it fails, for a retry).
 let vfLeafletLoading = null;
 

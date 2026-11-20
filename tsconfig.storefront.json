@@ -17,5 +17,5 @@
   },
   "include": ["src/storefront/**/*", "src/platform/browser/**/*", "src/platform/tenant/**/*"],
   // Browser specs run in Node under Playwright.
-  "exclude": ["src/platform/browser/vendor/**", "**/*.spec.mjs", "**/*.test.mjs"]
+  "exclude": ["**/*.spec.mjs", "**/*.test.mjs"]
 }
