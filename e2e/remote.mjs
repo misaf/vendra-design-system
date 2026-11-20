@@ -19,9 +19,12 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const host = process.env.VENDRA_E2E_HOST;
 const remoteDir = process.env.VENDRA_E2E_DIR || 'vendra-e2e';
 const workers = process.env.E2E_WORKERS || '8';
-const target = ['build', 'dev'].includes(process.env.E2E_TARGET)
-  ? `test:e2e:${process.env.E2E_TARGET}`
-  : 'test:e2e';
+const target =
+  process.env.E2E_TARGET === 'build'
+    ? 'test:e2e:demo'
+    : process.env.E2E_TARGET === 'dev'
+      ? 'test:e2e:dev'
+      : 'test:e2e';
 const playwrightVersion = JSON.parse(
   readFileSync(new URL('../node_modules/@playwright/test/package.json', import.meta.url))
 ).version;

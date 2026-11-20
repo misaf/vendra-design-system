@@ -50,7 +50,7 @@ npm run build                           # build the Next.js server in .next/
 npm start                               # start the server at http://localhost:3000/
 npm run build:demo                      # export to .generated/export/
 npm run preview:demo                    # serve the static export at http://127.0.0.1:3000/
-npm run test:e2e:build  # the storefront specs against the production build, plus the performance budgets
+npm run test:e2e:demo  # storefront specs and performance budgets against the static demo
 npm run test:e2e:remote  # optional: the same tests on a Linux server over ssh (see Browser tests)
 ```
 
@@ -93,7 +93,7 @@ also includes Brotli and gzip copies, which the local static preview can serve.
 
 ## Browser tests
 
-`test:e2e` builds the app once and runs storefront tests against the Next.js export, then runs only source fixtures, component specs, guideline cards and gateway tests on the development server. Use `test:e2e:build` or `test:e2e:dev` to run either suite alone. The development suite starts `dev:gallery`, which prepares its fixtures automatically. Reports are kept separately in `e2e/playwright-report/build/` and `e2e/playwright-report/dev/`. Tests run on Playwright's bundled Chromium at 390px and 1280px, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
+`test:e2e` builds the static demo once and runs storefront tests against the Next.js export, then runs only source fixtures, component specs, guideline cards and gateway tests on the development server. Use `test:e2e:demo` or `test:e2e:dev` to run either suite alone. The development suite starts `dev:gallery`, which prepares its fixtures automatically. Reports are kept separately in `e2e/playwright-report/build/` and `e2e/playwright-report/dev/`. Tests run on Playwright's bundled Chromium at 390px and 1280px, in Tehran time (`timezoneId: 'Asia/Tehran'`) and `en-US` whatever the machine's settings.
 
 Install the browser after `npm ci` (and after upgrading Playwright), then run the tests:
 
@@ -123,7 +123,7 @@ Screenshot comparison specs use software rasterization (`--disable-gpu`) so deco
 
 1. **Check and unit tests:** `npm ci`, `check` and `test` on Node 22. `test` includes the design system's bundle-size budget (`tests/size.test.mjs`): every export bundled alone and all of them together, with the peers left out, minified and gzipped. Small components must bundle without the rest; raise a budget only on purpose.
 2. **Development fixtures and components:** `test:e2e:dev` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.64.1-noble`), on its bundled Chromium (`CI` set: 2 workers, a fresh dev server), compared against the `-linux.png` baselines. Each component's own spec runs in the `components` project and each storefront component spec in `storefront-components` (see below); `package.spec.mjs` covers what holds for the whole design system (reduced motion, cascade layers); `hydration.spec.mjs` server-renders every component directly from source in Node and hydrates it in the browser, in English and Persian, failing on any mismatch; `refs.spec.mjs` checks that every component hands its React 19 `ref` to its native control or its own element.
-3. **Production storefront, visuals and performance:** `test:e2e:build` runs storefront flows, screenshots, accessibility checks, device tests and performance budgets against the Next.js export. `test:e2e:next` exercises the actual Pages artifact under the repository base path and checks bilingual checkout, tracking and offline display.
+3. **Storefront smoke, visuals and performance:** `test:smoke:app` checks the production Next.js server. `test:e2e:demo` runs storefront flows, screenshots, accessibility checks, device tests and performance budgets against the Next.js export. `test:smoke:demo` exercises the actual Pages artifact under the repository base path and checks bilingual checkout, tracking and offline display.
 
 Dependabot (`.github/dependabot.yml`) opens weekly, grouped pull requests for the pinned npm tools and GitHub Actions, two weeks after each release; CI tests them like any change (an Actions-only bump runs the check jobs, not the browser tests). React's majors are left out: the storefront supports React 19 only, and a new major is a deliberate upgrade. The root manifest pins React and React Aria. `tests/dependencies.test.mjs` checks the lockfile for duplicate installations. A Playwright bump must also move the image tag in the workflows, which `assets.test.mjs` checks.
 
@@ -283,7 +283,7 @@ The permanent `touch-phone`, `tablet` and `tv` Playwright projects exercise real
 RTL swipes, orientation changes, cached collection loops, reconnect and service-worker updates:
 
 ```sh
-npm run test:e2e:build -- devices.spec.mjs --project=touch-phone --project=tablet --project=tv
+npm run test:e2e:demo -- devices.spec.mjs --project=touch-phone --project=tablet --project=tv
 ```
 
 Physical iPad/Safari, WebOS, Tizen and Android TV still require checks on the intended hardware.
@@ -310,13 +310,13 @@ Run the smoke suites from the repo root after their corresponding builds.
 
 ```sh
 npm run build
-npm run test:e2e:live
+npm run test:smoke:app
 VF_BASE_PATH=/vendra-design-system VF_ORIGIN=https://misaf.github.io npm run build:demo
-VF_BASE_PATH=/vendra-design-system npm run test:e2e:next
+VF_BASE_PATH=/vendra-design-system VF_ORIGIN=https://misaf.github.io npm run test:smoke:demo
 ```
 
 Both smoke commands write test results to `e2e/test-results/next/`. For a subpath deployment, use
 the same `VF_BASE_PATH` when building, previewing and testing.
-Set `VF_ORIGIN` to the public origin for absolute canonical, sitemap and share URLs. The export also
-ships a service worker and manifest that cache each localized presentation document, its
+Use the same `VF_ORIGIN` for the build and smoke test so the sitemap check expects the public URLs.
+The export also ships a service worker and manifest that cache each localized presentation document, its
 Next.js assets and selected product photos for offline counter use.

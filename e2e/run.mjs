@@ -32,7 +32,7 @@ for (let index = 0; index < input.length; index++) {
 }
 
 const suites = targets.map(target => ({
-  target,
+  script: target === 'build' ? 'test:e2e:demo' : 'test:e2e:dev',
   projects: projectsForTarget(target === 'build').map(project => project.name)
 }));
 const patterns = requested.map(
@@ -63,13 +63,13 @@ if (
 }
 
 let status = 0;
-for (const {target, projects} of suites) {
+for (const {script, projects} of suites) {
   const selected = projects.filter(project => patterns.some(pattern => pattern.test(project)));
   if (requested.length && !selected.length) continue;
   const projectArgs = requested.length ? selected.map(project => `--project=${project}`) : [];
   const result = spawnSync(
     npm,
-    ['run', `test:e2e:${target}`, '--', '--pass-with-no-tests', ...projectArgs, ...args],
+    ['run', script, '--', '--pass-with-no-tests', ...projectArgs, ...args],
     {
       cwd,
       stdio: 'inherit'

@@ -165,15 +165,15 @@ jobs:
       - name: Build and smoke-test the live Next.js storefront
         run: |
           npm run build
-          npm run test:e2e:live
-      - run: npm run test:e2e:build
+          npm run test:smoke:app
+      - run: npm run test:e2e:demo
       - name: Test the Next.js export under the Pages base path
         env:
           VF_BASE_PATH: /${{ github.event.repository.name }}
           VF_ORIGIN: https://${{ github.repository_owner }}.github.io
         run: |
           npm run build:demo
-          npm run test:e2e:next
+          npm run test:smoke:demo
       - name: Keep the report
         if: failure()
         uses: actions/upload-artifact@v7

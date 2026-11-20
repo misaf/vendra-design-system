@@ -13,7 +13,7 @@
     "build:demo": "npm run generate && node tools/next/prepare-assets.mjs && VF_NEXT_EXPORT=1 next build && node tools/next/finish-export.mjs",
     "preview:demo": "node tools/next/serve-export.mjs",
     "test:e2e:dev": "E2E_TARGET=dev playwright test -c e2e/playwright.config.mjs",
-    "test:e2e:build": "E2E_TARGET=build playwright test -c e2e/playwright.config.mjs",
+    "test:e2e:demo": "E2E_TARGET=build playwright test -c e2e/playwright.config.mjs",
     "test:e2e": "node e2e/run.mjs",
     "test:e2e:update": "node e2e/run.mjs --update-snapshots",
     "test:e2e:remote": "node e2e/remote.mjs",
@@ -21,8 +21,8 @@
     "lint": "eslint src/app",
     "lint:css": "stylelint \"src/design-system/components/**/*.css\" \"src/storefront/**/*.css\" \"src/app/**/*.css\"",
     "new:component": "node tools/new-component.mjs",
-    "test:e2e:next": "playwright test -c e2e/smoke/playwright.config.mjs",
-    "test:e2e:live": "VF_TEST_LIVE=1 npm run test:e2e:next"
+    "test:smoke:demo": "playwright test -c e2e/smoke/playwright.config.mjs",
+    "test:smoke:app": "VF_TEST_LIVE=1 playwright test -c e2e/smoke/playwright.config.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

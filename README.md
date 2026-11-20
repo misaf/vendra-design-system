@@ -102,8 +102,8 @@ npm start                                # start the production storefront
 npm run format  # Prettier
 npm run check   # generated files current + formatting
 npm test        # typecheck and unit tests
-npm run test:e2e  # production storefront, then development fixtures/components
-npm run test:e2e:build  # build once, then storefront/visual/accessibility/performance tests
+npm run test:e2e  # static demo, then development fixtures and components
+npm run test:e2e:demo  # storefront, visual, accessibility and performance tests against the static demo
 npm run test:e2e:dev  # source fixtures, components, guidelines and gateway tests
 ```
 
