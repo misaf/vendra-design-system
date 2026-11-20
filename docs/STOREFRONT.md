@@ -118,7 +118,7 @@ Screenshot comparison specs use software rasterization (`--disable-gpu`) so deco
 
 ## Continuous integration
 
-`.github/workflows/ci.yml` runs on pushes to `master`, on pull requests (a branch is tested through its pull request) and by hand. A push or pull request that changes only `.github/` skips the browser tests (2 and 3); after a workflow change those tests should prove, run CI by hand (Actions → CI → Run workflow). The browser jobs stop after 75 minutes:
+`.github/workflows/ci.yml` runs on pushes to `master`, on pull requests (a branch is tested through its pull request) and by hand. A push or pull request that changes only `.github/` skips the browser tests (2 and 3); after a workflow change those tests should prove, run CI by hand (Actions → CI → Run workflow). The browser jobs and screenshot updates run on GitHub-hosted Ubuntu 24.04 in the pinned Playwright image. The browser jobs stop after 75 minutes:
 
 1. **Check and unit tests:** `npm ci`, `check` and `test` on Node 22. `test` includes the design system's bundle-size budget (`tests/size.test.mjs`): every export bundled alone and all of them together, with the peers left out, minified and gzipped. Small components must bundle without the rest; raise a budget only on purpose.
 2. **Development fixtures and components:** `test:e2e:dev` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.64.1-noble`), on its bundled Chromium (`CI` set: 2 workers, a fresh dev server), compared against the `-linux.png` baselines. Each component's own spec runs in the `components` project and each storefront component spec in `storefront-components` (see below); `package.spec.mjs` covers what holds for the whole design system (reduced motion, cascade layers); `hydration.spec.mjs` server-renders every component directly from source in Node and hydrates it in the browser, in English and Persian, failing on any mismatch; `refs.spec.mjs` checks that every component hands its React 19 `ref` to its native control or its own element.
@@ -127,16 +127,6 @@ Screenshot comparison specs use software rasterization (`--disable-gpu`) so deco
 Dependabot (`.github/dependabot.yml`) opens weekly, grouped pull requests for the pinned npm tools and GitHub Actions, two weeks after each release; CI tests them like any change (an Actions-only bump runs the check jobs, not the browser tests). React's majors are left out: the storefront supports React 19 only, and a new major is a deliberate upgrade. The root manifest pins React and React Aria. `tests/dependencies.test.mjs` checks the lockfile for duplicate installations. A Playwright bump must also move the image tag in the workflows, which `assets.test.mjs` checks.
 
 A failed browser run keeps `playwright-report/` and `test-results/` as the `e2e-report` artifact. After an intended visual change, update the macOS baselines locally with `test:e2e:update` and the Linux ones by running the **Update screenshots** workflow on a non-default branch (Actions → Update screenshots → Run workflow → select your branch); it commits the changed `-linux.png` files to that branch. Runs on the repository's default branch (currently `master`) or a tag fail before the screenshot job starts. Review both sets of baselines in a pull request before merging. When `@playwright/test` is upgraded, change the image tag in both workflows to match, then refresh the Linux baselines.
-
-### CI on a self-hosted runner (optional)
-
-The browser jobs in `ci.yml` (`e2e`, `e2e-build`) and **Update screenshots** can run on your own server instead of GitHub's machines; the `check` job stays on GitHub. Nothing changes until the repository variable `E2E_RUNS_ON` is set.
-
-1. On the server (Linux, with Docker usable by the runner's user), add a runner under **Settings → Actions → Runners → New self-hosted runner**, give it the label `vendra-e2e`, and install it as a service (`sudo ./svc.sh install && sudo ./svc.sh start`). A second runner with the same label in another folder lets `e2e` and `e2e-build` run at the same time.
-2. Under **Settings → Secrets and variables → Actions → Variables**, set `E2E_RUNS_ON` to `["self-hosted","vendra-e2e"]`, and optionally `E2E_WORKERS` (Playwright workers, for example `8`) and `E2E_CPUS` (cores the job's container may use, for example `8`). On the self-hosted runner the container is also capped at 5 GB of memory, so the server's other services keep the rest.
-3. Under **Settings → Actions → General**, keep "Require approval for all external contributors" for fork pull requests.
-
-The jobs still run in the pinned Playwright image, so the `-linux.png` baselines are the same as on GitHub's machines. Pull requests from forks always run on GitHub's runners (the `runner` job in `ci.yml` decides), because this repository is public and a fork's code must never run on the server. Unset `E2E_RUNS_ON` to go back to GitHub's runners.
 
 ## Component tests
 
