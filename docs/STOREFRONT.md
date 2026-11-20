@@ -35,7 +35,7 @@ The import checker allows capability modules to use each other, platform helpers
 
 ## Commands
 
-Run from the repo root (Node 20.19+ or 22.12+):
+Run from the repo root with Node.js 22 (22.22.2 or later):
 
 ```sh
 npm ci                                   # install from the root lockfile

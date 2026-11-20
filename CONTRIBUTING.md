@@ -10,7 +10,7 @@ npm run dev                              # Next.js storefront at http://localhos
                                         # guideline cards are also available under /guidelines/
 ```
 
-Node 20.19+ or 22.12+, and Google Chrome for the browser tests (CI uses Playwright's Linux image instead).
+Use Node.js 22 (22.22.2 or later). Local browser tests use Google Chrome, and CI uses Playwright's Linux image.
 
 ## Every change
 
