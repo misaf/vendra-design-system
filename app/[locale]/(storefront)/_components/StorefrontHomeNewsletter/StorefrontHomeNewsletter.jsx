@@ -1,6 +1,6 @@
 import React from 'react';
-import {Button} from '../../../../../components/ui/components/Button/Button.jsx';
-import {Input} from '../../../../../components/ui/components/Input/Input.jsx';
+import {Button} from '../../../../../ui/components/Button/Button.jsx';
+import {Input} from '../../../../../ui/components/Input/Input.jsx';
 
 export function StorefrontHomeNewsletter({
   open,

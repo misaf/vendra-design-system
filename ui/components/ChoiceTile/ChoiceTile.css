@@ -1,0 +1,76 @@
+.ag-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  box-sizing: border-box;
+  min-height: var(--control-h-lg);
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-hair) solid var(--border-input);
+  border-radius: var(--radius-md);
+  background: var(--surface-card);
+  color: var(--text-body);
+  font-family: var(--font-body);
+  text-align: start;
+  /* React Aria renders a label, which would inherit the page's line height (1.9 in Persian). */
+  line-height: normal;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.ag-choice--sm {
+  min-height: var(--tap-min);
+  padding: var(--space-2) var(--space-3);
+}
+.ag-choice[data-hovered]:not([data-disabled]) {
+  border-color: var(--border-strong);
+}
+.ag-choice[data-focus-visible] {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+.ag-choice--selected {
+  background: var(--surface-strong);
+  border-color: var(--surface-strong);
+  color: var(--text-on-strong);
+}
+.ag-choice[data-disabled] {
+  opacity: var(--opacity-disabled);
+  cursor: not-allowed;
+}
+.ag-choice__label {
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+.ag-choice--sm .ag-choice__label {
+  font-size: var(--text-sm);
+}
+.ag-choice__desc {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+.ag-choice--selected .ag-choice__desc {
+  color: inherit;
+  opacity: 0.78;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ag-choice {
+    transition: none;
+  }
+}
+/* Forced colours replace the selected fill with the system highlight. */
+@media (forced-colors: active) {
+  .ag-choice--selected {
+    forced-color-adjust: none;
+    background: Highlight;
+    border-color: Highlight;
+    color: HighlightText;
+  }
+  .ag-choice--selected .ag-icon {
+    background: HighlightText !important;
+  }
+}

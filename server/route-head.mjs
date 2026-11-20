@@ -8,7 +8,7 @@ import {VF_SEO} from '../shared/services/seo.js';
 import {vfFaqData, vfFloristData} from '../shared/services/structured-data.js';
 import {VF_STORE} from '../domain/store-config.js';
 import {VF_POSTS} from '../i18n/journal-content.js';
-import theme from '../components/ui/tokens/tenant-theme.js';
+import theme from '../ui/tokens/tenant-theme.js';
 import {vfCopy as bag} from '../app/[locale]/(checkout)/bag/copy.js';
 import {vfCopy as contact} from '../app/[locale]/(storefront)/contact/copy.js';
 import {vfCopy as error} from '../app/[locale]/(storefront)/error/copy.js';
@@ -53,7 +53,7 @@ const descriptions = {
 
 export async function tenantFontUrls(tenant, lang, base = '/') {
   if (!tenant || tenant === 'default') return [];
-  const {default: spec} = await import('../components/ui/tokens/tenants/' + tenant + '.json', {
+  const {default: spec} = await import('../ui/tokens/tenants/' + tenant + '.json', {
     with: {type: 'json'}
   });
   return theme.fontPreloads(spec, lang, base);

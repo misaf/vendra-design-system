@@ -1,6 +1,6 @@
 import React from 'react';
-import {CodeInput} from '../../../../../components/ui/patterns/atoms/CodeInput/CodeInput.jsx';
-import {Dialog} from '../../../../../components/ui/components/Dialog/Dialog.jsx';
+import {CodeInput} from '../../../../../ui/components/CodeInput/CodeInput.jsx';
+import {Dialog} from '../../../../../ui/components/Dialog/Dialog.jsx';
 
 export function StorefrontPresentationUnlock({
   open,

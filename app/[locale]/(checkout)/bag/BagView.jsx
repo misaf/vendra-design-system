@@ -1,6 +1,6 @@
 // StorefrontBag: the page inside the storefront shell.
 import React from 'react';
-import {Alert} from '../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
+import {Alert} from '../../../../ui/components/Alert/Alert.jsx';
 import {asList} from '../../../../shared/ui/as-list.js';
 import {StorefrontBagDeliveryLayout} from './_components/StorefrontBagDeliveryLayout/StorefrontBagDeliveryLayout.jsx';
 import {StorefrontBagLayout} from './_components/StorefrontBagLayout/StorefrontBagLayout.jsx';

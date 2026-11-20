@@ -1,7 +1,7 @@
 import {StorefrontLink} from '../../../../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
-import {ArchFrame} from '../../../../../../components/ui/patterns/atoms/ArchFrame/ArchFrame.jsx';
-import {Price} from '../../../../../../components/ui/patterns/atoms/Price/Price.jsx';
+import {ArchFrame} from '../../../../../../ui/components/ArchFrame/ArchFrame.jsx';
+import {Price} from '../../../../../../ui/components/Price/Price.jsx';
 
 export function StorefrontSearchResults({countLabel, results}) {
   return (

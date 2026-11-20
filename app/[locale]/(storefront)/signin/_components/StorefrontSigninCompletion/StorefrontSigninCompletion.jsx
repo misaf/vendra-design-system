@@ -1,7 +1,7 @@
 import {StorefrontLink} from '../../../../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {EmptyState} from '../../../../../../components/ui/patterns/molecules/EmptyState/EmptyState.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {EmptyState} from '../../../../../../ui/components/EmptyState/EmptyState.jsx';
 
 export function StorefrontSigninCompletion({
   title,

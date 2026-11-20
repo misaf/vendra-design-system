@@ -6,7 +6,7 @@
 // store subscribes a sender to its own backend. page_view and purchase also say where the visit came
 // from (utm_* values and the referrer's host, analytics.attribution). Components report their events through
 // VendraProvider's onEvent, which the shell points here.
-import {analytics} from '../../../components/ui/patterns/utils/analytics.js';
+import {analytics} from '../../../ui/utils/analytics.js';
 import {VF_STORE} from '../../../domain/store-config.js';
 import {VF_CATEGORY_ITEM} from '../../../i18n/categories.js';
 // Creates the tracker; shared/services/integrations/runtime.js installs it as vfRuntime.track in the

@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Chip} from '../../../../../../components/ui/patterns/atoms/Chip/Chip.jsx';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Chip} from '../../../../../../ui/components/Chip/Chip.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
 
 export function StorefrontAccountTopUp({title, quickLabel, presets, amount, payment, demo}) {
   return (

@@ -8,7 +8,7 @@ data and callbacks. It decides feature visibility and owns routing, language sta
 and shared layout effects. StorefrontMenu renders the controlled menu drawer. StorefrontHeader has
 no store access or persistence.
 
-Keep this composition under `components/storefront/organisms/`, alongside the storefront shell. The
+Keep this composition under `components/storefront/`, alongside the storefront shell. The
 published `components/` package remains independent of storefront copy and `vf-*` presentation.
 Tailwind scans nested app JSX so extracted markup retains its utilities.
 

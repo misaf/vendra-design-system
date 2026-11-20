@@ -1,5 +1,5 @@
 import React from 'react';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
 import {StorefrontAccountEditorDialog} from './StorefrontAccountEditorDialog.jsx';
 
 const copy = {

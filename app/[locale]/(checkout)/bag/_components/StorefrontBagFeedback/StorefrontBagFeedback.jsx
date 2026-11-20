@@ -1,7 +1,7 @@
 import React from 'react';
-import {Alert} from '../../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {EmptyState} from '../../../../../../components/ui/patterns/molecules/EmptyState/EmptyState.jsx';
+import {Alert} from '../../../../../../ui/components/Alert/Alert.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {EmptyState} from '../../../../../../ui/components/EmptyState/EmptyState.jsx';
 
 export function StorefrontBagFeedback({variant, labels, onAction}) {
   if (variant === 'removed')

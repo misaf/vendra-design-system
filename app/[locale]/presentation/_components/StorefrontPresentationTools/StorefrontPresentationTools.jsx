@@ -1,7 +1,7 @@
 import React from 'react';
-import {Alert} from '../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {Button} from '../../../../../components/ui/components/Button/Button.jsx';
-import {Dialog} from '../../../../../components/ui/components/Dialog/Dialog.jsx';
+import {Alert} from '../../../../../ui/components/Alert/Alert.jsx';
+import {Button} from '../../../../../ui/components/Button/Button.jsx';
+import {Dialog} from '../../../../../ui/components/Dialog/Dialog.jsx';
 
 export function StorefrontPresentationTools({
   open,

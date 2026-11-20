@@ -5,10 +5,10 @@ import {rolldown} from 'rolldown';
 
 const root = resolve(import.meta.dirname, '..');
 const publicDir = resolve(import.meta.dirname, '..', 'public');
-const ui = 'components/ui';
-const patterns = ui + '/patterns';
+const ui = 'ui';
+const components = ui + '/components';
 const componentDirs = {
-  'design-system': [patterns],
+  'design-system': [components],
   storefront: ['components/storefront', 'app']
 };
 
@@ -25,7 +25,7 @@ async function copy(file) {
 }
 
 const entries = new Set(['communications/email-templates.js']);
-for (const dir of ['guidelines', patterns, 'e2e/fixtures', 'communications']) {
+for (const dir of ['guidelines', components, 'e2e/fixtures', 'communications']) {
   for (const file of await list(dir, '.html')) {
     let html = await readFile(join(root, file), 'utf8');
     for (const match of html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*>/g)) {
@@ -49,11 +49,9 @@ await Promise.all(
   [
     ui + '/storefront.css',
     ui + '/styles.css',
-    ui + '/tokens.css',
     ...(await list(ui + '/tokens', '.css')),
     ...(await list(ui + '/components', '.css')),
     ...(await list(ui + '/assets/fonts', '.woff2')),
-    ...(await list(patterns, '.css')),
     '_runtime/tailwind.css',
     '_runtime/custom.css'
   ].map(copy)

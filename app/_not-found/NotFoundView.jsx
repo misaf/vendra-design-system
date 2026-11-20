@@ -1,7 +1,7 @@
 // StorefrontNotfound: the page inside the storefront shell.
 import React from 'react';
-import {EmptyState} from '../../components/ui/patterns/molecules/EmptyState/EmptyState.jsx';
-import {SectionHeader} from '../../components/ui/patterns/molecules/SectionHeader/SectionHeader.jsx';
+import {EmptyState} from '../../ui/components/EmptyState/EmptyState.jsx';
+import {SectionHeader} from '../../ui/components/SectionHeader/SectionHeader.jsx';
 import {asList} from '../../shared/ui/as-list.js';
 import {StorefrontNotfoundLayout} from './_components/StorefrontNotfoundLayout/StorefrontNotfoundLayout.jsx';
 import {StorefrontNotfoundActions} from './_components/StorefrontNotfoundActions/StorefrontNotfoundActions.jsx';

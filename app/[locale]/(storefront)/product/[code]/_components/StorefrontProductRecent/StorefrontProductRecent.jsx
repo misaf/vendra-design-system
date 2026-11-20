@@ -1,6 +1,6 @@
 import React from 'react';
-import {ProductCard} from '../../../../../../../components/ui/patterns/molecules/ProductCard/ProductCard.jsx';
-import {SectionHeader} from '../../../../../../../components/ui/patterns/molecules/SectionHeader/SectionHeader.jsx';
+import {ProductCard} from '../../../../../../../ui/components/ProductCard/ProductCard.jsx';
+import {SectionHeader} from '../../../../../../../ui/components/SectionHeader/SectionHeader.jsx';
 import {CollectionCarousel} from '../../../../../../../shared/ui/collection-carousel.jsx';
 
 export function StorefrontProductRecent({products, labels, resetKey}) {

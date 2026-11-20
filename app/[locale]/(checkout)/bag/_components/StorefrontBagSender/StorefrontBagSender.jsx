@@ -1,6 +1,6 @@
 import React from 'react';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
-import {PhoneInput} from '../../../../../../components/ui/patterns/atoms/PhoneInput/PhoneInput.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
+import {PhoneInput} from '../../../../../../ui/components/PhoneInput/PhoneInput.jsx';
 
 export function StorefrontBagSender({labels, name, phone}) {
   return (

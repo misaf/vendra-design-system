@@ -1,7 +1,7 @@
 import React from 'react';
-import {Badge} from '../../../../../../components/ui/patterns/atoms/Badge/Badge.jsx';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Card} from '../../../../../../components/ui/patterns/atoms/Card/Card.jsx';
+import {Badge} from '../../../../../../ui/components/Badge/Badge.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Card} from '../../../../../../ui/components/Card/Card.jsx';
 
 export function StorefrontAccountOrders({orders}) {
   return (

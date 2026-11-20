@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
 import {StorefrontAccountBalanceOverview} from '../StorefrontAccountBalanceOverview/StorefrontAccountBalanceOverview.jsx';
 import {StorefrontAccountTopUp} from '../StorefrontAccountTopUp/StorefrontAccountTopUp.jsx';
 import {StorefrontAccountBalanceHistory} from '../StorefrontAccountBalanceHistory/StorefrontAccountBalanceHistory.jsx';

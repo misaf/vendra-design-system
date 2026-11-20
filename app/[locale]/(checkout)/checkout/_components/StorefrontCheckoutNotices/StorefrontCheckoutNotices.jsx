@@ -1,6 +1,6 @@
 import React from 'react';
-import {Alert} from '../../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
+import {Alert} from '../../../../../../ui/components/Alert/Alert.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
 
 export function StorefrontCheckoutNotices({review, saveError}) {
   return (

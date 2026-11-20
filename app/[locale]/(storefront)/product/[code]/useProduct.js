@@ -1,5 +1,5 @@
 // Page behavior. Edit here, then run npm run build.
-import {ToastQueue} from '../../../../../components/ui/patterns/organisms/ToastRegion/ToastRegion.jsx';
+import {ToastQueue} from '../../../../../ui/components/ToastRegion/ToastRegion.jsx';
 import {vfCopy, vfProductHead} from './copy.js';
 import {
   VF_ADDONS,

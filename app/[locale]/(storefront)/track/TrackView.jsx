@@ -1,6 +1,6 @@
 // StorefrontTrack: the page inside the storefront shell.
 import React from 'react';
-import {Alert} from '../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
+import {Alert} from '../../../../ui/components/Alert/Alert.jsx';
 import {StorefrontTrackLayout} from './_components/StorefrontTrackLayout/StorefrontTrackLayout.jsx';
 import {StorefrontPageHeading} from '../../../../components/storefront/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontTrackLookup} from './_components/StorefrontTrackLookup/StorefrontTrackLookup.jsx';

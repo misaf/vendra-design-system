@@ -4,10 +4,11 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import React from 'react';
 import {renderToString} from 'react-dom/server';
-import theme from '../components/ui/tokens/tenant-theme.js';
+import {commerce} from '../domain/commerce.js';
+import theme from '../ui/tokens/tenant-theme.js';
 import {loadDesignSystem} from './load-design-system.mjs';
 
-const ui = path.resolve(import.meta.dirname, '../components/ui');
+const ui = path.resolve(import.meta.dirname, '../ui');
 const ds = await loadDesignSystem();
 
 assert.equal(typeof globalThis.window, 'undefined');
@@ -87,15 +88,11 @@ assert.match(wording('fa-IR', null, {closeLabel: 'Hide'}), /aria-label="Hide"/);
 assert.match(wording('ar-AE', {ar: {Alert: {close: 'إغلاق'}}}), /aria-label="إغلاق"/);
 assert.match(wording('de-DE'), /aria-label="Dismiss"/);
 // Each component's wording (components/<Name>/messages.js) has Persian for every English key.
-const wordings = [path.join(ui, 'patterns'), path.join(ui, 'components')].flatMap(directory =>
-  fs
-    .readdirSync(directory, {recursive: true})
-    .filter(
-      name =>
-        path.basename(name) === 'messages.js' && /^[A-Z]/.test(path.basename(path.dirname(name)))
-    )
-    .map(name => path.join(directory, name))
-);
+const componentsDir = path.join(ui, 'components');
+const wordings = fs
+  .readdirSync(componentsDir, {recursive: true})
+  .filter(name => path.basename(name) === 'messages.js')
+  .map(name => path.join(componentsDir, name));
 assert.ok(wordings.length > 20, 'components provide their own wording');
 assert.equal(ds.MESSAGES, undefined, 'no shared catalog: each component carries its own words');
 const keys = value =>
@@ -160,7 +157,7 @@ assert.deepEqual(ds.paginationRange(1, 3), [1, 2, 3]);
 assert.deepEqual(ds.paginationRange(3, 7), [1, 2, 3, 4, null, 7]);
 assert.deepEqual(ds.paginationRange(12, 12), [1, null, 11, 12]);
 // Stock status from the API's own fields.
-const stock = fields => ds.commerce.stockStatus({inStock: true, quantity: 10, ...fields});
+const stock = fields => commerce.stockStatus({inStock: true, quantity: 10, ...fields});
 assert.deepEqual(stock({stockThreshold: null}), {status: 'in'});
 assert.deepEqual(stock({stockThreshold: 3}), {status: 'in'});
 assert.deepEqual(stock({quantity: 3, stockThreshold: 3}), {status: 'low', count: 3});
@@ -194,7 +191,7 @@ const media = {
     alt_fa: 'رز عاجی در باکس کتان'
   }
 };
-assert.deepEqual(ds.commerce.imageFromApi(media, 'fa'), {
+assert.deepEqual(commerce.imageFromApi(media, 'fa'), {
   src: 'https://cdn.example/rose.jpg',
   srcSet: 'https://cdn.example/rose-480.jpg 480w, https://cdn.example/rose-960.jpg 960w',
   sources: [
@@ -210,17 +207,16 @@ assert.deepEqual(ds.commerce.imageFromApi(media, 'fa'), {
   alt: 'رز عاجی در باکس کتان'
 });
 assert.deepEqual(
-  ds.commerce.imageFromApi({
+  commerce.imageFromApi({
     url: '/rose.jpg',
     responsiveImages: {},
     customProperties: {width: '1200', placeholder: 'javascript:alert(1)'}
   }),
   {src: '/rose.jpg'}
 );
-assert.equal(ds.commerce.imageFromApi({url: null}), null);
+assert.equal(commerce.imageFromApi({url: null}), null);
 
 // Commerce rules run on a tenant's own data, passed in: no globals, no window.
-const {commerce} = ds;
 const zones = [
   commerce.zoneFromApi(
     {id: 7, name: {en: 'Centre', fa: 'مرکز'}, maxDistanceKm: 5, feeAmount: 90_000, position: 1},

@@ -1,10 +1,10 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Card} from '../../../../../../components/ui/patterns/atoms/Card/Card.jsx';
-import {DetailList} from '../../../../../../components/ui/patterns/molecules/DetailList/DetailList.jsx';
-import {ErrorBoundary} from '../../../../../../components/ui/patterns/molecules/ErrorBoundary/ErrorBoundary.jsx';
-import {IconButton} from '../../../../../../components/ui/components/IconButton/IconButton.jsx';
-import {PlacesMap} from '../../../../../../components/ui/patterns/organisms/PlacesMap/PlacesMap.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Card} from '../../../../../../ui/components/Card/Card.jsx';
+import {DetailList} from '../../../../../../ui/components/DetailList/DetailList.jsx';
+import {ErrorBoundary} from '../../../../../../ui/components/ErrorBoundary/ErrorBoundary.jsx';
+import {IconButton} from '../../../../../../ui/components/IconButton/IconButton.jsx';
+import {PlacesMap} from '../../../../../../ui/components/PlacesMap/PlacesMap.jsx';
 
 export function StorefrontContactDetails({rows, whatsapp, phone, instagram, map, directions}) {
   return (

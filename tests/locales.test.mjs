@@ -5,11 +5,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath, pathToFileURL} from 'node:url';
-import {LOCALES, localeConfig, plural} from '../components/ui/patterns/utils/locales.js';
-import {format} from '../components/ui/patterns/utils/format.js';
+import {LOCALES, localeConfig, plural} from '../ui/utils/locales.js';
+import {format} from '../ui/utils/format.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const components = path.join(root, 'components/ui/patterns');
+const components = path.join(root, 'ui/components');
 
 // Each language's settings are complete and keyed by their own code.
 for (const [code, locale] of Object.entries(LOCALES)) {

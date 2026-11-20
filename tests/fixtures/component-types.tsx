@@ -1,6 +1,6 @@
-import {Button} from '../../components/ui/components/Button/Button.jsx';
-import {ProductCard} from '../../components/ui/patterns/molecules/ProductCard/ProductCard.jsx';
-import {VendraProvider} from '../../components/ui/components/VendraProvider/VendraProvider.jsx';
+import {Button} from '../../ui/components/Button/Button.jsx';
+import {ProductCard} from '../../ui/components/ProductCard/ProductCard.jsx';
+import {VendraProvider} from '../../ui/components/VendraProvider/VendraProvider.jsx';
 import {commerce, type Totals} from '../../domain/commerce.js';
 
 export const App = () => (

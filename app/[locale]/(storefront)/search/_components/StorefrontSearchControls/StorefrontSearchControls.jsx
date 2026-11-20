@@ -1,6 +1,6 @@
 import React from 'react';
-import {IconButton} from '../../../../../../components/ui/components/IconButton/IconButton.jsx';
-import {SearchField} from '../../../../../../components/ui/patterns/molecules/SearchField/SearchField.jsx';
+import {IconButton} from '../../../../../../ui/components/IconButton/IconButton.jsx';
+import {SearchField} from '../../../../../../ui/components/SearchField/SearchField.jsx';
 
 export function StorefrontSearchControls({query, close}) {
   return (

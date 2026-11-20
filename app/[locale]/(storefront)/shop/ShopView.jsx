@@ -1,6 +1,6 @@
 // StorefrontShop: the page inside the storefront shell.
 import React from 'react';
-import {SectionHeader} from '../../../../components/ui/patterns/molecules/SectionHeader/SectionHeader.jsx';
+import {SectionHeader} from '../../../../ui/components/SectionHeader/SectionHeader.jsx';
 import {asList} from '../../../../shared/ui/as-list.js';
 import {StorefrontShopLayout} from './_components/StorefrontShopLayout/StorefrontShopLayout.jsx';
 import {StorefrontShopCategories} from './_components/StorefrontShopCategories/StorefrontShopCategories.jsx';

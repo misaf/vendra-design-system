@@ -1,6 +1,6 @@
 import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
-import {Accordion} from '../../ui/patterns/molecules/Accordion/Accordion.jsx';
+import {Accordion} from '../../../ui/components/Accordion/Accordion.jsx';
 
 // Both CSS layouts use the same link data and navigation markup. Only the phone layout adds
 // disclosures; wider screens retain their expanded columns and landmark labels.

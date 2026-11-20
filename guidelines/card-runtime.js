@@ -6,10 +6,10 @@
 import React from 'react';
 import * as ReactDOM from 'react-dom';
 import {createRoot} from 'react-dom/client';
-import * as components from '../components/ui/index.js';
-import {ICON_SVGS} from '../components/ui/components/Icon/icon-svgs.js';
-import {dates} from '../components/ui/patterns/utils/dates.js';
-import {format} from '../components/ui/patterns/utils/format.js';
+import * as components from '../ui/index.js';
+import {ICON_SVGS} from '../ui/components/Icon/icon-svgs.js';
+import {dates} from '../ui/utils/dates.js';
+import {format} from '../ui/utils/format.js';
 import {commerce} from '../domain/commerce.js';
 
 window.React = React;

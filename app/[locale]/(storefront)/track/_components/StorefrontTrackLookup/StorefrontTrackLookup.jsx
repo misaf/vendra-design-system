@@ -1,8 +1,8 @@
 import React from 'react';
-import {Alert} from '../../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
-import {PhoneInput} from '../../../../../../components/ui/patterns/atoms/PhoneInput/PhoneInput.jsx';
+import {Alert} from '../../../../../../ui/components/Alert/Alert.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
+import {PhoneInput} from '../../../../../../ui/components/PhoneInput/PhoneInput.jsx';
 import {StorefrontPageHeading} from '../../../../../../components/storefront/StorefrontPageHeading/StorefrontPageHeading.jsx';
 
 export function StorefrontTrackLookup({

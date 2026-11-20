@@ -1,9 +1,9 @@
 import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import {BrandLogo} from '../BrandLogo/BrandLogo.jsx';
-import {IconButton} from '../../ui/components/IconButton/IconButton.jsx';
-import {LanguageSwitch} from '../../ui/patterns/molecules/LanguageSwitch/LanguageSwitch.jsx';
-import {NavLink} from '../../ui/patterns/molecules/NavLink/NavLink.jsx';
+import {IconButton} from '../../../ui/components/IconButton/IconButton.jsx';
+import {LanguageSwitch} from '../../../ui/components/LanguageSwitch/LanguageSwitch.jsx';
+import {NavLink} from '../../../ui/components/NavLink/NavLink.jsx';
 
 // Storefront header composition. Shell supplies content and actions; CSS selects the layout.
 export function StorefrontHeader({

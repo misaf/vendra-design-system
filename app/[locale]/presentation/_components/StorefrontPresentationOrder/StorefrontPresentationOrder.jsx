@@ -1,8 +1,8 @@
 import React from 'react';
-import {Button} from '../../../../../components/ui/components/Button/Button.jsx';
-import {Dialog} from '../../../../../components/ui/components/Dialog/Dialog.jsx';
-import {LineItem} from '../../../../../components/ui/patterns/molecules/LineItem/LineItem.jsx';
-import {Price} from '../../../../../components/ui/patterns/atoms/Price/Price.jsx';
+import {Button} from '../../../../../ui/components/Button/Button.jsx';
+import {Dialog} from '../../../../../ui/components/Dialog/Dialog.jsx';
+import {LineItem} from '../../../../../ui/components/LineItem/LineItem.jsx';
+import {Price} from '../../../../../ui/components/Price/Price.jsx';
 
 export function StorefrontPresentationOrder({
   open,

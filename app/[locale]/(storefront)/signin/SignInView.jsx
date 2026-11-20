@@ -1,6 +1,6 @@
 // StorefrontSignin: the page inside the storefront shell.
 import React from 'react';
-import {Button} from '../../../../components/ui/components/Button/Button.jsx';
+import {Button} from '../../../../ui/components/Button/Button.jsx';
 import {StorefrontSigninLayout} from './_components/StorefrontSigninLayout/StorefrontSigninLayout.jsx';
 import {StorefrontPageHeading} from '../../../../components/storefront/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontSigninPhoneControls} from './_components/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx';

@@ -1,6 +1,6 @@
 import React from 'react';
-import {Card} from '../../../../../../components/ui/patterns/atoms/Card/Card.jsx';
-import {DetailList} from '../../../../../../components/ui/patterns/molecules/DetailList/DetailList.jsx';
+import {Card} from '../../../../../../ui/components/Card/Card.jsx';
+import {DetailList} from '../../../../../../ui/components/DetailList/DetailList.jsx';
 
 export function StorefrontTrackOrderDetails({rows}) {
   return (

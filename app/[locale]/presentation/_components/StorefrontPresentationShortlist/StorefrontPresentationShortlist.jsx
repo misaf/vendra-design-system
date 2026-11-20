@@ -1,8 +1,8 @@
 import React from 'react';
-import {Button} from '../../../../../components/ui/components/Button/Button.jsx';
-import {Dialog} from '../../../../../components/ui/components/Dialog/Dialog.jsx';
-import {Picture} from '../../../../../components/ui/patterns/atoms/Picture/Picture.jsx';
-import {Price} from '../../../../../components/ui/patterns/atoms/Price/Price.jsx';
+import {Button} from '../../../../../ui/components/Button/Button.jsx';
+import {Dialog} from '../../../../../ui/components/Dialog/Dialog.jsx';
+import {Picture} from '../../../../../ui/components/Picture/Picture.jsx';
+import {Price} from '../../../../../ui/components/Price/Price.jsx';
 
 export function StorefrontPresentationShortlist({
   open,

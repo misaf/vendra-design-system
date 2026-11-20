@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button} from '../../../../../../../components/ui/components/Button/Button.jsx';
-import {Dialog} from '../../../../../../../components/ui/components/Dialog/Dialog.jsx';
-import {OrderSummary} from '../../../../../../../components/ui/patterns/organisms/OrderSummary/OrderSummary.jsx';
+import {Button} from '../../../../../../../ui/components/Button/Button.jsx';
+import {Dialog} from '../../../../../../../ui/components/Dialog/Dialog.jsx';
+import {OrderSummary} from '../../../../../../../ui/components/OrderSummary/OrderSummary.jsx';
 
 // undo ({label, onClick}) is optional: it reverses the add and closes the panel.
 export function StorefrontProductAdded({

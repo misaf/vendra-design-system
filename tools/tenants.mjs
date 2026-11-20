@@ -2,7 +2,7 @@
 // and the Theme builder's tenant list from tokens/tenants/<slug>.json.
 import fs from 'node:fs';
 import path from 'node:path';
-import theme from '../components/ui/tokens/tenant-theme.js';
+import theme from '../ui/tokens/tenant-theme.js';
 import {validateBrand} from './brand.mjs';
 import {uiRoot, uiFolder} from './paths.mjs';
 

@@ -1,8 +1,8 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {ErrorSummary} from '../../../../../../components/ui/patterns/molecules/ErrorSummary/ErrorSummary.jsx';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
-import {PhoneInput} from '../../../../../../components/ui/patterns/atoms/PhoneInput/PhoneInput.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {ErrorSummary} from '../../../../../../ui/components/ErrorSummary/ErrorSummary.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
+import {PhoneInput} from '../../../../../../ui/components/PhoneInput/PhoneInput.jsx';
 
 export function StorefrontContactFormControls({problems, name, phone, email, message, send}) {
   return (

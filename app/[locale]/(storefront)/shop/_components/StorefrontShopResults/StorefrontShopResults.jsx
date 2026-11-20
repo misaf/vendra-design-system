@@ -1,10 +1,10 @@
 import React from 'react';
-import {Alert} from '../../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {EmptyState} from '../../../../../../components/ui/patterns/molecules/EmptyState/EmptyState.jsx';
-import {LoadMore} from '../../../../../../components/ui/patterns/molecules/LoadMore/LoadMore.jsx';
-import {ProductCard} from '../../../../../../components/ui/patterns/molecules/ProductCard/ProductCard.jsx';
-import {Skeleton} from '../../../../../../components/ui/patterns/atoms/Skeleton/Skeleton.jsx';
+import {Alert} from '../../../../../../ui/components/Alert/Alert.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {EmptyState} from '../../../../../../ui/components/EmptyState/EmptyState.jsx';
+import {LoadMore} from '../../../../../../ui/components/LoadMore/LoadMore.jsx';
+import {ProductCard} from '../../../../../../ui/components/ProductCard/ProductCard.jsx';
+import {Skeleton} from '../../../../../../ui/components/Skeleton/Skeleton.jsx';
 
 export function StorefrontShopResults({
   products,

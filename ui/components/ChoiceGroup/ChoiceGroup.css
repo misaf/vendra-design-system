@@ -1,0 +1,12 @@
+.ag-choices--error .ag-choice:not([data-selected]) {
+  border-color: var(--danger);
+}
+.ag-choices {
+  display: grid;
+  gap: var(--space-3);
+}
+@media (forced-colors: active) {
+  .ag-choices--error .ag-choice:not([data-selected]) {
+    border-style: dashed;
+  }
+}

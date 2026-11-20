@@ -1,6 +1,6 @@
 import {StorefrontLink} from '../../../../../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
-import {Icon} from '../../../../../../../components/ui/components/Icon/Icon.jsx';
+import {Icon} from '../../../../../../../ui/components/Icon/Icon.jsx';
 
 export function StorefrontPostHeading({journalHref, backLabel, meta, title, intro}) {
   return (

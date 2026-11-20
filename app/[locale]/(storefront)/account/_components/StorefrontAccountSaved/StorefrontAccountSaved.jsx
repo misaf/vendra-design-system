@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {EmptyState} from '../../../../../../components/ui/patterns/molecules/EmptyState/EmptyState.jsx';
-import {ProductCard} from '../../../../../../components/ui/patterns/molecules/ProductCard/ProductCard.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {EmptyState} from '../../../../../../ui/components/EmptyState/EmptyState.jsx';
+import {ProductCard} from '../../../../../../ui/components/ProductCard/ProductCard.jsx';
 
 export function StorefrontAccountSaved({showItems, showEmpty, items, labels, shopHref}) {
   return (

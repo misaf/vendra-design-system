@@ -1,8 +1,8 @@
 // StorefrontProduct: the page inside the storefront shell.
 import React from 'react';
-import {Breadcrumb} from '../../../../../components/ui/patterns/molecules/Breadcrumb/Breadcrumb.jsx';
-import {ErrorBoundary} from '../../../../../components/ui/patterns/molecules/ErrorBoundary/ErrorBoundary.jsx';
-import {ToastRegion} from '../../../../../components/ui/patterns/organisms/ToastRegion/ToastRegion.jsx';
+import {Breadcrumb} from '../../../../../ui/components/Breadcrumb/Breadcrumb.jsx';
+import {ErrorBoundary} from '../../../../../ui/components/ErrorBoundary/ErrorBoundary.jsx';
+import {ToastRegion} from '../../../../../ui/components/ToastRegion/ToastRegion.jsx';
 import {asList} from '../../../../../shared/ui/as-list.js';
 import {StorefrontProductLayout} from './_components/StorefrontProductLayout/StorefrontProductLayout.jsx';
 import {StorefrontProductGallery} from './_components/StorefrontProductGallery/StorefrontProductGallery.jsx';

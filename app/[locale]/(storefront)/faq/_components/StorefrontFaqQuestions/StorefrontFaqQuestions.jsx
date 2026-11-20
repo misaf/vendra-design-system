@@ -1,5 +1,5 @@
 import React from 'react';
-import {Accordion} from '../../../../../../components/ui/patterns/molecules/Accordion/Accordion.jsx';
+import {Accordion} from '../../../../../../ui/components/Accordion/Accordion.jsx';
 
 export function StorefrontFaqQuestions({groups}) {
   return (

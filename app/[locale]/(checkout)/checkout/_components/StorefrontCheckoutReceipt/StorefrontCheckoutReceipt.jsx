@@ -1,10 +1,10 @@
 import React from 'react';
-import {Alert} from '../../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Icon} from '../../../../../../components/ui/components/Icon/Icon.jsx';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
-import {PaymentCard} from '../../../../../../components/ui/patterns/molecules/PaymentCard/PaymentCard.jsx';
-import {Tooltip} from '../../../../../../components/ui/patterns/molecules/Tooltip/Tooltip.jsx';
+import {Alert} from '../../../../../../ui/components/Alert/Alert.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Icon} from '../../../../../../ui/components/Icon/Icon.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
+import {PaymentCard} from '../../../../../../ui/components/PaymentCard/PaymentCard.jsx';
+import {Tooltip} from '../../../../../../ui/components/Tooltip/Tooltip.jsx';
 
 export function StorefrontCheckoutReceipt({change, card, sheba, last4, reference}) {
   return (

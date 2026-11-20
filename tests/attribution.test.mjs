@@ -2,7 +2,7 @@
 // analytics.js): utm_* values and the referrer's host reach page_view and purchase, are cleaned like
 // search terms, and are kept for the tab only while the visitor accepts analytics.
 import assert from 'node:assert/strict';
-import {analytics} from '../components/ui/patterns/utils/analytics.js';
+import {analytics} from '../ui/utils/analytics.js';
 
 const {attribution, event} = analytics;
 
