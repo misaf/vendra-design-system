@@ -2,7 +2,7 @@
   "name": "vendra-florist",
   "private": true,
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.components.json",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.components.json && tsc -p tsconfig.api.json",
     "build": "node ../../tools/build.mjs",
     "check": "node ../../tools/build.mjs --check && prettier --ignore-path ../../.prettierignore --check ../../tools ../../packages . && npm run lint:css",
     "test": "npm run typecheck && node --test tests/*.test.mjs features/*/*.test.mjs",
@@ -44,10 +44,12 @@
   "dependencies": {
     "@internationalized/date": "3.12.4",
     "@vendra/ui": "0.0.0",
+    "@vendra/vendra-api": "0.0.0",
     "next": "16.4.6",
     "qrcode-generator": "2.0.4",
     "react": "19.3.1",
     "react-aria-components": "1.22.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "server-only": "0.0.1"
   }
 }
