@@ -1,11 +1,13 @@
 // Page behavior. Edit here, then run npm run build.
+import {vfSavedItems} from '../../customer/saved-items.js';
+import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {VF_CHIPS, VF_UNDER_PRICE} from '../shop-filters.js';
 import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../catalog.js';
 import {VF_ZONES} from '../../delivery/delivery-zones.js';
 import {vfDeliverableOn, vfDeliveryDays} from '../../delivery/delivery-schedule.js';
 import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../pricing/formatting.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {VF_STORE, vfFeatures} from '../../store/store-config.js';
 import {VF_CATEGORY_COPY, VF_SHOP_OCCASIONS, VF_SHOP_OCCASION_COPY} from '../categories.js';
@@ -48,6 +50,7 @@ export function useShop(props) {
 function vals(page) {
   const fa = page.props.lang === 'fa';
   const L = fa ? 'fa' : 'en';
+  const savedItems = vfSavedItems(page, ['VF-8RD5WN']);
   const S = vfShell(page, 'shop');
   const n = v => (fa ? VF_FA_DIGITS(v) : String(v));
   const C = vfCopy(S);
@@ -182,7 +185,7 @@ function vals(page) {
       label: filter.label,
       onRemove: () => {
         filter.remove();
-        if (activeFilters.length === 1) S.focus('vf-shop-count');
+        if (activeFilters.length === 1) VF_NAV.focusById('vf-shop-count');
       }
     })),
     // The mobile Filters button counts the filters that are on; "Clear all" removes them but keeps the category and sort.
@@ -196,7 +199,7 @@ function vals(page) {
       });
       // The button goes away with the filters, so focus moves to the updated result count
       // (the filters dialog keeps focus while it is open).
-      if (!page.state.filterOpen) S.focus('vf-shop-count');
+      if (!page.state.filterOpen) VF_NAV.focusById('vf-shop-count');
     },
     filtersLabel: activeFilters.length
       ? C.migration.filters + ' (' + n(activeFilters.length) + ')'
@@ -334,7 +337,7 @@ function vals(page) {
     noItems: !demo && list.length === 0,
     clear,
     items: paged.items.map((p, index) => {
-      const fav = S.isFav(p.id, ['VF-8RD5WN']);
+      const fav = savedItems.ids.includes(p.id);
       return {
         ...S.productLink(p.id, {date}),
         images: [vfProductImage(p, L)],
@@ -344,7 +347,7 @@ function vals(page) {
         price: VF_MONEY(p.price, fa),
         stock: p.stock,
         fav,
-        toggleFav: S.toggleFav(p.id, ['VF-8RD5WN']),
+        toggleFav: () => savedItems.toggle(p.id),
         select: vfSelectItem('shop', p, index)
       };
     })

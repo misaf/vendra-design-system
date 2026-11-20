@@ -42,7 +42,7 @@ import {mobile as vfMobile} from '../../../design-system/utils/input.js';
 import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../pricing/formatting.js';
 import {vfLoadLeaflet} from '../../../platform/browser/integrations/leaflet.js';
 import {vfLocationText, vfValidLocation} from '../../delivery/location.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {vfPromoCheck, vfSummaryRows} from '../../pricing/promotions.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {VF_STORE, vfFeatures, vfPaymentMethods} from '../../store/store-config.js';
@@ -415,18 +415,18 @@ function vals(page) {
       const currentSlot = vfDeliverySlot(delivery, clickTime, live);
       page.setState({submitted: true});
       if (deliveryChanged(currentDate, currentSlot)) {
-        S.focus('vf-delivery-changed');
+        VF_NAV.focusById('vf-delivery-changed');
         return;
       }
       if (Object.keys(serverErrors).length) {
-        S.focus('vf-errors');
+        VF_NAV.focusById('vf-errors');
         return;
       }
       if (problems.length || currentSlot == null) {
         // One problem goes straight to its field; several go to the summary that lists them.
         // The map can't carry aria-invalid, so it is focused directly.
-        if (problems.length > 1 || currentSlot == null) S.focus('vf-errors');
-        else if (problems[0].target === 'vf-map') S.focus('vf-map');
+        if (problems.length > 1 || currentSlot == null) VF_NAV.focusById('vf-errors');
+        else if (problems[0].target === 'vf-map') VF_NAV.focusById('vf-map');
         else VF_NAV.focusFirstInvalid();
         return;
       }
@@ -464,7 +464,9 @@ function vals(page) {
           removed.line,
           ...lines.slice(removed.index)
         ]);
-      page.setState({removed: null}, () => S.focusAfterRemoval('.ag-line__remove', removed.index));
+      page.setState({removed: null}, () =>
+        VF_NAV.focusAfterRemoval('.ag-line__remove', removed.index)
+      );
     },
     steps: [C.s1, C.s2, C.s3, C.s4].map(label => ({
       label
@@ -532,7 +534,7 @@ function vals(page) {
           lines: vfUndoCardAddition(page.state.lines, cardAddition),
           cardAddition: null
         });
-      S.focus('vf-add-card-' + cardAddition.line.id);
+      VF_NAV.focusById('vf-add-card-' + cardAddition.line.id);
     },
     cardsShown: !!cardAddon || live.some(vfLineHasCard),
     cardLines: live.map((l, i) => ({
@@ -559,7 +561,7 @@ function vals(page) {
           const added = vfAddCard(page.state.lines, l.id);
           if (added) page.setState(added);
         }
-        setTimeout(() => S.focus('vf-card-' + i), 0);
+        setTimeout(() => VF_NAV.focusById('vf-card-' + i), 0);
       }
     })),
     zone: delivery.zone,

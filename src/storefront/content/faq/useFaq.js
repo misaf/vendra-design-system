@@ -1,6 +1,6 @@
 // Page behavior. Edit here, then run npm run build.
 import {vfCopy} from './copy.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 import {vfFaqData} from '../../shell/structured-data.js';

@@ -195,7 +195,10 @@ const sharedFiles = [
   'src/platform/tenant/tenant.js',
   'src/storefront/shell/page-metadata.js',
   'src/storefront/shell/page-lifecycle.js',
-  'src/storefront/shell/navigation.js'
+  'src/storefront/shell/navigation.js',
+  'src/storefront/shell/consent.js',
+  'src/storefront/shell/shell-props.js',
+  'src/storefront/customer/saved-items.js'
 ];
 // The package helpers and the routing / focus helpers the shared logic imports, each in its own scope.
 const scoped = (name, ...files) =>

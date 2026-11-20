@@ -1,19 +1,23 @@
 // Page behavior. Edit here, then run npm run build.
+import {vfSavedItems} from '../saved-items.js';
+import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../../catalog/catalog.js';
 import {vfBagLine, vfLineDetail} from '../../cart/cart-lines.js';
 import {vfTokenText} from '../../catalog/catalog.js';
 import {vfLineQuantityMax} from '../../cart/cart-lines.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 import {vfPageRoute} from '../../shell/routing.js';
+
+const PREVIEW_SAVED = ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'];
+
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function useSaved(props) {
   const page = usePageLogic(props, page => {
     page.state = {
-      ids: ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'],
       removed: null,
       added: null
     };
@@ -23,10 +27,11 @@ export function useSaved(props) {
 }
 
 function vals(page) {
+  const savedItems = vfSavedItems(page, PREVIEW_SAVED);
   const S = vfShell(page, 'saved');
   const L = S.lang;
   const st = page.props.store;
-  const ids = st ? st.saved : page.state.ids;
+  const ids = savedItems.ids;
   const bag = st?.bag || [];
   // The confirmation and its Undo belong to the customer who added; another sign-in (e.g. in
   // another tab) replaces the bag, so it closes rather than undo in someone else's bag.
@@ -89,17 +94,14 @@ function vals(page) {
     undoRemove: () => {
       const id = page.state.removed;
       if (!id) return;
-      const store = page.props.store;
-      const current = store ? store.saved : page.state.ids;
+      const {ids: current, toggle} = vfSavedItems(page, PREVIEW_SAVED);
       const restored = current.includes(id) ? current : [...current, id];
       // Add only the removed code; never replace other saved changes with an earlier snapshot.
-      if (store) {
-        if (!current.includes(id)) store.toggleSave(id);
-      } else page.setState({ids: restored});
+      if (!current.includes(id)) toggle(id);
       const index = VF_PRODUCTS.filter(product => restored.includes(product.id)).findIndex(
         product => product.id === id
       );
-      page.setState({removed: null}, () => S.focusAfterRemoval('.ag-product__fav', index));
+      page.setState({removed: null}, () => VF_NAV.focusAfterRemoval('.ag-product__fav', index));
     },
     addedOpen: !!added,
     addedLines: added ? [added.line] : [],
@@ -137,11 +139,8 @@ function vals(page) {
       action: bagAction(p),
       remove: () => {
         page.setState({removed: p.id}, () => document.getElementById('vf-saved-undo')?.focus());
-        st
-          ? st.toggleSave(p.id)
-          : page.setState({
-              ids: ids.filter(x => x !== p.id)
-            });
+        const {ids: current, toggle} = vfSavedItems(page, PREVIEW_SAVED);
+        if (current.includes(p.id)) toggle(p.id);
       }
     }))
   };

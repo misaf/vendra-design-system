@@ -2,7 +2,7 @@
 import {VF_POLICY_UPDATED, vfCopy} from './copy.js';
 import {dates} from '../../../design-system/utils/dates.js';
 import {VF_FA_DIGITS} from '../../pricing/formatting.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {VF_POLICIES} from '../policy-documents.js';
 import {vfPageRoute} from '../../shell/routing.js';
 import {usePageLogic} from '../../shell/page-state.js';

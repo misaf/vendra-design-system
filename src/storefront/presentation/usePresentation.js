@@ -3,6 +3,7 @@
 // one by its code, a flower, a kind or the QR code on its tag, opens it full screen, builds a
 // shortlist to compare and an order to hand over, and passes either to the customer's phone as a
 // QR code. Unattended, it can play the designs as a slideshow.
+import {VF_NAV} from '../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {ToastQueue} from '../../design-system/components/ToastRegion/ToastRegion.jsx';
 import {
@@ -17,7 +18,7 @@ import {
   vfSearchProducts
 } from '../catalog/catalog.js';
 import {VF_LINES_PATTERN, vfBagLine, vfLinesParam} from '../cart/cart-lines.js';
-import {vfShell} from '../shell/navigation.js';
+import {vfShellNavigation} from '../shell/navigation.js';
 import {vfSeparator} from '../pricing/formatting.js';
 import {vfReadRoute, vfRouteUrl} from '../shell/routing.js';
 import {VF_CATEGORY_COPY} from '../catalog/categories.js';
@@ -681,7 +682,7 @@ export function usePresentation(props) {
 }
 
 function vals(page) {
-  const S = vfShell(page, 'presentation');
+  const S = vfShellNavigation(page, 'presentation');
   const L = S.lang;
   const C = vfCopy(S);
   const st = page.state;
@@ -1003,7 +1004,7 @@ function vals(page) {
     browse: () =>
       page.setState({browsing: true, panel: null}, () => {
         vfRestartIdle(page);
-        S.focus('vf-presentation-q');
+        VF_NAV.focusById('vf-presentation-q');
       }),
     resumeDisplay: () => page.setState({browsing: false, panel: null, ...vfViewerClosed()}),
     setDisplayMode: setting('displayMode'),
@@ -1026,7 +1027,7 @@ function vals(page) {
     noResults: !products.length,
     showAll: () => {
       page.setState({q: '', cat: 'all'});
-      S.focus('vf-presentation-q');
+      VF_NAV.focusById('vf-presentation-q');
     },
     showPrices: st.settings.showPrices,
     tiles: products.map((product, index) => ({

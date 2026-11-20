@@ -26,6 +26,31 @@ export const VF_NAV = (() => {
         h.focus({preventScroll: true});
       });
     },
+    // Wait briefly for a state update to render the requested element.
+    focusById(id) {
+      const attempt = remaining => {
+        const target = document.getElementById(id);
+        if (target) target.focus();
+        else if (remaining > 1) setTimeout(() => attempt(remaining - 1), 50);
+      };
+      setTimeout(() => attempt(10), 0);
+    },
+    // After removing a row, focus its neighbour or fall back to the page's content.
+    focusAfterRemoval(selector, index) {
+      setTimeout(() => {
+        const targets = [...document.querySelectorAll('main ' + selector)];
+        const target = /** @type {HTMLElement} */ (
+          targets[Math.min(index, targets.length - 1)] ||
+            document.querySelector('main a[href]') ||
+            document.querySelector('main h1')
+        );
+        if (target) {
+          if (!target.hasAttribute('tabindex') && target.tagName === 'H1')
+            target.setAttribute('tabindex', '-1');
+          target.focus();
+        }
+      }, 0);
+    },
     // Failed validation → focus the first invalid field (aria-invalid from the DS field components, or native :invalid).
     focusFirstInvalid(root) {
       after(() => {

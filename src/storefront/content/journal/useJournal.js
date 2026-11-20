@@ -3,7 +3,7 @@ import {VF_JCATS, VF_POSTS} from '../journal-content.js';
 import {vfJournalImage} from '../journal-images.js';
 import {vfSeparator} from '../../pricing/formatting.js';
 import {vfCopy} from './copy.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {VF_STORE} from '../../store/store-config.js';
 import {searchIndex, matchesSearch} from '../../catalog/search-index.js';

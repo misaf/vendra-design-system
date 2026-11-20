@@ -2,7 +2,7 @@
 import {vfCopy} from './copy.js';
 import {vfAccountExists, vfAccountLogin, vfAccountSave} from '../account-data.js';
 import {mobile as vfMobile} from '../../../design-system/utils/input.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';

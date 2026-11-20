@@ -1,4 +1,5 @@
 // Account preview with local, per-phone persistence. Copy and layout live beside this file.
+import {vfSavedItems} from '../saved-items.js';
 import {vfCopy} from './copy.js';
 import {
   VF_OCCASIONS,
@@ -14,7 +15,7 @@ import {VF_ZONES} from '../../delivery/delivery-zones.js';
 import {mobile as vfMobile} from '../../../design-system/utils/input.js';
 import {vfLoadLeaflet} from '../../../platform/browser/integrations/leaflet.js';
 import {vfLocationText, vfValidLocation} from '../../delivery/location.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {VF_ACCOUNT_TABS} from '../account-tabs.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {VF_STORE, vfFeatures, vfLiveStore} from '../../store/store-config.js';
@@ -78,6 +79,7 @@ export function useAccount(props) {
 }
 
 function vals(page) {
+  const savedItems = vfSavedItems(page, VF_ACCOUNT_SAVED);
   const S = vfShell(page, 'account'),
     C = vfCopy(S),
     E = C.editor,
@@ -163,7 +165,7 @@ function vals(page) {
         addresses = addresses.map((item, index) => ({...item, isDefault: index === 0}));
       return {...current, addresses};
     });
-    S.focus('vf-add-address');
+    VF_NAV.focusById('vf-add-address');
   };
   const reminders = account.reminders
     .slice()
@@ -202,7 +204,7 @@ function vals(page) {
             ...current,
             reminders: current.reminders.filter(x => x.id !== r.id)
           }));
-          S.focus('vf-add-reminder');
+          VF_NAV.focusById('vf-add-reminder');
         }
       };
     });
@@ -244,8 +246,8 @@ function vals(page) {
       });
       // Several problems go to the summary that lists them; one goes to its field. The map can't
       // carry aria-invalid, so it takes focus itself.
-      if (Object.keys(errors).length > 1) S.focus('vf-editor-errors');
-      else if (errors.location) S.focus('vf-address-map');
+      if (Object.keys(errors).length > 1) VF_NAV.focusById('vf-editor-errors');
+      else if (errors.location) VF_NAV.focusById('vf-address-map');
       else focusError();
       return;
     }
@@ -320,7 +322,7 @@ function vals(page) {
     zoom: VF_STORE.map.zoom,
     fail: () => page.setState({placesFailed: true})
   };
-  const saved = VF_PRODUCTS.filter(p => S.isFav(p.id, VF_ACCOUNT_SAVED));
+  const saved = VF_PRODUCTS.filter(p => savedItems.ids.includes(p.id));
   // Balance: top-ups and order payments, with the balance discount rule from VF_STORE.wallet.
   const W = C.balance,
     rules = VF_STORE.wallet,
@@ -396,7 +398,7 @@ function vals(page) {
         const error = vfTopUpError(amount);
         if (error) {
           page.setState({topUpError: error, topUpDone: ''});
-          S.focus('vf-topup-amount');
+          VF_NAV.focusById('vf-topup-amount');
           return;
         }
         // Demo payment: a real store confirms the top-up with its payment provider before adding it.
@@ -415,7 +417,7 @@ function vals(page) {
             topUpBusy: false,
             topUpDone: W.done.replace('{amount}', S.m(amount))
           });
-          S.focus('vf-topup-done');
+          VF_NAV.focusById('vf-topup-done');
         }, 600);
       },
       hasHistory: wallet.history.length > 0,
@@ -473,8 +475,8 @@ function vals(page) {
       price: S.m(p.price),
       stock: p.stock,
       remove: () => {
-        S.toggleFav(p.id, VF_ACCOUNT_SAVED)();
-        S.focusAfterRemoval('.ag-product__fav', i);
+        savedItems.toggle(p.id);
+        VF_NAV.focusAfterRemoval('.ag-product__fav', i);
       }
     })),
     addAddress: () => openAddress(null),

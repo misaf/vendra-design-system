@@ -134,6 +134,24 @@ test.describe('a first visit', () => {
     await expect(banner).toBeVisible();
   });
 
+  test('a standalone preview restores focus when reopened consent is dismissed', async ({page}) => {
+    await page.goto('/?page=faq');
+    const banner = page.getByRole('region', {name: 'Your privacy'});
+    const close = banner.getByRole('button', {name: 'Close without choosing'});
+    await close.click();
+    await expect(banner).toHaveCount(0);
+    await page.reload();
+    const settings = page.getByRole('button', {name: 'Cookie settings'});
+    await openFooterGroup(page, 'Help');
+    await expect(banner).toHaveCount(0);
+    await settings.press('Enter');
+    await expect(banner).toBeFocused();
+    await close.press('Enter');
+    await expect(banner).toHaveCount(0);
+    await expect(settings).toBeFocused();
+    expect(await page.evaluate(() => localStorage.getItem('vf-consent'))).toBeNull();
+  });
+
   test('on desktop the banner is a bar along the bottom that leaves the shop uncovered', async ({
     page
   }, info) => {

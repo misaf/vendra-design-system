@@ -1,4 +1,4 @@
-// Shared shell values: menus, tabs, store links, favorites and focus helpers.
+// Shared shell navigation: menus, tabs, store links and announcements.
 import {vfBrand} from '../store/brand.js';
 import {vfFindProduct, vfProductId} from '../catalog/catalog.js';
 import {VF_FREE_DELIVERY_THRESHOLD} from '../pricing/order-totals.js';
@@ -16,8 +16,7 @@ import {VF_SHELL} from './shell.js';
 import {vfDayMonth, vfDayName} from '../delivery/time.js';
 import {VF_SEO} from './seo.js';
 import {VF_NAV} from '../../platform/browser/page-focus.js';
-import {vfNow, vfOnServer, vfStoredValue} from '../../platform/browser/environment.js';
-import {vfRuntime} from '../../platform/browser/runtime.js';
+import {vfNow, vfStoredValue} from '../../platform/browser/environment.js';
 
 // When an order placed now arrives in the first zone: today until its cut-off, otherwise the next
 // open day ('' when none is open). sameDay says whether it is today.
@@ -56,17 +55,8 @@ export function vfAnnouncementText(lang, st, phone = false) {
     .replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'))
     .trim();
 }
-// A value saved on this device, or '' when storage is empty or blocked.
-export function vfStored(key) {
-  try {
-    return vfStoredValue(key) || '';
-  } catch {
-    return '';
-  }
-}
-// The shell's values for a page (header, menu, footer, consent, tabs) and its own bits of state on
-// the page object (menu, consent, favourites).
-export function vfShell(self, page) {
+// Assemble the shell's routes, links, and navigation controls for this page.
+export function vfShellNavigation(self, page) {
   const props = self.props,
     st = self.state || {},
     store = props.store;
@@ -147,51 +137,6 @@ export function vfShell(self, page) {
         lang
       });
     });
-  // Focuses an element by id, waiting a few frames for one that this update is about to render.
-  const focus = (id, tries = 10) =>
-    setTimeout(
-      () => {
-        const target = document.getElementById(id);
-        if (target) target.focus();
-        else if (tries > 1) focus(id, tries - 1);
-      },
-      tries === 10 ? 0 : 50
-    );
-  // Consent banner: shown until the visitor chooses, and again from "Cookie settings" in the footer.
-  // Closing it makes no choice (so nothing is sent) and hides it for this browser session only.
-  let dismissed = !!st.vfConsentDismissed;
-  try {
-    dismissed = dismissed || vfStoredValue('vf-consent-dismissed', true) === '1';
-  } catch {}
-  const consentShown =
-    (!(st.vfConsent ?? (vfOnServer() ? '' : vfRuntime.track.consent())) && !dismissed) ||
-    !!st.vfConsentOpen;
-  const hideConsent = patch => {
-    const reopened = st.vfConsentOpen;
-    self.setState({...patch, vfConsentOpen: false});
-    if (reopened) focus(self._vfConsentTrigger || 'vf-consent-settings');
-  };
-  const choose = value => {
-    vfRuntime.track.setConsent(value);
-    hideConsent({vfConsent: value});
-  };
-  const consent = {
-    shown: consentShown,
-    accept: () => choose('all'),
-    essential: () => choose('essential'),
-    close: () => {
-      try {
-        sessionStorage.setItem('vf-consent-dismissed', '1');
-      } catch {}
-      hideConsent({vfConsentDismissed: true});
-    },
-    policy: policyLink('privacy'),
-    open: event => {
-      self._vfConsentTrigger = event?.currentTarget?.id || 'vf-consent-settings';
-      self.setState({vfConsentOpen: true});
-      focus('vf-consent');
-    }
-  };
   const shopLink = cat => ({
     href: vfRouteUrl({lang: L, view: 'shop', cat})
   });
@@ -250,8 +195,7 @@ export function vfShell(self, page) {
       ? {before: F.credit, name: VF_STORE.credit.name, url: VF_STORE.credit.url}
       : null
   };
-  const count = store ? store.count : 2,
-    favList = store ? store.saved : st.vfFavs;
+  const count = store ? store.count : 2;
   return {
     href,
     policyLink,
@@ -315,23 +259,7 @@ export function vfShell(self, page) {
     },
     vfAnnouncement: st.vfAnnouncement || '',
     menuOpen: !!st.vfMenu,
-    focusAfterRemoval: (selector, index) =>
-      setTimeout(() => {
-        const targets = [...document.querySelectorAll('main ' + selector)];
-        const target = /** @type {HTMLElement} */ (
-          targets[Math.min(index, targets.length - 1)] ||
-            document.querySelector('main a[href]') ||
-            document.querySelector('main h1')
-        );
-        if (target) {
-          if (!target.hasAttribute('tabindex') && target.tagName === 'H1')
-            target.setAttribute('tabindex', '-1');
-          target.focus();
-        }
-      }, 0),
-    focus,
     footer,
-    consent,
     openMenu: () =>
       self.setState({
         vfMenu: true
@@ -369,21 +297,6 @@ export function vfShell(self, page) {
     phoneHref: 'tel:' + VF_STORE.phone,
     phoneLabel: VF_STORE.phoneLabel,
     instagram: VF_STORE.instagram,
-    // The store's card for card-to-card transfers, in the page's language; null when it doesn't take them.
-    payment: (card => (card ? {...card, holder: card.holder[L], bank: card.bank[L]} : null))(
-      VF_STORE.paymentMethods.find(method => method.id === 'card')
-    ),
-    isFav: (id, def) => (favList || def).includes(id),
-    toggleFav: (id, def) => () => {
-      if (store) {
-        store.toggleSave(id);
-        return;
-      }
-      const c = st.vfFavs || def;
-      self.setState({
-        vfFavs: c.includes(id) ? c.filter(x => x !== id) : [...c, id]
-      });
-    },
     tabs: [
       {
         id: 'home',
