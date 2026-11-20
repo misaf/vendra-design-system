@@ -3,15 +3,15 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
-import {VF_API_FAQ_CATEGORIES, VF_API_FAQS} from '../app/[locale]/(storefront)/faq/copy.js';
-import {VF_API_ORDERS} from '../src/storefront/customer/account-data.js';
+import {VF_API_FAQ_CATEGORIES, VF_API_FAQS} from '../src/storefront/content/faq/copy.js';
+import {VF_API_ORDERS} from '../src/storefront/orders/order-records.js';
 import {
   VF_API_PRODUCT_PRICES,
   VF_API_MULTIMEDIA,
   VF_API_PRODUCTS,
-  vfApiRecord,
-  vfSampleBag
+  vfApiRecord
 } from '../src/storefront/catalog/catalog.js';
+import {vfSampleBag} from '../src/storefront/cart/cart-lines.js';
 import {
   VF_API_DELIVERY_ZONES,
   VF_API_DELIVERY_SCHEDULE,

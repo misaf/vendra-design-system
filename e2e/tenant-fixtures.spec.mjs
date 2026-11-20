@@ -62,10 +62,10 @@ for (const tenant of [null, ...TENANTS]) {
 }
 
 test('styles.css carries no tenant; tokens/tenants.css carries them all for cards', () => {
-  expect(fs.readFileSync(path.join(ROOT, 'ui/storefront.css'), 'utf8')).not.toContain(
-    'tokens/tenants'
-  );
-  const all = fs.readFileSync(path.join(ROOT, 'ui/tokens/tenants.css'), 'utf8');
+  expect(
+    fs.readFileSync(path.join(ROOT, 'src/design-system/storefront.css'), 'utf8')
+  ).not.toContain('tokens/tenants');
+  const all = fs.readFileSync(path.join(ROOT, 'src/design-system/tokens/tenants.css'), 'utf8');
   for (const tenant of TENANTS) expect(all).toContain(`@import url('tenants/${tenant}.css');`);
 });
 

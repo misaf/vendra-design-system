@@ -1,5 +1,5 @@
 // The same order details the customer reviews, ready for an explicit WhatsApp handoff.
-import {vfCardMessages, vfLineToken} from '../catalog/catalog.js';
+import {vfCardMessages, vfLineToken} from '../cart/cart-lines.js';
 import {vfDeliveryWhen} from '../delivery/time.js';
 import {vfZone} from '../delivery/delivery.js';
 import {VF_MONEY, VF_FA_DIGITS} from '../pricing/formatting.js';

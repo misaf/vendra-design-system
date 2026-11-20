@@ -15,15 +15,7 @@
     "noUnusedLocals": true,
     "skipLibCheck": true
   },
-  "include": [
-    "shared/**/*",
-    "src/storefront/**/*",
-    "types/*.d.ts",
-    "session/**/*",
-    "components/storefront/**/*",
-    "app/**/*.js",
-    "app/**/*.jsx"
-  ],
-  // Browser specs run in Node under Playwright, like the package components' specs.
-  "exclude": ["app/_components/**", "**/*.spec.mjs", "**/*.test.mjs"]
+  "include": ["src/storefront/**/*", "src/platform/browser/**/*", "src/platform/tenant/**/*"],
+  // Browser specs run in Node under Playwright.
+  "exclude": ["src/platform/browser/vendor/**", "**/*.spec.mjs", "**/*.test.mjs"]
 }

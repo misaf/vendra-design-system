@@ -1,4 +1,4 @@
-// The build's precompressed copies (build/compress.mjs) and the reference server that serves them
+// The build's precompressed copies (tools/build/compress.mjs) and the reference server that serves them
 // (deployment/nginx.conf): text files of MIN_SIZE or more get a .br and a .gz copy that decompress to
 // the same bytes; small files, fonts and photos get none; and the server caches only Next.js's
 // content-hashed folder forever.
@@ -8,7 +8,7 @@ import os from 'node:os';
 import path from 'node:path';
 import zlib from 'node:zlib';
 import {fileURLToPath} from 'node:url';
-import {precompress, MIN_SIZE} from '../build/compress.mjs';
+import {precompress, MIN_SIZE} from '../tools/build/compress.mjs';
 
 const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-compress-test-'));
@@ -50,7 +50,7 @@ try {
   fs.rmSync(outDir, {recursive: true, force: true});
 }
 
-const build = fs.readFileSync(path.join(templates, 'next/finish-export.mjs'), 'utf8');
+const build = fs.readFileSync(path.join(templates, 'tools/next/finish-export.mjs'), 'utf8');
 assert.match(build, /await precompress\(out\);/);
 const nginx = fs.readFileSync(path.join(templates, 'deployment/nginx.conf'), 'utf8');
 const block = location => {

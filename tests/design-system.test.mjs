@@ -5,10 +5,10 @@ import {pathToFileURL} from 'node:url';
 import React from 'react';
 import {renderToString} from 'react-dom/server';
 import {commerce} from '../src/storefront/commerce/commerce.js';
-import theme from '../ui/tokens/tenant-theme.js';
+import theme from '../src/design-system/tokens/tenant-theme.js';
 import {loadDesignSystem} from './load-design-system.mjs';
 
-const ui = path.resolve(import.meta.dirname, '../ui');
+const ui = path.resolve(import.meta.dirname, '../src/design-system');
 const ds = await loadDesignSystem();
 
 assert.equal(typeof globalThis.window, 'undefined');

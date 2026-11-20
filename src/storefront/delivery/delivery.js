@@ -5,12 +5,13 @@
 // functions below pass this store's data to them.
 // maxDistanceKm is the zone's reach from its center (default: the studio pin in store-config.js). The
 // delivery pin picks the smallest zone that reaches it; a pin beyond every zone is outside the delivery area.
-import {vfLineHasCard, vfLineToken, vfFindProduct, vfLineProductId} from '../catalog/catalog.js';
+import {vfFindProduct} from '../catalog/catalog.js';
+import {vfLineHasCard, vfLineToken, vfLineProductId} from '../cart/cart-lines.js';
 import {vfValidLocation} from './location.js';
 import {VF_PROMOS} from '../pricing/promotions.js';
 import {VF_STORE, vfFeatures} from '../store/store-config.js';
 import {commerce} from '../commerce/commerce.js';
-import {vfNow} from '../../../shared/platform/environment.js';
+import {vfNow} from '../../platform/browser/environment.js';
 
 // GET /api/delivery/zones
 export const VF_API_DELIVERY_ZONES = [

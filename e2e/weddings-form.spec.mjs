@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test';
 import {openSite, scanAxe} from './helpers.mjs';
-import {vfCopy} from '../app/[locale]/(storefront)/weddings/copy.js';
+import {vfCopy} from '../src/storefront/content/weddings/copy.js';
 
 for (const lang of ['en', 'fa']) {
   test(`weddings form preserves every field through failed retry and edit (${lang})`, async ({

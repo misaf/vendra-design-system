@@ -1,30 +1,28 @@
 # Florist storefront
 
-The repository root is the Next.js app. Start with the folder for the URL you want to edit. A route's screen, logic, copy, styles and tests live beside its `page.tsx`. Put route-specific UI in its `_components/` folder.
+Start at the feature you want to change. Next.js route files in `src/app/` select the screen and handle route parameters and metadata. Screens, state, bilingual copy, styles, and browser component specs live with the owning capability.
 
 | Change | Source |
 | --- | --- |
-| Home, catalog, product, journal, contact, account and tracking | `app/[locale]/(storefront)/` |
-| Bag, delivery form and checkout | `app/[locale]/(checkout)/` |
-| In-store presentation | `app/[locale]/presentation/` |
-| Storefront header, footer or cross-route UI such as the order summary | `components/storefront/` |
-| Reusable UI components and design tokens | `ui/` |
-| Cart, order and sign-in state across routes and languages | `session/useStorefrontSession.js` |
-| Products, delivery, prices, payments, and customer accounts | `src/storefront/` |
-| Laravel API transport and response adapters | `server/vendra/` |
-| Routing and browser services | `shared/` |
+| Home, shop, product, and search | `src/storefront/catalog/` |
+| Bag and line items | `src/storefront/cart/` |
+| Delivery choices, rules, and slots | `src/storefront/delivery/` |
+| Totals, discounts, and order summary | `src/storefront/pricing/` |
+| Checkout, payments, and recovery | `src/storefront/checkout/` |
+| Sign-in, account, and saved products | `src/storefront/customer/` |
+| Orders and tracking | `src/storefront/orders/` |
+| Journal, policy, FAQ, contact, and weddings | `src/storefront/content/` |
+| In-store presentation | `src/storefront/presentation/` |
+| Header, footer, navigation, and session coordination | `src/storefront/shell/` |
+| Laravel transport and browser integrations | `src/platform/` |
 
-The [migration checkpoints](./STOREFRONT-MIGRATION.md) record the earlier storefront migration.
-
-Next.js omits route groups from the public URL. For example, the checkout group serves `/en/bag/` and `/en/checkout/`. The root document keeps the session above the locale segment. Use the shared storefront components for page chrome and keep checkout-specific state in the checkout route.
+Route groups are omitted from public URLs. The checkout group serves `/en/bag/` and `/en/checkout/`. The root document mounts the session coordinator above the locale segment, so draft state survives route and language changes.
 
 ## Editing a page
 
-Checkout's `page.tsx` selects the screen in the same directory. `CheckoutScreen.jsx` combines `useCheckout.js` with `CheckoutView.jsx`. The hook owns state and effects, and the view composes the route's components. Import shared UI controls directly from their files in `ui/`.
+A route's `page.tsx` imports its screen. For checkout, `src/storefront/checkout/order-checkout/` owns `CheckoutScreen.jsx`, `useCheckout.js`, and `CheckoutView.jsx`. The hook owns effects and state, and the view composes its components. Shared controls come from `src/design-system/components/`.
 
-The Next.js layout uses `app/_components/StorefrontDocument.jsx` to initialize browser integrations and keep `session/useStorefrontSession.js` mounted across page and language changes. The `usePageLogic` and `useLifecycle` helpers in `shared/services/page-state.js` support page-local state and effects. `useStorefrontPage` in `shared/services/page-lifecycle.js` handles analytics, document updates and heading focus.
-
-`copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
+Keep English and Persian keys and list shapes in sync in `copy.js`. Unit tests check parity.
 
 ## Business capabilities
 
@@ -32,7 +30,7 @@ Use `src/storefront/<capability>/` for the rules, sample data, and shared biling
 
 The import checker allows capability modules to use each other, platform helpers, pure design-system utilities, and generated tenant data. Browser services may use these capabilities. Reusable controls and presentational route components receive business data through props. `npm test` checks these import boundaries and detects cycles.
 
-**Adding a page:** add a folder and `page.tsx` in the appropriate `app/[locale]/` route group. Keep the screen, state, copy, styles and tests in the route folder. Register the storefront URL in `shared/services/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
+**Adding a page:** add a folder and `page.tsx` in the appropriate `src/app/[locale]/` route group. Keep the screen, state, copy, styles, and tests with the owning capability under `src/storefront/`. Register the storefront URL in `src/storefront/shell/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
 
 ## Commands
 
@@ -47,21 +45,21 @@ npm test        # typecheck, storefront logic, generation, copy parity, design s
 npm run test:e2e  # Playwright: axe, screenshots, cards, tenants
 npm run build:app                       # build the Next.js server
 npm run preview                         # start the server at http://localhost:3000/
-npm run build:demo                      # export to next/out/
+npm run build:demo                      # export to .generated/export/
 npm run preview:demo                    # serve the static export at http://127.0.0.1:3000/
 npm run test:e2e:build  # the storefront specs against the production build, plus the performance budgets
 npm run test:e2e:remote  # optional: the same tests on a Linux server over ssh (see Browser tests)
 ```
 
 - **One page on its own:** `/en/?page=checkout` renders that page with its default props.
-- **Tenant list only:** `node build/generate.mjs` from the repository root rewrites `_runtime/tenant-slugs.js` from `ui/tokens/tenants/`.
+- **Tenant list only:** `node tools/build/generate.mjs` from the repository root rewrites `.generated/tenant-slugs.js` from `src/design-system/tokens/tenants/`.
 
 ## GitHub Pages demo
 
 `.github/workflows/ci.yml` builds and deploys the Next.js export when CI passes on `master`.
 Repository Settings → Pages → Source must be **GitHub Actions**. CI sets
 `VF_BASE_PATH=/<repository-name>` so scripts, images and tenant themes use the repository path.
-The uploaded artifact is `next/out/`.
+The uploaded artifact is `.generated/export/`.
 
 The repository's Pages root opens the storefront; direct links can select a view and language:
 `https://misaf.github.io/vendra-design-system/en/presentation/`. This hosts the
@@ -69,7 +67,7 @@ sample-data demo; live API services need their own backend.
 
 ### Prerendering and hydration
 
-`build/routes.mjs` lists the localized views, categories, products, journal posts and policies. The
+`tools/build/routes.mjs` lists the localized views, categories, products, journal posts and policies. The
 Next.js App Router exports each one with its rendered HTML, title, canonical URL, language alternates,
 share metadata, and JSON-LD. The shared React renderer provides the initial view and metadata to the
 export. The browser hydrates the same markup for a first visit. Returning visitors and query-driven
@@ -140,16 +138,16 @@ The jobs still run in the pinned Playwright image, so the `-linux.png` baselines
 
 ## Component tests
 
-Component folders in `ui/components/` colocate `<Name>.spec.mjs` and `<Name>.fixture.jsx`. The ChoiceGroup fixture and spec also exercise ChoiceTile in its required group context.
+Component folders in `src/design-system/components/` colocate `<Name>.spec.mjs` and `<Name>.fixture.jsx`. The ChoiceGroup fixture and spec also exercise ChoiceTile in its required group context.
 
 - **Fixture:** exports `Fixture({lang})`, which renders the component in the states the spec needs, with plain `<output data-test=…>` elements for what callbacks report. The host page `e2e/fixtures/component.html?component=<Name>&lang=en|fa` renders it inside `VendraProvider`, with the page's `lang` and `dir` set.
 - **Spec:** imports `openComponent`, `expectAccessible` and the shared helpers from `e2e/component-test.mjs`. It tests the component's role and name, keyboard use, built-in wording in both languages and its main props, and ends with `expectAccessible` (axe in English and Persian). Use customer-facing names for the tests. The [browser tests](#browser-tests) cover cross-component storefront flows.
-- **Running:** `npx playwright test -c e2e/playwright.config.mjs --project=components` runs them all; add the folder's path to run one (`ui/components/FilterBar`). They run in the `components` project on the dev server, at desktop width; a spec sets another viewport where it matters. The production-build run skips them.
+- **Running:** `npx playwright test -c e2e/playwright.config.mjs --project=components` runs them all; add the folder's path to run one (`src/design-system/components/FilterBar`). They run in the `components` project on the dev server, at desktop width; a spec sets another viewport where it matters. The production-build run skips them.
 - **Guard:** `npm test` fails when a component folder has no spec that opens its fixture. The development server compiles the fixtures for browser tests.
 
 ### Storefront component tests
 
-Storefront components may have the same pair beside them under their route or in `components/storefront/` (`<Name>.spec.mjs` and `<Name>.fixture.jsx`). The fixture renders the component with controlled state and explicit English/Persian copy, the way a View would; the spec tests its prop and callback contract (controlled values, `onX` wiring, conditional branches) and ends with `expectStorefrontAccessible`.
+Storefront components may have the same pair beside them under their route or in `src/storefront/shell/components/` (`<Name>.spec.mjs` and `<Name>.fixture.jsx`). The fixture renders the component with controlled state and explicit English/Persian copy, the way a View would; the spec tests its prop and callback contract (controlled values, `onX` wiring, conditional branches) and ends with `expectStorefrontAccessible`.
 
 - **Host:** `e2e/fixtures/storefront-component.html?component=<Name>&lang=en|fa` loads the storefront's Tailwind, design-system and page styles and renders the fixture inside `VendraProvider`. Specs open it with `openStorefrontComponent` from `e2e/component-test.mjs`.
 - **Running:** `npx playwright test -c e2e/playwright.config.mjs --project=storefront-components` (dev server, desktop width; CI runs it with the development suite).
@@ -158,22 +156,22 @@ Storefront components may have the same pair beside them under their route or in
 
 ## Runtime and export
 
-`_runtime/` is generated; never edit it.
+`.generated/` is generated; never edit it.
 
-- **`app/[locale]/`** owns localized pages and layouts. The `(storefront)` group covers home, catalog, account, tracking and content, `(checkout)` covers bag and checkout, and `presentation/` serves the counter display. The root document keeps the session alive across groups and language switches. `server/` builds the initial route and metadata and is the home for future request-scoped Laravel integration.
+- **`src/app/[locale]/`** owns localized pages and layouts. The `(shop)`, `(checkout)`, `(account)`, and `(content)` route groups organize pages by area. `presentation/` serves the counter display. The root document keeps the session alive across groups and language switches. `src/app/_server/` builds the initial route and metadata and is the home for future request-scoped Laravel integration.
 - **Public URLs** use `/<locale>/` in links, canonical and alternate tags, and the sitemap.
-- **Navigation:** `next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
-- **Build** uses `build:app` for the Node-hosted app and `build:demo` for the static reference demo. The demo exports every known address through Next.js to `next/out/`. It serves the design system’s fonts and tenant CSS at their existing public paths.
-- **Components:** the app imports them from `ui/` directly. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
+- **Navigation:** `tools/next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
+- **Build** uses `build:app` for the Node-hosted app and `build:demo` for the static reference demo. The demo exports every known address through Next.js to `.generated/export/`. It serves the design system’s fonts and tenant CSS at their existing public paths.
+- **Components:** the app imports them from `src/design-system/` directly. The guideline cards (`src/design-system/gallery/**/*.card.jsx`) import `src/design-system/gallery/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Tests** keep feature-specific tests next to the feature and put live-server and static-export smoke specs in [`e2e/smoke/`](../e2e/smoke/). The existing browser fixtures and screenshot baselines remain under `e2e/`.
 
 ## Styling rules
 
 - **Tailwind 4.3.3, local build, `tw:` prefix:** spacing numbers follow Vendra's scale (`tw:gap-5` = `--space-5`). Use the named layout utilities (`max-w-page`, `px-gutter`, `h-tap`, `z-header`, `rounded-control`…) and the semantic colours (`bg-page`, `text-body`).
 - **Utilities first:** use logical sides (`ps-`/`pe-`) and write complete class names. Add `!` only to beat unlayered component styles. Preflight is off.
-- **Custom CSS** is for contextual selectors and component internals, in `styles/*.css` or the page's `styles.css`. No inline styles. `vf-` classes may exist only as hooks.
+- **Custom CSS** is for contextual selectors and component internals, in `src/app/_styles/*.css` or the page's `styles.css`. No inline styles. `vf-` classes may exist only as hooks.
 - **Page families** (`page-layouts.css`): `vf-shopping` (1240px), `vf-form` and `vf-info` (1088px). Use `vf-product-grid` for product grids.
-- **Breakpoints:** `@media` takes only 768px, 1024px and 1440px (`--breakpoint-md/lg/xl` in `ui/tokens/spacing.css`), in range syntax (`(width < 768px)`); `lint:css` rejects any other width. Finer cases are container queries: the shell's `vf-page` is a container, so page CSS can write `@container (width < 360px)`, and components lay out by their own width.
+- **Breakpoints:** `@media` takes only 768px, 1024px and 1440px (`--breakpoint-md/lg/xl` in `src/design-system/tokens/spacing.css`), in range syntax (`(width < 768px)`); `lint:css` rejects any other width. Finer cases are container queries: the shell's `vf-page` is a container, so page CSS can write `@container (width < 360px)`, and components lay out by their own width.
 - **Density:** `data-density="compact" | "comfortable" | "tv"` on a container rescales the spacing, control heights, tap minimum, focus ring and type inside it (comfortable is the default). Overlays open outside the page, so pair it with `<VendraProvider density="…">`, as the presentation does on a TV. Don't restyle `.ag-*` classes for a screen size; change the density.
 - **Layout tiers:** phone (< 768px), tablet (768–1023px) and desktop (1024px up) are chosen in CSS, never in JavaScript: the shell and views render every structure and Tailwind's `md:`/`lg:` (or `max-md:`/`max-lg:`) variants show one, so the first paint is the final layout. Phones get the compact header, the tab bar and the page's sticky action; tablets the menu header with the language switch and account but no tab bar; desktops the full header. Hide a component root with the important form (`tw:max-md:hidden!`), since the package's layers sit above Tailwind's utilities. JavaScript reads `matchMedia` only inside effects, for behaviour such as closing the menu or the shop's Filters dialog when the window widens.
 - **Mobile:** one primary action per mobile page, placed above the tab bar. Arch frames only on the wedding hero and the main product image. Check EN and FA at 320px, 390px, 768px and desktop width.
@@ -181,7 +179,7 @@ Storefront components may have the same pair beside them under their route or in
 ## TV mode
 
 The storefront runs on a television, read from about 3 metres and driven by a remote's arrows and OK
-(Enter). `main.jsx` decides before the first render (`shared/services/tv.js` → `vfApplyTvMode`) and sets
+(Enter). The storefront document decides before the first render (`src/platform/browser/tv.js` → `vfApplyTvMode`) and sets
 `data-density="tv"` on `<html>`; the Shell passes the same density to `VendraProvider` for the overlays.
 First match wins:
 
@@ -195,18 +193,18 @@ First match wins:
 
 In TV mode:
 
-- **Sizes** come from the `tv` density (`ui/tokens/spacing.css`, `typography.css`): 24px body text, 64px
+- **Sizes** come from the `tv` density (`src/design-system/tokens/spacing.css`, `typography.css`): 24px body text, 64px
   tap minimum, 1760px content width and 48px gutters. Controls with a fixed size (the shell's text
   links, LanguageSwitch, Breadcrumb links, Gallery dots, Checkbox and Switch rows, the QuantityInput
   count, RangeSlider thumbs) take at least `--control-h-xs` (48px), so nothing interactive is smaller.
 - **Arrow keys** move focus to the nearest item in that direction (`useVfRemoteNavigation`, on
-  `ui/utils/spatial.js`): header, product grids, carousels, filters and the controls of an
+  `src/design-system/utils/spatial.js`): header, product grids, carousels, filters and the controls of an
   open dialog. Directions are physical, so Persian (RTL) needs no mirroring. Tab order and what
   screen readers announce don't change. Widgets that use the arrows themselves keep them: tabs,
   lists, menus, radio groups, sliders, the Lightbox, and the caret in text fields (up and down
   still leave a text field). With nothing in that direction, the arrow scrolls the page.
 - **Focus** shows the thicker `tv` ring (`--focus-width`, `--focus-offset`) plus a glow of
-  `--focus-ring` around the control, or around the card whose link has focus (`ui/tokens/base.css`).
+  `--focus-ring` around the control, or around the card whose link has focus (`src/design-system/tokens/base.css`).
 
 The `tv` Playwright project (1920×1080, no touch) runs `tv.spec.mjs`: home, shop and product in
 both languages with no horizontal overflow and no control under 48px, and the arrow keys reaching
@@ -228,14 +226,14 @@ and pressing Add to bag.
   - **Shortlist and order:** designs can be starred into a shortlist to compare side by side, or added to an order. The shortlist goes to the customer's phone as a QR code or WhatsApp link to `saved/?ids=…`; the order goes as one to `bag/?lines=…`. The site adds them to the visitor's own saved list or bag once, then drops them from the address.
   - **Settings:** show prices (including order lines and totals), Ready designs only, hide sold-out designs, keep the screen on, full screen, a slideshow after a minute untouched, and a PIN in front of the settings. They are kept on the device under `vf-presentation`. Clearing a search/category preserves these device settings. A rejected screen wake lock is retried only on a visibility change or a setting toggle.
   - **Quiet operation:** offline/reconnect notices, stock refresh failures and photo warnings stay in Seller tools while displaying products. A failed first photo uses a neutral placeholder; later failures retain the current product. The seller can retry photos from the drawer.
-  - **Offline and stock:** in a production build the page registers `app/sw.js`, so the tablet keeps working when the Wi-Fi drops. With a live API it refreshes stock every two minutes.
+  - **Offline and stock:** in a production build the page registers `src/platform/browser/service-worker.js`, so the tablet keeps working when the Wi-Fi drops. With a live API it refreshes stock every two minutes.
 - **Checkout** stores the finished order in session storage. Track shows it, and Order again refills the bag.
 - **Sign-out leaves no personal data:** the sample account (profile, addresses with recipients' names and mobiles, reminders, wallet) is kept under `vf-account:<mobile>` only while signed in. `vfAccountSignOut` (`src/storefront/customer/account-data.js`) removes every `vf-account*` key, the signed-in customers' `vf-online-payment:*` records, the saved-items id cache (`vendra-saved-map`) and the newsletter email, and the site session keeps only the guest's drafts and history. A tenant app connected to the API loads this data from the server per session (memory, or `sessionStorage` at most) and never writes addresses, recipients, reminders or wallet data to `localStorage` (`API.md`, B11).
 - **Account balance:** top-ups are simulated. Paying from a balance of at least `wallet.discountFrom` takes `discountPercent` off the products. A real store keeps the balance on its server.
 - **Delivery pin:** a Leaflet map with OpenStreetMap tiles; point `VF_STORE.map.tiles` at another provider for real traffic. If the map fails, a typed address (`noMap`) replaces the pin.
-- **Simulated, local only:** sign-in codes, payments, reminders, saved items, recently viewed, the newsletter flag and the consent choice (`vf-consent`). Only `shared/services/integrations/api.js` talks to the backend, and only when `apiBase` is set.
+- **Simulated, local only:** sign-in codes, payments, reminders, saved items, recently viewed, the newsletter flag and the consent choice (`vf-consent`). Only `src/platform/browser/integrations/api.js` talks to the backend, and only when `apiBase` is set.
 - **Policies and contact:** policy text is sample copy that reads fees and areas from `delivery.js`, so it stays current. Replace it with the florist's own policies before launch.
-- **Preview states:** add `?tenant=clay` (any tenant in `ui/tokens/tenants/`) for another theme; `en/shop/?min=2000000&max=4000000&stock=1`; `fa/shop/?demo=loading` or `?demo=error` (Retry restores results); `en/journal/?demo=loading`; `fa/journal/missing-story/`; `en/track/VB-TEST-1/` (cancelled sample). Checkout takes `demo=error` for the online payment simulation; fill the bag's delivery form first, since an empty bag redirects to the bag page.
+- **Preview states:** add `?tenant=clay` (any tenant in `src/design-system/tokens/tenants/`) for another theme; `en/shop/?min=2000000&max=4000000&stock=1`; `fa/shop/?demo=loading` or `?demo=error` (Retry restores results); `en/journal/?demo=loading`; `fa/journal/missing-story/`; `en/track/VB-TEST-1/` (cancelled sample). Checkout takes `demo=error` for the online payment simulation; fill the bag's delivery form first, since an empty bag redirects to the bag page.
 - **Store configuration** (`src/storefront/store/store-config.js`): payment methods (order, card/holder/Sheba, pay-on-delivery zones), optional `features`, `languages`, contact channels (`null` hides one), the payment demo result, currency and API base. Run `npm run build` after changing it.
 - **Integration boundaries:** authentication and payment services come from the consuming project. Reminders are stored locally and send nothing; communication renderers return strings; WhatsApp links open only when clicked. Analytics keep a small local log and reach `vfRuntime.track.subscribe` listeners only after consent, without contact details. `page_view` and `purchase` also say where the visit came from: the landing link's `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` and `utm_term` and the referring site's host (`vfRuntime.track.attribution()`), kept for the tab in session storage (`vf-attribution`) only after the visitor accepts analytics. A tagged landing replaces it; an untagged one (including a return from the bank) keeps the tab's first source. Tag the links the store shares so each channel shows up: the Instagram bio (`?utm_source=instagram&utm_medium=social`), WhatsApp messages (`utm_source=whatsapp&utm_medium=message`) and the presentation's send links (`utm_source=counter&utm_medium=qr`). `deployment/` files use `example.test`: update paths, domain and sitemap entries for the real host.
 
@@ -264,7 +262,7 @@ and are skipped with bounded retry backoff; the seller can retry immediately. Th
 retains versioned files for open displays during updates, with a bounded cache scoped to this app.
 Photo-only mode excludes sold-out designs; other caption modes label them when included.
 
-The sample catalog uses locally stored AI-generated product photography; see `assets/products/README.md`.
+The sample catalog uses locally stored AI-generated product photography; see `public/assets/products/README.md`.
 It illustrates fictional products and is not evidence of a real shop's inventory.
 
 The permanent `touch-phone`, `tablet` and `tv` Playwright projects exercise real Chromium touch input,
@@ -285,7 +283,7 @@ npm run preview:demo
 ```
 
 The dev and demo preview servers open on port 3000. The demo build exports every address
-in `build/routes.mjs` to `next/out/` with the existing React view HTML, metadata and structured data.
+in `tools/build/routes.mjs` to `.generated/export/` with the existing React view HTML, metadata and structured data.
 The browser takes over the shopping flow and restores the visitor's bag and checkout state. The
 export's `404.html` lets tracking links with runtime order IDs and older product or journal links
 boot the storefront at the requested address.

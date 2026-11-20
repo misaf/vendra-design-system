@@ -1,8 +1,8 @@
 import {test, expect} from '@playwright/test';
 import {openSite, scanAxe} from './helpers.mjs';
 import {reachable, tap, fill, finish} from './device-helpers.mjs';
-import {vfCopy as weddingCopy} from '../app/[locale]/(storefront)/weddings/copy.js';
-import {vfCopy as presentationCopy} from '../app/[locale]/presentation/copy.js';
+import {vfCopy as weddingCopy} from '../src/storefront/content/weddings/copy.js';
+import {vfCopy as presentationCopy} from '../src/storefront/presentation/copy.js';
 
 test.use({reducedMotion: 'reduce'});
 test.beforeEach(async ({page}, info) => {

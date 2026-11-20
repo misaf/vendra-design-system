@@ -3,7 +3,7 @@
 // Map tiles and the starting view are set in store-config.js (VF_STORE.map).
 import {VF_FA_DIGITS} from '../pricing/formatting.js';
 import {commerce} from '../commerce/commerce.js';
-import {vfAssetBase} from '../../../shared/platform/environment.js';
+import {vfAssetBase} from '../../platform/browser/environment.js';
 import {VF_MAPS_APPS} from './location-messages.js';
 
 export function vfValidLocation(location) {

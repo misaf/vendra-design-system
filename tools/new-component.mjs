@@ -179,13 +179,13 @@ execFileSync(
 );
 
 console.log(`Created ${componentPath}/ (${Object.keys(files).join(', ')}).
-Added it to ui/index.js${css ? ', ' + componentsFolder + '/index.css' : ''}${
+Added it to src/design-system/index.js${css ? ', ' + componentsFolder + '/index.css' : ''}${
   wording ? ' and the ComponentMessages type' : ''
 }.
 
 Next:
   1. Fill in the TODOs; use it in a storefront template (npm test fails on a component no page or
-     component uses), and add it to a guideline card in guidelines/components/.
+     component uses), and add it to a guideline card in src/design-system/gallery/components/.
   2. npm run format && npm run build
   3. npm run check && npm test
   4. npm run test:e2e:dev -- --project=components ${componentPath}

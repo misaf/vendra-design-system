@@ -22,9 +22,9 @@ for (const [name, folder] of Object.entries(routeFolders)) {
 }
 console.log('Passed page folders: sources, views and no duplicated runtime CSS.');
 
-const tailwind = fs.readFileSync(path.join(root, '_runtime/tailwind.css'), 'utf8');
+const tailwind = fs.readFileSync(path.join(root, '.generated/tailwind.css'), 'utf8');
 assert.ok(!tailwind.includes('.vf-'), 'Custom selectors must stay out of the Tailwind output');
-const custom = fs.readFileSync(path.join(root, '_runtime/custom.css'), 'utf8');
+const custom = fs.readFileSync(path.join(root, '.generated/custom.css'), 'utf8');
 assert.ok(
   tailwind.includes('.tw\\:hover\\:bg-sunken'),
   'Tailwind must compile the migrated hover state'

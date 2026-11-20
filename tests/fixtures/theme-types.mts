@@ -4,7 +4,7 @@ import {
   VENDRA,
   type ShadeStep,
   type ThemeRamp
-} from '../../ui/tokens/tenant-theme.js';
+} from '../../src/design-system/tokens/tenant-theme.js';
 
 const step: ShadeStep = {lightness: 0.8, shift: 0, chroma: 0.5, maxChroma: 0.02};
 const ramp: ThemeRamp = RAMPS.accent;

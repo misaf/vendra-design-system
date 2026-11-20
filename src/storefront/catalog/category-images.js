@@ -1,4 +1,4 @@
-import {vfAssetBase} from '../../../shared/platform/environment.js';
+import {vfAssetBase} from '../../platform/browser/environment.js';
 
 // Locally stored demonstration category photography, independent of product stock.
 const VF_CATEGORY_IMAGES = [

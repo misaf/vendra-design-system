@@ -2,8 +2,8 @@
 // Pure functions: every tenant value (zones, promo codes, balance rules, delivery schedule, API records)
 // comes in as an argument, so a tenant storefront runs them on its own data from the Vendra API.
 // Amounts are in Toman.
-import {latin, mobile, phone} from '../../../ui/utils/input.js';
-import {validLocation, pinLocation} from '../../../ui/utils/coordinates.js';
+import {latin, mobile, phone} from '../../design-system/utils/input.js';
+import {validLocation, pinLocation} from '../../design-system/utils/coordinates.js';
 import {
   isoDate,
   cutoffText,

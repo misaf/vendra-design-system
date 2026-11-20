@@ -1,6 +1,8 @@
 import {test, expect} from '@playwright/test';
 import {VISUAL_BROWSER} from './visual-browser.mjs';
 import fs from 'node:fs';
+import {fixtureOutput, gallery} from '../tools/next/fixture-paths.mjs';
+import {componentsFolder} from '../tools/paths.mjs';
 import path from 'node:path';
 import {ROOT as root, TENANTS, expectNoBrowserError, waitForQuiet} from './helpers.mjs';
 
@@ -9,13 +11,17 @@ test.use(VISUAL_BROWSER);
 // Every @dsCard in guidelines/ and the package's components/, at the viewport its header declares.
 function cards() {
   const found = [];
-  for (const dir of ['guidelines', 'ui/components']) {
+  for (const dir of [gallery, componentsFolder]) {
     for (const file of fs.readdirSync(path.join(root, dir), {recursive: true})) {
       if (!file.endsWith('.html')) continue;
       const first = fs.readFileSync(path.join(root, dir, file), 'utf8').split('\n', 1)[0];
       const m = first.match(/@dsCard\b.*?viewport="(\d+)x(\d+)"/);
       if (m)
-        found.push({file: dir + '/' + file.split(path.sep).join('/'), width: +m[1], height: +m[2]});
+        found.push({
+          file: fixtureOutput(dir + '/' + file.split(path.sep).join('/')),
+          width: +m[1],
+          height: +m[2]
+        });
     }
   }
   return found.sort((a, b) => a.file.localeCompare(b.file));

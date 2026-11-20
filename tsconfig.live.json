@@ -2,11 +2,10 @@
   "extends": "./tsconfig.next.json",
   "include": [
     "next-env.d.ts",
-    "app/**/*.ts",
-    "app/**/*.tsx",
-    "src/storefront/**/*.ts",
-    "server/**/*.ts",
-    "server/**/*.tsx",
+    "src/app/**/*.ts",
+    "src/app/**/*.tsx",
+    "src/platform/**/*.ts",
+    "src/platform/**/*.tsx",
     ".next-live/types/**/*.ts",
     ".next-live/dev/types/**/*.ts"
   ]

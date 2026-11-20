@@ -10,5 +10,8 @@
     "strict": true,
     "types": []
   },
-  "include": ["server/vendra/**/*.mjs", "server/vendra/for-storefront.ts"]
+  "include": [
+    "src/platform/server/laravel/**/*.mjs",
+    "src/platform/server/laravel/for-storefront.ts"
+  ]
 }

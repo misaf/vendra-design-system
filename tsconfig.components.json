@@ -12,7 +12,7 @@
   },
   "include": [
     "src/storefront/commerce/commerce.d.ts",
-    "ui/**/*.d.ts",
+    "src/design-system/**/*.d.ts",
     "tests/fixtures/component-types.tsx",
     "tests/fixtures/theme-types.mts"
   ]

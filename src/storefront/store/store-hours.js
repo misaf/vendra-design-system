@@ -3,7 +3,7 @@
 // Persian times use Persian digits, isolated so they stay left to right inside a sentence.
 import {commerce} from '../commerce/commerce.js';
 import {VF_STORE} from './store-config.js';
-import {vfNow} from '../../../shared/platform/environment.js';
+import {vfNow} from '../../platform/browser/environment.js';
 
 const hoursDigits = value => String(value).replace(/\d/g, digit => '۰۱۲۳۴۵۶۷۸۹'[digit]);
 const hoursIsolate = text => '⁨' + text + '⁩';

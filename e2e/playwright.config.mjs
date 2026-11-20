@@ -73,7 +73,7 @@ export function projectsForTarget(build) {
       : [
           {
             name: 'components',
-            testDir: '../ui/components',
+            testDir: '../src/design-system/components',
             testMatch: '*.spec.mjs',
             use: {...devices['Desktop Chrome'], viewport: {width: 1280, height: 900}}
           },
@@ -81,8 +81,8 @@ export function projectsForTarget(build) {
           // (under app/ or components/storefront/), on the storefront fixture host page.
           {
             name: 'storefront-components',
-            testDir: '..',
-            testMatch: '**/{app,components/storefront}/**/*.spec.mjs',
+            testDir: '../src/storefront',
+            testMatch: '*.spec.mjs',
             use: {...devices['Desktop Chrome'], viewport: {width: 1280, height: 900}}
           }
         ])

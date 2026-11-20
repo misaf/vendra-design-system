@@ -1,4 +1,4 @@
-import '../../../guidelines/card-runtime.js';
+import '../../design-system/gallery/card-runtime.js';
 import {VF_NOTIFY as N} from '../templates/notifications.js';
 const LABEL = {
   received: 'Order received',

@@ -4,83 +4,76 @@ import path from 'node:path';
 import {parseSync} from 'rolldown/experimental';
 import {uiFolder} from './paths.mjs';
 
-// shared/ is split by role, and each folder may import only the folders listed here
-// (its own included). A JS module loose in
-// shared/ itself, or in a folder not listed, fails: place it by what it does.
-//   platform/  where the storefront runs: address, asset base, clock (no browser at import time)
-//   src/storefront/  business rules, sample data and feature copy
-//   services/  browser services: routing, SEO, focus/lifecycle, page state, offline, API, analytics
-//   ui/        storefront UI helpers the app UI layers may use; never services or persistence
-//   styles/    the storefront's CSS entry points (no modules)
-const sharedRules = {
-  platform: {folders: ['platform'], packages: []},
-  domain: {folders: ['domain', 'platform'], packages: [], runtime: true},
-  services: {
-    folders: ['services', 'domain', 'platform'],
-    packages: ['react', 'react-aria-components'],
-    runtime: true
-  },
-  ui: {folders: ['ui', 'domain'], packages: ['react', 'qrcode-generator']},
-  styles: {folders: [], packages: []}
-};
-const sharedFolder = file => {
-  if (/^src\/storefront\/[^/]+\//.test(file)) return 'domain';
-  const folder = /^shared\/([^/]+)\//.exec(file)?.[1];
-  return folder && Object.hasOwn(sharedRules, folder) ? folder : null;
-};
-const isShared = file => ['shared/', 'src/storefront/'].some(prefix => file.startsWith(prefix));
-const isReusableUi = file => file.startsWith(uiFolder + '/');
-const isStorefrontUi = file => file.startsWith('components/storefront/');
+// Source ownership and its allowed dependencies.
+const platform = 'src/platform/browser/';
+const platformCore = new Set(['environment.js', 'runtime.js'].map(file => platform + file));
+const storefront = 'src/storefront/';
+const shell = storefront + 'shell/';
+const laravel = 'src/platform/server/laravel/';
+const gallery = uiFolder + '/gallery/';
+const cardCompatibility = gallery + 'card-runtime.js';
+const isReusableUi = file => file.startsWith(uiFolder + '/') && !file.startsWith(gallery);
+const isStorefrontUi = file => file.startsWith(shell + 'components/');
 const isPresentational = file =>
-  /^components\/storefront\/[^/]+\//.test(file) ||
-  (/^app\/(?!_components\/)/.test(file) && file.includes('/_components/'));
-
-const misplacedShared = file =>
-  `${file}: shared module outside the ${Object.keys(sharedRules).join('/, ')}/ folders`;
-
-function sharedDependencyViolation(source, target, relative) {
-  const from = sharedFolder(source);
-  if (!from) return misplacedShared(source);
-  const rules = sharedRules[from];
-  let allowed;
-  if (!relative) allowed = rules.packages.includes(target);
-  else if (isShared(target)) allowed = rules.folders.includes(sharedFolder(target));
-  // Domain and services use the design system's pure helpers; UI helpers may compose its components.
-  else if (isReusableUi(target))
-    allowed = from === 'ui' || (from !== 'styles' && target.startsWith(uiFolder + '/utils/'));
-  // Generated data (tenant slugs) the build writes for the store's rules.
-  else allowed = !!rules.runtime && target.startsWith('_runtime/');
-  return allowed
-    ? null
-    : `${source}: forbidden ${from === 'ui' ? 'UI' : from} dependency ${target}`;
-}
+  (file.startsWith(storefront) && file.includes('/_components/')) ||
+  (file.startsWith(shell + 'components/') &&
+    file.slice((shell + 'components/').length).includes('/'));
+const isUiHelper = file => file.startsWith(shell + 'ui/');
+const isDomain = file =>
+  file === shell + 'shell.js' ||
+  (file.startsWith(storefront) &&
+    !file.startsWith(shell) &&
+    /^[^/]+\/(?!use[A-Z])[^/]+\.js$/.test(file.slice(storefront.length)));
+const isService = file =>
+  (file.startsWith(platform) && !platformCore.has(file)) ||
+  file.startsWith('src/platform/tenant/') ||
+  (file.startsWith(shell) && /^[^/]+\.js$/.test(file.slice(shell.length)) && !isDomain(file));
 
 function appDependencyViolation(source, target, local) {
-  if (isShared(source)) return sharedDependencyViolation(source, target, local);
   if (isReusableUi(source)) {
     const allowed = local
       ? isReusableUi(target)
       : ['react', 'react-dom', 'react-aria-components', '@internationalized/date'].includes(target);
     return allowed ? null : `${source}: forbidden reusable UI dependency ${target}`;
   }
-  if (isStorefrontUi(source) && local && target.startsWith('app/'))
+  if (isStorefrontUi(source) && local && target.startsWith('src/app/'))
     return `${source}: shared storefront UI imports a route module: ${target}`;
-  if (source.startsWith('server/vendra/') && local && !target.startsWith('server/vendra/')) {
-    if (source !== 'server/vendra/for-storefront.ts')
-      return `${source}: Laravel adapter imports outside server/vendra: ${target}`;
+  if (
+    source.startsWith(laravel) &&
+    local &&
+    !target.startsWith(laravel) &&
+    source !== laravel + 'for-storefront.ts'
+  )
+    return `${source}: Laravel adapter imports outside ${laravel.slice(0, -1)}: ${target}`;
+  if (isPresentational(source) || isUiHelper(source)) {
+    const allowed = local
+      ? isReusableUi(target) ||
+        isUiHelper(target) ||
+        (isPresentational(source) ? isPresentational(target) : isDomain(target))
+      : target === 'react' || (isUiHelper(source) && target === 'qrcode-generator');
+    return allowed ? null : `${source}: forbidden UI dependency ${target}`;
   }
-  if (!isPresentational(source)) return null;
-  const allowed = local
-    ? isReusableUi(target) || sharedFolder(target) === 'ui' || isPresentational(target)
-    : target === 'react';
-  return allowed ? null : `${source}: forbidden UI dependency ${target}`;
+  if (platformCore.has(source))
+    return local && platformCore.has(target)
+      ? null
+      : `${source}: forbidden platform dependency ${target}`;
+  if (isDomain(source) || isService(source)) {
+    const service = isService(source);
+    const allowed = local
+      ? isDomain(target) ||
+        platformCore.has(target) ||
+        (service && isService(target)) ||
+        target.startsWith(uiFolder + '/utils/') ||
+        target.startsWith('.generated/')
+      : service && ['react', 'react-aria-components'].includes(target);
+    return allowed
+      ? null
+      : `${source}: forbidden ${service ? 'services' : 'domain'} dependency ${target}`;
+  }
+  return null;
 }
 
-// Shared dependencies are imported, never hung on window: the storefront runtime is vfRuntime
-// (shared/platform/runtime.js). Only the guideline cards' compatibility layer,
-// guidelines/card-runtime.js (outside the checked folders), sets the design system's AG_* helpers and
-// window.VendraDesignSystem for the cards' classic scripts.
-const cardCompatibility = 'guidelines/card-runtime.js';
+// Only the gallery compatibility layer sets design-system globals for its demonstration pages.
 const globalObjects = ['window', 'globalThis', 'self'];
 const forbiddenGlobal = name => /^(VF_|AG_)/.test(name) || name === 'VendraDesignSystem';
 function globalAccess(node) {
@@ -110,25 +103,15 @@ function walk(directory) {
     });
 }
 
-const runtimeRoots = [
-  'app',
-  'components',
-  uiFolder,
-  'src/storefront',
-  'session',
-  'shared',
-  'server',
-  'src/communications'
-];
 const moduleExtensions = ['.js', '.jsx', '.mjs', '.ts', '.tsx', '.mts'];
 const isRuntimeModule = file =>
   moduleExtensions.some(extension => file.endsWith(extension)) &&
   !/\.(?:fixture|spec|test|d)\.[^.]+$/.test(file);
 
 function runtimeSources(root) {
-  return runtimeRoots
-    .flatMap(folder => walk(path.join(root, folder)))
+  return walk(path.join(root, 'src'))
     .map(file => path.relative(root, file).split(path.sep).join('/'))
+    .filter(file => !file.startsWith(gallery) && !file.startsWith(platform + 'vendor/'))
     .filter(file => isRuntimeModule(file) || (isReusableUi(file) && file.endsWith('.d.ts')))
     .sort();
 }
@@ -155,7 +138,8 @@ function checkDependencies(root) {
   const graph = new Map(files.map(file => [file, new Set()]));
   const violations = [];
   for (const [source] of graph) {
-    if (isShared(source) && !sharedFolder(source)) violations.push(misplacedShared(source));
+    if (/^src\/storefront\/[^/]+\.[^.]+$/.test(source))
+      violations.push(source + ': storefront module outside a capability folder');
     const {program, errors} = parseSync(source, fs.readFileSync(path.join(root, source), 'utf8'));
     if (errors.length) {
       violations.push(...errors.map(error => `${source}: parse error: ${error.message}`));
@@ -187,7 +171,10 @@ function checkDependencies(root) {
           isReusableUi(source) ||
           isStorefrontUi(source) ||
           isPresentational(source) ||
-          isShared(source)
+          isDomain(source) ||
+          isService(source) ||
+          isUiHelper(source) ||
+          platformCore.has(source)
         )
           violations.push(`${source}: computed import cannot be checked in UI code`);
         return;

@@ -20,7 +20,7 @@ export default function config(phase) {
             ];
           }
         }),
-    distDir: demo ? 'next/out' : dev ? '.next' : '.next-live',
+    distDir: demo ? '.generated/export' : dev ? '.next' : '.next-live',
     // The export type check excludes route validators left over from a previous dev run.
     typescript: {
       tsconfigPath: dev

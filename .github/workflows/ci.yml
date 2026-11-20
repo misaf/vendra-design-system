@@ -214,7 +214,7 @@ jobs:
           VF_ORIGIN: https://${{ github.repository_owner }}.github.io
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: next/out
+          path: .generated/export
 
   pages-deploy:
     name: Deploy the Pages demo

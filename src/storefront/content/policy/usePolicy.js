@@ -1,0 +1,48 @@
+// Page behavior. Edit here, then run npm run build.
+import {VF_POLICY_UPDATED, vfCopy} from './copy.js';
+import {dates} from '../../../design-system/utils/dates.js';
+import {VF_FA_DIGITS} from '../../pricing/formatting.js';
+import {vfShell} from '../../shell/navigation.js';
+import {VF_POLICIES, vfPageRoute} from '../../shell/routing.js';
+import {usePageLogic} from '../../shell/page-state.js';
+import {useStorefrontPage} from '../../shell/page-lifecycle.js';
+// The page: its state (applied at once, as the logic reads it back), effects and the values
+// its View renders.
+export function usePolicy(props) {
+  const page = usePageLogic(props, page => {});
+  useStorefrontPage(page);
+  return vals(page);
+}
+
+function vals(page) {
+  const S = vfShell(page, 'policy');
+  const L = S.lang;
+  // A standalone page can be given props.doc; the site opens policy/<doc>/.
+  const id = page.props.doc ?? vfPageRoute(page.props).id ?? VF_POLICIES[0];
+  const C = vfCopy(S);
+  const docId = C.docs[id] ? id : VF_POLICIES[0];
+  const d = C.docs[docId];
+  // The document's own date: Jalali in Persian, Gregorian in English.
+  const updated = VF_POLICY_UPDATED[docId];
+  return {
+    ...S,
+    t: {
+      ...S.t,
+      ...C
+    },
+    doc: {
+      title: d.title,
+      intro: d.intro,
+      updatedIso: updated,
+      updatedText: dates.fullDate(dates.fromIso(updated), dates.locale(L)),
+      sections: d.sections.map((x, i) => ({
+        id: 's' + (i + 1),
+        href: '#s' + (i + 1),
+        title: (L === 'fa' ? VF_FA_DIGITS(i + 1) : i + 1) + '. ' + x.title,
+        paras: (x.paras || []).map(text => ({text})),
+        hasItems: !!(x.items && x.items.length),
+        items: (x.items || []).map(text => ({text}))
+      }))
+    }
+  };
+}

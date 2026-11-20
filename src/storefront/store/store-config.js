@@ -1,9 +1,9 @@
 // Store identity and contact details. Change these once, then run npm run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
 import {commerce} from '../commerce/commerce.js';
-import {LOCALES, localeConfig, plural} from '../../../ui/utils/locales.js';
-import {vfOnServer} from '../../../shared/platform/environment.js';
-import {vfRuntime} from '../../../shared/platform/runtime.js';
+import {LOCALES, localeConfig, plural} from '../../design-system/utils/locales.js';
+import {vfOnServer} from '../../platform/browser/environment.js';
+import {vfRuntime} from '../../platform/browser/runtime.js';
 
 export const VF_STORE = {
   tenant: 'default', // This store's theme: a slug from tokens/tenants/ (e.g. 'clay') or 'default'.

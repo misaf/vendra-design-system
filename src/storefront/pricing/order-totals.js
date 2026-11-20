@@ -1,4 +1,4 @@
-import {latin} from '../../../ui/utils/input.js';
+import {latin} from '../../design-system/utils/input.js';
 
 // A promo code as entered: case, spaces and digit scripts don't matter.
 export const promoCode = value =>

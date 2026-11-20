@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
-import {generate} from '../build/generate.mjs';
+import {generate} from '../tools/build/generate.mjs';
 import {
   context,
   featureFiles,
@@ -29,7 +29,7 @@ function exposesMain(file, visited = new Set()) {
   for (const match of code.matchAll(/import\s*\{([^}]+)\}\s*from ['"]([^'"]+\.jsx)['"]/g)) {
     const importedFile = path.resolve(path.dirname(file), match[2]);
     const source = path.relative(root, importedFile).split(path.sep).join('/');
-    if (!source.includes('/_components/') && !source.startsWith('components/storefront/layouts/'))
+    if (!source.includes('/_components/') && !source.startsWith('src/storefront/shell/components/'))
       continue;
     for (const imported of match[1].split(',')) {
       const [name, localName = name] = imported.trim().split(/\s+as\s+/);
@@ -41,7 +41,10 @@ function exposesMain(file, visited = new Set()) {
 }
 
 let parsed = 0;
-for (const [name, folder] of Object.entries({...routeFolders, site: 'session'})) {
+for (const [name, folder] of Object.entries({
+  ...routeFolders,
+  site: 'src/storefront/shell/session'
+})) {
   const script = pageScript(name);
   if (name !== 'site')
     assert.ok(
@@ -61,7 +64,7 @@ for (const [name, folder] of Object.entries({...routeFolders, site: 'session'}))
       values.sums.at(-1).value,
       'Sticky action total must match the order summary'
     );
-  if (folder === 'session') {
+  if (folder === 'src/storefront/shell/session') {
     // A bag and a shortlist handed over from the counter join the visitor's own, once.
     {
       const {ctx: hc, history: handHistory} = context();
@@ -252,7 +255,7 @@ console.log(
 // The template runtime reads values but cannot call functions: {{ handler('x') }} renders as nothing.
 // Layout never branches on a JavaScript breakpoint: the shell and every view render all their
 // structures and CSS picks one, so the first paint already matches the final layout.
-for (const file of ['components/storefront', 'app'].flatMap(folder =>
+for (const file of ['src/storefront'].flatMap(folder =>
   fs
     .readdirSync(path.join(root, folder), {recursive: true})
     .filter(

@@ -1,8 +1,8 @@
-// Visit attribution (components/utils/analytics.js `attribution`, shared/services/integrations/
+// Visit attribution (src/design-system/utils/analytics.js `attribution`, src/platform/browser/integrations/
 // analytics.js): utm_* values and the referrer's host reach page_view and purchase, are cleaned like
 // search terms, and are kept for the tab only while the visitor accepts analytics.
 import assert from 'node:assert/strict';
-import {analytics} from '../ui/utils/analytics.js';
+import {analytics} from '../src/design-system/utils/analytics.js';
 
 const {attribution, event} = analytics;
 
@@ -77,7 +77,7 @@ async function visit({url, referrer = '', consent = '', session = storage()}) {
     sessionStorage: session
   });
   const {vfCreateTracker} = await import(
-    '../shared/services/integrations/analytics.js?visit=' + ++loads
+    '../src/platform/browser/integrations/analytics.js?visit=' + ++loads
   );
   const track = vfCreateTracker();
   const sent = [];

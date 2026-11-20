@@ -5,12 +5,12 @@ import os from 'node:os';
 import path from 'node:path';
 import {checkDependencies} from '../tools/app-dependencies.mjs';
 const repo = path.resolve(import.meta.dirname, '..');
-const ui = 'components/storefront/Card/Card.jsx';
-const service = 'shared/services/integrations/api.js';
-const inventory = 'ui/index.js';
-const carousel = 'shared/ui/collection-carousel.jsx';
-const qr = 'shared/ui/qr.js';
-const component = 'ui/components/Carousel/Carousel.jsx';
+const ui = 'src/storefront/shell/components/Card/Card.jsx';
+const service = 'src/platform/browser/integrations/api.js';
+const inventory = 'src/design-system/index.js';
+const carousel = 'src/storefront/shell/ui/collection-carousel.jsx';
+const qr = 'src/storefront/shell/ui/qr.js';
+const component = 'src/design-system/components/Carousel/Carousel.jsx';
 const cases = [];
 function check(name, sources, expected) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-app-dependencies-'));
@@ -33,25 +33,31 @@ function check(name, sources, expected) {
   }
 }
 const allowed = {
-  [ui]: `import React from 'react'; import {Carousel} from '../../../ui/components/Carousel/Carousel.jsx';
-    import {CollectionCarousel} from '../../../shared/ui/collection-carousel.jsx';
-    import {vfQrPath} from '../../../shared/ui/qr.js';
+  [ui]: `import React from 'react'; import {Carousel} from '@storefront/src/design-system/components/Carousel/Carousel.jsx';
+    import {CollectionCarousel} from '@storefront/src/storefront/shell/ui/collection-carousel.jsx';
+    import {vfQrPath} from '@storefront/src/storefront/shell/ui/qr.js';
     import {Label} from '../Label';`,
   [inventory]: `export {Carousel} from './components/Carousel/Carousel.jsx';`,
   [component]: 'export const Carousel = () => null;',
-  [carousel]: `import React from 'react'; export {Carousel as CollectionCarousel} from '../../ui/components/Carousel/Carousel.jsx';`,
+  [carousel]: `import React from 'react'; export {Carousel as CollectionCarousel} from '@storefront/src/design-system/components/Carousel/Carousel.jsx';`,
   [qr]: `import qrcode from 'qrcode-generator'; export const vfQrPath = qrcode;`,
-  'components/storefront/Label/index.jsx': `export const Label = () => null;`,
-  'components/storefront/Panel/Panel.jsx': `import React from 'react'; export const Panel = ({children}) => children;`
+  'src/storefront/shell/components/Label/index.jsx': `export const Label = () => null;`,
+  'src/storefront/shell/components/Panel/Panel.jsx': `import React from 'react'; export const Panel = ({children}) => children;`
 };
 check('shared UI, direct imports and index resolution', allowed);
 for (const [name, statement] of [
-  ['static service import', `import '../../../shared/services/integrations/api.js';`],
-  ['named service re-export', `export {save} from '../../../shared/services/integrations/api.js';`],
-  ['star service re-export', `export * from '../../../shared/services/integrations/api.js';`],
+  ['static service import', `import '@storefront/src/platform/browser/integrations/api.js';`],
+  [
+    'named service re-export',
+    `export {save} from '@storefront/src/platform/browser/integrations/api.js';`
+  ],
+  [
+    'star service re-export',
+    `export * from '@storefront/src/platform/browser/integrations/api.js';`
+  ],
   [
     'nested dynamic service import',
-    `async function load(){return import('../../../shared/services/integrations/api.js')}`
+    `async function load(){return import('@storefront/src/platform/browser/integrations/api.js')}`
   ]
 ])
   check(
@@ -61,14 +67,18 @@ for (const [name, statement] of [
   );
 check(
   'business import through allowed helper',
-  {...allowed, [qr]: `import '../services/integrations/api.js';`, [service]: ''},
+  {
+    ...allowed,
+    [qr]: `import '@storefront/src/platform/browser/integrations/api.js';`,
+    [service]: ''
+  },
   /forbidden UI dependency/
 );
 check(
   'business re-export through UI inventory',
   {
     ...allowed,
-    [inventory]: `export * from '../shared/services/integrations/api.js';`,
+    [inventory]: `export * from '@storefront/src/platform/browser/integrations/api.js';`,
     [service]: ''
   },
   /forbidden reusable UI dependency/
@@ -77,22 +87,22 @@ check(
   'design system cannot import storefront services',
   {
     ...allowed,
-    [component]: `import '../../../shared/services/integrations/api.js';`,
+    [component]: `import '@storefront/src/platform/browser/integrations/api.js';`,
     [service]: ''
   },
   /forbidden reusable UI dependency/
 );
-const routeComponent = 'app/[locale]/example/_components/Receipt/Receipt.jsx';
+const routeComponent = 'src/storefront/example/_components/Receipt/Receipt.jsx';
 check('route components can compose shared storefront UI', {
-  [routeComponent]: "export {Label} from '@storefront/components/storefront/Label';",
-  'components/storefront/Label/index.jsx': 'export const Label = () => null;'
+  [routeComponent]: "export {Label} from '@storefront/src/storefront/shell/components/Label';",
+  'src/storefront/shell/components/Label/index.jsx': 'export const Label = () => null;'
 });
-for (const source of [ui, 'components/storefront/Shell.jsx']) {
+for (const source of [ui, 'src/storefront/shell/components/Shell.jsx']) {
   check(
     'shared storefront UI cannot import route internals',
     {
-      [source]: `export * from '@storefront/${routeComponent}';`,
-      [routeComponent]: ''
+      [source]: `export * from '@storefront/src/app/page.tsx';`,
+      'src/app/page.tsx': ''
     },
     /shared storefront UI imports a route module/
   );
@@ -100,7 +110,7 @@ for (const source of [ui, 'components/storefront/Shell.jsx']) {
 check(
   'ownership checks use the normalized alias target',
   {
-    [component]: "import '@storefront/ui/../src/storefront/catalog/commerce.js';",
+    [component]: "import '@storefront/src/design-system/../storefront/catalog/commerce.js';",
     'src/storefront/catalog/commerce.js': ''
   },
   /forbidden reusable UI dependency src\/storefront\/catalog\/commerce\.js/
@@ -108,8 +118,8 @@ check(
 check(
   'reusable UI declarations cannot import commerce types',
   {
-    'ui/components/Carousel/Carousel.d.ts':
-      "import type {Stock} from '../../../src/storefront/catalog/commerce.js'; export type Props = {stock: Stock};",
+    'src/design-system/components/Carousel/Carousel.d.ts':
+      "import type {Stock} from '@storefront/src/storefront/catalog/commerce.js'; export type Props = {stock: Stock};",
     'src/storefront/catalog/commerce.d.ts': "export type Stock = 'in' | 'out';"
   },
   /forbidden reusable UI dependency src\/storefront\/catalog\/commerce\.d\.ts/
@@ -122,7 +132,7 @@ check(
   },
   /forbidden reusable UI dependency/
 );
-const icon = 'ui/components/Icon/Icon.jsx';
+const icon = 'src/design-system/components/Icon/Icon.jsx';
 check('reusable components can compose each other', {
   [component]: "import '../Icon/Icon.jsx';",
   [icon]: ''
@@ -139,13 +149,13 @@ check(
   'route components cannot import integration services',
   {
     [service]: '',
-    'app/[locale]/example/_components/Receipt.jsx': `import '../../../../shared/services/integrations/api.js';`
+    'src/storefront/example/_components/Receipt.jsx': `import '@storefront/src/platform/browser/integrations/api.js';`
   },
   /forbidden UI dependency/
 );
 check(
   'UI cannot import page coordinator',
-  {[ui]: `import '../Shell.jsx';`, 'components/storefront/Shell.jsx': ''},
+  {[ui]: `import '../Shell.jsx';`, 'src/storefront/shell/components/Shell.jsx': ''},
   /forbidden UI dependency/
 );
 check(
@@ -155,7 +165,7 @@ check(
 );
 check(
   'UI cannot bypass policy with absolute URL',
-  {[ui]: `import '/shared/services/integrations/api.js';`},
+  {[ui]: `import '/src/platform/browser/integrations/api.js';`},
   /forbidden UI dependency/
 );
 check(
@@ -205,8 +215,8 @@ check('self-cycle', {'src/storefront/catalog/a.js': `import './a.js';`}, /Import
 check(
   'referenced generated data is scanned for cycles',
   {
-    'src/storefront/catalog/a.js': `import '@storefront/_runtime/data.js';`,
-    '_runtime/data.js': `import '../src/storefront/catalog/a.js';`
+    'src/storefront/catalog/a.js': `import '@storefront/.generated/data.js';`,
+    '.generated/data.js': `import '../src/storefront/catalog/a.js';`
   },
   /Import cycle:/
 );
@@ -220,14 +230,14 @@ check(
 );
 check(
   'bare specifier cannot impersonate the relative bridge',
-  {[ui]: `import 'components/storefront/ds.js';`},
+  {[ui]: `import 'src/storefront/shell/components/ds.js';`},
   /forbidden UI dependency/
 );
 check(
   'UI cycle between otherwise allowed storefront components',
   {
     [ui]: `import '../Other/Other.jsx';`,
-    'components/storefront/Other/Other.jsx': `export * from '../Card/Card.jsx';`
+    'src/storefront/shell/components/Other/Other.jsx': `export * from '../Card/Card.jsx';`
   },
   /Import cycle:/
 );
@@ -236,21 +246,21 @@ check('literal dynamic imports contribute valid graph edges', {
   'src/storefront/catalog/b.js': ''
 });
 const domain = 'src/storefront/catalog/catalog.js';
-const environment = 'shared/platform/environment.js';
+const environment = 'src/platform/browser/environment.js';
 check('shared folders follow their allowed directions', {
   [environment]: 'export const vfNow = () => 0;',
-  [domain]: `import '@storefront/shared/platform/environment.js'; import '@storefront/src/storefront/shell/shell.js';
-    import './commerce.js'; import '@storefront/_runtime/tenant-slugs.js';`,
+  [domain]: `import '@storefront/src/platform/browser/environment.js'; import '@storefront/src/storefront/shell/shell.js';
+    import './commerce.js'; import '@storefront/.generated/tenant-slugs.js';`,
   'src/storefront/shell/shell.js': '',
   'src/storefront/catalog/commerce.js': '',
-  '_runtime/tenant-slugs.js': '',
-  [service]: `import React from 'react'; import '../../../src/storefront/catalog/catalog.js';`,
-  [qr]: `import qrcode from 'qrcode-generator'; import '../../src/storefront/catalog/catalog.js';`
+  '.generated/tenant-slugs.js': '',
+  [service]: `import React from 'react'; import '@storefront/src/storefront/catalog/catalog.js';`,
+  [qr]: `import qrcode from 'qrcode-generator'; import '@storefront/src/storefront/catalog/catalog.js';`
 });
 for (const [name, sources, expected] of [
   [
     'domain cannot import services',
-    {[domain]: `import '@storefront/shared/services/integrations/api.js';`, [service]: ''},
+    {[domain]: `import '@storefront/src/platform/browser/integrations/api.js';`, [service]: ''},
     /forbidden domain dependency/
   ],
   [
@@ -260,84 +270,90 @@ for (const [name, sources, expected] of [
   ],
   [
     'domain cannot import app UI',
-    {[domain]: `import '@storefront/ui/index.js';`, [inventory]: ''},
+    {[domain]: `import '@storefront/src/design-system/index.js';`, [inventory]: ''},
     /forbidden domain dependency/
   ],
   [
     'domain cannot import package components',
     {
-      [domain]: `import '@storefront/ui/components/Carousel/Carousel.jsx';`,
+      [domain]: `import '@storefront/src/design-system/components/Carousel/Carousel.jsx';`,
       [component]: ''
     },
     /forbidden domain dependency/
   ],
   [
     'platform cannot import domain',
-    {[environment]: `import '../../src/storefront/catalog/catalog.js';`, [domain]: ''},
+    {[environment]: `import '@storefront/src/storefront/catalog/catalog.js';`, [domain]: ''},
     /forbidden platform dependency/
   ],
   [
     'services cannot import UI helpers',
-    {[service]: `import '../../ui/qr.js';`, [qr]: ''},
+    {[service]: `import '@storefront/src/storefront/shell/ui/qr.js';`, [qr]: ''},
     /forbidden services dependency/
   ],
   [
     'UI helpers cannot import platform state',
-    {[carousel]: `import '../platform/environment.js';`, [environment]: ''},
+    {[carousel]: `import '@storefront/src/platform/browser/environment.js';`, [environment]: ''},
     /forbidden UI dependency/
   ],
   [
     'app UI cannot import domain modules directly',
-    {[ui]: `import '../../../src/storefront/catalog/catalog.js';`, [domain]: ''},
+    {[ui]: `import '@storefront/src/storefront/catalog/catalog.js';`, [domain]: ''},
     /forbidden UI dependency/
   ],
   [
     'loose shared module must be placed in a folder',
-    {'shared/helper.js': ''},
-    /shared module outside/
-  ],
-  ['unknown shared folder fails', {'shared/misc/helper.js': ''}, /shared module outside/]
+    {'src/storefront/helper.js': ''},
+    /storefront module outside/
+  ]
 ])
   check(name, sources, expected);
 check('parse errors fail', {'src/storefront/catalog/a.js': 'const = ;'}, /parse error/);
 
 check('UI can import React and its local modules', {
-  'ui/components/index.tsx': "import type {ReactNode} from 'react'; export * from './tokens';",
-  'ui/components/tokens.ts': 'export const size = 12;'
+  'src/design-system/components/index.tsx':
+    "import type {ReactNode} from 'react'; export * from './tokens';",
+  'src/design-system/components/tokens.ts': 'export const size = 12;'
 });
 check(
   'framework types stay in the app',
-  {'ui/components/types.ts': "export type M = import('next').Metadata;"},
+  {'src/design-system/components/types.ts': "export type M = import('next').Metadata;"},
   /forbidden reusable UI dependency next/
 );
 check(
   'the Laravel adapter cannot reach into storefront routing',
   {
-    'server/vendra/index.ts': "export * from '@storefront/server/route-page';",
-    'server/route-page.ts': ''
+    'src/platform/server/laravel/index.ts':
+      "export * from '@storefront/src/app/_server/route-page';",
+    'src/app/_server/route-page.ts': ''
   },
-  /Laravel adapter imports outside server\/vendra/
+  /Laravel adapter imports outside src\/platform\/server\/laravel/
 );
 check('route pages import shared UI directly', {
-  'app/page.tsx': "export * from '../ui/components/Button';",
-  'ui/components/Button.tsx': ''
+  'src/app/page.tsx': "export * from '../design-system/components/Button';",
+  'src/design-system/components/Button.tsx': ''
 });
 
 // Shared dependencies are imported: no module reads or sets window.VF_* / window.AG_* (or the cards'
-// window.VendraDesignSystem), only guidelines/card-runtime.js, the cards' compatibility layer.
+// window.VendraDesignSystem), only src/design-system/gallery/card-runtime.js, the cards' compatibility layer.
 for (const [name, file, code] of [
-  ['page reads the API global', 'app/[locale]/(storefront)/useHome.js', 'window.VF_API.live;'],
+  ['page reads the API global', 'src/storefront/catalog/home/useHome.js', 'window.VF_API.live;'],
   ['service sets a global', service, 'window.VF_TRACK = {};'],
   ['component reads a helper global', component, 'export const x = window.AG_FORMAT;'],
-  ['computed global name', 'components/storefront/main.jsx', "globalThis['VF_TENANT'] = 'x';"],
+  [
+    'computed global name',
+    'src/storefront/shell/components/main.jsx',
+    "globalThis['VF_TENANT'] = 'x';"
+  ],
   ['communications global', 'src/communications/a.js', 'self.VF_NOTIFY = {};'],
-  ['cards namespace', 'components/storefront/theme.js', 'window.VendraDesignSystem;']
+  ['cards namespace', 'src/storefront/shell/components/theme.js', 'window.VendraDesignSystem;']
 ])
   check(name, {[file]: code}, /reads or sets the global/);
 check('card compatibility layer and other window names are allowed', {
-  'components/storefront/main.jsx': `import '../../guidelines/card-runtime.js';
+  'src/storefront/shell/components/main.jsx': `import '@storefront/src/design-system/gallery/card-runtime.js';
     window.__vfRuntime = {}; window.L; const VF_API = 1;`,
-  'guidelines/card-runtime.js': 'window.VendraDesignSystem = {}; window.AG_DATES = {};'
+  'src/design-system/gallery/card-runtime.js':
+    'window.VendraDesignSystem = {}; window.AG_DATES = {};'
 });
 
 const result = checkDependencies(repo);

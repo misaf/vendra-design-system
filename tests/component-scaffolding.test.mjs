@@ -39,10 +39,10 @@ try {
     '.prettierrc.json',
     'tools/new-component.mjs',
     'tools/paths.mjs',
-    'ui/index.js',
-    'ui/components/index.css',
-    'ui/components/Button/Button.jsx',
-    'ui/utils/messages.d.ts'
+    'src/design-system/index.js',
+    'src/design-system/components/index.css',
+    'src/design-system/components/Button/Button.jsx',
+    'src/design-system/utils/messages.d.ts'
   ]) {
     const target = path.join(temporary, file);
     fs.mkdirSync(path.dirname(target), {recursive: true});
@@ -57,7 +57,7 @@ try {
   assert.notEqual(generate('Sample', '--level', 'atoms').status, 0, 'obsolete flags are rejected');
   const result = generate('Sample', '--wording');
   assert.equal(result.status, 0, result.stderr);
-  const base = path.join(temporary, 'ui/components/Sample/Sample');
+  const base = path.join(temporary, 'src/design-system/components/Sample/Sample');
   for (const suffix of ['.jsx', '.d.ts', '.css', '.spec.mjs', '.fixture.jsx'])
     assert.ok(fs.existsSync(base + suffix), `Sample${suffix} generated`);
   const read = file => fs.readFileSync(path.join(temporary, file), 'utf8');
@@ -66,15 +66,17 @@ try {
   assert.ok(
     fs.readFileSync(base + '.spec.mjs', 'utf8').includes("from '../../../e2e/component-test.mjs'")
   );
-  assert.ok(read('ui/index.js').includes('./components/Sample/Sample.jsx'));
-  assert.ok(read('ui/components/index.css').includes('Sample/Sample.css'));
-  assert.ok(read('ui/utils/messages.d.ts').includes('Sample: {label: string}'));
+  assert.ok(read('src/design-system/index.js').includes('./components/Sample/Sample.jsx'));
+  assert.ok(read('src/design-system/components/index.css').includes('Sample/Sample.css'));
+  assert.ok(read('src/design-system/utils/messages.d.ts').includes('Sample: {label: string}'));
   assert.notEqual(generate('Sample').status, 0, 'duplicate scaffold is rejected');
   assert.notEqual(generate('Button').status, 0, 'existing components are protected');
   const noCss = generate('Unstyled', '--no-css');
   assert.equal(noCss.status, 0, noCss.stderr);
-  assert.ok(!fs.existsSync(path.join(temporary, 'ui/components/Unstyled/Unstyled.css')));
-  assert.ok(!read('ui/components/index.css').includes('Unstyled'));
+  assert.ok(
+    !fs.existsSync(path.join(temporary, 'src/design-system/components/Unstyled/Unstyled.css'))
+  );
+  assert.ok(!read('src/design-system/components/index.css').includes('Unstyled'));
 } finally {
   fs.rmSync(temporary, {recursive: true, force: true});
 }

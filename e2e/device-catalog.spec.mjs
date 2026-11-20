@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 import {openSite, routeOf} from './helpers.mjs';
 import {reachable, tap, shell, finish} from './device-helpers.mjs';
-import {vfCopy} from '../app/[locale]/(storefront)/shop/copy.js';
+import {vfCopy} from '../src/storefront/catalog/shop/copy.js';
 import {VF_MONEY} from '../src/storefront/pricing/formatting.js';
 
 test.use({reducedMotion: 'reduce'});

@@ -6,7 +6,7 @@ const root = path.resolve(import.meta.dirname, '..');
 const read = p => fs.readFileSync(path.join(root, p), 'utf8');
 
 // The sample sitemap lists every indexed address the build writes a page for.
-import('../build/routes.mjs').then(({storefrontSitemap}) => {
+import('../tools/build/routes.mjs').then(({storefrontSitemap}) => {
   assert.equal(
     read('deployment/sitemap.xml'),
     storefrontSitemap('https://example.test'),
@@ -17,7 +17,7 @@ import('../build/routes.mjs').then(({storefrontSitemap}) => {
 // Each sitemap entry names the same page in every language (hreflang, x-default English) and
 // articles carry their publication date as lastmod, which matches the date each article shows.
 Promise.all([
-  import('../build/routes.mjs'),
+  import('../tools/build/routes.mjs'),
   import('../src/storefront/content/journal-content.js')
 ]).then(([{storefrontSitemap}, {VF_POSTS}]) => {
   const sitemap = storefrontSitemap('https://shop.example');
@@ -61,7 +61,7 @@ Promise.all([
 Promise.all([
   import('../src/storefront/content/journal-content.js'),
   import('../src/storefront/content/journal-moved.js'),
-  import('../shared/services/routing.js')
+  import('../src/storefront/shell/routing.js')
 ]).then(([{VF_POSTS}, {VF_POST_MOVED}, {vfReadRoute}]) => {
   const ids = VF_POSTS.map(post => post.id);
   assert.equal(new Set(ids).size, ids.length, 'post ids are unique');
@@ -94,7 +94,7 @@ Promise.all([
       );
     }
   }
-  const copy = read('app/[locale]/(storefront)/journal/[post]/copy.js');
+  const copy = read('src/storefront/content/journal/post/copy.js');
   for (const word of ['autumn', 'October', 'پاییز', 'مهر'])
     assert.ok(!copy.includes(word), 'the post page copy carries no article text: ' + word);
   const nginx = read('deployment/nginx.conf');

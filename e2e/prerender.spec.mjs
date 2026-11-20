@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test';
 import {SITE} from './helpers.mjs';
-import {storefrontRoutes} from '../build/routes.mjs';
+import {storefrontRoutes} from '../tools/build/routes.mjs';
 
 // The production build prerenders every public address (Next.js static export): a first-time
 // visitor's browser hydrates that markup with the App Router. A

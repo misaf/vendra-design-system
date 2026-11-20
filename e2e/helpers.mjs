@@ -8,7 +8,7 @@ export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 
 // Every tenant theme in tokens/tenants/ (the _template file is a .txt, so it is skipped).
 export const TENANTS = fs
-  .readdirSync(path.join(ROOT, 'ui/tokens/tenants'))
+  .readdirSync(path.join(ROOT, 'src/design-system/tokens/tenants'))
   .filter(f => f.endsWith('.css'))
   .map(f => f.slice(0, -4))
   .sort();
@@ -26,7 +26,7 @@ const pageMarkers = {
 export function pageChunk(name) {
   // Turbopack names its JavaScript by content hash. Identify the real route chunk from its markup
   // or state identifier, so network tests still exercise the actual client module.
-  const dir = path.join(ROOT, 'next/out/_next/static/chunks');
+  const dir = path.join(ROOT, '.generated/export/_next/static/chunks');
   const matches = fs
     .readdirSync(dir)
     .filter(
@@ -70,7 +70,7 @@ export const VIEWS = {
   error: {}
 };
 
-// The screen's one path segment after its name (en/product/VF-7K2M4Q/), as shared/services/seo.js writes it.
+// The screen's one path segment after its name (en/product/VF-7K2M4Q/), as src/storefront/shell/seo.js writes it.
 const SEGMENT = {product: 'id', post: 'post', track: 'id', shop: 'cat', policy: 'id'};
 
 // A view's address: SITE + <lang>/<view>/<id>/, with anything else as the query.

@@ -3,7 +3,7 @@
 import {test, expect} from '@playwright/test';
 import {openSite, routeOf} from './helpers.mjs';
 import {reachable, tap, finish} from './device-helpers.mjs';
-import {vfCopy} from '../app/[locale]/(storefront)/shop/copy.js';
+import {vfCopy} from '../src/storefront/catalog/shop/copy.js';
 
 async function shopPageSize(page, size) {
   await page.addInitScript(size => {
