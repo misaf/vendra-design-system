@@ -3,13 +3,15 @@ import {VF_PRODUCTS, VF_SAVED_IDS_PATTERN, vfFindProduct} from '../catalog/catal
 import {VF_LINES_PATTERN, vfBagLine} from '../cart/cart-lines.js';
 import {VF_SHOP_OCCASIONS} from '../catalog/categories.js';
 import {VF_POST_MOVED} from '../content/journal-moved.js';
+import {VF_SHOP_FILTERS} from '../catalog/shop-filters.js';
+import {VF_POLICIES} from '../content/policy-documents.js';
+import {VF_ACCOUNT_TABS} from '../customer/account-tabs.js';
+import {VF_PAYMENT_RESULTS} from '../checkout/payments.js';
 import {VF_SEO} from './seo.js';
 import {vfFeatures, vfLanguage} from '../store/store-config.js';
 import {VF_CATEGORY_SLUGS} from '../catalog/product-categories.js';
 import {vfLocation} from '../../platform/browser/environment.js';
 
-// The shop's quick filters (?filters=), in the order the shop shows them.
-export const VF_SHOP_FILTERS = ['ready', 'under3', 'same', 'roses'];
 export const VF_ROUTES = [
   'account',
   'bag',
@@ -31,10 +33,6 @@ export const VF_ROUTES = [
   'track',
   'weddings'
 ];
-// Policy documents, opened as policy/<doc>/; no id shows the first.
-export const VF_POLICIES = ['shipping', 'returns', 'privacy', 'terms', 'accessibility'];
-// Account tabs, in the order they appear.
-export const VF_ACCOUNT_TABS = ['orders', 'balance', 'saved', 'addresses', 'reminders', 'profile'];
 export const VF_ROUTE_EXTRA = {
   product: {
     id: 'VF-7K2M4Q',
@@ -44,9 +42,6 @@ export const VF_ROUTE_EXTRA = {
     post: 'morning-at-the-studio'
   }
 };
-// What the sample store's simulated bank answers: paid, cancelled at the bank, refused, or not
-// confirmed yet.
-export const VF_PAYMENT_RESULTS = ['paid', 'cancelled', 'failed', 'pending'];
 // The path the storefront app is served at, and whether a URL is one of its pages.
 export const vfAppBase = () => VF_SEO.appBase();
 export const vfInApp = url => VF_SEO.inApp(url);

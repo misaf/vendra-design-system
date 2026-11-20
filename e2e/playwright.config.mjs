@@ -77,8 +77,7 @@ export function projectsForTarget(build) {
             testMatch: '*.spec.mjs',
             use: {...devices['Desktop Chrome'], viewport: {width: 1280, height: 900}}
           },
-          // Storefront components and layouts with their own spec
-          // (under app/ or components/storefront/), on the storefront fixture host page.
+          // Colocated storefront component specs run on the storefront fixture host page.
           {
             name: 'storefront-components',
             testDir: '../src/storefront',
@@ -91,6 +90,7 @@ export function projectsForTarget(build) {
 
 export default defineConfig({
   testDir: '.',
+  // Match spec basenames across capability folders for both suites.
   testMatch: build ? '*.spec.mjs' : devSpecs,
   testIgnore: ['**/e2e/smoke/**', ...(build ? devSpecs : [])],
   outputDir: build ? './test-results/build' : './test-results/dev',

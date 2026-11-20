@@ -1,4 +1,4 @@
-import {storefrontPage} from '@storefront/src/app/_server/route-page';
+import {storefrontPage} from '@storefront/src/app/_routing/route-page';
 import ProductScreen from '../../../../storefront/catalog/product/ProductScreen.jsx';
 import {VF_PRODUCTS} from '@storefront/src/storefront/catalog/catalog.js';
 

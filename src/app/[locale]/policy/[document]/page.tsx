@@ -1,6 +1,6 @@
-import {storefrontPage} from '@storefront/src/app/_server/route-page';
+import {storefrontPage} from '@storefront/src/app/_routing/route-page';
 import PolicyScreen from '../../../../storefront/content/policy/PolicyScreen.jsx';
-import {VF_POLICIES} from '@storefront/src/storefront/shell/routing.js';
+import {VF_POLICIES} from '@storefront/src/storefront/content/policy-documents.js';
 
 export function generateStaticParams() {
   return VF_POLICIES.map(document => ({document}));

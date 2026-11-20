@@ -1,7 +1,7 @@
 import {Button} from '../../src/design-system/components/Button/Button.jsx';
 import {ProductCard} from '../../src/design-system/components/ProductCard/ProductCard.jsx';
 import {VendraProvider} from '../../src/design-system/components/VendraProvider/VendraProvider.jsx';
-import {commerce, type Totals} from '../../src/storefront/commerce/commerce.js';
+import {commerce, type Totals} from '../../src/design-system/gallery/commerce-adapter.js';
 
 export const App = () => (
   <VendraProvider locale="fa-IR">

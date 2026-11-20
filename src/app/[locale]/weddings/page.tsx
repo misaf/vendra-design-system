@@ -1,4 +1,4 @@
-import {storefrontPage} from '@storefront/src/app/_server/route-page';
+import {storefrontPage} from '@storefront/src/app/_routing/route-page';
 import WeddingsScreen from '../../../storefront/content/weddings/WeddingsScreen.jsx';
 import {vfFeatures} from '@storefront/src/storefront/store/store-config.js';
 import NotFound from '../../../storefront/shell/not-found/NotFoundScreen.jsx';

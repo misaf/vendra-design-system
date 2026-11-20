@@ -14,7 +14,8 @@ import {VF_ZONES} from '../../delivery/delivery-zones.js';
 import {mobile as vfMobile} from '../../../design-system/utils/input.js';
 import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../../delivery/location.js';
 import {vfShell} from '../../shell/navigation.js';
-import {VF_ACCOUNT_TABS, vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
+import {VF_ACCOUNT_TABS} from '../account-tabs.js';
+import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {VF_STORE, vfFeatures, vfLiveStore} from '../../store/store-config.js';
 import {
   vfBalanceDiscountOn,

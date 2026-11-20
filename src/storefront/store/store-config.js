@@ -28,7 +28,7 @@ export const VF_STORE = {
   },
   // Products per "Show more" page in the shop (the API's itemsPerPage). Keep it a multiple of 12 so
   // every page fills whole rows of the 2-, 3- and 4-column grids. The six sample products fit on one
-  // page; the paging tests serve this module with a smaller size (e2e/shop-paging.spec.mjs).
+  // page; the paging tests serve this module with a smaller size (e2e/catalog/shop-paging.spec.mjs).
   shopPageSize: 12,
   // Journal posts per page: the featured story and three more (the API's itemsPerPage). The sample
   // uses 4 so paging shows with seven posts; a real store usually shows 7–13.

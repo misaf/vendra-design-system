@@ -324,8 +324,8 @@ check(
   'the Laravel adapter cannot reach into storefront routing',
   {
     'src/platform/server/laravel/index.ts':
-      "export * from '@storefront/src/app/_server/route-page';",
-    'src/app/_server/route-page.ts': ''
+      "export * from '@storefront/src/app/_routing/route-page';",
+    'src/app/_routing/route-page.ts': ''
   },
   /Laravel adapter imports outside src\/platform\/server\/laravel/
 );

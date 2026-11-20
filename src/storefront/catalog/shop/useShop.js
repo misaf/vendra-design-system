@@ -1,6 +1,7 @@
 // Page behavior. Edit here, then run npm run build.
 import {vfCopy} from './copy.js';
-import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub, vfReady} from '../catalog.js';
+import {VF_CHIPS, VF_UNDER_PRICE} from '../shop-filters.js';
+import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../catalog.js';
 import {VF_ZONES} from '../../delivery/delivery-zones.js';
 import {vfDeliverableOn, vfDeliveryDays} from '../../delivery/delivery-schedule.js';
 import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../pricing/formatting.js';
@@ -16,15 +17,6 @@ import {vfSelectItem, vfShowList} from '../../../platform/browser/list-tracking.
 import {VF_CATEGORY_SLUGS} from '../product-categories.js';
 import {vfRuntime} from '../../../platform/browser/runtime.js';
 const VF_CATS = ['all', ...VF_CATEGORY_SLUGS];
-// The "under" quick filter's price limit, in Toman.
-const VF_UNDER_PRICE = 3000000;
-/** @type {[string, (product: any) => boolean][]} */
-const VF_CHIPS = [
-  ['ready', p => vfReady(p)],
-  ['under3', p => p.price < VF_UNDER_PRICE],
-  ['same', p => p.same],
-  ['roses', p => p.roses]
-];
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function useShop(props) {

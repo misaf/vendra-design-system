@@ -1,4 +1,4 @@
-import {storefrontPage} from '@storefront/src/app/_server/route-page';
+import {storefrontPage} from '@storefront/src/app/_routing/route-page';
 import PostScreen from '../../../../storefront/content/journal/post/PostScreen.jsx';
 import {VF_POSTS} from '@storefront/src/storefront/content/journal-content.js';
 

@@ -3,7 +3,8 @@ import {VF_POLICY_UPDATED, vfCopy} from './copy.js';
 import {dates} from '../../../design-system/utils/dates.js';
 import {VF_FA_DIGITS} from '../../pricing/formatting.js';
 import {vfShell} from '../../shell/navigation.js';
-import {VF_POLICIES, vfPageRoute} from '../../shell/routing.js';
+import {VF_POLICIES} from '../policy-documents.js';
+import {vfPageRoute} from '../../shell/routing.js';
 import {usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values

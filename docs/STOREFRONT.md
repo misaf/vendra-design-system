@@ -27,7 +27,7 @@ Keep English and Persian keys and list shapes in sync in `copy.js`. Unit tests c
 
 ## Business capabilities
 
-Use `src/storefront/<capability>/` for the rules, sample data, and shared bilingual copy a capability owns. For example, change cutoff and slot rules in `delivery/delivery-window.js`, the reference schedule in `delivery/delivery-schedule.js`, totals and discounts in `pricing/order-totals.js`, checkout payload assembly in `checkout/checkout-request.js`, and opening hours in `store/opening-hours.js`. Import rules and types from the owning capability. The guideline cards use `commerce/commerce.js` to access those same rules.
+Use `src/storefront/<capability>/` for the rules, sample data, and shared bilingual copy a capability owns. For example, change cutoff and slot rules in `delivery/delivery-window.js`, the reference schedule in `delivery/delivery-schedule.js`, totals and discounts in `pricing/order-totals.js`, checkout payload assembly in `checkout/checkout-request.js`, and opening hours in `store/opening-hours.js`. Import rules and types from the owning capability. The guideline cards use `src/design-system/gallery/commerce-adapter.js` to access those same rules.
 
 The import checker allows capability modules to use each other, platform helpers, pure design-system utilities, and generated tenant data. Browser services may use these capabilities. Reusable controls and presentational route components receive business data through props. `npm test` checks these import boundaries and detects cycles.
 
@@ -93,14 +93,16 @@ npm run test:e2e
 
 - **`storefront`, `states`:** axe (WCAG 2.2 AA) on every view and on hidden states (menus, dialogs, validation, `?demo=loading|error`).
 - **`pages`, `cards`:** screenshot comparisons, with the clock frozen at 2026-10-05. `cards` also checks the Contrast card for every tenant.
-- The `components` project checks component keyboard behavior. Storefront flows include [shared components in use](../e2e/components-in-use.spec.mjs), [promo codes and delivery pins](../e2e/bag-delivery.spec.mjs), and [catalog filters](../e2e/catalog-browsing.spec.mjs).
+- The `components` project checks component keyboard behavior. Storefront flows include [shared components in use](../e2e/storefront/components-in-use.spec.mjs), [promo codes and delivery pins](../e2e/cart/bag-delivery.spec.mjs), and [catalog filters](../e2e/catalog/catalog-browsing.spec.mjs).
 - **`tenants`:** production storefront theme loading and flash prevention. **`tenant-fixtures`:** token contrast, email palettes and the theme builder on the development server.
+
+Browser specs live in capability folders such as `e2e/catalog/` and `e2e/checkout/`. Cross-page and device coverage lives in `e2e/storefront/` and `e2e/devices/`. Shared helpers stay at the root of `e2e/` and all browser screenshot baselines live in `e2e/__screenshots__/`.
 
 The combined command routes `--project` filters to the suites that define them. For example, `npm run test:e2e -- --project=components` runs only development component tests; `--project=tv` runs only production TV tests. Repeated flags, multiple names and `*` wildcards are supported.
 
 `openSite()` waits for the app to take control of prerendered content, then checks the routed main content and language after DOM readiness. Interaction tests then wait on the controls they use; background images and page preloads do not hold them up. Screenshot tests call `settlePage()` for fonts, images and stable layout. Performance tests explicitly wait for the resources their measurements require.
 
-Performance budgets (`e2e/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads for the first route, the layout shift while fonts load, and, on slow 4G with a 4x slower CPU, the largest paint and the main-thread blocking time of the home, shop and product pages. They sit just above today's numbers; raise one only on purpose.
+Performance budgets (`e2e/storefront/performance.spec.mjs`, production build only, phone profile) cap the compressed JS, CSS and fonts a page loads for the first route, the layout shift while fonts load, and, on slow 4G with a 4x slower CPU, the largest paint and the main-thread blocking time of the home, shop and product pages. They sit just above today's numbers; raise one only on purpose.
 
 Screenshot comparison specs use software rasterization (`--disable-gpu`) so decoded WebP photos have repeatable colors across browser processes. This does not change storefront rendering in customers’ browsers. Baselines are per platform (`-darwin.png`, `-linux.png`), compared at `threshold: 0` with up to 25 differing pixels. `e2e/screenshot.css` hides only the text of native `<select>` elements, which the operating system draws a pixel or two differently between runs. Tests start with cookie consent given; use `NO_CONSENT` from `helpers.mjs` to test the banner. After an intended visual change, review `e2e/playwright-report/`, then run `test:e2e:update`.
 
@@ -159,7 +161,7 @@ Storefront components may have the same pair beside them under their route or in
 
 `.generated/` is generated; never edit it.
 
-- **`src/app/[locale]/`** owns localized pages and layouts. Its folders follow the customer-facing URLs. `presentation/` serves the counter display. The root document keeps the session alive across routes and language switches. `src/app/_server/` builds the initial route and metadata and is the home for future request-scoped Laravel integration.
+- **`src/app/[locale]/`** owns localized pages and layouts. Its folders follow the customer-facing URLs. `presentation/` serves the counter display. `src/app/_document/` owns the storefront document, session, screen wrapper, and page metadata markup. `src/app/_routing/` builds the initial route and metadata. `src/app/_live-catalog/` renders the request-scoped Laravel catalog.
 - **Public URLs** use `/<locale>/` in links, canonical and alternate tags, and the sitemap.
 - **Navigation:** `tools/next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
 - **Build** uses `build:app` for the Node-hosted app and `build:demo` for the static reference demo. The demo exports every known address through Next.js to `.generated/export/`. It serves the design system’s fonts and tenant CSS at their existing public paths.
@@ -214,7 +216,7 @@ and pressing Add to bag.
 ## Demo behavior
 
 - **Products** have codes instead of names (`VF-7K2M4Q`). The code is the title everywhere and is searchable in any case or digits. URLs look like `en/product/VF-7K2M4Q/`. Old slugs resolve through `legacy`.
-- **Shop URLs** keep the category (`en/shop/boxes/`), `sort`, `filters`, `occasion`, `min`/`max`, `stock` and `page` through reload, Back and language switches. The shop shows `VF_STORE.shopPageSize` designs per "Show more" page (12, a multiple of the 2-, 3- and 4-column grids so every page ends on a whole row; a tenant may raise it to 24 or another multiple of 12); a new filter or sort starts again from page 1. The six sample designs fit on one page, so `e2e/shop-paging.spec.mjs` serves the store config with four per page to exercise "Show more".
+- **Shop URLs** keep the category (`en/shop/boxes/`), `sort`, `filters`, `occasion`, `min`/`max`, `stock` and `page` through reload, Back and language switches. The shop shows `VF_STORE.shopPageSize` designs per "Show more" page (12, a multiple of the 2-, 3- and 4-column grids so every page ends on a whole row; a tenant may raise it to 24 or another multiple of 12); a new filter or sort starts again from page 1. The six sample designs fit on one page, so `e2e/catalog/shop-paging.spec.mjs` serves the store config with four per page to exercise "Show more".
 - **Counter presentation** (`en/presentation/`, noindex and not linked from the site): it fills the screen without the site's header or footer, so a seller can show a walk-in customer designs large on the shop's tablet.
   - **Display presets:** starts on a full-screen product. Tablet keeps browsing manual; TV plays immediately, pauses while seller dialogs are open or the tab is hidden, and remembers its preset on this device. Seller tools opens a focus-trapped side drawer; Browse designs opens the existing counter workflow; Return to display restores the product view.
   - **Product layout:** photos fit whole inside the screen with a separate caption row. An optional two-product layout uses wide landscape screens and falls back to one product in portrait; navigation advances by the number displayed.

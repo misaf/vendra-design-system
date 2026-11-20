@@ -1,6 +1,10 @@
 // Sample bank prefixes and card configuration; adapt from your payment provider.
 import {vfLatin} from '../pricing/formatting.js';
 import {VF_STORE} from '../store/store-config.js';
+// What the sample store's simulated bank answers: paid, cancelled at the bank, refused, or not
+// confirmed yet.
+export const VF_PAYMENT_RESULTS = ['paid', 'cancelled', 'failed', 'pending'];
+
 // Card helpers for the checkout: the bank of a card number, a Luhn check and the store's
 // card-to-card details.
 export const vfPayment = (() => {

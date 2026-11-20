@@ -1,4 +1,4 @@
-import {storefrontPage} from '@storefront/src/app/_server/route-page';
+import {storefrontPage} from '@storefront/src/app/_routing/route-page';
 import NotFoundScreen from '../../../storefront/shell/not-found/NotFoundScreen.jsx';
 import {VF_STORE} from '@storefront/src/storefront/store/store-config.js';
 

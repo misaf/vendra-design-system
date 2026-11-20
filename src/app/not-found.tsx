@@ -1,8 +1,8 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import {StorefrontScreen} from './_components/StorefrontDocument.jsx';
-import {LiveCatalogNotFound, useLiveCatalog} from './_components/LiveCatalogDocument.jsx';
+import {StorefrontScreen} from './_document/StorefrontScreen.jsx';
+import {LiveCatalogNotFound, useLiveCatalog} from './_live-catalog/LiveCatalogDocument.jsx';
 import {VF_SEO} from '@storefront/src/storefront/shell/seo.js';
 
 const NotFoundScreen = dynamic(

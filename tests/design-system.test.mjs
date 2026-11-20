@@ -4,7 +4,7 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import React from 'react';
 import {renderToString} from 'react-dom/server';
-import {commerce} from '../src/storefront/commerce/commerce.js';
+import {commerce} from '../src/design-system/gallery/commerce-adapter.js';
 import theme from '../src/design-system/tokens/tenant-theme.js';
 import {loadDesignSystem} from './load-design-system.mjs';
 

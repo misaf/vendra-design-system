@@ -1,5 +1,5 @@
 import type {ReactNode} from 'react';
-import {tenantFontUrls} from '@storefront/src/app/_server/route-head.mjs';
+import {tenantFontUrls} from '@storefront/src/app/_routing/route-head.mjs';
 import {vfConfigureRendering} from '@storefront/src/platform/browser/environment.js';
 import {requireLocale, locales} from '@storefront/src/platform/locale/route-locale';
 import {VF_STORE} from '@storefront/src/storefront/store/store-config.js';
