@@ -20,7 +20,7 @@
     "dev:next": "npm run build && node next/prepare-assets.mjs && node next/prepare-fixtures.mjs && next dev",
     "build:next": "npm run build && node next/prepare-assets.mjs && VF_NEXT_EXPORT=1 next build && node next/finish-export.mjs",
     "start:next": "node next/serve-export.mjs",
-    "test:e2e:next": "playwright test -c tests/e2e/playwright.config.mjs",
+    "test:e2e:next": "playwright test -c e2e/smoke/playwright.config.mjs",
     "build:live": "npm run build && node next/prepare-assets.mjs && next build",
     "start:live": "next start",
     "test:e2e:live": "VF_TEST_LIVE=1 npm run test:e2e:next",

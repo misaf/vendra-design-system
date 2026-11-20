@@ -1,8 +1,7 @@
-// The sample data and the checkout request match the Vendra API spec (uploads/openapi-*.json):
+// The sample data and the checkout request match the Vendra API spec (tests/fixtures/vendra-openapi.json):
 // every field a sample record or request carries is a field of its schema, with the schema's type.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import path from 'node:path';
 import test from 'node:test';
 import {VF_API_FAQ_CATEGORIES, VF_API_FAQS} from '../app/[locale]/(storefront)/faq/copy.js';
 import {VF_API_ORDERS} from '../domain/account-data.js';
@@ -20,10 +19,9 @@ import {
   vfCheckoutRequest
 } from '../domain/delivery.js';
 import {VF_API_PRODUCT_CATEGORIES} from '../domain/product-categories.js';
-const root = path.resolve(import.meta.dirname, '..');
-
-const specFile = fs.readdirSync(path.join(root, 'uploads')).find(f => /^openapi-.*\.json$/.test(f));
-const spec = JSON.parse(fs.readFileSync(path.join(root, 'uploads', specFile), 'utf8'));
+const spec = JSON.parse(
+  fs.readFileSync(new URL('./fixtures/vendra-openapi.json', import.meta.url), 'utf8')
+);
 const schemas = spec.components.schemas;
 
 const typeOf = value =>

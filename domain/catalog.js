@@ -1,5 +1,5 @@
 // Shared sample catalog for home, shop, search, saved items and product pricing.
-// The VF_API_* lists are sample responses shaped like the Vendra API (uploads/openapi-*.json):
+// The VF_API_* lists are sample responses shaped like the Vendra API (tests/fixtures/vendra-openapi.json):
 // ProductCategory, ProductPrice, Multimedia and Product. A live store replaces them with API data;
 // vfProductFromApi turns each Product into the storefront's product object, VF_PRODUCTS.
 // Products have no shown names: several designs can look alike, so each one is known by its unique code,

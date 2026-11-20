@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {chooseDeliveryTime, stubMapTiles} from '../../e2e/helpers.mjs';
+import {chooseDeliveryTime, stubMapTiles} from '../helpers.mjs';
 
 const app = (process.env.VF_BASE_PATH || '') + '/';
 const product = 'VF-7K2M4Q';

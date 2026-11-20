@@ -124,7 +124,7 @@ export interface SummaryLabels {
   free: string;
   total: string;
 }
-/** Records as the Vendra API returns them (uploads/openapi-*.json). */
+/** Records as the Vendra API returns them (tests/fixtures/vendra-openapi.json). */
 /** A product's availability: in stock, few left, back soon (on `date`, ISO, when known) or sold out. */
 export type Stock =
   | {status: 'in'}

@@ -59,7 +59,7 @@ There is no deprecation path: rename or remove a prop, and update every use in t
 
 ## Data and the API
 
-The storefront's data has the shape of the Vendra API (`uploads/openapi-*.json`). Don't invent fields: something the API doesn't have yet goes on the list in `docs/API.md`. No Google products.
+The storefront's data has the shape of the Vendra API (`tests/fixtures/vendra-openapi.json`). Don't invent fields: something the API doesn't have yet goes on the list in `docs/API.md`. No Google products.
 
 ## Tenants
 

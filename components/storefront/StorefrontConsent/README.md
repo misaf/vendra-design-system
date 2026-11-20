@@ -8,4 +8,4 @@ Preserve `vf-consent`, `vf-consent-title`, the focusable section, docking classe
 
 `StorefrontConsent.spec.mjs` covers English/Persian content and policy destination, stable IDs/focus target, isolated pointer/Enter/Space callbacks, keyboard action order, controlled visibility and responsive axe/containment at phone, tablet and desktop widths. Callbacks report actions without changing the supplied visibility.
 
-Persistence, analytics gating, first-visit decisions and footer focus restoration remain covered by `features.spec.mjs`, `footer.spec.mjs` and the touch rotation cases in `devices.spec.mjs`.
+Persistence, analytics gating, first-visit decisions and footer focus restoration remain covered by [`privacy-analytics.spec.mjs`](../../../e2e/privacy-analytics.spec.mjs) and the touch rotation cases in [`devices.spec.mjs`](../../../e2e/devices.spec.mjs).

@@ -85,9 +85,9 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 | `shared/`, `i18n/`, `styles/` | Browser helpers, translations, and global styles. |
 | `guidelines/` | Design-system gallery, brand guide and theme builder. |
 | `build/`, `next/`, `tools/` | Build and export helpers, component scaffolding and dependency checks. |
-| `e2e/`, `tests/` | Browser journeys, visual baselines, unit and integration checks. |
+| `e2e/`, `tests/` | Browser journeys, smoke specs, visual baselines, unit and integration checks. The OpenAPI snapshot is in `tests/fixtures/`. |
 | `assets/` | Public storefront and brand assets copied into the build. |
-| `communications/`, `deployment/`, `uploads/` | Communications templates, deployment examples, and OpenAPI snapshot. |
+| `communications/`, `deployment/` | Communications templates and deployment examples. |
 | `_runtime/`, `components/ui/tokens/design/` | Generated styles and tokens. |
 
 ## Commands

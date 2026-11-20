@@ -92,7 +92,7 @@ export function projectsForTarget(build) {
 export default defineConfig({
   testDir: '.',
   testMatch: build ? '*.spec.mjs' : devSpecs,
-  testIgnore: build ? devSpecs : [],
+  testIgnore: ['**/e2e/smoke/**', ...(build ? devSpecs : [])],
   outputDir: build ? './test-results/build' : './test-results/dev',
   // One screenshot folder for every project, whatever its testDir.
   snapshotDir: './__screenshots__',
