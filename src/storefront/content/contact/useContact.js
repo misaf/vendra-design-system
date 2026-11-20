@@ -2,7 +2,8 @@
 import {vfCopy} from './copy.js';
 import {vfAccountLoad, vfAccountPhone} from '../../customer/account-data.js';
 import {mobile as vfMobile} from '../../../design-system/utils/input.js';
-import {vfDirections, vfLoadLeaflet} from '../../delivery/location.js';
+import {vfLoadLeaflet} from '../../../platform/browser/integrations/leaflet.js';
+import {vfDirections} from '../../delivery/location.js';
 import {vfShell} from '../../shell/navigation.js';
 import {VF_STORE, vfLiveStore} from '../../store/store-config.js';
 import {vfHoursNotices, vfHoursText, vfOpeningStatus} from '../../store/store-hours.js';

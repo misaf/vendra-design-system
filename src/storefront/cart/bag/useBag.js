@@ -40,7 +40,8 @@ import {
 import {vfDeliveryQuoted, vfErrors} from '../../delivery/delivery-validation.js';
 import {mobile as vfMobile} from '../../../design-system/utils/input.js';
 import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../pricing/formatting.js';
-import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../../delivery/location.js';
+import {vfLoadLeaflet} from '../../../platform/browser/integrations/leaflet.js';
+import {vfLocationText, vfValidLocation} from '../../delivery/location.js';
 import {vfShell} from '../../shell/navigation.js';
 import {vfPromoCheck, vfSummaryRows} from '../../pricing/promotions.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';

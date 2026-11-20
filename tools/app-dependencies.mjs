@@ -66,7 +66,9 @@ function appDependencyViolation(source, target, local) {
         (service && isService(target)) ||
         target.startsWith(uiFolder + '/utils/') ||
         target.startsWith('.generated/')
-      : service && ['react', 'react-aria-components'].includes(target);
+      : service &&
+        (['react', 'react-aria-components'].includes(target) ||
+          (source === platform + 'integrations/leaflet.js' && target === 'leaflet'));
     return allowed
       ? null
       : `${source}: forbidden ${service ? 'services' : 'domain'} dependency ${target}`;
@@ -112,7 +114,7 @@ const isRuntimeModule = file =>
 function runtimeSources(root) {
   return walk(path.join(root, 'src'))
     .map(file => path.relative(root, file).split(path.sep).join('/'))
-    .filter(file => !file.startsWith(gallery) && !file.startsWith(platform + 'vendor/'))
+    .filter(file => !file.startsWith(gallery))
     .filter(file => isRuntimeModule(file) || (isReusableUi(file) && file.endsWith('.d.ts')))
     .sort();
 }

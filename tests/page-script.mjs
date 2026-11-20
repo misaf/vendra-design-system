@@ -182,6 +182,7 @@ const sharedFiles = [
   'src/platform/browser/integrations/catalog-stock.js',
   'src/platform/browser/integrations/checkout.js',
   'src/platform/browser/integrations/inquiries.js',
+  'src/platform/browser/integrations/leaflet.js',
   'src/platform/browser/integrations/newsletter.js',
   'src/platform/browser/integrations/api.js',
   'src/platform/browser/integrations/analytics.js',

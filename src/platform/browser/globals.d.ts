@@ -9,6 +9,9 @@ interface Window {
   __vfDevStore?: typeof import('../../storefront/store/store-config.js').VF_STORE;
   // The click-through site's page object (src/storefront/session/useStorefrontSession.js), for tests.
   __vfSite?: any;
-  // Leaflet, loaded on demand by src/storefront/delivery/location.js.
+  // The standalone map fixtures use Leaflet's browser global.
   L: any;
 }
+
+// Turbopack loads styles imported by browser modules.
+declare module '*.css' {}

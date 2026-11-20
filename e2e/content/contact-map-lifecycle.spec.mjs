@@ -8,13 +8,16 @@ test.beforeEach(async ({page}, info) => {
   await page.clock.install({time: new Date('2026-10-05T09:00:00+03:30')});
   // Observe public Leaflet lifecycle events; do not change map options or tile behavior.
   await page.addInitScript(() => {
-    window.__contactMapLifecycle = {created: 0, removed: 0, active: new Set()};
-    document.addEventListener(
-      'load',
-      event => {
-        if (event.target.tagName !== 'SCRIPT' || !event.target.src.includes('/leaflet.js')) return;
-        window.L.Map.addInitHook(function () {
-          const state = window.__contactMapLifecycle;
+    const state = {loads: 0, created: 0, removed: 0, active: new Set()};
+    window.__contactMapLifecycle = state;
+    let leaflet;
+    Object.defineProperty(window, 'L', {
+      configurable: true,
+      get: () => leaflet,
+      set(value) {
+        leaflet = value;
+        state.loads++;
+        value.Map.addInitHook(function () {
           state.created++;
           state.active.add(this);
           this.on('unload', () => {
@@ -22,9 +25,8 @@ test.beforeEach(async ({page}, info) => {
             state.active.delete(this);
           });
         });
-      },
-      true
-    );
+      }
+    });
   });
 });
 
@@ -36,14 +38,18 @@ async function ready(page, zoom, created) {
   await expect(map.locator('.ag-place-marker')).toHaveCount(1);
   await expect(map.locator('.ag-place-label')).toHaveCount(1);
   await expect(map).toHaveAttribute('dir', 'ltr');
-  await expect(page.locator('script[src$="/leaflet.js"]')).toHaveCount(1);
-  await expect(page.locator('#vf-leaflet-css')).toHaveCount(1);
+  await expect(map.locator('.leaflet-tile-pane')).toHaveCSS('position', 'absolute');
   await expect
     .poll(() =>
       map.evaluate(
         (node, {zoom, created}) => {
           const state = window.__contactMapLifecycle;
-          if (state.created !== created || state.active.size !== 1 || state.removed !== created - 1)
+          if (
+            state.loads !== 1 ||
+            state.created !== created ||
+            state.active.size !== 1 ||
+            state.removed !== created - 1
+          )
             return false;
           const instance = [...state.active][0];
           if (instance.getContainer() !== node || instance.getZoom() !== zoom) return false;

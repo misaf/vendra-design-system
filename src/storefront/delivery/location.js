@@ -1,10 +1,7 @@
-// Delivery locations: loads Leaflet on demand for the LocationPicker and PlacesMap
-// components, and formats a location.
-// Map tiles and the starting view are set in store-config.js (VF_STORE.map).
+// Delivery coordinates and map directions.
 import {VF_FA_DIGITS} from '../pricing/formatting.js';
 import {validLocation, pinLocation} from '../../design-system/utils/coordinates.js';
 import {directionsLinks} from './delivery-zones.js';
-import {vfAssetBase} from '../../platform/browser/environment.js';
 import {VF_MAPS_APPS} from './location-messages.js';
 
 export function vfValidLocation(location) {
@@ -34,33 +31,4 @@ export function vfDirections(location, lang) {
     label: names[app],
     href
   }));
-}
-
-// Loads the Leaflet browser build once and resolves with window.L.
-// The pending load, shared by every caller until it settles (cleared when it fails, for a retry).
-let vfLeafletLoading = null;
-
-export function vfLoadLeaflet() {
-  if (window.L && window.L.map) return Promise.resolve(window.L);
-  if (vfLeafletLoading) return vfLeafletLoading;
-  const base = vfAssetBase() + 'apps/storefront/_vendor/leaflet/';
-  // Leaflet's stylesheet goes in the package's vendra.components layer, with the components that
-  // restyle it (PlacesMap, LocationPicker); unlayered, it would override them outright.
-  if (!document.getElementById('vf-leaflet-css')) {
-    const style = document.createElement('style');
-    style.id = 'vf-leaflet-css';
-    style.textContent = "@import url('" + base + "leaflet.css') layer(vendra.components);";
-    document.head.appendChild(style);
-  }
-  vfLeafletLoading = new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = base + 'leaflet.js';
-    script.onload = () => resolve(window.L);
-    script.onerror = () => {
-      vfLeafletLoading = null;
-      reject(new Error('Leaflet failed to load'));
-    };
-    document.head.appendChild(script);
-  });
-  return vfLeafletLoading;
 }

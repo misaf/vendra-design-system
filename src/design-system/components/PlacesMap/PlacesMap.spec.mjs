@@ -41,7 +41,7 @@ async function observeMap(page) {
 
 async function lateFont(page, lang, cycle) {
   const file = lang === 'fa' ? 'vazirmatn-var-arabic' : 'jost-var-latin';
-  const url = `/apps/storefront/design-system/assets/fonts/${file}.woff2?map-font-cycle=${cycle}`;
+  const url = `/ui/assets/fonts/${file}.woff2?map-font-cycle=${cycle}`;
   let release, requested;
   const held = new Promise(resolve => {
     release = resolve;

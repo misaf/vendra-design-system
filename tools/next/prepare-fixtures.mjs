@@ -14,6 +14,7 @@ import {
 
 const root = repo;
 const publicDir = join(root, 'public');
+const leafletDir = join(publicDir, 'apps/storefront/_vendor/leaflet');
 const componentDirs = {
   'design-system': [components],
   storefront: ['src/storefront']
@@ -70,6 +71,17 @@ await Promise.all(
     '.generated/tailwind.css',
     '.generated/custom.css'
   ].map(copy)
+);
+
+// Standalone fixture documents load Leaflet by URL outside the Next.js app.
+await mkdir(leafletDir, {recursive: true});
+await Promise.all(
+  ['leaflet.js', 'leaflet.css'].map(file =>
+    copyFile(
+      new URL('dist/' + file, import.meta.resolve('leaflet/package.json')),
+      join(leafletDir, file)
+    )
+  )
 );
 
 const fixtures = Object.fromEntries(

@@ -230,7 +230,15 @@ test('the delivery pin is required and travels with the order', async ({page}) =
 });
 
 test('without a map, a full typed address is enough', async ({page}) => {
-  await page.route(/_vendor\/leaflet\/leaflet\.js/, route => route.abort());
+  await page.addInitScript(() => {
+    // Fail Leaflet module initialization without depending on a generated chunk filename.
+    Object.defineProperty(window, 'L', {
+      configurable: true,
+      set() {
+        throw new Error('Leaflet failed to load');
+      }
+    });
+  });
   await openSite(page, 'bag', 'fa', {step: 'delivery'});
   await expect(page.locator('#vf-map')).toHaveCount(0);
   await expect(page.locator('main')).toContainText('نقشه بارگذاری نشد');
