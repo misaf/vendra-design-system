@@ -1,4 +1,4 @@
-// Vendra API client (from uploads/openapi docs.json, v1.0.0). No auth on these endpoints.
+// Vendra API client (from tests/fixtures/vendra-openapi.json, v1.0.0). No auth on these endpoints.
 // base = '' → demo mode: nothing is sent, calls resolve as if they succeeded.
 import {vfAccountLocale, vfCustomerId} from '../../../domain/account-data.js';
 import {VF_PRODUCTS, vfProductId} from '../../../domain/catalog.js';

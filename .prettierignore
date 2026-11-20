@@ -5,6 +5,7 @@ _vendor/
 e2e/__screenshots__/
 e2e/test-results/
 e2e/playwright-report/
+tests/fixtures/vendra-openapi.json
 components/ui/tokens/
 components/ui/storefront.css
 **/package-lock.json

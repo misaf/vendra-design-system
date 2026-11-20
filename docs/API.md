@@ -2,7 +2,7 @@
 
 The [Laravel order contract](./ORDER-CONTRACT.md) records the current pilot operations, backend gaps and typed adapters. The [live florist pilot audit](./PILOT-AUDIT.md#laravel-contract-findings) compares this snapshot with the Laravel source and records what to verify against the pilot deployment.
 
-The storefront's data contract is the Vendra backend API exported in `uploads/openapi-*.json` (API Platform, JSON-LD/Hydra, 42 endpoints). Sample data in `shared/` is written as API responses, and one adapter per resource (in `domain/commerce.js`) turns them into what the pages use, so a live store only swaps the source. `npm test` checks every sample record and the checkout request against the spec (`tests/api-contract.test.mjs`).
+The [OpenAPI snapshot](../tests/fixtures/vendra-openapi.json) captures the API Platform JSON-LD/Hydra contract used by the sample data. The [sample catalog](../domain/catalog.js) uses records shaped like those responses, and adapters in `domain/commerce.js` convert them for the storefront. `npm test` checks sample records and the checkout request against the snapshot through `tests/api-contract.test.mjs`.
 
 Part A is the state of this repo. Part B lists what the backend doesn't provide yet; those changes belong in the vendra backend.
 
@@ -16,7 +16,7 @@ In server catalog mode, home, shop, category and product URLs read the Laravel `
 
 | Resource | Sample data (schema) | Adapter | Fields kept outside the API record |
 |---|---|---|---|
-| Catalogue | `catalog.js`: `VF_API_PRODUCT_CATEGORIES`, `VF_API_PRODUCT_PRICES`, `VF_API_MULTIMEDIA`, `VF_API_PRODUCTS` | `vfProductFromApi` → `VF_PRODUCTS` | `VF_PRODUCT_EXTRAS` by `token`: occasions, sizes, add-ons, same-day, roses filter, badge, care, old slug (B8) |
+| Catalogue | `domain/product-categories.js`: `VF_API_PRODUCT_CATEGORIES`. `domain/catalog.js`: `VF_API_PRODUCT_PRICES`, `VF_API_MULTIMEDIA`, `VF_API_PRODUCTS` | `vfProductFromApi` → `VF_PRODUCTS` | `VF_PRODUCT_EXTRAS` by `token`: occasions, sizes, add-ons, same-day, roses filter, badge, care, old slug (B8) |
 | Delivery | `delivery.js`: `VF_API_DELIVERY_ZONES`, `VF_API_DELIVERY_SCHEDULE` | `vfZoneFromApi` → `VF_ZONES`, `VF_SLOTS` | `VF_DELIVERY_ZONE_EXTRAS` by zone id: key, same-day cut-off, distance centre; free-delivery and sold-out constants (B5, B6) |
 | Orders | `account-data.js`: `VF_API_ORDERS` | `vfOrderFromApi`, `vfLineFromApi` | `VF_SAMPLE_ORDER_EXTRAS`: delivery details, payment method, preferred language (B17) |
 | Checkout | built per order | `vfCheckoutRequest` → `vfRuntime.api.checkout` | everything in B4 |

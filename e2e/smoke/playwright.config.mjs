@@ -7,7 +7,7 @@ const live = process.env.VF_TEST_LIVE === '1';
 
 export default defineConfig({
   testMatch: live ? 'localized-routes.spec.mjs' : ['export.spec.mjs', 'localized-routes.spec.mjs'],
-  outputDir: '../../e2e/test-results/next',
+  outputDir: '../test-results/next',
   use: {
     baseURL: url,
     viewport: {width: 1280, height: 900},
