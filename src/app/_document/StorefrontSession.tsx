@@ -62,18 +62,19 @@ export function StorefrontSession({children, lang}: {children: ReactNode; lang: 
       router[replace ? 'replace' : 'push'](url.slice(base.length), {scroll});
     }
   });
+  const {restoreAddress} = values;
   useLayoutEffect(() => {
     const restore = () => {
       vfSetHydrating(false);
       if (process.env.NODE_ENV === 'development') window.__vfDevStore = VF_STORE;
       vfRuntime.restoreSession = null;
-      values.restoreAddress(location.pathname + location.search);
+      restoreAddress(location.pathname + location.search);
     };
     vfRuntime.restoreSession = restore;
     return () => {
       if (vfRuntime.restoreSession === restore) vfRuntime.restoreSession = null;
     };
-  }, [values.restoreAddress]);
+  }, [restoreAddress]);
   return (
     <StorefrontContext.Provider value={values}>
       <Suspense fallback={null}>

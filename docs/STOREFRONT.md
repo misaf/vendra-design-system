@@ -41,7 +41,8 @@ Run from the repo root with Node.js 22 (22.22.2 or later):
 npm ci                                   # install from the root lockfile
 npm run dev                             # Next.js at http://localhost:3000/ → /en/
 npm run build   # Tailwind, custom CSS, tenant themes, design tokens
-npm run check   # fails on stale generated output, unformatted code or a CSS lint error (raw colours, left/right sides: stylelint.config.mjs)
+npm run lint    # Next.js, React and TypeScript lint rules for src/app/
+npm run check   # generated output, formatting, ESLint and CSS lint
 npm test        # typecheck, storefront logic, generation, copy parity, design system
 npm run test:e2e  # Playwright: axe, screenshots, cards, tenants
 npm run build:app                       # build the Next.js server in .next/
