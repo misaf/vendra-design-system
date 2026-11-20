@@ -1,11 +1,15 @@
 // Page behavior. Edit here, then run npm run build.
 import {vfCopy} from './copy.js';
-import {vfAccountLoad, vfAccountPhone} from '../../../../domain/account-data.js';
-import {vfMobile} from '../../../../domain/delivery.js';
-import {vfDirections, vfLoadLeaflet} from '../../../../domain/location.js';
+import {vfAccountLoad, vfAccountPhone} from '../../../../src/storefront/customer/account-data.js';
+import {vfMobile} from '../../../../src/storefront/delivery/delivery.js';
+import {vfDirections, vfLoadLeaflet} from '../../../../src/storefront/delivery/location.js';
 import {vfShell} from '../../../../shared/services/navigation.js';
-import {VF_STORE, vfLiveStore} from '../../../../domain/store-config.js';
-import {vfHoursNotices, vfHoursText, vfOpeningStatus} from '../../../../domain/store-hours.js';
+import {VF_STORE, vfLiveStore} from '../../../../src/storefront/store/store-config.js';
+import {
+  vfHoursNotices,
+  vfHoursText,
+  vfOpeningStatus
+} from '../../../../src/storefront/store/store-hours.js';
 import {useLifecycle, usePageLogic} from '../../../../shared/services/page-state.js';
 import {vfNow} from '../../../../shared/platform/environment.js';
 import {useStorefrontPage} from '../../../../shared/services/page-lifecycle.js';

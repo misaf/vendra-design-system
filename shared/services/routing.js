@@ -5,12 +5,12 @@ import {
   VF_SAVED_IDS_PATTERN,
   vfBagLine,
   vfFindProduct
-} from '../../domain/catalog.js';
-import {VF_SHOP_OCCASIONS} from '../../i18n/categories.js';
-import {VF_POST_MOVED} from '../../i18n/journal-moved.js';
+} from '../../src/storefront/catalog/catalog.js';
+import {VF_SHOP_OCCASIONS} from '../../src/storefront/catalog/categories.js';
+import {VF_POST_MOVED} from '../../src/storefront/content/journal-moved.js';
 import {VF_SEO} from './seo.js';
-import {vfFeatures, vfLanguage} from '../../domain/store-config.js';
-import {VF_CATEGORY_SLUGS} from '../../domain/product-categories.js';
+import {vfFeatures, vfLanguage} from '../../src/storefront/store/store-config.js';
+import {VF_CATEGORY_SLUGS} from '../../src/storefront/catalog/product-categories.js';
 import {vfLocation} from '../platform/environment.js';
 
 // The shop's quick filters (?filters=), in the order the shop shows them.

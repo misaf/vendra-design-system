@@ -2,9 +2,9 @@
 // Demo only: the balance is kept in this browser with the signed-in account. A real store must keep it on its
 // server and change it only after a confirmed top-up payment or a placed order.
 import {vfAccountLoad, vfAccountPhone, vfAccountSave} from './account-data.js';
-import {vfAmountFromInput} from './formatting.js';
-import {VF_STORE} from './store-config.js';
-import {commerce} from './commerce.js';
+import {vfAmountFromInput} from '../pricing/formatting.js';
+import {VF_STORE} from '../store/store-config.js';
+import {commerce} from '../commerce/commerce.js';
 
 // {balance, history}; history is newest first: {id, kind: 'topup' | 'order', amount (negative for payments), at, order?}.
 export function vfWalletOf(account) {

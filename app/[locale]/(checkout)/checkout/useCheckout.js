@@ -6,7 +6,11 @@ import {
   vfSimulatedBank,
   vfVerifyPayment
 } from './payment-recovery.js';
-import {vfAccountLocale, vfAccountPhone, vfCustomerId} from '../../../../domain/account-data.js';
+import {
+  vfAccountLocale,
+  vfAccountPhone,
+  vfCustomerId
+} from '../../../../src/storefront/customer/account-data.js';
 import {
   vfCardMessages,
   vfLineAvailable,
@@ -16,8 +20,8 @@ import {
   vfLineToken,
   vfProductImage,
   vfSampleBag
-} from '../../../../domain/catalog.js';
-import {commerce} from '../../../../domain/commerce.js';
+} from '../../../../src/storefront/catalog/catalog.js';
+import {commerce} from '../../../../src/storefront/commerce/commerce.js';
 import {
   VF_DELIVERY,
   vfCheckoutRequest,
@@ -25,20 +29,24 @@ import {
   vfDeliveryChanged,
   vfTotals,
   vfZone
-} from '../../../../domain/delivery.js';
-import {VF_FA_DIGITS, vfSeparator} from '../../../../domain/formatting.js';
+} from '../../../../src/storefront/delivery/delivery.js';
+import {VF_FA_DIGITS, vfSeparator} from '../../../../src/storefront/pricing/formatting.js';
 import {vfShell} from '../../../../shared/services/navigation.js';
-import {vfSummaryRows} from '../../../../domain/promotions.js';
+import {vfSummaryRows} from '../../../../src/storefront/pricing/promotions.js';
 import {vfPageRoute, vfRouteUrl} from '../../../../shared/services/routing.js';
-import {VF_STORE, vfLiveStore, vfPaymentMethods} from '../../../../domain/store-config.js';
-import {vfDeliveryWhen} from '../../../../i18n/time.js';
-import {vfOrderMessage} from '../../../../domain/order-message.js';
+import {
+  VF_STORE,
+  vfLiveStore,
+  vfPaymentMethods
+} from '../../../../src/storefront/store/store-config.js';
+import {vfDeliveryWhen} from '../../../../src/storefront/delivery/time.js';
+import {vfOrderMessage} from '../../../../src/storefront/checkout/order-message.js';
 import {
   vfBalanceDiscountOn,
   vfWalletBalance,
   vfWalletChange,
   vfWalletOf
-} from '../../../../domain/wallet.js';
+} from '../../../../src/storefront/customer/wallet.js';
 import {useLifecycle, usePageLogic} from '../../../../shared/services/page-state.js';
 import {vfNow} from '../../../../shared/platform/environment.js';
 import {useStorefrontPage} from '../../../../shared/services/page-lifecycle.js';

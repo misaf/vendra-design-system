@@ -1,6 +1,6 @@
 // Bilingual bag copy. Edit here, then run npm run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
-import {VF_PIN_COPY} from '../../../../i18n/location.js';
+import {VF_PIN_COPY} from '../../../../src/storefront/delivery/location-messages.js';
 export function vfCopy(S) {
   const C = {
     en: {

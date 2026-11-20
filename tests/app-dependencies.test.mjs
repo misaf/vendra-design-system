@@ -100,19 +100,19 @@ for (const source of [ui, 'components/storefront/Shell.jsx']) {
 check(
   'ownership checks use the normalized alias target',
   {
-    [component]: "import '@storefront/ui/../domain/commerce.js';",
-    'domain/commerce.js': ''
+    [component]: "import '@storefront/ui/../src/storefront/catalog/commerce.js';",
+    'src/storefront/catalog/commerce.js': ''
   },
-  /forbidden reusable UI dependency domain\/commerce\.js/
+  /forbidden reusable UI dependency src\/storefront\/catalog\/commerce\.js/
 );
 check(
   'reusable UI declarations cannot import commerce types',
   {
     'ui/components/Carousel/Carousel.d.ts':
-      "import type {Stock} from '../../../domain/commerce.js'; export type Props = {stock: Stock};",
-    'domain/commerce.d.ts': "export type Stock = 'in' | 'out';"
+      "import type {Stock} from '../../../src/storefront/catalog/commerce.js'; export type Props = {stock: Stock};",
+    'src/storefront/catalog/commerce.d.ts': "export type Stock = 'in' | 'out';"
   },
-  /forbidden reusable UI dependency domain\/commerce\.d\.ts/
+  /forbidden reusable UI dependency src\/storefront\/catalog\/commerce\.d\.ts/
 );
 check(
   'reusable UI cannot import storefront UI',
@@ -169,47 +169,51 @@ for (const statement of [
   `export {x} from './missing.js';`,
   `const load = () => import('./missing.js');`
 ])
-  check('missing target: ' + statement, {'domain/a.js': statement}, /missing relative dependency/);
+  check(
+    'missing target: ' + statement,
+    {'src/storefront/catalog/a.js': statement},
+    /missing relative dependency/
+  );
 check(
   'directory without module entry is missing',
   {
-    'domain/a.js': `import './folder';`,
-    'domain/folder/other.js': ''
+    'src/storefront/catalog/a.js': `import './folder';`,
+    'src/storefront/catalog/folder/other.js': ''
   },
   /missing relative dependency/
 );
 check('extensionless module resolution', {
-  'domain/a.js': `import './b';`,
-  'domain/b.js': ''
+  'src/storefront/catalog/a.js': `import './b';`,
+  'src/storefront/catalog/b.js': ''
 });
 check('diamond is acyclic', {
-  'domain/a.js': `import './b.js'; import './c.js';`,
-  'domain/b.js': `export * from './d.js';`,
-  'domain/c.js': `export * from './d.js';`,
-  'domain/d.js': ''
+  'src/storefront/catalog/a.js': `import './b.js'; import './c.js';`,
+  'src/storefront/catalog/b.js': `export * from './d.js';`,
+  'src/storefront/catalog/c.js': `export * from './d.js';`,
+  'src/storefront/catalog/d.js': ''
 });
 check(
   'cycle includes re-export and nested dynamic import',
   {
-    'domain/a.js': `export * from './b.js';`,
-    'domain/b.js': `const load = () => import('./c.js');`,
-    'domain/c.js': `import './a.js';`
+    'src/storefront/catalog/a.js': `export * from './b.js';`,
+    'src/storefront/catalog/b.js': `const load = () => import('./c.js');`,
+    'src/storefront/catalog/c.js': `import './a.js';`
   },
   /Import cycle: .*a.js -> .*b.js -> .*c.js -> .*a.js/
 );
-check('self-cycle', {'domain/a.js': `import './a.js';`}, /Import cycle:/);
+check('self-cycle', {'src/storefront/catalog/a.js': `import './a.js';`}, /Import cycle:/);
 check(
   'referenced generated data is scanned for cycles',
   {
-    'domain/a.js': `import '../_runtime/data.js';`,
-    '_runtime/data.js': `import '../domain/a.js';`
+    'src/storefront/catalog/a.js': `import '@storefront/_runtime/data.js';`,
+    '_runtime/data.js': `import '../src/storefront/catalog/a.js';`
   },
   /Import cycle:/
 );
 check(
   'referenced module outside initial roots is checked for missing imports',
   {
-    'domain/a.js': `import '../other/data.js';`,
+    'src/storefront/catalog/a.js': `import '@storefront/other/data.js';`,
     'other/data.js': `import './missing.js';`
   },
   /missing relative dependency/
@@ -228,25 +232,25 @@ check(
   /Import cycle:/
 );
 check('literal dynamic imports contribute valid graph edges', {
-  'domain/a.js': `const load = () => import('./b.js');`,
-  'domain/b.js': ''
+  'src/storefront/catalog/a.js': `const load = () => import('./b.js');`,
+  'src/storefront/catalog/b.js': ''
 });
-const domain = 'domain/catalog.js';
+const domain = 'src/storefront/catalog/catalog.js';
 const environment = 'shared/platform/environment.js';
 check('shared folders follow their allowed directions', {
   [environment]: 'export const vfNow = () => 0;',
-  [domain]: `import '../shared/platform/environment.js'; import '../i18n/shell.js';
-    import './commerce.js'; import '../_runtime/tenant-slugs.js';`,
-  'i18n/shell.js': '',
-  'domain/commerce.js': '',
+  [domain]: `import '@storefront/shared/platform/environment.js'; import '@storefront/src/storefront/shell/shell.js';
+    import './commerce.js'; import '@storefront/_runtime/tenant-slugs.js';`,
+  'src/storefront/shell/shell.js': '',
+  'src/storefront/catalog/commerce.js': '',
   '_runtime/tenant-slugs.js': '',
-  [service]: `import React from 'react'; import '../../../domain/catalog.js';`,
-  [qr]: `import qrcode from 'qrcode-generator'; import '../../domain/catalog.js';`
+  [service]: `import React from 'react'; import '../../../src/storefront/catalog/catalog.js';`,
+  [qr]: `import qrcode from 'qrcode-generator'; import '../../src/storefront/catalog/catalog.js';`
 });
 for (const [name, sources, expected] of [
   [
     'domain cannot import services',
-    {[domain]: `import '../shared/services/integrations/api.js';`, [service]: ''},
+    {[domain]: `import '@storefront/shared/services/integrations/api.js';`, [service]: ''},
     /forbidden domain dependency/
   ],
   [
@@ -256,20 +260,20 @@ for (const [name, sources, expected] of [
   ],
   [
     'domain cannot import app UI',
-    {[domain]: `import '../ui/index.js';`, [inventory]: ''},
+    {[domain]: `import '@storefront/ui/index.js';`, [inventory]: ''},
     /forbidden domain dependency/
   ],
   [
     'domain cannot import package components',
     {
-      [domain]: `import '../ui/components/Carousel/Carousel.jsx';`,
+      [domain]: `import '@storefront/ui/components/Carousel/Carousel.jsx';`,
       [component]: ''
     },
     /forbidden domain dependency/
   ],
   [
     'platform cannot import domain',
-    {[environment]: `import '../../domain/catalog.js';`, [domain]: ''},
+    {[environment]: `import '../../src/storefront/catalog/catalog.js';`, [domain]: ''},
     /forbidden platform dependency/
   ],
   [
@@ -284,7 +288,7 @@ for (const [name, sources, expected] of [
   ],
   [
     'app UI cannot import domain modules directly',
-    {[ui]: `import '../../../domain/catalog.js';`, [domain]: ''},
+    {[ui]: `import '../../../src/storefront/catalog/catalog.js';`, [domain]: ''},
     /forbidden UI dependency/
   ],
   [
@@ -295,7 +299,7 @@ for (const [name, sources, expected] of [
   ['unknown shared folder fails', {'shared/misc/helper.js': ''}, /shared module outside/]
 ])
   check(name, sources, expected);
-check('parse errors fail', {'domain/a.js': 'const = ;'}, /parse error/);
+check('parse errors fail', {'src/storefront/catalog/a.js': 'const = ;'}, /parse error/);
 
 check('UI can import React and its local modules', {
   'ui/components/index.tsx': "import type {ReactNode} from 'react'; export * from './tokens';",
@@ -326,7 +330,7 @@ for (const [name, file, code] of [
   ['service sets a global', service, 'window.VF_TRACK = {};'],
   ['component reads a helper global', component, 'export const x = window.AG_FORMAT;'],
   ['computed global name', 'components/storefront/main.jsx', "globalThis['VF_TENANT'] = 'x';"],
-  ['communications global', 'communications/a.js', 'self.VF_NOTIFY = {};'],
+  ['communications global', 'src/communications/a.js', 'self.VF_NOTIFY = {};'],
   ['cards namespace', 'components/storefront/theme.js', 'window.VendraDesignSystem;']
 ])
   check(name, {[file]: code}, /reads or sets the global/);

@@ -1,7 +1,7 @@
 // Bilingual faq copy. Edit here, then run npm run build.
 // The questions are sample responses shaped like the Vendra API (FaqCategory, Faq). Answers can use
 // {fee:<zone>}, {cutoff:<zone>} and {freeDeliveryFrom}, filled from the delivery rules (vfStoreText).
-import {vfStoreText} from '../../../../domain/delivery.js';
+import {vfStoreText} from '../../../../src/storefront/delivery/delivery.js';
 
 // GET /api/content/faq-categories
 export const VF_API_FAQ_CATEGORIES = [

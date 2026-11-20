@@ -5,32 +5,30 @@ import {parseSync} from 'rolldown/experimental';
 import {uiFolder} from './paths.mjs';
 
 // shared/ is split by role, and each folder may import only the folders listed here
-// (its own included). The app's i18n/ modules share the domain rules. A JS module loose in
+// (its own included). A JS module loose in
 // shared/ itself, or in a folder not listed, fails: place it by what it does.
 //   platform/  where the storefront runs: address, asset base, clock (no browser at import time)
-//   domain/    pure store rules and sample data (at the repository root)
+//   src/storefront/  business rules, sample data and feature copy
 //   services/  browser services: routing, SEO, focus/lifecycle, page state, offline, API, analytics
 //   ui/        storefront UI helpers the app UI layers may use; never services or persistence
 //   styles/    the storefront's CSS entry points (no modules)
 const sharedRules = {
   platform: {folders: ['platform'], packages: []},
-  domain: {folders: ['domain', 'translations', 'platform'], packages: [], runtime: true},
-  translations: {folders: ['domain', 'translations', 'platform'], packages: []},
+  domain: {folders: ['domain', 'platform'], packages: [], runtime: true},
   services: {
-    folders: ['services', 'domain', 'translations', 'platform'],
+    folders: ['services', 'domain', 'platform'],
     packages: ['react', 'react-aria-components'],
     runtime: true
   },
-  ui: {folders: ['ui', 'domain', 'translations'], packages: ['react', 'qrcode-generator']},
+  ui: {folders: ['ui', 'domain'], packages: ['react', 'qrcode-generator']},
   styles: {folders: [], packages: []}
 };
 const sharedFolder = file => {
-  if (file.startsWith('i18n/')) return 'translations';
-  if (file.startsWith('domain/')) return 'domain';
+  if (/^src\/storefront\/[^/]+\//.test(file)) return 'domain';
   const folder = /^shared\/([^/]+)\//.exec(file)?.[1];
   return folder && Object.hasOwn(sharedRules, folder) ? folder : null;
 };
-const isShared = file => ['shared/', 'domain/', 'i18n/'].some(prefix => file.startsWith(prefix));
+const isShared = file => ['shared/', 'src/storefront/'].some(prefix => file.startsWith(prefix));
 const isReusableUi = file => file.startsWith(uiFolder + '/');
 const isStorefrontUi = file => file.startsWith('components/storefront/');
 const isPresentational = file =>
@@ -116,12 +114,11 @@ const runtimeRoots = [
   'app',
   'components',
   uiFolder,
-  'domain',
+  'src/storefront',
   'session',
   'shared',
-  'i18n',
   'server',
-  'communications'
+  'src/communications'
 ];
 const moduleExtensions = ['.js', '.jsx', '.mjs', '.ts', '.tsx', '.mts'];
 const isRuntimeModule = file =>

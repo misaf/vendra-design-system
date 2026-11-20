@@ -111,7 +111,8 @@ function featureFiles(name) {
 function pageScript(name) {
   const folder = name === 'site' ? 'session' : routeFolders[name];
   const parts = [];
-  if (['home', 'journal', 'post'].includes(name)) parts.push(read('i18n/journal-content.js'));
+  if (['home', 'journal', 'post'].includes(name))
+    parts.push(read('src/storefront/content/journal-content.js'));
   if (fs.existsSync(path.join(templates, folder, 'copy.js'))) parts.push(read(folder + '/copy.js'));
   if (name === 'checkout') parts.push(read(folder + '/payment-recovery.js'));
   const files = featureFiles(name);
@@ -131,31 +132,31 @@ function pageScript(name) {
 // globals, as page logic expects them in a vm context. The runtime (shared/platform/runtime.js) is
 // installed at the end and exposed as the context's vfRuntime.
 const sharedFiles = [
-  'domain/store-config.js',
-  'domain/brand.js',
-  'domain/delivery.js',
-  'domain/store-hours.js',
-  'domain/location.js',
-  'domain/promotions.js',
-  'domain/product-categories.js',
-  'domain/category-images.js',
-  'domain/journal-images.js',
-  'domain/catalog.js',
-  'i18n/shell.js',
-  'i18n/categories.js',
-  'i18n/journal-moved.js',
-  'i18n/time.js',
-  'domain/order-message.js',
-  'i18n/location.js',
-  'domain/account-data.js',
-  'domain/wallet.js',
-  'domain/payments.js',
-  'domain/payment-api.js',
+  'src/storefront/store/store-config.js',
+  'src/storefront/store/brand.js',
+  'src/storefront/delivery/delivery.js',
+  'src/storefront/store/store-hours.js',
+  'src/storefront/delivery/location.js',
+  'src/storefront/pricing/promotions.js',
+  'src/storefront/catalog/product-categories.js',
+  'src/storefront/catalog/category-images.js',
+  'src/storefront/content/journal-images.js',
+  'src/storefront/catalog/catalog.js',
+  'src/storefront/shell/shell.js',
+  'src/storefront/catalog/categories.js',
+  'src/storefront/content/journal-moved.js',
+  'src/storefront/delivery/time.js',
+  'src/storefront/checkout/order-message.js',
+  'src/storefront/delivery/location-messages.js',
+  'src/storefront/customer/account-data.js',
+  'src/storefront/customer/wallet.js',
+  'src/storefront/checkout/payments.js',
+  'src/storefront/checkout/payment-api.js',
   'shared/services/integrations/api-errors.js',
   'shared/services/integrations/api.js',
   'shared/services/integrations/analytics.js',
   'shared/services/integrations/runtime.js',
-  'domain/formatting.js',
+  'src/storefront/pricing/formatting.js',
   'shared/services/routing.js',
   'shared/services/structured-data.js',
   'shared/services/page-state.js',
@@ -166,8 +167,14 @@ const sharedFiles = [
   'shared/services/navigation.js'
 ];
 // The package helpers and the routing / focus helpers the shared logic imports, each in its own scope.
-const scoped = (name, file) =>
-  'const ' + name + ' = (() => {\n' + strip(read(file)) + '\nreturn ' + name + ';\n})();\n';
+const scoped = (name, ...files) =>
+  'const ' +
+  name +
+  ' = (() => {\n' +
+  files.map(file => strip(read(file))).join('\n') +
+  '\nreturn ' +
+  name +
+  ';\n})();\n';
 const sharedLogic =
   hooksHarness +
   // utils/locales.js declares LOCALES, localeConfig and plural at the top level.
@@ -177,7 +184,14 @@ const sharedLogic =
   '\n' +
   strip(read('ui/utils/coordinates.js')) +
   '\n' +
-  scoped('commerce', 'domain/commerce.js') +
+  scoped(
+    'commerce',
+    'src/storefront/store/store-clock.js',
+    'src/storefront/store/opening-hours.js',
+    'src/storefront/delivery/delivery-window.js',
+    'src/storefront/pricing/order-totals.js',
+    'src/storefront/commerce/commerce.js'
+  ) +
   scoped('analytics', 'ui/utils/analytics.js') +
   scoped('dates', 'ui/utils/dates.js') +
   scoped('format', 'ui/utils/format.js') +

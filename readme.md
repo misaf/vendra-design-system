@@ -14,7 +14,7 @@ The [storefront UI](./docs/UI.md) owns Button, Input, Dialog, DatePicker, and th
 
 Tenant themes are generated from `ui/tokens/tenants/<slug>.json`. The storefront theme generator in `ui/tokens/tenant-theme.js` exposes `tenantCss`, `validate`, `checks`, and the design token helpers. It validates slugs, settings, and contrast before generating CSS.
 
-`commerce` holds the storefront rules as pure functions that take the tenant's data: delivery zones and days, totals with promo and balance discounts, the payment methods a store offers (`PAYMENT_METHODS`, `paymentOptions`: each is a feature the store turns on in its settings) and its other optional parts (`STORE_FEATURES`, `storeFeatures`: promo codes, same-day delivery, weddings, journal, reminders, newsletter), the Checkout request and adapters from Vendra API records (`productFromApi`, `orderFromApi`…). The reference templates run on the same functions. Pass the store's IANA `timeZone` in `commerce.deliveryDays` options and as the fifth argument of `commerce.deliverySlots` so dates, cut-offs and slot lead times use the store clock. Omission preserves device-local behavior; invalid zones throw `RangeError`. Opening hours follow the same clock: `commerce.openingStatus(hours, now, timeZone)` says whether the store is open and when that next changes, from weekly hours plus dated exceptions (holidays); `hoursSummary` groups the week for display and `hoursExceptions` lists special hours coming up. The sample store sets `VF_STORE.timeZone` (`Asia/Tehran`) and `VF_STORE.hours` in `domain/store-config.js`; `VF_DELIVERY_TIME_ZONE` follows it.
+`commerce` holds the storefront rules as pure functions that take the tenant's data: delivery zones and days, totals with promo and balance discounts, the payment methods a store offers (`PAYMENT_METHODS`, `paymentOptions`: each is a feature the store turns on in its settings) and its other optional parts (`STORE_FEATURES`, `storeFeatures`: promo codes, same-day delivery, weddings, journal, reminders, newsletter), the Checkout request and adapters from Vendra API records (`productFromApi`, `orderFromApi`…). The reference templates run on the same functions. Pass the store's IANA `timeZone` in `commerce.deliveryDays` options and as the fifth argument of `commerce.deliverySlots` so dates, cut-offs and slot lead times use the store clock. Omission preserves device-local behavior; invalid zones throw `RangeError`. Opening hours follow the same clock: `commerce.openingStatus(hours, now, timeZone)` says whether the store is open and when that next changes, from weekly hours plus dated exceptions (holidays); `hoursSummary` groups the week for display and `hoursExceptions` lists special hours coming up. The sample store sets `VF_STORE.timeZone` (`Asia/Tehran`) and `VF_STORE.hours` in `src/storefront/store/store-config.js`; `VF_DELIVERY_TIME_ZONE` follows it.
 
 Wrap the app in `VendraProvider` with the page's locale. Components that name their own buttons (Dialog's close, Carousel's arrows, QuantityInput's −/+, DatePicker's calendar…) then use their English or Persian built-in wording (each component's own `messages.js`, so a component carries only its own words), and React Aria formats numbers and dates for that locale. Props still win; `messages` adds a language or changes wording. `navigate` (your router's push) makes the components' links navigate client-side:
 
@@ -80,14 +80,15 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 | `app/[locale]/` | Next.js routes with their screens, state, copy, styling and tests. |
 | `ui/` | Reusable components, design tokens, themes, and fonts. |
 | `components/storefront/` | Header, footer, checkout chrome and UI used across routes. |
-| `domain/`, `session/` | Storefront rules and state shared across routes and locales. |
+| `src/storefront/` | Business capabilities, including catalog, delivery, pricing, checkout, and customer accounts. |
+| `session/` | State coordinated across routes and locales. |
 | `server/vendra/` | Laravel transport and response adapters. |
-| `shared/`, `i18n/`, `styles/` | Browser helpers, translations, and global styles. |
+| `shared/`, `styles/` | Browser helpers and global styles. |
 | `guidelines/` | Design-system gallery, brand guide and theme builder. |
 | `build/`, `next/`, `tools/` | Build and export helpers, component scaffolding and dependency checks. |
 | `e2e/`, `tests/` | Browser journeys, smoke specs, visual baselines, unit and integration checks. The OpenAPI snapshot is in `tests/fixtures/`. |
 | `assets/` | Public storefront and brand assets copied into the build. |
-| `communications/`, `deployment/` | Communications templates and deployment examples. |
+| `src/communications/`, `deployment/` | Communications templates and deployment examples. |
 | `_runtime/`, `ui/tokens/design/` | Generated styles and tokens. |
 
 ## Commands

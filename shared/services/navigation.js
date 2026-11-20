@@ -1,20 +1,20 @@
 // Shared shell values: menus, tabs, store links, favorites and focus helpers.
-import {vfBrand} from '../../domain/brand.js';
-import {vfFindProduct, vfProductId} from '../../domain/catalog.js';
+import {vfBrand} from '../../src/storefront/store/brand.js';
+import {vfFindProduct, vfProductId} from '../../src/storefront/catalog/catalog.js';
 import {
   VF_FREE_DELIVERY_THRESHOLD,
   VF_ZONES,
   vfDeliveryCutoff,
   vfDeliveryDays
-} from '../../domain/delivery.js';
-import {VF_FA_DIGITS, VF_MONEY} from '../../domain/formatting.js';
-import {vfDirections} from '../../domain/location.js';
+} from '../../src/storefront/delivery/delivery.js';
+import {VF_FA_DIGITS, VF_MONEY} from '../../src/storefront/pricing/formatting.js';
+import {vfDirections} from '../../src/storefront/delivery/location.js';
 import {vfPageTenant} from './tenant.js';
 import {VF_POLICIES, VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
-import {VF_STORE, vfFeatures, vfLocale} from '../../domain/store-config.js';
-import {VF_CATEGORY_COPY} from '../../i18n/categories.js';
-import {VF_SHELL} from '../../i18n/shell.js';
-import {vfDayMonth, vfDayName} from '../../i18n/time.js';
+import {VF_STORE, vfFeatures, vfLocale} from '../../src/storefront/store/store-config.js';
+import {VF_CATEGORY_COPY} from '../../src/storefront/catalog/categories.js';
+import {VF_SHELL} from '../../src/storefront/shell/shell.js';
+import {vfDayMonth, vfDayName} from '../../src/storefront/delivery/time.js';
 import {VF_SEO} from './seo.js';
 import {VF_NAV} from './page-focus.js';
 import {vfNow, vfOnServer, vfStoredValue} from '../platform/environment.js';

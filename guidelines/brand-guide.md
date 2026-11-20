@@ -15,7 +15,7 @@ The detailed rules behind the design system: the reference tenant, voice, visual
 - **Phone:** +98-9129333034 · `tel:+989129333034`
 - **WhatsApp:** +989129333034 · https://wa.me/989129333034
 - **Instagram:** @misaf1990
-- **Map pin:** `studio` in `domain/store-config.js` (sample; replace with the studio's door)
+- **Map pin:** `studio` in `src/storefront/store/store-config.js` (sample; replace with the studio's door)
 - **Hours:** daily 08:00–22:00 (fa: همه‌روزه ۰۸:۰۰ تا ۲۲:۰۰)
 - Phone numbers and handles always render LTR (`dir="ltr"`) inside Persian text.
 
@@ -23,7 +23,7 @@ The detailed rules behind the design system: the reference tenant, voice, visual
 This system covers the **customer-facing storefront** only. Admin tasks (products, orders, currency, delivery rules, hours) are managed in a separate framework, so don't design admin screens here. The storefront reads those settings as data.
 
 ## Delivery rules
-Rules are stored per country (`domain/delivery.js`) so more countries can be added later with their own zones, fees, currency and slots. **Current values are SAMPLES — replace with the real ones.**
+Rules are stored per country (`src/storefront/delivery/delivery.js`) so more countries can be added later with their own zones, fees, currency and slots. **Current values are SAMPLES — replace with the real ones.**
 **Iran (IR)** — fees in Toman; time slots 08–12, 12–16, 16–20 and 20–22 (the shop is open 08:00–22:00):
 - **Karaj central** (Azimiyeh, Gohardasht, Mehrshahr…): 80,000; same day if ordered before 18:00
 - **Karaj outer** (Fardis, Mohammadshahr, Kamalshahr): 120,000; same day before 16:00
@@ -230,10 +230,10 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 **Helpers** (not components)
 - `ui/utils/cx.js` → `cx(...names)`: joins class names and skips empty values.
 - `ui/utils/format.js` → `.format`: `CURRENCIES` (the fixed ones: Toman and Rial), `money(n, {currency, lang, currencies})` (throws for a currency without a rate), `number()`. An ES module: `import {format}` from the package; the storefront imports it.
-- `domain/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The storefront imports it.
+- `src/storefront/commerce/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The storefront imports it.
 - `ui/utils/dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
 - `shared/services/seo.js` → `VF_SEO` and `shared/services/page-focus.js` → `VF_NAV`: storefront modules; see *Routing & URLs* and *Structured data*.
-- `communications/email-templates.js` → `VF_EMAIL` (an ES module export, as is `VF_NOTIFY` from `notifications.js`): `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, a tenant slug or the palette from `VF_EMAIL.themeFromCSS(el)`.
+- `src/communications/templates/email-templates.js` → `VF_EMAIL` (an ES module export, as is `VF_NOTIFY` from `notifications.js`): `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, a tenant slug or the palette from `VF_EMAIL.themeFromCSS(el)`.
 - `format`, `dates` and `commerce` also hang off `window.VendraDesignSystem` (as `AG_FORMAT`, `AG_DATES` and `AG_COMMERCE`) for the guideline cards, set only in `guidelines/card-runtime.js`; the storefront and the package import them, and `tools/app-dependencies.mjs` fails any other `window.VF_*` or `window.AG_*` access.
 
 ### Intentional additions

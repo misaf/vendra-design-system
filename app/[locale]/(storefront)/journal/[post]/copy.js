@@ -1,6 +1,6 @@
 // Bilingual post copy. Edit here, then run npm run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
-import {vfJournalImage} from '../../../../../domain/journal-images.js';
+import {vfJournalImage} from '../../../../../src/storefront/content/journal-images.js';
 import {vfRouteUrl} from '../../../../../shared/services/routing.js';
 import {vfArticleData} from '../../../../../shared/services/structured-data.js';
 

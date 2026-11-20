@@ -2,8 +2,8 @@
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import test from 'node:test';
-import {commerce} from '../domain/commerce.js';
-import {vfOpeningStatus} from '../domain/store-hours.js';
+import {hoursExceptions, hoursSummary, openingStatus} from './opening-hours.js';
+import {vfOpeningStatus} from './store-hours.js';
 
 if (!process.env.VENDRA_OPENING_TZ_TEST) {
   for (const TZ of ['America/Los_Angeles', 'Pacific/Kiritimati', 'UTC']) {
@@ -22,7 +22,7 @@ if (!process.env.VENDRA_OPENING_TZ_TEST) {
   // Tehran is UTC+03:30 all year.
   const tehran = (date, time) => new Date(`${date}T${time}:00+03:30`);
   const daily = {week: [{days: [0, 1, 2, 3, 4, 5, 6], opens: '08:00', closes: '22:00'}]};
-  const status = (hours, date, time) => commerce.openingStatus(hours, tehran(date, time), zone);
+  const status = (hours, date, time) => openingStatus(hours, tehran(date, time), zone);
 
   // 2026-10-05 is a Monday.
   assert.deepEqual(status(daily, '2026-10-05', '09:00'), {
@@ -56,12 +56,12 @@ if (!process.env.VENDRA_OPENING_TZ_TEST) {
     next: {iso: '2026-10-10', offset: 2, time: '08:00'},
     exception: null
   });
-  assert.deepEqual(commerce.hoursSummary(weekly), [
+  assert.deepEqual(hoursSummary(weekly), [
     {days: [6, 0, 1, 2, 3], ranges: [{opens: '08:00', closes: '22:00'}]},
     {days: [4], ranges: [{opens: '10:00', closes: '18:00'}]},
     {days: [5], ranges: []}
   ]);
-  assert.deepEqual(commerce.hoursSummary(daily), [
+  assert.deepEqual(hoursSummary(daily), [
     {days: [6, 0, 1, 2, 3, 4, 5], ranges: [{opens: '08:00', closes: '22:00'}]}
   ]);
 
@@ -106,14 +106,12 @@ if (!process.env.VENDRA_OPENING_TZ_TEST) {
     time: '22:00'
   });
   assert.deepEqual(
-    commerce
-      .hoursExceptions(nowruz, 14, tehran('2027-03-10', '12:00'), zone)
-      .map(item => item.date),
+    hoursExceptions(nowruz, 14, tehran('2027-03-10', '12:00'), zone).map(item => item.date),
     ['2027-03-21', '2027-03-22']
   );
-  assert.deepEqual(commerce.hoursExceptions(nowruz, 7, tehran('2027-03-10', '12:00'), zone), []);
+  assert.deepEqual(hoursExceptions(nowruz, 7, tehran('2027-03-10', '12:00'), zone), []);
   assert.deepEqual(
-    commerce.hoursExceptions(nowruz, 0, tehran('2027-03-22', '23:59'), zone).map(item => item.date),
+    hoursExceptions(nowruz, 0, tehran('2027-03-22', '23:59'), zone).map(item => item.date),
     ['2027-03-22']
   );
 
@@ -123,7 +121,7 @@ if (!process.env.VENDRA_OPENING_TZ_TEST) {
     offset: 1,
     time: '08:00'
   });
-  assert.throws(() => commerce.openingStatus(daily, new Date(), 'Invalid/Zone'), RangeError);
+  assert.throws(() => openingStatus(daily, new Date(), 'Invalid/Zone'), RangeError);
   // "Closed today" only on an all-day closure; shortened holiday hours say closed for now.
   const wording = (lang, date, time) => vfOpeningStatus(lang, tehran(date, time), nowruz).text;
   assert.equal(

@@ -1,5 +1,5 @@
-import '../guidelines/card-runtime.js';
-import {VF_NOTIFY as N} from './notifications.js';
+import '../../../guidelines/card-runtime.js';
+import {VF_NOTIFY as N} from '../templates/notifications.js';
 const LABEL = {
   received: 'Order received',
   paid: 'Payment confirmed',

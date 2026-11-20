@@ -8,6 +8,6 @@ interface Window {
   __vfRuntime?: import('../shared/platform/runtime.js').VfRuntime;
   // The click-through site's page object (session/useStorefrontSession.js), for tests.
   __vfSite?: any;
-  // Leaflet, loaded on demand by domain/location.js.
+  // Leaflet, loaded on demand by src/storefront/delivery/location.js.
   L: any;
 }

@@ -38,7 +38,7 @@
  * @typedef {object} VfRuntime
  * @property {VfApi | null} api The API client; null until installed (and on the server).
  * @property {VfTracker | null} track Analytics; null until installed (and on the server).
- * @property {any} payment Card helpers (domain/payments.js: bankOf, luhn, setPayCard); null
+ * @property {any} payment Card helpers (src/storefront/checkout/payments.js: bankOf, luhn, setPayCard); null
  *   until installed (and on the server).
  * @property {string} assetBase Where product images, map scripts and tenant themes are served
  *   from (the build's base path); '' until components/storefront/tenant-theme.js sets it.

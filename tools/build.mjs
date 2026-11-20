@@ -22,7 +22,7 @@ async function main() {
         throw new Error(path.relative(root, target) + ' is stale. Run npm run build.');
       if (!check && content !== current) fs.writeFileSync(target, content);
     }
-    const {VF_STORE} = await import('../domain/store-config.js');
+    const {VF_STORE} = await import('../src/storefront/store/store-config.js');
     const specs = {default: {}, ...tenantSpecs()};
     if (!specs[VF_STORE.tenant]) throw new Error('Unknown store tenant: ' + VF_STORE.tenant);
     specs[VF_STORE.tenant] = {

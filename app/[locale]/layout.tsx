@@ -2,7 +2,7 @@ import type {ReactNode} from 'react';
 import {tenantFontUrls} from '@storefront/server/route-head.mjs';
 import {vfConfigureRendering} from '@storefront/shared/platform/environment.js';
 import {requireLocale, locales} from '@storefront/app/route-locale';
-import {VF_STORE} from '@storefront/domain/store-config.js';
+import {VF_STORE} from '@storefront/src/storefront/store/store-config.js';
 
 const base = process.env.NEXT_PUBLIC_VF_BASE_PATH + '/';
 vfConfigureRendering(base, 0);

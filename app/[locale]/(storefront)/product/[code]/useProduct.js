@@ -18,12 +18,19 @@ import {
   vfRecentlyViewed,
   vfRememberViewed,
   vfTokenText
-} from '../../../../../domain/catalog.js';
-import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../../../../domain/formatting.js';
+} from '../../../../../src/storefront/catalog/catalog.js';
+import {
+  VF_FA_DIGITS,
+  VF_MONEY,
+  vfSeparator
+} from '../../../../../src/storefront/pricing/formatting.js';
 import {vfShell} from '../../../../../shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../../../../shared/services/routing.js';
-import {vfFeatures} from '../../../../../domain/store-config.js';
-import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../../../../../i18n/categories.js';
+import {vfFeatures} from '../../../../../src/storefront/store/store-config.js';
+import {
+  VF_CATEGORY_COPY,
+  VF_CATEGORY_ITEM
+} from '../../../../../src/storefront/catalog/categories.js';
 import {useLifecycle, usePageLogic} from '../../../../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../../../../shared/services/page-lifecycle.js';
 import {vfSelectItem, vfShowList} from '../../../../../shared/services/list-tracking.js';

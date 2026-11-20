@@ -1,14 +1,14 @@
 // Vendra API client (from tests/fixtures/vendra-openapi.json, v1.0.0). No auth on these endpoints.
 // base = '' → demo mode: nothing is sent, calls resolve as if they succeeded.
-import {vfAccountLocale, vfCustomerId} from '../../../domain/account-data.js';
-import {VF_PRODUCTS, vfProductId} from '../../../domain/catalog.js';
+import {vfAccountLocale, vfCustomerId} from '../../../src/storefront/customer/account-data.js';
+import {VF_PRODUCTS, vfProductId} from '../../../src/storefront/catalog/catalog.js';
 import {vfApiFields} from './api-errors.js';
-import {VF_STORE} from '../../../domain/store-config.js';
+import {VF_STORE} from '../../../src/storefront/store/store-config.js';
 import {
   vfCheckoutResultFromApi,
   vfGatewayRedirect,
   vfPaymentFromApi
-} from '../../../domain/payment-api.js';
+} from '../../../src/storefront/checkout/payment-api.js';
 // Creates the client; shared/services/integrations/runtime.js installs it as vfRuntime.api in the
 // browser only (the Next.js static export, calls no API).
 /** @returns {import('../../platform/runtime.js').VfApi} */

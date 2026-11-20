@@ -1,7 +1,7 @@
 // Asset paths are relative to the deployment root, including deployments in a subdirectory.
-import {VF_TENANT_BRANDS} from '../_runtime/tenant-slugs.js';
+import {VF_TENANT_BRANDS} from '../../../_runtime/tenant-slugs.js';
 import {VF_STORE} from './store-config.js';
-import {vfAssetBase} from '../shared/platform/environment.js';
+import {vfAssetBase} from '../../../shared/platform/environment.js';
 
 /** @typedef {{src: string, width: number, height: number, alt?: {en: string, fa: string}}} BrandImage */
 /** @typedef {{favicon16?: string, favicon: string, apple: string, app192: string, app512: string, maskable: string}} BrandIcons */

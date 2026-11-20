@@ -2,8 +2,8 @@
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import test from 'node:test';
-import {commerce} from '../domain/commerce.js';
-import {vfProduct} from '../domain/catalog.js';
+import {deliveryDays, deliverySlots, isoDate, openDay, openSlot} from './delivery-window.js';
+import {vfProduct} from '../catalog/catalog.js';
 import {
   VF_SLOTS,
   VF_ZONES,
@@ -13,7 +13,7 @@ import {
   vfDeliveryDays,
   vfDeliverySlot,
   vfDeliverySlots
-} from '../domain/delivery.js';
+} from './delivery.js';
 
 if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
   for (const TZ of [
@@ -37,7 +37,7 @@ if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
   const timeZone = 'Asia/Tehran';
   const rules = {days: 3, timeZone};
   const now = new Date('2026-10-05T19:00:00Z'); // 22:30 Tehran, 12:00 Los Angeles.
-  const days = commerce.deliveryDays('18:00', rules, now);
+  const days = deliveryDays('18:00', rules, now);
   assert.deepEqual(
     days.map(day => [day.iso, day.pastCutoff]),
     [
@@ -46,24 +46,14 @@ if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
       ['2026-10-07', false]
     ]
   );
-  assert.equal(commerce.openDay(days, '2026-10-05'), '2026-10-06');
-  assert.equal(
-    commerce.isoDate(days[0].date),
-    days[0].iso,
-    'date label retains the store calendar day'
-  );
-  assert.equal(
-    commerce.deliveryDays('18:00', rules, new Date('2026-10-05T14:29:00Z'))[0].pastCutoff,
-    false
-  );
-  assert.equal(
-    commerce.deliveryDays('18:00', rules, new Date('2026-10-05T14:30:00Z'))[0].pastCutoff,
-    true
-  );
+  assert.equal(openDay(days, '2026-10-05'), '2026-10-06');
+  assert.equal(isoDate(days[0].date), days[0].iso, 'date label retains the store calendar day');
+  assert.equal(deliveryDays('18:00', rules, new Date('2026-10-05T14:29:00Z'))[0].pastCutoff, false);
+  assert.equal(deliveryDays('18:00', rules, new Date('2026-10-05T14:30:00Z'))[0].pastCutoff, true);
   const midnight = new Date('2026-12-31T20:30:00Z'); // Jan 1 00:00 Tehran.
-  assert.equal(commerce.deliveryDays('18:00', rules, midnight)[0].iso, '2027-01-01');
-  assert.equal(commerce.deliveryDays('18:00', rules, midnight)[0].pastCutoff, false);
-  const tomorrow = commerce.deliveryDays(
+  assert.equal(deliveryDays('18:00', rules, midnight)[0].iso, '2027-01-01');
+  assert.equal(deliveryDays('18:00', rules, midnight)[0].pastCutoff, false);
+  const tomorrow = deliveryDays(
     '18:00',
     {...rules, sameDay: false, soldOutDates: ['2027-01-02']},
     midnight
@@ -75,62 +65,43 @@ if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
     {start: '20', end: '22'}
   ];
   const afterLastSlot = new Date('2026-10-05T17:30:00Z'); // 21:00 Tehran, before a 22:00 cutoff.
-  const lateDays = commerce.deliveryDays('22:00', rules, afterLastSlot);
-  const today = commerce.openDay(lateDays, '2026-10-05');
+  const lateDays = deliveryDays('22:00', rules, afterLastSlot);
+  const today = openDay(lateDays, '2026-10-05');
   assert.equal(today, '2026-10-05');
-  const closedSlots = commerce.deliverySlots(today, slots, 120, afterLastSlot, timeZone);
+  const closedSlots = deliverySlots(today, slots, 120, afterLastSlot, timeZone);
   assert.ok(closedSlots.every(slot => slot.closed));
-  assert.equal(commerce.openSlot(closedSlots, '20'), undefined);
-  assert.equal(commerce.openSlot([], '20'), undefined);
-  const tomorrowSlots = commerce.deliverySlots(
-    lateDays[1].iso,
-    slots,
-    120,
-    afterLastSlot,
-    timeZone
-  );
-  assert.equal(commerce.openSlot(tomorrowSlots, '20'), '20');
-  assert.equal(commerce.openSlot(tomorrowSlots, '16'), '08');
+  assert.equal(openSlot(closedSlots, '20'), undefined);
+  assert.equal(openSlot([], '20'), undefined);
+  const tomorrowSlots = deliverySlots(lateDays[1].iso, slots, 120, afterLastSlot, timeZone);
+  assert.equal(openSlot(tomorrowSlots, '20'), '20');
+  assert.equal(openSlot(tomorrowSlots, '16'), '08');
   assert.deepEqual(
-    commerce.deliverySlots('2026-10-05', slots, 120, now, timeZone).map(slot => slot.closed),
+    deliverySlots('2026-10-05', slots, 120, now, timeZone).map(slot => slot.closed),
     [true, true]
   );
-  assert.ok(
-    commerce.deliverySlots('2026-10-06', slots, 120, now, timeZone).every(slot => !slot.closed)
-  );
+  assert.ok(deliverySlots('2026-10-06', slots, 120, now, timeZone).every(slot => !slot.closed));
   for (const [instant, closed] of [
     ['2026-10-05T06:30:00Z', false],
     ['2026-10-05T06:31:00Z', true]
   ]) {
     assert.equal(
-      commerce.deliverySlots('2026-10-05', slots, 120, new Date(instant), timeZone)[0].closed,
+      deliverySlots('2026-10-05', slots, 120, new Date(instant), timeZone)[0].closed,
       closed
     );
   }
   // The store's DST transition still advances calendar days without skipping or duplicating them.
   assert.deepEqual(
-    commerce
-      .deliveryDays(
-        '18:00',
-        {days: 3, timeZone: 'America/New_York'},
-        new Date('2026-03-08T06:30:00Z')
-      )
-      .map(day => day.iso),
+    deliveryDays(
+      '18:00',
+      {days: 3, timeZone: 'America/New_York'},
+      new Date('2026-03-08T06:30:00Z')
+    ).map(day => day.iso),
     ['2026-03-08', '2026-03-09', '2026-03-10']
   );
-  assert.throws(
-    () => commerce.deliveryDays('18:00', {...rules, timeZone: 'Invalid/Zone'}, now),
-    RangeError
-  );
-  assert.throws(
-    () => commerce.deliverySlots('2026-10-05', slots, 120, now, 'Invalid/Zone'),
-    RangeError
-  );
+  assert.throws(() => deliveryDays('18:00', {...rules, timeZone: 'Invalid/Zone'}, now), RangeError);
+  assert.throws(() => deliverySlots('2026-10-05', slots, 120, now, 'Invalid/Zone'), RangeError);
   // Existing package callers can still intentionally use local time.
-  assert.equal(
-    commerce.deliveryDays('18:00', {days: 1}, new Date(2026, 9, 5, 19))[0].pastCutoff,
-    true
-  );
+  assert.equal(deliveryDays('18:00', {days: 1}, new Date(2026, 9, 5, 19))[0].pastCutoff, true);
   const rollover = new Date('2026-10-05T21:00:00Z'); // Oct 6 in Tehran, Oct 5 in LA.
   assert.equal(vfDeliveryDays('central', rollover)[0].iso, '2026-10-06');
   assert.equal(vfDeliveryDays('central', rollover)[2].iso, '2026-10-08');

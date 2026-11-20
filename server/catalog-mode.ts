@@ -1,6 +1,6 @@
 import 'server-only';
 import {connection} from 'next/server';
-import {VF_STORE} from '../domain/store-config.js';
+import {VF_STORE} from '../src/storefront/store/store-config.js';
 
 export async function liveCatalogBase() {
   if (process.env.NEXT_PUBLIC_VF_NEXT_EXPORT === 'true') return '';

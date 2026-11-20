@@ -7,8 +7,8 @@
 // from (utm_* values and the referrer's host, analytics.attribution). Components report their events through
 // VendraProvider's onEvent, which the shell points here.
 import {analytics} from '../../../ui/utils/analytics.js';
-import {VF_STORE} from '../../../domain/store-config.js';
-import {VF_CATEGORY_ITEM} from '../../../i18n/categories.js';
+import {VF_STORE} from '../../../src/storefront/store/store-config.js';
+import {VF_CATEGORY_ITEM} from '../../../src/storefront/catalog/categories.js';
 // Creates the tracker; shared/services/integrations/runtime.js installs it as vfRuntime.track in the
 // browser only (the Next.js static export, records and sends nothing).
 /** @returns {import('../../platform/runtime.js').VfTracker} */

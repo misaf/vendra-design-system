@@ -1,9 +1,9 @@
 // Page behavior. Edit here, then run npm run build.
-import {VF_JCATS, VF_POSTS} from '../../../../../i18n/journal-content.js';
-import {vfJournalImage} from '../../../../../domain/journal-images.js';
-import {vfSeparator} from '../../../../../domain/formatting.js';
+import {VF_JCATS, VF_POSTS} from '../../../../../src/storefront/content/journal-content.js';
+import {vfJournalImage} from '../../../../../src/storefront/content/journal-images.js';
+import {vfSeparator} from '../../../../../src/storefront/pricing/formatting.js';
 import {vfCopy, vfPostHead} from './copy.js';
-import {vfProduct, vfProductImage} from '../../../../../domain/catalog.js';
+import {vfProduct, vfProductImage} from '../../../../../src/storefront/catalog/catalog.js';
 import {vfShell} from '../../../../../shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../../../../shared/services/routing.js';
 import {useLifecycle, usePageLogic} from '../../../../../shared/services/page-state.js';

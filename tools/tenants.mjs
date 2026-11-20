@@ -90,7 +90,7 @@ function tenantOutputs() {
       path.join(uiRoot, 'tokens/design/tenants', slug + '.json'),
       json(theme.designTokens(theme.tokens(spec).all))
     );
-  const emails = path.join(root, 'communications/email-templates.js');
+  const emails = path.join(root, 'src/communications/templates/email-templates.js');
   result.set(emails, withEmailThemes(fs.readFileSync(emails, 'utf8'), specs));
   result.set(
     path.join(root, '_runtime/tenants.js'),
@@ -150,7 +150,7 @@ function withEmailThemes(source, specs) {
     finish = source.indexOf(end);
   if (start < 0 || finish < start)
     throw new Error(
-      'Missing GENERATED TENANT EMAIL THEMES region in communications/email-templates.js'
+      'Missing GENERATED TENANT EMAIL THEMES region in src/communications/templates/email-templates.js'
     );
   const body = emailThemes(specs);
   return source.slice(0, start + begin.length) + (body ? body + '\n' : '') + source.slice(finish);

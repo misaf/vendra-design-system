@@ -4,10 +4,10 @@
 // `lang` is the route's language, `page` names the same page in every language (shop/boxes/), and
 // `lastmod` is the date its content last changed (YYYY-MM-DD) when the data says so.
 import {VF_POLICIES, VF_ROUTES, vfAppBase, vfRouteUrl} from '../shared/services/routing.js';
-import {VF_PRODUCTS} from '../domain/catalog.js';
-import {VF_POSTS} from '../i18n/journal-content.js';
-import {VF_CATEGORY_SLUGS} from '../domain/product-categories.js';
-import {VF_STORE, vfFeatures} from '../domain/store-config.js';
+import {VF_PRODUCTS} from '../src/storefront/catalog/catalog.js';
+import {VF_POSTS} from '../src/storefront/content/journal-content.js';
+import {VF_CATEGORY_SLUGS} from '../src/storefront/catalog/product-categories.js';
+import {VF_STORE, vfFeatures} from '../src/storefront/store/store-config.js';
 import {VF_SEO} from '../shared/services/seo.js';
 
 // Pages reached only through another page's address (product/<id>/, journal/<post>/), and the

@@ -1,5 +1,5 @@
-import {vfCustomerId} from '../../../../domain/account-data.js';
-import {vfLiveStore} from '../../../../domain/store-config.js';
+import {vfCustomerId} from '../../../../src/storefront/customer/account-data.js';
+import {vfLiveStore} from '../../../../src/storefront/store/store-config.js';
 import {vfRuntime} from '../../../../shared/platform/runtime.js';
 
 // An online payment leaves for the bank's page and comes back to a new page load, so the order it

@@ -1,6 +1,6 @@
 // Bilingual shop copy. Edit here, then run npm run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
-import {vfPlural} from '../../../../domain/store-config.js';
+import {vfPlural} from '../../../../src/storefront/store/store-config.js';
 export function vfCopy(S) {
   const n = S.n;
   const result = {

@@ -1,11 +1,17 @@
 // Local demo accounts. Persistence is per phone number; no authentication service is implied.
-import {VF_ADDONS, VF_PRODUCTS, VF_PRODUCT_PLACEHOLDER, VF_SIZES, vfLineDetail} from './catalog.js';
-import {VF_DELIVERY, vfMobile} from './delivery.js';
-import {vfLatin} from './formatting.js';
-import {VF_STORE} from './store-config.js';
-import {commerce} from './commerce.js';
-import {vfNow, vfStoredValue} from '../shared/platform/environment.js';
-import {dates} from '../ui/utils/dates.js';
+import {
+  VF_ADDONS,
+  VF_PRODUCTS,
+  VF_PRODUCT_PLACEHOLDER,
+  VF_SIZES,
+  vfLineDetail
+} from '../catalog/catalog.js';
+import {VF_DELIVERY, vfMobile} from '../delivery/delivery.js';
+import {vfLatin} from '../pricing/formatting.js';
+import {VF_STORE} from '../store/store-config.js';
+import {commerce} from '../commerce/commerce.js';
+import {vfNow, vfStoredValue} from '../../../shared/platform/environment.js';
+import {dates} from '../../../ui/utils/dates.js';
 export function vfAccountPhone() {
   try {
     return vfStoredValue('vf-account-phone') || '';

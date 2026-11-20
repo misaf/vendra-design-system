@@ -7,10 +7,20 @@ const root = resolve(import.meta.dirname, '..');
 const publicDir = resolve(import.meta.dirname, '..', 'public');
 const ui = 'ui';
 const components = ui + '/components';
+const communicationsPreviews = 'src/communications/previews';
+const emailTemplates = 'src/communications/templates/email-templates.js';
 const componentDirs = {
   'design-system': [components],
   storefront: ['components/storefront', 'app']
 };
+
+// These development URLs are linked from the existing gallery and browser tests.
+function fixtureOutput(file) {
+  if (file === emailTemplates) return 'communications/email-templates.js';
+  if (file.startsWith(communicationsPreviews + '/'))
+    return 'communications/' + file.slice(communicationsPreviews.length + 1);
+  return file;
+}
 
 async function list(dir, suffix) {
   return (await readdir(join(root, dir), {recursive: true}))
@@ -24,8 +34,8 @@ async function copy(file) {
   await copyFile(join(root, file), to);
 }
 
-const entries = new Set(['communications/email-templates.js']);
-for (const dir of ['guidelines', components, 'e2e/fixtures', 'communications']) {
+const entries = new Set([emailTemplates]);
+for (const dir of ['guidelines', components, 'e2e/fixtures', communicationsPreviews]) {
   for (const file of await list(dir, '.html')) {
     let html = await readFile(join(root, file), 'utf8');
     for (const match of html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*>/g)) {
@@ -39,7 +49,7 @@ for (const dir of ['guidelines', components, 'e2e/fixtures', 'communications']) 
         await copy(path);
       }
     }
-    const to = join(publicDir, file);
+    const to = join(publicDir, fixtureOutput(file));
     await mkdir(dirname(to), {recursive: true});
     await writeFile(to, html);
   }
@@ -68,7 +78,7 @@ const fixtures = Object.fromEntries(
 const bundle = await rolldown({
   checks: {moduleLevelDirective: false},
   input: Object.fromEntries(
-    [...entries].map(file => [file.replace(/\.jsx?$/, ''), join(root, file)])
+    [...entries].map(file => [fixtureOutput(file).replace(/\.jsx?$/, ''), join(root, file)])
   ),
   platform: 'browser',
   transform: {define: {'process.env.NODE_ENV': '"development"'}},

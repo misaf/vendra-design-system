@@ -5,7 +5,7 @@ import {Alert} from '../../ui/components/Alert/Alert.jsx';
 import {Button} from '../../ui/components/Button/Button.jsx';
 import {vfRuntime} from '../../shared/platform/runtime.js';
 import {vfReadRoute} from '../../shared/services/routing.js';
-import {VF_STORE, vfLocale} from '../../domain/store-config.js';
+import {VF_STORE, vfLocale} from '../../src/storefront/store/store-config.js';
 
 const COPY = {
   en: {

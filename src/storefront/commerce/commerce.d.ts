@@ -1,5 +1,5 @@
-import type {LatLng} from '../ui/utils/coordinates.js';
-import type {Stock} from '../ui/utils/stock.js';
+import type {LatLng} from '../../../ui/utils/coordinates.js';
+import type {Stock} from '../../../ui/utils/stock.js';
 export type {LatLng, Stock};
 
 export type DirectionsApp = 'neshan' | 'balad' | 'google';

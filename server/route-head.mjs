@@ -1,13 +1,13 @@
 // Metadata comes from the same localized copy and catalog as the route's React view.
-import {vfFindProduct} from '../domain/catalog.js';
-import {VF_FA_DIGITS, VF_MONEY} from '../domain/formatting.js';
+import {vfFindProduct} from '../src/storefront/catalog/catalog.js';
+import {VF_FA_DIGITS, VF_MONEY} from '../src/storefront/pricing/formatting.js';
 import {vfServerRender} from '../shared/platform/environment.js';
 import {vfPageHead} from '../shared/services/page-metadata.js';
 import {vfReadRoute} from '../shared/services/routing.js';
 import {VF_SEO} from '../shared/services/seo.js';
 import {vfFaqData, vfFloristData} from '../shared/services/structured-data.js';
-import {VF_STORE} from '../domain/store-config.js';
-import {VF_POSTS} from '../i18n/journal-content.js';
+import {VF_STORE} from '../src/storefront/store/store-config.js';
+import {VF_POSTS} from '../src/storefront/content/journal-content.js';
 import theme from '../ui/tokens/tenant-theme.js';
 import {vfCopy as bag} from '../app/[locale]/(checkout)/bag/copy.js';
 import {vfCopy as contact} from '../app/[locale]/(storefront)/contact/copy.js';

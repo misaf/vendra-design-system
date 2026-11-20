@@ -18,11 +18,11 @@ import {
   vfProductImages,
   vfReady,
   vfSearchProducts
-} from '../../../domain/catalog.js';
+} from '../../../src/storefront/catalog/catalog.js';
 import {vfShell} from '../../../shared/services/navigation.js';
-import {vfSeparator} from '../../../domain/formatting.js';
+import {vfSeparator} from '../../../src/storefront/pricing/formatting.js';
 import {vfReadRoute, vfRouteUrl} from '../../../shared/services/routing.js';
-import {VF_CATEGORY_COPY} from '../../../i18n/categories.js';
+import {VF_CATEGORY_COPY} from '../../../src/storefront/catalog/categories.js';
 import {useLifecycle, usePageLogic} from '../../../shared/services/page-state.js';
 import {vfLocation, vfOnServer, vfStoredValue} from '../../../shared/platform/environment.js';
 import {useStorefrontPage} from '../../../shared/services/page-lifecycle.js';

@@ -6,23 +6,31 @@ import {
   vfProductImage,
   vfProductSub,
   vfReady
-} from '../../../../domain/catalog.js';
-import {VF_ZONES, vfDeliverableOn, vfDeliveryDays} from '../../../../domain/delivery.js';
-import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../../../domain/formatting.js';
+} from '../../../../src/storefront/catalog/catalog.js';
+import {
+  VF_ZONES,
+  vfDeliverableOn,
+  vfDeliveryDays
+} from '../../../../src/storefront/delivery/delivery.js';
+import {
+  VF_FA_DIGITS,
+  VF_MONEY,
+  vfSeparator
+} from '../../../../src/storefront/pricing/formatting.js';
 import {vfShell} from '../../../../shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../../../shared/services/routing.js';
-import {VF_STORE, vfFeatures} from '../../../../domain/store-config.js';
+import {VF_STORE, vfFeatures} from '../../../../src/storefront/store/store-config.js';
 import {
   VF_CATEGORY_COPY,
   VF_SHOP_OCCASIONS,
   VF_SHOP_OCCASION_COPY
-} from '../../../../i18n/categories.js';
-import {vfDayMonth, vfDayName} from '../../../../i18n/time.js';
-import {commerce} from '../../../../domain/commerce.js';
+} from '../../../../src/storefront/catalog/categories.js';
+import {vfDayMonth, vfDayName} from '../../../../src/storefront/delivery/time.js';
+import {commerce} from '../../../../src/storefront/commerce/commerce.js';
 import {useLifecycle, usePageLogic} from '../../../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../../../shared/services/page-lifecycle.js';
 import {vfSelectItem, vfShowList} from '../../../../shared/services/list-tracking.js';
-import {VF_CATEGORY_SLUGS} from '../../../../domain/product-categories.js';
+import {VF_CATEGORY_SLUGS} from '../../../../src/storefront/catalog/product-categories.js';
 import {vfRuntime} from '../../../../shared/platform/runtime.js';
 const VF_CATS = ['all', ...VF_CATEGORY_SLUGS];
 // The "under" quick filter's price limit, in Toman.

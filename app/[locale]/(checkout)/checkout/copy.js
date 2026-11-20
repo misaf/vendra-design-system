@@ -1,6 +1,6 @@
 // Bilingual checkout copy. Edit here, then run npm run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
-import {vfFeatures} from '../../../../domain/store-config.js';
+import {vfFeatures} from '../../../../src/storefront/store/store-config.js';
 export function vfCopy(S) {
   const result = {
     en: {

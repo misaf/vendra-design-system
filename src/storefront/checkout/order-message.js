@@ -1,8 +1,8 @@
 // The same order details the customer reviews, ready for an explicit WhatsApp handoff.
-import {vfCardMessages, vfLineToken} from './catalog.js';
-import {vfDeliveryWhen} from '../i18n/time.js';
-import {vfZone} from './delivery.js';
-import {VF_MONEY, VF_FA_DIGITS} from './formatting.js';
+import {vfCardMessages, vfLineToken} from '../catalog/catalog.js';
+import {vfDeliveryWhen} from '../delivery/time.js';
+import {vfZone} from '../delivery/delivery.js';
+import {VF_MONEY, VF_FA_DIGITS} from '../pricing/formatting.js';
 
 export function vfOrderMessage(lines, delivery, total, lang, {deliveryPending = false} = {}) {
   const fa = lang === 'fa';

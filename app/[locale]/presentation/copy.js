@@ -1,5 +1,5 @@
 // Bilingual copy for the counter presentation. Edit here, then run npm run build.
-import {vfPlural} from '../../../domain/store-config.js';
+import {vfPlural} from '../../../src/storefront/store/store-config.js';
 export function vfCopy(S) {
   const n = S.n;
   return {

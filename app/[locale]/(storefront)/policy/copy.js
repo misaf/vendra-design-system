@@ -10,12 +10,20 @@ import {
   VF_ZONES,
   vfDeliveryCutoff,
   vfZone
-} from '../../../../domain/delivery.js';
-import {vfHoursText} from '../../../../domain/store-hours.js';
-import {VF_CURRENCY_NAME, VF_FA_DIGITS, VF_MONEY} from '../../../../domain/formatting.js';
-import {VF_STORE, vfFeatures, vfPaymentMethods} from '../../../../domain/store-config.js';
-import {VF_SHELL} from '../../../../i18n/shell.js';
-import {vfSlotLabel} from '../../../../i18n/time.js';
+} from '../../../../src/storefront/delivery/delivery.js';
+import {vfHoursText} from '../../../../src/storefront/store/store-hours.js';
+import {
+  VF_CURRENCY_NAME,
+  VF_FA_DIGITS,
+  VF_MONEY
+} from '../../../../src/storefront/pricing/formatting.js';
+import {
+  VF_STORE,
+  vfFeatures,
+  vfPaymentMethods
+} from '../../../../src/storefront/store/store-config.js';
+import {VF_SHELL} from '../../../../src/storefront/shell/shell.js';
+import {vfSlotLabel} from '../../../../src/storefront/delivery/time.js';
 // When each policy last changed, as an ISO date (YYYY-MM-DD). Change only the edited document's date:
 // terms and privacy dates record which version a customer agreed to.
 export const VF_POLICY_UPDATED = {

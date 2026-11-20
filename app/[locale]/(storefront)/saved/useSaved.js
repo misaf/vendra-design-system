@@ -9,7 +9,7 @@ import {
   vfProductImage,
   vfProductSub,
   vfTokenText
-} from '../../../../domain/catalog.js';
+} from '../../../../src/storefront/catalog/catalog.js';
 import {vfShell} from '../../../../shared/services/navigation.js';
 import {usePageLogic} from '../../../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../../../shared/services/page-lifecycle.js';

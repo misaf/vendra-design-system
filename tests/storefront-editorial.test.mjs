@@ -16,54 +16,51 @@ import('../build/routes.mjs').then(({storefrontSitemap}) => {
 });
 // Each sitemap entry names the same page in every language (hreflang, x-default English) and
 // articles carry their publication date as lastmod, which matches the date each article shows.
-Promise.all([import('../build/routes.mjs'), import('../i18n/journal-content.js')]).then(
-  ([{storefrontSitemap}, {VF_POSTS}]) => {
-    const sitemap = storefrontSitemap('https://shop.example');
-    const entries = sitemap.match(/<url>[\s\S]*?<\/url>/g);
-    for (const entry of entries) {
-      const loc = entry.match(/<loc>([^<]+)<\/loc>/)[1];
-      const alternates = Object.fromEntries(
-        [...entry.matchAll(/hreflang="([^"]+)" href="([^"]+)"/g)].map(match => match.slice(1))
-      );
-      assert.deepEqual(Object.keys(alternates), ['en', 'fa', 'x-default'], loc + ' alternates');
-      assert.ok(Object.values(alternates).includes(loc), loc + ' lists itself as an alternate');
-      assert.equal(alternates['x-default'], alternates.en, loc + ' x-default is English');
-      assert.equal(alternates.fa, alternates.en.replace('/en/', '/fa/'));
-    }
-    const months = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ');
-    for (const post of VF_POSTS) {
-      const [day, month, year] = post.en[3].split(' ');
-      assert.equal(
-        post.publishedAt,
-        year +
-          '-' +
-          String(months.indexOf(month) + 1).padStart(2, '0') +
-          '-' +
-          day.padStart(2, '0'),
-        post.id + ' publishedAt matches its shown date'
-      );
-      for (const lang of ['en', 'fa'])
-        assert.ok(
-          sitemap.includes(
-            '<loc>https://shop.example/' +
-              lang +
-              '/journal/' +
-              post.id +
-              '/</loc>\n  <lastmod>' +
-              post.publishedAt +
-              '</lastmod>'
-          ),
-          post.id + ' has its lastmod in ' + lang
-        );
-    }
-    console.log('Passed sitemap hreflang alternates and article lastmod.');
+Promise.all([
+  import('../build/routes.mjs'),
+  import('../src/storefront/content/journal-content.js')
+]).then(([{storefrontSitemap}, {VF_POSTS}]) => {
+  const sitemap = storefrontSitemap('https://shop.example');
+  const entries = sitemap.match(/<url>[\s\S]*?<\/url>/g);
+  for (const entry of entries) {
+    const loc = entry.match(/<loc>([^<]+)<\/loc>/)[1];
+    const alternates = Object.fromEntries(
+      [...entry.matchAll(/hreflang="([^"]+)" href="([^"]+)"/g)].map(match => match.slice(1))
+    );
+    assert.deepEqual(Object.keys(alternates), ['en', 'fa', 'x-default'], loc + ' alternates');
+    assert.ok(Object.values(alternates).includes(loc), loc + ' lists itself as an alternate');
+    assert.equal(alternates['x-default'], alternates.en, loc + ' x-default is English');
+    assert.equal(alternates.fa, alternates.en.replace('/en/', '/fa/'));
   }
-);
+  const months = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ');
+  for (const post of VF_POSTS) {
+    const [day, month, year] = post.en[3].split(' ');
+    assert.equal(
+      post.publishedAt,
+      year + '-' + String(months.indexOf(month) + 1).padStart(2, '0') + '-' + day.padStart(2, '0'),
+      post.id + ' publishedAt matches its shown date'
+    );
+    for (const lang of ['en', 'fa'])
+      assert.ok(
+        sitemap.includes(
+          '<loc>https://shop.example/' +
+            lang +
+            '/journal/' +
+            post.id +
+            '/</loc>\n  <lastmod>' +
+            post.publishedAt +
+            '</lastmod>'
+        ),
+        post.id + ' has its lastmod in ' + lang
+      );
+  }
+  console.log('Passed sitemap hreflang alternates and article lastmod.');
+});
 // Every listed article carries its own text (#197): no post borrows another's words or the post
 // page's copy, and retired articles redirect, in the router and on the server, to listed posts.
 Promise.all([
-  import('../i18n/journal-content.js'),
-  import('../i18n/journal-moved.js'),
+  import('../src/storefront/content/journal-content.js'),
+  import('../src/storefront/content/journal-moved.js'),
   import('../shared/services/routing.js')
 ]).then(([{VF_POSTS}, {VF_POST_MOVED}, {vfReadRoute}]) => {
   const ids = VF_POSTS.map(post => post.id);

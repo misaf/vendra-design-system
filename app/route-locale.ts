@@ -1,5 +1,5 @@
 import {notFound} from 'next/navigation';
-import {VF_STORE} from '@storefront/domain/store-config.js';
+import {VF_STORE} from '@storefront/src/storefront/store/store-config.js';
 
 export const locales = VF_STORE.languages;
 

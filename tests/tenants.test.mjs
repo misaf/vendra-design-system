@@ -6,9 +6,9 @@ import path from 'node:path';
 import test from 'node:test';
 import {brandOutputs, validateBrand} from '../tools/brand.mjs';
 import {tenantSpecs, tenantOutputs, validateFontFiles} from '../tools/tenants.mjs';
-import {VF_EMAIL} from '../communications/email-templates.js';
-import {vfBrand, vfBrandHead, vfBrandHtml, vfBrandLinks} from '../domain/brand.js';
-import {VF_STORE} from '../domain/store-config.js';
+import {VF_EMAIL} from '../src/communications/templates/email-templates.js';
+import {vfBrand, vfBrandHead, vfBrandHtml, vfBrandLinks} from '../src/storefront/store/brand.js';
+import {VF_STORE} from '../src/storefront/store/store-config.js';
 import theme from '../ui/tokens/tenant-theme.js';
 import {vfServerRender} from '../shared/platform/environment.js';
 

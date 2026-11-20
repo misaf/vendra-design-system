@@ -1,5 +1,5 @@
 import {VF_TENANT_SLUGS} from '../../_runtime/tenant-slugs.js';
-import {VF_STORE} from '../../domain/store-config.js';
+import {VF_STORE} from '../../src/storefront/store/store-config.js';
 import {vfLocation, vfOnServer} from '../platform/environment.js';
 import {vfRuntime} from '../platform/runtime.js';
 

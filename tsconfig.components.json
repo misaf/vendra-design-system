@@ -11,7 +11,7 @@
     "types": ["react"]
   },
   "include": [
-    "domain/commerce.d.ts",
+    "src/storefront/commerce/commerce.d.ts",
     "ui/**/*.d.ts",
     "tests/fixtures/component-types.tsx",
     "tests/fixtures/theme-types.mts"

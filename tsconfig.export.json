@@ -4,7 +4,7 @@
     "next-env.d.ts",
     "app/**/*.ts",
     "app/**/*.tsx",
-    "i18n/**/*.ts",
+    "src/storefront/**/*.ts",
     "server/**/*.ts",
     "server/**/*.tsx",
     ".next/types/**/*.ts",

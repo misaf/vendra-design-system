@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
-import {VF_EMAIL} from '../communications/email-templates.js';
-import {VF_NOTIFY} from '../communications/notifications.js';
-import {VF_POSTS} from '../i18n/journal-content.js';
+import {VF_EMAIL} from '../src/communications/templates/email-templates.js';
+import {VF_NOTIFY} from '../src/communications/templates/notifications.js';
+import {VF_POSTS} from '../src/storefront/content/journal-content.js';
 import {pageScript, sharedLogic} from './page-script.mjs';
 const root = path.resolve(import.meta.dirname, '..'),
   read = p => fs.readFileSync(path.join(root, p), 'utf8');
@@ -534,7 +534,7 @@ function page(name, c, props = {}) {
             ? [dir + '/' + e.name]
             : []
       );
-  const cards = ['ui/components', 'guidelines', 'communications', 'e2e/fixtures']
+  const cards = ['ui/components', 'guidelines', 'src/communications/previews', 'e2e/fixtures']
     .flatMap(htmlFiles)
     .filter(f => read(f).startsWith('<!-- @dsCard'));
   assert.ok(cards.length >= 30, 'found ' + cards.length + ' cards');
@@ -542,7 +542,13 @@ function page(name, c, props = {}) {
     for (const [, url] of read(card).matchAll(
       /<(?:script|link)\b[^>]*?(?:src|href)="([^"#:]+?)(?:[?#][^"]*)?"/g
     ))
-      assert.ok(fs.existsSync(path.join(root, path.dirname(card), url)), card + ' → ' + url);
+      assert.ok(
+        fs.existsSync(path.join(root, path.dirname(card), url)) ||
+          (card.startsWith('src/communications/previews/') &&
+            url.startsWith('../') &&
+            fs.existsSync(path.join(root, url.slice(3)))),
+        card + ' → ' + url
+      );
   // Each payment method is a feature the store turns on by listing it (VF_STORE.paymentMethods).
   {
     const {c: store} = environment();

@@ -5,21 +5,21 @@ import {
   vfProductBadge,
   vfProductImage,
   vfProductSub
-} from '../../../domain/catalog.js';
-import {VF_MONEY, vfSeparator} from '../../../domain/formatting.js';
-import {vfAccountLoad, vfAccountPhone} from '../../../domain/account-data.js';
+} from '../../../src/storefront/catalog/catalog.js';
+import {VF_MONEY, vfSeparator} from '../../../src/storefront/pricing/formatting.js';
+import {vfAccountLoad, vfAccountPhone} from '../../../src/storefront/customer/account-data.js';
 import {vfShell, vfStored} from '../../../shared/services/navigation.js';
 import {vfRouteUrl} from '../../../shared/services/routing.js';
 import {
   VF_CATEGORY_COPY,
   VF_SHOP_OCCASIONS,
   VF_SHOP_OCCASION_COPY
-} from '../../../i18n/categories.js';
-import {VF_CATEGORY_SLUGS} from '../../../domain/product-categories.js';
-import {vfCategoryImage} from '../../../domain/category-images.js';
-import {vfJournalImage} from '../../../domain/journal-images.js';
-import {VF_STORE, vfLiveStore} from '../../../domain/store-config.js';
-import {VF_JCATS, VF_POSTS} from '../../../i18n/journal-content.js';
+} from '../../../src/storefront/catalog/categories.js';
+import {VF_CATEGORY_SLUGS} from '../../../src/storefront/catalog/product-categories.js';
+import {vfCategoryImage} from '../../../src/storefront/catalog/category-images.js';
+import {vfJournalImage} from '../../../src/storefront/content/journal-images.js';
+import {VF_STORE, vfLiveStore} from '../../../src/storefront/store/store-config.js';
+import {VF_JCATS, VF_POSTS} from '../../../src/storefront/content/journal-content.js';
 import {usePageLogic} from '../../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../../shared/services/page-lifecycle.js';
 import {vfFloristData} from '../../../shared/services/structured-data.js';

@@ -1,5 +1,5 @@
 import {PHASE_DEVELOPMENT_SERVER} from 'next/constants.js';
-import {VF_STORE} from './domain/store-config.js';
+import {VF_STORE} from './src/storefront/store/store-config.js';
 
 const basePath = process.env.VF_BASE_PATH || '';
 

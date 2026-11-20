@@ -1,6 +1,6 @@
 // Sample bank prefixes and card configuration; adapt from your payment provider.
-import {vfLatin} from './formatting.js';
-import {VF_STORE} from './store-config.js';
+import {vfLatin} from '../pricing/formatting.js';
+import {VF_STORE} from '../store/store-config.js';
 // Card helpers for the checkout: the bank of a card number, a Luhn check and the store's
 // card-to-card details.
 export const vfPayment = (() => {

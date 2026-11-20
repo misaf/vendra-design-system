@@ -7,9 +7,9 @@ A florist gets the same storefront as every other Vendra tenant. Only the **them
 - [ ] Set the accent, neutral, ink and footer colours from the florist's brand. Set the heading font, case, accent-word style, control shape and image frame. Every other shade is generated from those four colours.
 - [ ] **Done when:** all seven contrast checks read *Pass*.
 - [ ] Enter the slug (lowercase, hyphens, e.g. `rose-and-moss`) and click **Copy `<slug>.json`**.
-- [ ] Save it as `ui/tokens/tenants/<slug>.json` and run `npm run build`. The build writes `ui/tokens/tenants/<slug>.css` and the tenant's email palette in `communications/email-templates.js` (never edit either by hand) and refuses a theme that fails any of the seven checks.
+- [ ] Save it as `ui/tokens/tenants/<slug>.json` and run `npm run build`. The build writes `ui/tokens/tenants/<slug>.css` and the tenant's email palette in `src/communications/templates/email-templates.js` (never edit either by hand) and refuses a theme that fails any of the seven checks.
 - [ ] Preview it with `?tenant=<slug>` on any storefront URL. Check Home, Product and Bag in **both EN and FA**.
-- [ ] For the florist's own deployment, set `tenant: '<slug>'` in `domain/store-config.js` and rebuild. The storefront then loads only `ui/tokens/tenants/<slug>.css`; nothing else needs editing (cards that compare tenants pick it up from the generated `ui/tokens/tenants.css`).
+- [ ] For the florist's own deployment, set `tenant: '<slug>'` in `src/storefront/store/store-config.js` and rebuild. The storefront then loads only `ui/tokens/tenants/<slug>.css`; nothing else needs editing (cards that compare tenants pick it up from the generated `ui/tokens/tenants.css`).
 
 **The tenant JSON**
 - `colours`: `accent`, `neutral`, `ink` and `footer`, each `#RRGGBB`.
@@ -62,7 +62,7 @@ Until approved artwork arrives, omit the logo fields to show the localized store
 | `icons` | `favicon` (32 × 32 PNG), `apple` (180 × 180 PNG), `app192` (192 × 192 PNG), `app512` (512 × 512 PNG), `maskable` (512 × 512 PNG) plus an optional `favicon16` (16 × 16 PNG) | Browser tab and installed app; supply the complete set (without `favicon16`, browsers scale the 32 px icon) |
 | `ogImage` | `{en, fa}` paths to 1200 × 630 PNG/JPEG images | Localized social previews |
 
-For a deployment-specific override, set `VF_STORE.brandAssets` in `domain/store-config.js` using the same fields. It overrides that store's tenant assets; other tenant previews retain their own assets. `VF_STORE.brand` remains the localized text name.
+For a deployment-specific override, set `VF_STORE.brandAssets` in `src/storefront/store/store-config.js` using the same fields. It overrides that store's tenant assets; other tenant previews retain their own assets. `VF_STORE.brand` remains the localized text name.
 
 - [ ] Prepare approved logo, compact mark and light footer artwork. Check contrast against the actual header and footer colours in both languages; transparent artwork must remain readable. Keep essential maskable artwork inside the central 80% circle.
 - [ ] Export PNG icons in the sizes above (the build accepts prepared files; it does not resize them). `assets/brand-export-source.html` is a starting point. Supply localized social images.
@@ -70,7 +70,7 @@ For a deployment-specific override, set `VF_STORE.brandAssets` in `domain/store-
 - [ ] Preview `?tenant=<slug>` in EN and FA at desktop and phone widths. Confirm logo proportions, text fallback, browser icon, manifest icon URLs and `og:image`. Logo bounds use `--brand-logo-height` (36px), `--brand-logo-mobile-height` (28px), `--brand-logo-footer-height` (56px) and `--brand-logo-width` (220px), without changing header height.
 
 ## 3. Store data (florist · entered in admin)
-The storefront reads all of this as data (`domain/store-config.js`, `catalog.js` and `delivery.js` stand in for the admin API, `tests/fixtures/vendra-openapi.json`). No component has it hard-coded.
+The storefront reads all of this as data (`src/storefront/store/store-config.js`, `catalog.js` and `delivery.js` stand in for the admin API, `tests/fixtures/vendra-openapi.json`). No component has it hard-coded.
 - [ ] **Store name** in EN and FA. **Contact:** phone, WhatsApp, Instagram, address (EN + FA), map pin, opening hours.
 - [ ] **Currency:** one active currency. Toman and Rial are built in; for any other (USD, EUR, AED…) supply its rate per Toman in the store's `currencies` table and keep it current — `money()` throws for a currency without a rate.
 - [ ] **Delivery:** zones per country, with fee, same-day cut-off, time slots and free-delivery threshold.

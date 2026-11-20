@@ -8,27 +8,31 @@ import {
   vfAccountSignOut,
   vfReminderNext,
   vfKnownOrders
-} from '../../../../domain/account-data.js';
+} from '../../../../src/storefront/customer/account-data.js';
 import {
   VF_PRODUCTS,
   vfProductBadge,
   vfProductImage,
   vfProductSub
-} from '../../../../domain/catalog.js';
-import {VF_ZONES, vfMobile} from '../../../../domain/delivery.js';
-import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../../../../domain/location.js';
+} from '../../../../src/storefront/catalog/catalog.js';
+import {VF_ZONES, vfMobile} from '../../../../src/storefront/delivery/delivery.js';
+import {
+  vfLoadLeaflet,
+  vfLocationText,
+  vfValidLocation
+} from '../../../../src/storefront/delivery/location.js';
 import {vfShell} from '../../../../shared/services/navigation.js';
 import {VF_ACCOUNT_TABS, vfPageRoute, vfRouteUrl} from '../../../../shared/services/routing.js';
-import {VF_STORE, vfFeatures, vfLiveStore} from '../../../../domain/store-config.js';
+import {VF_STORE, vfFeatures, vfLiveStore} from '../../../../src/storefront/store/store-config.js';
 import {
   vfBalanceDiscountOn,
   vfTopUpAmount,
   vfTopUpError,
   vfWalletChange,
   vfWalletOf
-} from '../../../../domain/wallet.js';
+} from '../../../../src/storefront/customer/wallet.js';
 import {VF_NAV} from '../../../../shared/services/page-focus.js';
-import {vfAmountInputMode, vfAmountToInput} from '../../../../domain/formatting.js';
+import {vfAmountInputMode, vfAmountToInput} from '../../../../src/storefront/pricing/formatting.js';
 import {dates} from '../../../../ui/utils/dates.js';
 import {useLifecycle, usePageLogic} from '../../../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../../../shared/services/page-lifecycle.js';

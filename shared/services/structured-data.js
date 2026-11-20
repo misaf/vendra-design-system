@@ -4,7 +4,7 @@
 // them current in the browser (syncHead). Every value comes from the store's data passed in or from
 // VF_STORE, so a tenant's own catalogue, address and hours show up without code changes.
 import {vfAbsoluteUrl} from '../platform/environment.js';
-import {VF_STORE} from '../../domain/store-config.js';
+import {VF_STORE} from '../../src/storefront/store/store-config.js';
 import {vfRouteUrl} from './routing.js';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];

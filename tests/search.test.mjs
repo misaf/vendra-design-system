@@ -1,8 +1,8 @@
-// Search text (domain/commerce.js): Persian typed any way finds what is indexed.
+// Search text (src/storefront/commerce/commerce.js): Persian typed any way finds what is indexed.
 import assert from 'node:assert/strict';
-import {commerce} from '../domain/commerce.js';
-import {VF_PRODUCTS, vfSearchProducts} from '../domain/catalog.js';
-import {VF_POSTS} from '../i18n/journal-content.js';
+import {commerce} from '../src/storefront/commerce/commerce.js';
+import {VF_PRODUCTS, vfSearchProducts} from '../src/storefront/catalog/catalog.js';
+import {VF_POSTS} from '../src/storefront/content/journal-content.js';
 
 const {normalizeSearchText, searchIndex, matchesSearch} = commerce;
 const finds = (text, query) => matchesSearch(searchIndex(text), query);

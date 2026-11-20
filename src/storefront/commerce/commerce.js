@@ -2,10 +2,27 @@
 // Pure functions: every tenant value (zones, promo codes, balance rules, delivery schedule, API records)
 // comes in as an argument, so a tenant storefront runs them on its own data from the Vendra API.
 // Amounts are in Toman.
-import {latin, mobile, phone} from '../ui/utils/input.js';
-import {validLocation, pinLocation} from '../ui/utils/coordinates.js';
-
-const persianDigits = value => String(value).replace(/\d/g, digit => '۰۱۲۳۴۵۶۷۸۹'[digit]);
+import {latin, mobile, phone} from '../../../ui/utils/input.js';
+import {validLocation, pinLocation} from '../../../ui/utils/coordinates.js';
+import {
+  isoDate,
+  cutoffText,
+  deliveryDays,
+  openDay,
+  deliverySlots,
+  openSlot
+} from '../delivery/delivery-window.js';
+import {openingStatus, hoursSummary, hoursExceptions} from '../store/opening-hours.js';
+import {
+  promoCode,
+  freeDelivery,
+  promoCheck,
+  discount,
+  balanceDiscountOn,
+  balanceDiscount,
+  totals,
+  summaryRows
+} from '../pricing/order-totals.js';
 
 // A product code typed any way: case, spaces, dashes and digit scripts don't matter.
 const normalizeCode = text =>
@@ -35,11 +52,6 @@ const matchesSearch = (index, query) => {
   const words = normalizeSearchText(query).split(' ').filter(Boolean);
   return words.length > 0 && words.every(word => index.includes(word));
 };
-// A promo code as entered: case, spaces and digit scripts don't matter.
-const promoCode = value =>
-  latin(value || '')
-    .replace(/\s/g, '')
-    .toUpperCase();
 const isMobile = value => mobile(value) !== '';
 
 // Links that show a place in Neshan, Balad and Google Maps, each opening the installed app on
@@ -76,275 +88,6 @@ const zoneAt = (location, zones, origin) => {
   const reach = zones.filter(zone => distanceKm(zone.center || origin, location) <= zone.km);
   return reach.length ? reach.reduce((a, b) => (b.km < a.km ? b : a)).id : null;
 };
-
-const isoDate = date =>
-  date.getFullYear() +
-  '-' +
-  String(date.getMonth() + 1).padStart(2, '0') +
-  '-' +
-  String(date.getDate()).padStart(2, '0');
-
-// Calendar fields and wall-clock minutes at the store. Omitting the zone preserves local-time
-// behavior for existing callers; an invalid IANA zone throws rather than accepting unsafe orders.
-const deliveryClock = (now, timeZone) => {
-  if (!timeZone)
-    return {
-      year: now.getFullYear(),
-      month: now.getMonth() + 1,
-      day: now.getDate(),
-      minutes: now.getHours() * 60 + now.getMinutes()
-    };
-  const parts = Object.fromEntries(
-    new Intl.DateTimeFormat('en-US', {
-      timeZone,
-      calendar: 'gregory',
-      numberingSystem: 'latn',
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      hourCycle: 'h23'
-    })
-      .formatToParts(now)
-      .map(({type, value}) => [type, value])
-  );
-  return {
-    year: Number(parts.year),
-    month: Number(parts.month),
-    day: Number(parts.day),
-    minutes: Number(parts.hour) * 60 + Number(parts.minute)
-  };
-};
-
-// A cut-off time ("18:00") for a sentence; Persian digits, isolated so it stays left to right.
-const cutoffText = (cutoff, persian) => (persian ? '⁨' + persianDigits(cutoff) + '⁩' : cutoff);
-
-// The next `days` days for a zone's cut-off, each marked sold out or past today's cut-off. Without
-// `sameDay` the days start tomorrow.
-const deliveryDays = (
-  cutoff,
-  {days, soldOutDates = [], sameDay = true, timeZone},
-  now = new Date()
-) => {
-  const clock = deliveryClock(now, timeZone);
-  const [hour, minute] = cutoff.split(':').map(Number);
-  const pastCutoff = clock.minutes >= hour * 60 + minute;
-  return Array.from({length: days}, (_, index) => {
-    const offset = sameDay ? index : index + 1;
-    // Advance Gregorian calendar days in UTC so the device's DST cannot alter the sequence.
-    const calendar = new Date(Date.UTC(clock.year, clock.month - 1, clock.day + offset, 12));
-    const iso = calendar.toISOString().slice(0, 10);
-    // A local-noon carrier for existing date-label formatters, not a delivery timestamp.
-    const date = new Date(
-      calendar.getUTCFullYear(),
-      calendar.getUTCMonth(),
-      calendar.getUTCDate(),
-      12
-    );
-    return {
-      iso,
-      date,
-      offset,
-      soldOut: soldOutDates.includes(iso),
-      pastCutoff: offset === 0 && pastCutoff
-    };
-  });
-};
-
-// The chosen day when it is still open, otherwise the first open day (undefined when none is).
-const openDay = (days, chosen) => {
-  const open = days.filter(day => !day.soldOut && !day.pastCutoff);
-  return (open.find(day => day.iso === chosen) || open[0] || {}).iso;
-};
-
-// Every slot ({start, end} hours) on a day, each marked closed when it is today and fewer than
-// `leadMinutes` remain before it ends.
-const deliverySlots = (iso, slots, leadMinutes, now = new Date(), timeZone) => {
-  const clock = deliveryClock(now, timeZone);
-  const today =
-      iso ===
-      new Date(Date.UTC(clock.year, clock.month - 1, clock.day, 12)).toISOString().slice(0, 10),
-    minutes = clock.minutes;
-  return slots.map(({start, end}) => ({
-    start,
-    end,
-    closed: today && minutes > Number(end) * 60 - leadMinutes
-  }));
-};
-
-// The chosen slot's start when open, otherwise the first open slot's (undefined when none is).
-const openSlot = (slots, chosen) => {
-  const open = slots.filter(slot => !slot.closed);
-  return (open.find(slot => slot.start === chosen) || open[0])?.start;
-};
-
-// Opening hours: {week: [{days, opens, closes}], exceptions?: [{date, closed?, opens?, closes?}]}.
-// `days` are weekday numbers (0 Sunday … 6 Saturday); times are "HH:MM" on the store's clock. A
-// `closes` at or before `opens` runs past midnight ("24:00" is midnight). An exception replaces the
-// weekly hours on its ISO date: `closed: true`, or its own opens/closes.
-const DAY_MINUTES = 1440;
-const clockMinutes = time => {
-  const [hour, minute] = String(time).split(':').map(Number);
-  return hour * 60 + minute;
-};
-const clockTime = minutes =>
-  String(Math.floor(minutes / 60)).padStart(2, '0') + ':' + String(minutes % 60).padStart(2, '0');
-const calendarIso = (clock, offset) =>
-  new Date(Date.UTC(clock.year, clock.month - 1, clock.day + offset, 12))
-    .toISOString()
-    .slice(0, 10);
-const weekdayOf = iso => new Date(iso + 'T12:00:00Z').getUTCDay();
-
-// The hours on one ISO date: its exception (or null) and the {opens, closes} ranges, [] when closed.
-const hoursOn = (hours, iso) => {
-  const exception = (hours.exceptions || []).find(item => item.date === iso) || null;
-  if (exception)
-    return {
-      exception,
-      ranges:
-        exception.closed || !exception.opens
-          ? []
-          : [{opens: exception.opens, closes: exception.closes}]
-    };
-  const weekday = weekdayOf(iso);
-  return {
-    exception: null,
-    ranges: (hours.week || [])
-      .filter(range => range.days.includes(weekday))
-      .map(({opens, closes}) => ({opens, closes}))
-  };
-};
-
-// Whether the store is open at `now` on its own clock, and when that next changes:
-// {open, next: {iso, offset, time} | null, exception}. `offset` counts days from today; `next` is null
-// when nothing changes within a week. `exception` is today's exception, when there is one.
-const openingStatus = (hours, now = new Date(), timeZone) => {
-  const clock = deliveryClock(now, timeZone);
-  const horizon = 8 * DAY_MINUTES;
-  const spans = [];
-  // Yesterday too, for hours that run past midnight into today.
-  for (let offset = -1; offset <= 8; offset++)
-    for (const {opens, closes} of hoursOn(hours, calendarIso(clock, offset)).ranges) {
-      const start = offset * DAY_MINUTES + clockMinutes(opens);
-      let end = offset * DAY_MINUTES + clockMinutes(closes);
-      if (end <= start) end += DAY_MINUTES;
-      spans.push([start, end]);
-    }
-  spans.sort((a, b) => a[0] - b[0]);
-  // Touching spans (22:00–24:00 then 00:00–02:00) are one opening.
-  const merged = [];
-  for (const span of spans) {
-    const last = merged[merged.length - 1];
-    if (last && span[0] <= last[1]) last[1] = Math.max(last[1], span[1]);
-    else merged.push([...span]);
-  }
-  const at = minutes => {
-    const offset = Math.floor(minutes / DAY_MINUTES);
-    return {
-      iso: calendarIso(clock, offset),
-      offset,
-      time: clockTime(minutes - offset * DAY_MINUTES)
-    };
-  };
-  const exception = hoursOn(hours, calendarIso(clock, 0)).exception;
-  const current = merged.find(([start, end]) => start <= clock.minutes && clock.minutes < end);
-  if (current) return {open: true, next: current[1] < horizon ? at(current[1]) : null, exception};
-  const upcoming = merged.find(([start]) => start > clock.minutes && start < horizon);
-  return {open: false, next: upcoming ? at(upcoming[0]) : null, exception};
-};
-
-// The weekly hours as runs of consecutive weekdays with the same ranges, starting the week on
-// `firstDay` (6, Saturday, by default): [{days, ranges}], where empty ranges mean closed.
-const hoursSummary = (hours, firstDay = 6) => {
-  const groups = [];
-  for (let index = 0; index < 7; index++) {
-    const day = (firstDay + index) % 7;
-    const ranges = (hours.week || [])
-      .filter(range => range.days.includes(day))
-      .map(({opens, closes}) => ({opens, closes}))
-      .sort((a, b) => clockMinutes(a.opens) - clockMinutes(b.opens));
-    const last = groups[groups.length - 1];
-    if (last && JSON.stringify(last.ranges) === JSON.stringify(ranges)) last.days.push(day);
-    else groups.push({days: [day], ranges});
-  }
-  return groups;
-};
-
-// Exceptions dated from today through `days` days ahead on the store's clock, in date order.
-const hoursExceptions = (hours, days, now = new Date(), timeZone) => {
-  const clock = deliveryClock(now, timeZone);
-  const first = calendarIso(clock, 0);
-  const last = calendarIso(clock, days);
-  return (hours.exceptions || [])
-    .filter(item => item.date >= first && item.date <= last)
-    .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
-};
-
-// Free delivery: the subtotal reaches `threshold` in one of `zones`.
-const freeDelivery = (zoneId, subtotal, rules) =>
-  !!rules && subtotal >= rules.threshold && rules.zones.includes(zoneId);
-
-// Promo codes are {code, percent, min}. {promo} when the code applies, otherwise {error, min?}.
-const promoCheck = (value, subtotal, promos) => {
-  const promo = promos.find(item => item.code === promoCode(value));
-  if (!promo) return {error: 'unknown'};
-  if (subtotal < promo.min) return {error: 'min', min: promo.min};
-  return {promo};
-};
-// The discount a code gives; 0 when it doesn't apply.
-const discount = (code, subtotal, promos) => {
-  const {promo} = code ? promoCheck(code, subtotal, promos) : {};
-  return promo ? Math.round((subtotal * promo.percent) / 100) : 0;
-};
-
-// Balance rules are {discountFrom, discountPercent}: paying from a balance of at least discountFrom
-// takes discountPercent off the products.
-const balanceDiscountOn = (balance, rules) =>
-  !!rules && balance != null && balance >= rules.discountFrom;
-const balanceDiscount = (balance, products, rules) =>
-  balanceDiscountOn(balance, rules) ? Math.round((products * rules.discountPercent) / 100) : 0;
-
-// An order's totals. Lines are {unit, qty}; `zone` is {id, fee}; `promo` is the applied code and
-// `balance` the balance paid from (null otherwise). Rules: {freeDelivery, promos, wallet}.
-const totals = (lines, {zone, promo, balance = null}, rules) => {
-  const sub = lines.reduce((sum, line) => sum + line.unit * line.qty, 0);
-  const fee = freeDelivery(zone.id, sub, rules.freeDelivery) ? 0 : zone.fee;
-  const promoDiscount = discount(promo, sub, rules.promos || []);
-  const fromBalance = balanceDiscount(balance, sub - promoDiscount, rules.wallet);
-  return {
-    sub,
-    fee,
-    discount: promoDiscount,
-    ...(fromBalance
-      ? {balanceDiscount: fromBalance, balancePercent: rules.wallet.discountPercent}
-      : {}),
-    total: sub - promoDiscount - fromBalance + fee
-  };
-};
-
-// Order summary rows; discounts sit under the subtotal. The caller localizes the labels.
-const summaryRows = (result, code, labels, money, num = String) => [
-  {label: labels.sub, value: money(result.sub)},
-  ...(result.discount
-    ? [
-        {
-          label: labels.discount + ' · ' + promoCode(code),
-          value: '−⁨' + money(result.discount) + '⁩'
-        }
-      ]
-    : []),
-  ...(result.balanceDiscount
-    ? [
-        {
-          label: labels.balanceDiscount.replace('{percent}', num(result.balancePercent)),
-          value: '−⁨' + money(result.balanceDiscount) + '⁩'
-        }
-      ]
-    : []),
-  {label: labels.fee, value: result.fee ? money(result.fee) : labels.free},
-  {label: labels.total, value: money(result.total), strong: true}
-];
 
 // "Show more" paging: the first `page` pages of `size` items (page 1 = the first page). `total`
 // defaults to the list's length; pass the API's total when the list holds only the pages loaded so far.

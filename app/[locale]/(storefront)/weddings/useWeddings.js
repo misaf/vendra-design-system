@@ -1,11 +1,11 @@
 // Page behavior. Edit here, then run npm run build.
 import {vfCopy} from './copy.js';
-import {VF_PRODUCT_PLACEHOLDER} from '../../../../domain/catalog.js';
-import {vfMobile} from '../../../../domain/delivery.js';
+import {VF_PRODUCT_PLACEHOLDER} from '../../../../src/storefront/catalog/catalog.js';
+import {vfMobile} from '../../../../src/storefront/delivery/delivery.js';
 import {vfShell} from '../../../../shared/services/navigation.js';
 import {usePageLogic} from '../../../../shared/services/page-state.js';
 import {vfAssetBase, vfNow} from '../../../../shared/platform/environment.js';
-import {vfLiveStore} from '../../../../domain/store-config.js';
+import {vfLiveStore} from '../../../../src/storefront/store/store-config.js';
 import {useStorefrontPage} from '../../../../shared/services/page-lifecycle.js';
 import {vfInquiryFailure} from '../../../../shared/services/integrations/api-errors.js';
 import {vfRuntime} from '../../../../shared/platform/runtime.js';

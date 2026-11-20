@@ -21,9 +21,9 @@ import {vfInstallRuntime} from '../../shared/services/integrations/runtime.js';
 import {vfApplyTenant, vfTenant} from '../../shared/services/tenant.js';
 import {VF_TENANT_SLUGS} from '../../_runtime/tenant-slugs.js';
 import {vfInApp, vfReadRoute, VF_ROUTES} from '../../shared/services/routing.js';
-import {vfBrandLinks} from '../../domain/brand.js';
+import {vfBrandLinks} from '../../src/storefront/store/brand.js';
 import {VF_SEO} from '../../shared/services/seo.js';
-import {VF_STORE, vfLanguage, vfLocale} from '../../domain/store-config.js';
+import {VF_STORE, vfLanguage, vfLocale} from '../../src/storefront/store/store-config.js';
 
 const base = process.env.NEXT_PUBLIC_VF_BASE_PATH;
 vfConfigureRendering(base + '/', Number(process.env.NEXT_PUBLIC_VF_RENDER_TIME));

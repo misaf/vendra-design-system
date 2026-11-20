@@ -10,9 +10,9 @@ The repository root is the Next.js app. Start with the folder for the URL you wa
 | Storefront header, footer or cross-route UI such as the order summary | `components/storefront/` |
 | Reusable UI components and design tokens | `ui/` |
 | Cart, order and sign-in state across routes and languages | `session/useStorefrontSession.js` |
-| Product, delivery, pricing and promotion rules | `domain/` |
+| Products, delivery, prices, payments, and customer accounts | `src/storefront/` |
 | Laravel API transport and response adapters | `server/vendra/` |
-| Shared translations, routing and browser services | `i18n/` and `shared/` |
+| Routing and browser services | `shared/` |
 
 The [migration checkpoints](./STOREFRONT-MIGRATION.md) record the earlier storefront migration.
 
@@ -26,18 +26,11 @@ The Next.js layout uses `app/_components/StorefrontDocument.jsx` to initialize b
 
 `copy.js` exports `vfCopy(S)`. English and Persian must have the same keys and list shapes (tested recursively).
 
-**Shared code layout:** `shared/` and its neighboring `i18n/` and `styles/` directories are split by role, and `npm test` (`tools/app-dependencies.mjs` at the repo root) enforces which folder may import which:
+## Business capabilities
 
-| Folder | Holds | May import |
-| --- | --- | --- |
-| `platform/` | `environment.js`: the page's address, asset base and clock, in the browser and the prerender | nothing |
-| `domain/` | pure store rules and sample data: store config, brand, catalog, delivery, payments, wallet, promotions, account data, formatting, tenant theme | `domain/`, `i18n/`, `platform/`, `ui/utils/`, `_runtime/` |
-| `i18n/` | genuinely shared bilingual copy | same as `domain/` |
-| `services/` | routing, SEO, focus/lifecycle, page state, offline, TV mode, navigation, `integrations/` (API, analytics) | `services/`, `domain/`, `i18n/`, `platform/`, `ui/utils/`, `_runtime/`, React, React Aria |
-| `shared/ui/` | storefront UI helpers the app UI layers may import (collection carousel, QR) | `shared/ui/`, `domain/`, `i18n/`, `ui/`, React, `qrcode-generator` |
-| `styles/` | the Tailwind entry and the custom CSS entry with shared page CSS | CSS only |
+Use `src/storefront/<capability>/` for the rules, sample data, and shared bilingual copy a capability owns. For example, change cutoffs and slot availability in `delivery/delivery-window.js`, total and discount calculations in `pricing/order-totals.js`, and opening hours in `store/opening-hours.js`. Prefer importing the owning module for new code. The `commerce/commerce.js` entry composes the rules used by the storefront and the guideline cards.
 
-A JS module loose in `shared/` or in any other folder fails the check: place a new module by what it does.
+The import checker allows capability modules to use each other, platform helpers, pure design-system utilities, and generated tenant data. Browser services may use these capabilities. Reusable controls and presentational route components receive business data through props. `npm test` checks these import boundaries and detects cycles.
 
 **Adding a page:** add a folder and `page.tsx` in the appropriate `app/[locale]/` route group. Keep the screen, state, copy, styles and tests in the route folder. Register the storefront URL in `shared/services/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
 
@@ -237,13 +230,13 @@ and pressing Add to bag.
   - **Quiet operation:** offline/reconnect notices, stock refresh failures and photo warnings stay in Seller tools while displaying products. A failed first photo uses a neutral placeholder; later failures retain the current product. The seller can retry photos from the drawer.
   - **Offline and stock:** in a production build the page registers `app/sw.js`, so the tablet keeps working when the Wi-Fi drops. With a live API it refreshes stock every two minutes.
 - **Checkout** stores the finished order in session storage. Track shows it, and Order again refills the bag.
-- **Sign-out leaves no personal data:** the sample account (profile, addresses with recipients' names and mobiles, reminders, wallet) is kept under `vf-account:<mobile>` only while signed in. `vfAccountSignOut` (`domain/account-data.js`) removes every `vf-account*` key, the signed-in customers' `vf-online-payment:*` records, the saved-items id cache (`vendra-saved-map`) and the newsletter email, and the site session keeps only the guest's drafts and history. A tenant app connected to the API loads this data from the server per session (memory, or `sessionStorage` at most) and never writes addresses, recipients, reminders or wallet data to `localStorage` (`API.md`, B11).
+- **Sign-out leaves no personal data:** the sample account (profile, addresses with recipients' names and mobiles, reminders, wallet) is kept under `vf-account:<mobile>` only while signed in. `vfAccountSignOut` (`src/storefront/customer/account-data.js`) removes every `vf-account*` key, the signed-in customers' `vf-online-payment:*` records, the saved-items id cache (`vendra-saved-map`) and the newsletter email, and the site session keeps only the guest's drafts and history. A tenant app connected to the API loads this data from the server per session (memory, or `sessionStorage` at most) and never writes addresses, recipients, reminders or wallet data to `localStorage` (`API.md`, B11).
 - **Account balance:** top-ups are simulated. Paying from a balance of at least `wallet.discountFrom` takes `discountPercent` off the products. A real store keeps the balance on its server.
 - **Delivery pin:** a Leaflet map with OpenStreetMap tiles; point `VF_STORE.map.tiles` at another provider for real traffic. If the map fails, a typed address (`noMap`) replaces the pin.
 - **Simulated, local only:** sign-in codes, payments, reminders, saved items, recently viewed, the newsletter flag and the consent choice (`vf-consent`). Only `shared/services/integrations/api.js` talks to the backend, and only when `apiBase` is set.
 - **Policies and contact:** policy text is sample copy that reads fees and areas from `delivery.js`, so it stays current. Replace it with the florist's own policies before launch.
 - **Preview states:** add `?tenant=clay` (any tenant in `ui/tokens/tenants/`) for another theme; `en/shop/?min=2000000&max=4000000&stock=1`; `fa/shop/?demo=loading` or `?demo=error` (Retry restores results); `en/journal/?demo=loading`; `fa/journal/missing-story/`; `en/track/VB-TEST-1/` (cancelled sample). Checkout takes `demo=error` for the online payment simulation; fill the bag's delivery form first, since an empty bag redirects to the bag page.
-- **Store configuration** (`domain/store-config.js`): payment methods (order, card/holder/Sheba, pay-on-delivery zones), optional `features`, `languages`, contact channels (`null` hides one), the payment demo result, currency and API base. Run `npm run build` after changing it.
+- **Store configuration** (`src/storefront/store/store-config.js`): payment methods (order, card/holder/Sheba, pay-on-delivery zones), optional `features`, `languages`, contact channels (`null` hides one), the payment demo result, currency and API base. Run `npm run build` after changing it.
 - **Integration boundaries:** authentication and payment services come from the consuming project. Reminders are stored locally and send nothing; communication renderers return strings; WhatsApp links open only when clicked. Analytics keep a small local log and reach `vfRuntime.track.subscribe` listeners only after consent, without contact details. `page_view` and `purchase` also say where the visit came from: the landing link's `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` and `utm_term` and the referring site's host (`vfRuntime.track.attribution()`), kept for the tab in session storage (`vf-attribution`) only after the visitor accepts analytics. A tagged landing replaces it; an untagged one (including a return from the bank) keeps the tab's first source. Tag the links the store shares so each channel shows up: the Instagram bio (`?utm_source=instagram&utm_medium=social`), WhatsApp messages (`utm_source=whatsapp&utm_medium=message`) and the presentation's send links (`utm_source=counter&utm_medium=qr`). `deployment/` files use `example.test`: update paths, domain and sitemap entries for the real host.
 
 

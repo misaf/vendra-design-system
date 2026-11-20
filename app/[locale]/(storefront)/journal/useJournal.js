@@ -1,12 +1,12 @@
 // Page behavior. Edit here, then run npm run build.
-import {VF_JCATS, VF_POSTS} from '../../../../i18n/journal-content.js';
-import {vfJournalImage} from '../../../../domain/journal-images.js';
-import {vfSeparator} from '../../../../domain/formatting.js';
+import {VF_JCATS, VF_POSTS} from '../../../../src/storefront/content/journal-content.js';
+import {vfJournalImage} from '../../../../src/storefront/content/journal-images.js';
+import {vfSeparator} from '../../../../src/storefront/pricing/formatting.js';
 import {vfCopy} from './copy.js';
 import {vfShell} from '../../../../shared/services/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../../../shared/services/routing.js';
-import {VF_STORE} from '../../../../domain/store-config.js';
-import {commerce} from '../../../../domain/commerce.js';
+import {VF_STORE} from '../../../../src/storefront/store/store-config.js';
+import {commerce} from '../../../../src/storefront/commerce/commerce.js';
 import {usePageLogic} from '../../../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../../../shared/services/page-lifecycle.js';
 // Each post's search index per language (commerce.searchIndex of its text), built once rather than

@@ -17,7 +17,7 @@
   },
   "include": [
     "shared/**/*",
-    "domain/**/*",
+    "src/storefront/**/*",
     "types/*.d.ts",
     "session/**/*",
     "components/storefront/**/*",

@@ -4,7 +4,7 @@ import {
   vfAccountPhone,
   vfClearPrivateSession,
   vfCustomerId
-} from '../domain/account-data.js';
+} from '../src/storefront/customer/account-data.js';
 import {
   vfLineItems,
   vfLineToken,
@@ -19,9 +19,14 @@ import {
   vfReorderBag,
   vfRepriceLines,
   vfSampleBag
-} from '../domain/catalog.js';
-import {VF_DELIVERY, vfErrors, vfDeliveryChanged, vfMobile} from '../domain/delivery.js';
-import {VF_STORE, vfLanguage} from '../domain/store-config.js';
+} from '../src/storefront/catalog/catalog.js';
+import {
+  VF_DELIVERY,
+  vfErrors,
+  vfDeliveryChanged,
+  vfMobile
+} from '../src/storefront/delivery/delivery.js';
+import {VF_STORE, vfLanguage} from '../src/storefront/store/store-config.js';
 import {vfPageTenant} from '../shared/services/tenant.js';
 import {
   VF_ROUTES,

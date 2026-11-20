@@ -1,7 +1,7 @@
 // Browser lifecycle for storefront pages: analytics, document updates, focus and announcements.
-import {vfBrandHead} from '../../domain/brand.js';
-import {VF_PRODUCTS, vfFindProduct} from '../../domain/catalog.js';
-import {vfLocale} from '../../domain/store-config.js';
+import {vfBrandHead} from '../../src/storefront/store/brand.js';
+import {VF_PRODUCTS, vfFindProduct} from '../../src/storefront/catalog/catalog.js';
+import {vfLocale} from '../../src/storefront/store/store-config.js';
 import {vfRuntime} from '../platform/runtime.js';
 import {vfReportLists} from './list-tracking.js';
 import {VF_NAV} from './page-focus.js';

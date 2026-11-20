@@ -1,7 +1,7 @@
 // Adapt the exported pages to the static host's root URLs and 404 fallback.
 import {copyFile, readdir, writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
-import {VF_STORE} from '../domain/store-config.js';
+import {VF_STORE} from '../src/storefront/store/store-config.js';
 import {vfServerRender} from '../shared/platform/environment.js';
 import {precompress} from '../build/compress.mjs';
 import {storefrontSitemap} from '../build/routes.mjs';

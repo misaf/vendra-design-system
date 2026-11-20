@@ -1,6 +1,6 @@
-import {vfBrand, vfBrandUrl} from '../../domain/brand.js';
-import {VF_STORE, vfLocale} from '../../domain/store-config.js';
-import {VF_SHELL} from '../../i18n/shell.js';
+import {vfBrand, vfBrandUrl} from '../../src/storefront/store/brand.js';
+import {VF_STORE, vfLocale} from '../../src/storefront/store/store-config.js';
+import {VF_SHELL} from '../../src/storefront/shell/shell.js';
 import {
   VF_ROUTE_EXTRA,
   vfCanonicalRoute,

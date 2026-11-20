@@ -10,7 +10,7 @@ import * as components from '../ui/index.js';
 import {ICON_SVGS} from '../ui/components/Icon/icon-svgs.js';
 import {dates} from '../ui/utils/dates.js';
 import {format} from '../ui/utils/format.js';
-import {commerce} from '../domain/commerce.js';
+import {commerce} from '../src/storefront/commerce/commerce.js';
 
 window.React = React;
 window.ReactDOM = {...ReactDOM, createRoot};

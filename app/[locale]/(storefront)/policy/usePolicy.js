@@ -1,7 +1,7 @@
 // Page behavior. Edit here, then run npm run build.
 import {VF_POLICY_UPDATED, vfCopy} from './copy.js';
 import {dates} from '../../../../ui/utils/dates.js';
-import {VF_FA_DIGITS} from '../../../../domain/formatting.js';
+import {VF_FA_DIGITS} from '../../../../src/storefront/pricing/formatting.js';
 import {vfShell} from '../../../../shared/services/navigation.js';
 import {VF_POLICIES, vfPageRoute} from '../../../../shared/services/routing.js';
 import {usePageLogic} from '../../../../shared/services/page-state.js';

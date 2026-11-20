@@ -1,7 +1,7 @@
 // The storefront shell around every page: header, mobile menu, footer, consent and tab bar; `bare`
 // keeps only the provider, skip link and notices.
 import React from 'react';
-import {vfBrandUrl} from '../../domain/brand.js';
+import {vfBrandUrl} from '../../src/storefront/store/brand.js';
 import {BottomTabBar} from '../../ui/components/BottomTabBar/BottomTabBar.jsx';
 import {LiveRegion} from '../../ui/components/LiveRegion/LiveRegion.jsx';
 import {OfflineNotice} from '../../ui/components/OfflineNotice/OfflineNotice.jsx';
@@ -19,7 +19,7 @@ import {StorefrontMenu} from './StorefrontMenu/StorefrontMenu.jsx';
 import {StorefrontHeader} from './StorefrontHeader/StorefrontHeader.jsx';
 import {useVfDensity, useVfRemoteNavigation} from '../../shared/services/tv.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
-import {vfLocale} from '../../domain/store-config.js';
+import {vfLocale} from '../../src/storefront/store/store-config.js';
 
 export function Shell({v, content, sticky, bare = false, quiet = false, enclosedCheckout = null}) {
   const enclosed = !!enclosedCheckout;

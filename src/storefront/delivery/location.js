@@ -1,10 +1,10 @@
 // Delivery locations: loads the vendored Leaflet on demand for the LocationPicker and PlacesMap
 // components, and formats a location.
 // Map tiles and the starting view are set in store-config.js (VF_STORE.map).
-import {VF_FA_DIGITS} from './formatting.js';
-import {commerce} from './commerce.js';
-import {vfAssetBase} from '../shared/platform/environment.js';
-import {VF_MAPS_APPS} from '../i18n/location.js';
+import {VF_FA_DIGITS} from '../pricing/formatting.js';
+import {commerce} from '../commerce/commerce.js';
+import {vfAssetBase} from '../../../shared/platform/environment.js';
+import {VF_MAPS_APPS} from './location-messages.js';
 
 export function vfValidLocation(location) {
   return commerce.validLocation(location);

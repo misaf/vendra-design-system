@@ -1,14 +1,18 @@
 // Bilingual product copy. Edit here, then run npm run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
-import {VF_ZONES, vfDeliveryCutoff, vfDeliveryHint} from '../../../../../domain/delivery.js';
-import {vfPlural} from '../../../../../domain/store-config.js';
+import {
+  VF_ZONES,
+  vfDeliveryCutoff,
+  vfDeliveryHint
+} from '../../../../../src/storefront/delivery/delivery.js';
+import {vfPlural} from '../../../../../src/storefront/store/store-config.js';
 import {
   VF_PRODUCT_DETAILS,
   vfProductImage,
   vfProductImages
-} from '../../../../../domain/catalog.js';
-import {VF_CATEGORY_COPY} from '../../../../../i18n/categories.js';
-import {VF_SHELL} from '../../../../../i18n/shell.js';
+} from '../../../../../src/storefront/catalog/catalog.js';
+import {VF_CATEGORY_COPY} from '../../../../../src/storefront/catalog/categories.js';
+import {VF_SHELL} from '../../../../../src/storefront/shell/shell.js';
 import {vfRouteUrl} from '../../../../../shared/services/routing.js';
 import {
   vfBreadcrumbData,

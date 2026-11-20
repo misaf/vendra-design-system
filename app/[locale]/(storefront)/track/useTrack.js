@@ -1,7 +1,7 @@
 // Page behavior. Edit here, then run npm run build.
 import React from 'react';
 import {vfCopy} from './copy.js';
-import {vfCustomerId, vfKnownOrders} from '../../../../domain/account-data.js';
+import {vfCustomerId, vfKnownOrders} from '../../../../src/storefront/customer/account-data.js';
 import {
   vfCardMessages,
   vfLineToken,
@@ -9,13 +9,13 @@ import {
   vfSampleBag,
   vfReorderBag,
   vfReorderLines
-} from '../../../../domain/catalog.js';
-import {vfMobile, vfTotals, vfZone} from '../../../../domain/delivery.js';
-import {VF_FA_DIGITS, vfLatin, vfSeparator} from '../../../../domain/formatting.js';
+} from '../../../../src/storefront/catalog/catalog.js';
+import {vfMobile, vfTotals, vfZone} from '../../../../src/storefront/delivery/delivery.js';
+import {VF_FA_DIGITS, vfLatin, vfSeparator} from '../../../../src/storefront/pricing/formatting.js';
 import {vfShell} from '../../../../shared/services/navigation.js';
-import {vfSummaryRows} from '../../../../domain/promotions.js';
+import {vfSummaryRows} from '../../../../src/storefront/pricing/promotions.js';
 import {vfPageRoute} from '../../../../shared/services/routing.js';
-import {vfDeliveryWhen} from '../../../../i18n/time.js';
+import {vfDeliveryWhen} from '../../../../src/storefront/delivery/time.js';
 import {VF_NAV} from '../../../../shared/services/page-focus.js';
 import {usePageLogic} from '../../../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../../../shared/services/page-lifecycle.js';

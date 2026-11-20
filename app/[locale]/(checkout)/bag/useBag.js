@@ -1,7 +1,7 @@
 // Page behavior. Edit here, then run npm run build.
 import {vfCopy} from './copy.js';
-import {vfOrderMessage} from '../../../../domain/order-message.js';
-import {vfAccountLoad, vfAccountPhone} from '../../../../domain/account-data.js';
+import {vfOrderMessage} from '../../../../src/storefront/checkout/order-message.js';
+import {vfAccountLoad, vfAccountPhone} from '../../../../src/storefront/customer/account-data.js';
 import {
   VF_ADDONS,
   vfCardMessages,
@@ -18,7 +18,7 @@ import {
   vfProductImage,
   vfSampleBag,
   vfTokenText
-} from '../../../../domain/catalog.js';
+} from '../../../../src/storefront/catalog/catalog.js';
 import {
   VF_DELIVERY,
   VF_FREE_DELIVERY_THRESHOLD,
@@ -38,14 +38,30 @@ import {
   vfTotals,
   vfZone,
   vfZoneAt
-} from '../../../../domain/delivery.js';
-import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../../../domain/formatting.js';
-import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../../../../domain/location.js';
+} from '../../../../src/storefront/delivery/delivery.js';
+import {
+  VF_FA_DIGITS,
+  VF_MONEY,
+  vfSeparator
+} from '../../../../src/storefront/pricing/formatting.js';
+import {
+  vfLoadLeaflet,
+  vfLocationText,
+  vfValidLocation
+} from '../../../../src/storefront/delivery/location.js';
 import {vfShell} from '../../../../shared/services/navigation.js';
-import {VF_PROMOS, vfPromoCheck, vfSummaryRows} from '../../../../domain/promotions.js';
+import {
+  VF_PROMOS,
+  vfPromoCheck,
+  vfSummaryRows
+} from '../../../../src/storefront/pricing/promotions.js';
 import {vfPageRoute, vfRouteUrl} from '../../../../shared/services/routing.js';
-import {VF_STORE, vfFeatures, vfPaymentMethods} from '../../../../domain/store-config.js';
-import {vfDayMonth, vfDayName, vfSlotLabel} from '../../../../i18n/time.js';
+import {
+  VF_STORE,
+  vfFeatures,
+  vfPaymentMethods
+} from '../../../../src/storefront/store/store-config.js';
+import {vfDayMonth, vfDayName, vfSlotLabel} from '../../../../src/storefront/delivery/time.js';
 import {VF_NAV} from '../../../../shared/services/page-focus.js';
 import {useLifecycle, usePageLogic} from '../../../../shared/services/page-state.js';
 import {vfNow} from '../../../../shared/platform/environment.js';

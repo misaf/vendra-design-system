@@ -1,6 +1,6 @@
 // Page behavior. Edit here, then run npm run build.
 import {vfCopy} from './copy.js';
-import {VF_PRODUCTS, vfProductImage, vfProductSub} from '../../domain/catalog.js';
+import {VF_PRODUCTS, vfProductImage, vfProductSub} from '../../src/storefront/catalog/catalog.js';
 import {vfShell} from '../../shared/services/navigation.js';
 import {usePageLogic} from '../../shared/services/page-state.js';
 import {useStorefrontPage} from '../../shared/services/page-lifecycle.js';
