@@ -143,14 +143,14 @@ export default defineConfig({
   projects: projectsForTarget(build),
   webServer: build
     ? {
-        command: 'npm run build:next && npm run start:next -- --port 4173',
+        command: 'npm run build:demo && npm run preview:demo -- --port 4173',
         cwd: '..',
         url: origin + '/',
         reuseExistingServer: false,
         timeout: 180000
       }
     : {
-        command: 'npm run dev:next -- --hostname 127.0.0.1 --port 5173',
+        command: 'npm run dev -- --hostname 127.0.0.1 --port 5173',
         cwd: '..',
         url: origin + '/',
         reuseExistingServer: false,

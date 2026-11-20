@@ -172,7 +172,7 @@ jobs:
           VF_BASE_PATH: /${{ github.event.repository.name }}
           VF_ORIGIN: https://${{ github.repository_owner }}.github.io
         run: |
-          npm run build:next
+          npm run build:demo
           npm run test:e2e:next
       - name: Keep the report
         if: failure()
@@ -208,7 +208,7 @@ jobs:
       - run: npm ci
       - run: npm run check
       # Prerendered pages name their absolute address (canonical, og:url, og:image).
-      - run: npm run build:next
+      - run: npm run build:demo
         env:
           VF_BASE_PATH: /${{ github.event.repository.name }}
           VF_ORIGIN: https://${{ github.repository_owner }}.github.io
