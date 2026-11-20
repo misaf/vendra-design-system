@@ -88,7 +88,7 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 | `tools/` | Build and export helpers, component scaffolding, and dependency checks. |
 | `e2e/`, `tests/` | Browser journeys, visual baselines, repository checks, and integration fixtures. |
 | `.generated/` | Generated storefront CSS and tenant data. The static demo builds to `.generated/export/`. |
-| `docs/`, `deployment/` | Contributor guides, API contract notes, and deployment examples. |
+| `docs/` | Contributor guides and API contract notes. |
 
 ## Commands
 

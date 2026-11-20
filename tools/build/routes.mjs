@@ -54,7 +54,7 @@ export function storefrontRoutes() {
 
 // The sitemap for a store at `origin`: every indexed address, each with the same page in every
 // language the store offers as hreflang alternates (x-default is the English one, or the only one,
-// as in the page's <head>) and its lastmod when known (deployment/sitemap.xml is its sample).
+// as in the page's <head>) and its lastmod when known.
 export function storefrontSitemap(origin) {
   const app = origin + vfAppBase();
   const indexed = storefrontRoutes().filter(route => route.indexed);

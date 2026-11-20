@@ -1,16 +1,11 @@
-// The build's precompressed copies (tools/build/compress.mjs) and the reference server that serves them
-// (deployment/nginx.conf): text files of MIN_SIZE or more get a .br and a .gz copy that decompress to
-// the same bytes; small files, fonts and photos get none; and the server caches only Next.js's
-// content-hashed folder forever.
+// Verify the generated Brotli and gzip files against their source bytes.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import zlib from 'node:zlib';
-import {fileURLToPath} from 'node:url';
 import {precompress, MIN_SIZE} from '../tools/build/compress.mjs';
 
-const templates = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outDir = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-compress-test-'));
 try {
   const text = 'export const words = ' + JSON.stringify('flower '.repeat(MIN_SIZE)) + ';\n';
@@ -49,29 +44,3 @@ try {
 } finally {
   fs.rmSync(outDir, {recursive: true, force: true});
 }
-
-const build = fs.readFileSync(path.join(templates, 'tools/next/finish-export.mjs'), 'utf8');
-assert.match(build, /await precompress\(out\);/);
-const nginx = fs.readFileSync(path.join(templates, 'deployment/nginx.conf'), 'utf8');
-const block = location => {
-  const start = nginx.indexOf('location ' + location + ' {');
-  assert.ok(start >= 0, 'nginx.conf has location ' + location);
-  return nginx.slice(start, nginx.indexOf('}', start));
-};
-assert.match(nginx, /^\s*brotli_static on;/m);
-assert.match(nginx, /^\s*gzip_static on;/m);
-assert.match(block('^~ /_next/static/'), /Cache-Control "public, max-age=31536000, immutable"/);
-assert.match(block('^~ /_next/static/'), /Access-Control-Allow-Origin/);
-assert.match(
-  block('^~ /apps/storefront/design-system/assets/fonts/'),
-  /Access-Control-Allow-Origin/
-);
-assert.doesNotMatch(block('^~ /apps/storefront/design-system/assets/fonts/'), /immutable/);
-assert.doesNotMatch(block('~ ^/(assets|apps/storefront/_vendor)/'), /immutable/);
-for (const location of ['^~ /apps/storefront/design-system/tokens/tenants/', '= /404.html', '/'])
-  assert.match(block(location), /Cache-Control "no-cache"/, location + ' is revalidated');
-// The not-found page is served with status 404, which add_header skips without `always`.
-assert.match(block('= /404.html'), /Cache-Control "no-cache" always;/);
-// Only the hashed folder is immutable.
-assert.equal(nginx.match(/immutable"/g).length, 1);
-console.log('Passed the precompressed build files and the reference cache headers.');

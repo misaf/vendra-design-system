@@ -1,6 +1,5 @@
-// Precompressed copies of the Next.js export's text files. Beside each script, stylesheet, page and data file it writes `<name>.br` (Brotli,
-// best quality) and `<name>.gz` (gzip, level 9), so a host that serves precompressed files
-// (deployment/nginx.conf: brotli_static, gzip_static) sends them without compressing per request.
+// Precompressed copies of the Next.js export's text files. Beside each eligible file it writes
+// `<name>.br` (Brotli, best quality) and `<name>.gz` (gzip, level 9) for hosts that serve them.
 // Fonts and photos are compressed already and are left alone, as are files under MIN_SIZE and copies
 // that would not be smaller.
 import fs from 'node:fs';

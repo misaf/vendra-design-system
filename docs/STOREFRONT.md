@@ -55,6 +55,13 @@ npm run test:e2e:remote  # optional: the same tests on a Linux server over ssh (
 - **One page on its own:** `/en/?page=checkout` renders that page with its default props.
 - **Tenant list only:** `node tools/build/generate.mjs` from the repository root rewrites `.generated/tenant-slugs.js` from `src/design-system/tokens/tenants/`.
 
+## Production integration
+
+Use `npm run build:app` to build the Next.js server for the Vendra storefront image. The Vendra
+deployment owns the Docker images, routing, and runtime configuration for the storefront and its
+Laravel backend. Set `VF_API_BASE` to the backend origin when starting the storefront server.
+See [API integration](API.md) for the backend URL format.
+
 ## GitHub Pages demo
 
 `.github/workflows/ci.yml` builds and deploys the Next.js export when CI passes on `master`.
@@ -75,10 +82,9 @@ export. The browser hydrates the same markup for a first visit. Returning visito
 flows render from the requested address and their saved state. The initial document holds the build
 clock for hydration, then delivery days and cutoffs update to the visitor's current time.
 
-The build writes `sitemap.xml` from the same address list. A static host's `404.html` lets the browser
-resolve order tracking URLs with runtime IDs and old product and journal addresses. The nginx
-reference shows the fallback and cache headers. The export includes Brotli and gzip copies for
-hosts that serve precompressed files.
+The build writes `sitemap.xml` and `robots.txt` into the export. Its `404.html` lets the browser
+resolve order tracking URLs with runtime IDs and old product and journal addresses. The export
+also includes Brotli and gzip copies, which the local static preview can serve.
 
 ## Browser tests
 
@@ -238,7 +244,7 @@ and pressing Add to bag.
 - **Policies and contact:** policy text is sample copy that reads fees and areas from `delivery/delivery-zones.js`, so it stays current. Replace it with the florist's own policies before launch.
 - **Preview states:** add `?tenant=clay` (any tenant in `src/design-system/tokens/tenants/`) for another theme; `en/shop/?min=2000000&max=4000000&stock=1`; `fa/shop/?demo=loading` or `?demo=error` (Retry restores results); `en/journal/?demo=loading`; `fa/journal/missing-story/`; `en/track/VB-TEST-1/` (cancelled sample). Checkout takes `demo=error` for the online payment simulation; fill the bag's delivery form first, since an empty bag redirects to the bag page.
 - **Store configuration** (`src/storefront/store/store-config.js`): payment methods (order, card/holder/Sheba, pay-on-delivery zones), optional `features`, `languages`, contact channels (`null` hides one), the payment demo result, currency and API base. Run `npm run build` after changing it.
-- **Integration boundaries:** authentication and payment services come from the consuming project. Reminders are stored locally and send nothing; communication renderers return strings; WhatsApp links open only when clicked. Analytics keep a small local log and reach `vfRuntime.track.subscribe` listeners only after consent, without contact details. `page_view` and `purchase` also say where the visit came from: the landing link's `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` and `utm_term` and the referring site's host (`vfRuntime.track.attribution()`), kept for the tab in session storage (`vf-attribution`) only after the visitor accepts analytics. A tagged landing replaces it; an untagged one (including a return from the bank) keeps the tab's first source. Tag the links the store shares so each channel shows up: the Instagram bio (`?utm_source=instagram&utm_medium=social`), WhatsApp messages (`utm_source=whatsapp&utm_medium=message`) and the presentation's send links (`utm_source=counter&utm_medium=qr`). `deployment/` files use `example.test`: update paths, domain and sitemap entries for the real host.
+- **Integration boundaries:** authentication and payment services come from the consuming project. Reminders are stored locally and send nothing; communication renderers return strings; WhatsApp links open only when clicked. Analytics keep a small local log and reach `vfRuntime.track.subscribe` listeners only after consent, without contact details. `page_view` and `purchase` also say where the visit came from: the landing link's `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` and `utm_term` and the referring site's host (`vfRuntime.track.attribution()`), kept for the tab in session storage (`vf-attribution`) only after the visitor accepts analytics. A tagged landing replaces it; an untagged one (including a return from the bank) keeps the tab's first source. Tag the links the store shares so each channel shows up: the Instagram bio (`?utm_source=instagram&utm_medium=social`), WhatsApp messages (`utm_source=whatsapp&utm_medium=message`) and the presentation's send links (`utm_source=counter&utm_medium=qr`).
 
 
 ## Shop display setup
