@@ -4,17 +4,16 @@ import {vfCopy, vfProductHead} from './copy.js';
 import {
   VF_ADDONS,
   VF_PRODUCTS,
-  VF_PRODUCT_DETAILS,
   VF_SIZES,
   vfFindProduct,
   vfProduct,
   vfProductBadge,
   vfProductImage,
   vfProductImages,
-  vfProductSub,
-  vfRecentlyViewed,
-  vfRememberViewed
+  vfProductSub
 } from '../catalog.js';
+import {VF_PRODUCT_DETAILS} from '../sample-catalog.js';
+import {vfRecentlyViewed, vfRememberViewed} from '../recently-viewed.js';
 import {vfBagLine, vfLineDetail} from '../../cart/cart-lines.js';
 import {vfTokenText} from '../catalog.js';
 import {vfLineQuantityMax} from '../../cart/cart-lines.js';

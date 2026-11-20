@@ -1,8 +1,8 @@
 // Every policy document has its own valid "Last updated" date, formatted per language.
 import assert from 'node:assert/strict';
-import {VF_POLICY_UPDATED} from '../src/storefront/content/policy/copy.js';
-import {VF_POLICIES} from '../src/storefront/shell/routing.js';
-import {dates} from '../src/design-system/utils/dates.js';
+import {VF_POLICY_UPDATED} from './copy.js';
+import {VF_POLICIES} from '../../shell/routing.js';
+import {dates} from '../../../design-system/utils/dates.js';
 
 assert.deepEqual(
   Object.keys(VF_POLICY_UPDATED).sort(),

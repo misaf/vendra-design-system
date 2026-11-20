@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import {loadPage} from './page-script.mjs';
+import {loadPage} from '../../../../tests/page-script.mjs';
 
 for (const lang of ['en', 'fa']) {
   const {logic: account, ctx: c} = loadPage('account', {lang});

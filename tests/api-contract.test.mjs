@@ -8,9 +8,9 @@ import {VF_API_ORDERS} from '../src/storefront/orders/order-records.js';
 import {
   VF_API_PRODUCT_PRICES,
   VF_API_MULTIMEDIA,
-  VF_API_PRODUCTS,
-  vfApiRecord
-} from '../src/storefront/catalog/catalog.js';
+  VF_API_PRODUCTS
+} from '../src/storefront/catalog/sample-catalog.js';
+import {vfApiRecord} from '../src/storefront/catalog/catalog.js';
 import {vfSampleBag} from '../src/storefront/cart/cart-lines.js';
 import {VF_API_DELIVERY_ZONES} from '../src/storefront/delivery/delivery-zones.js';
 import {VF_API_DELIVERY_SCHEDULE} from '../src/storefront/delivery/delivery-schedule.js';

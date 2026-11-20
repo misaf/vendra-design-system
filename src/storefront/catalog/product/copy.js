@@ -3,7 +3,8 @@
 import {VF_ZONES} from '../../delivery/delivery-zones.js';
 import {vfDeliveryCutoff, vfDeliveryHint} from '../../delivery/delivery-copy.js';
 import {vfPlural} from '../../store/store-config.js';
-import {VF_PRODUCT_DETAILS, vfProductImage, vfProductImages} from '../catalog.js';
+import {vfProductImage, vfProductImages} from '../catalog.js';
+import {VF_PRODUCT_DETAILS} from '../sample-catalog.js';
 import {VF_CATEGORY_COPY} from '../categories.js';
 import {VF_SHELL} from '../../shell/shell.js';
 import {vfRouteUrl} from '../../shell/routing.js';
