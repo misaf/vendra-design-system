@@ -69,7 +69,7 @@ function presentation(settings = {}) {
   page.setState({panel: 'tools'});
   page.renderVals();
   page.lifecycle.didUpdate();
-  assert.ok(!timers.has(page._displayTimer), 'seller dialogs pause playback');
+  assert.equal(timers.size, 0, 'seller dialogs pause playback');
   page.lifecycle.willUnmount();
   assert.equal(timers.size, 0, 'unmount releases every playback timer');
 }
@@ -155,7 +155,11 @@ console.log('Passed quiet image failure and recovery state.');
   page.renderVals().previousDisplay();
   assert.equal(page.state.pendingIndex, 5, 'a reverse gesture cancels a slow replacement');
   page.renderVals().retryDisplay();
-  assert.equal(page._displayFailures.size, 0, 'seller retry clears backoff');
+  page.renderVals().displayLoaded(page.renderVals().preloadProducts[0].imageKey);
+  page.renderVals().nextDisplay();
+  page.renderVals().displayLoaded(page.renderVals().preloadProducts[0].imageKey);
+  page.renderVals().nextDisplay();
+  assert.equal(page.state.pendingIndex, 1, 'seller retry allows a previously skipped photo again');
 }
 console.log('Passed failed-photo skipping, bounded retry and pending navigation cancellation.');
 
@@ -216,3 +220,68 @@ console.log('Passed failed-photo skipping, bounded retry and pending navigation 
   assert.equal(page.state.collections.length, 0);
 }
 console.log('Passed named collections and configuration transfer without PIN or customer data.');
+
+{
+  const {page, ctx, timers} = presentation();
+  const video = {srcObject: null, play: async () => {}};
+  const firstPermission = Promise.withResolvers();
+  const firstRead = Promise.withResolvers();
+  const streams = [0, 1, 2].map(() => ({
+    stopped: 0,
+    getTracks() {
+      return [{stop: () => this.stopped++}];
+    }
+  }));
+  const permissions = [
+    firstPermission.promise,
+    Promise.resolve(streams[1]),
+    Promise.resolve(streams[2])
+  ];
+  const reads = [firstRead.promise, Promise.resolve([])];
+  ctx.document.getElementById = () => video;
+  ctx.navigator.mediaDevices = {getUserMedia: () => permissions.shift()};
+  ctx.window.BarcodeDetector = class {
+    detect() {
+      return reads.shift();
+    }
+  };
+  const flush = () => new Promise(resolve => setImmediate(resolve));
+  page.lifecycle.didMount();
+
+  page.renderVals().openScan();
+  page.renderVals().closePanel();
+  page.renderVals().openScan();
+  await flush();
+  assert.equal(video.srcObject, streams[1]);
+  firstPermission.resolve(streams[0]);
+  await flush();
+  assert.equal(streams[0].stopped, 1, 'a late permission result releases its own stream');
+  assert.equal(video.srcObject, streams[1], 'the reopened camera keeps its stream');
+
+  page.setState({panel: 'tools'});
+  page.lifecycle.didUpdate();
+  assert.equal(streams[1].stopped, 1, 'leaving scan through another panel stops the camera');
+  assert.equal(video.srcObject, null);
+  page.renderVals().openScan();
+  await flush();
+  const activeTimers = [...timers.keys()];
+  assert.equal(activeTimers.length, 1, 'the reopened scanner schedules one read');
+  firstRead.resolve([{rawValue: 'VF-8RD5WN'}]);
+  await flush();
+  assert.equal(page.state.panel, 'scan', 'a late QR result cannot close the reopened scanner');
+  assert.equal(page.state.open, null);
+  assert.equal(video.srcObject, streams[2]);
+  assert.deepEqual(
+    [...timers.keys()],
+    activeTimers,
+    'a stale detector cannot schedule another read'
+  );
+
+  page.lifecycle.willUnmount();
+  assert.equal(streams[2].stopped, 1);
+  assert.equal(video.srcObject, null);
+  assert.equal(timers.size, 0, 'unmount cancels the scan timer');
+}
+console.log(
+  'Passed camera cleanup across delayed permissions, panel changes and stale QR results.'
+);
