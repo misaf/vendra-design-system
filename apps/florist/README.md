@@ -298,7 +298,7 @@ Storefront molecules, organisms and layouts may have the same pair beside them u
 
 `_runtime/` is generated; never edit it.
 
-- **`app/[locale]/`** owns localized pages and layouts. The `(shop)` group covers catalog, account, tracking and content, `(checkout)` covers bag and checkout, and `(counter)` covers presentation. The root document keeps the session alive across groups and language switches. `server/` builds the initial route and metadata and is the home for future request-scoped Laravel integration.
+- **`app/[locale]/`** owns localized pages and layouts. The `(storefront)` group covers home, catalog, account, tracking and content, `(checkout)` covers bag and checkout, and `(counter)` covers presentation. The root document keeps the session alive across groups and language switches. `server/` builds the initial route and metadata and is the home for future request-scoped Laravel integration.
 - **Public URLs** use `/<locale>/` in links, canonical and alternate tags, and the sitemap.
 - **Navigation:** `next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
 - **Build** uses `build:app` for the Node-hosted app and `build:demo` for the static reference demo. The demo exports every known address through Next.js to `next/out/`. It serves the shared UI package’s fonts and tenant CSS at their existing public paths.
