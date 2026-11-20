@@ -20,7 +20,8 @@ import {
   vfReorderBag,
   vfRepriceLines
 } from '../cart/cart-lines.js';
-import {VF_DELIVERY, vfMobile} from '../delivery/delivery.js';
+import {VF_DELIVERY} from '../delivery/delivery-draft.js';
+import {mobile as vfMobile} from '../../design-system/utils/input.js';
 import {VF_STORE, vfLanguage} from '../store/store-config.js';
 import {vfCheckoutBlocked, vfCheckoutFallback} from '../checkout/checkout-guard.js';
 import {vfCustomerState, vfEmptyCustomer, vfGuestCustomers} from '../customer/customer-draft.js';

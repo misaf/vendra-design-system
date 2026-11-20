@@ -23,7 +23,7 @@ The detailed rules behind the design system: the reference tenant, voice, visual
 This system covers the **customer-facing storefront** only. Admin tasks (products, orders, currency, delivery rules, hours) are managed in a separate framework, so don't design admin screens here. The storefront reads those settings as data.
 
 ## Delivery rules
-Rules are stored per country (`src/storefront/delivery/delivery.js`) so more countries can be added later with their own zones, fees, currency and slots. **Current values are SAMPLES — replace with the real ones.**
+The reference store keeps zones and fees in `src/storefront/delivery/delivery-zones.js`, slots in `src/storefront/delivery/delivery-schedule.js`, and currency in `src/storefront/store/store-config.js`. **Current values are SAMPLES — replace with the real ones.**
 **Iran (IR)** — fees in Toman; time slots 08–12, 12–16, 16–20 and 20–22 (the shop is open 08:00–22:00):
 - **Karaj central** (Azimiyeh, Gohardasht, Mehrshahr…): 80,000; same day if ordered before 18:00
 - **Karaj outer** (Fardis, Mohammadshahr, Kamalshahr): 120,000; same day before 16:00

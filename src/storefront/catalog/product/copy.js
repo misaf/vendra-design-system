@@ -1,6 +1,7 @@
 // Bilingual product copy. Edit here, then run npm run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
-import {VF_ZONES, vfDeliveryCutoff, vfDeliveryHint} from '../../delivery/delivery.js';
+import {VF_ZONES} from '../../delivery/delivery-zones.js';
+import {vfDeliveryCutoff, vfDeliveryHint} from '../../delivery/delivery-copy.js';
 import {vfPlural} from '../../store/store-config.js';
 import {VF_PRODUCT_DETAILS, vfProductImage, vfProductImages} from '../catalog.js';
 import {VF_CATEGORY_COPY} from '../categories.js';

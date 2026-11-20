@@ -6,14 +6,14 @@ import {deliveryDays, deliverySlots, isoDate, openDay, openSlot} from './deliver
 import {vfProduct} from '../catalog/catalog.js';
 import {
   VF_SLOTS,
-  VF_ZONES,
   vfDeliverableOn,
-  vfDeliveryChanged,
   vfDeliveryDate,
   vfDeliveryDays,
   vfDeliverySlot,
   vfDeliverySlots
-} from './delivery.js';
+} from './delivery-schedule.js';
+import {VF_ZONES} from './delivery-zones.js';
+import {vfDeliveryChanged} from './delivery-validation.js';
 
 if (!process.env.VENDRA_DELIVERY_TZ_TEST) {
   for (const TZ of [

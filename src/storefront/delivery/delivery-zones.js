@@ -1,3 +1,4 @@
+import {VF_STORE} from '../store/store-config.js';
 import {validLocation} from '../../design-system/utils/coordinates.js';
 
 // Links that show a place in Neshan, Balad and Google Maps, each opening the installed app on
@@ -49,3 +50,76 @@ export const zoneFromApi = (zone, extras = {}) => {
     fa: zone.name.fa
   };
 };
+
+// Sample DeliveryZone responses. Distances are measured from the studio unless a zone sets its own center.
+// GET /api/delivery/zones
+export const VF_API_DELIVERY_ZONES = [
+  {
+    id: 1,
+    name: {en: 'Karaj central', fa: 'مرکز کرج'},
+    description: null,
+    maxDistanceKm: 5,
+    currencyCode: 'IRT',
+    feeAmount: 80_000,
+    requiresQuote: false,
+    position: 1
+  },
+  {
+    id: 2,
+    name: {en: 'Karaj outer', fa: 'حومه کرج'},
+    description: null,
+    maxDistanceKm: 12,
+    currencyCode: 'IRT',
+    feeAmount: 120_000,
+    requiresQuote: false,
+    position: 2
+  },
+  {
+    id: 3,
+    name: {en: 'Alborz province', fa: 'استان البرز'},
+    description: null,
+    maxDistanceKm: 60,
+    currencyCode: 'IRT',
+    feeAmount: 180_000,
+    requiresQuote: false,
+    position: 3
+  },
+  {
+    id: 4,
+    name: {en: 'Tehran', fa: 'تهران'},
+    description: null,
+    maxDistanceKm: 25,
+    currencyCode: 'IRT',
+    feeAmount: 250_000,
+    requiresQuote: false,
+    position: 4
+  }
+];
+
+// Zone fields the API doesn't provide yet (docs/API.md, "Zone rules"), keyed by DeliveryZone.id:
+// the storefront's key for the zone, its same-day cut-off and, when it isn't the studio, the point its
+// distance is measured from.
+export const VF_DELIVERY_ZONE_EXTRAS = {
+  1: {key: 'central', cutoff: '18:00'},
+  2: {key: 'outer', cutoff: '16:00'},
+  3: {key: 'alborz', cutoff: '14:00'},
+  4: {key: 'tehran', cutoff: '12:00', center: {lat: 35.6961, lng: 51.4231}}
+};
+
+// The storefront's zone object from an API DeliveryZone plus its extras.
+export function vfZoneFromApi(zone, extras = VF_DELIVERY_ZONE_EXTRAS) {
+  return zoneFromApi(zone, extras);
+}
+
+export const VF_ZONES = [...VF_API_DELIVERY_ZONES]
+  .sort((a, b) => a.position - b.position)
+  .map(zone => vfZoneFromApi(zone));
+
+export function vfZone(id) {
+  return VF_ZONES.find(zone => zone.id === id) || VF_ZONES[0];
+}
+
+// The zone id for a delivery pin, or null when the pin is outside every zone.
+export function vfZoneAt(location) {
+  return zoneAt(location, VF_ZONES, VF_STORE.studio);
+}

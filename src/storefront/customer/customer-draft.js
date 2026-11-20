@@ -1,4 +1,4 @@
-import {VF_DELIVERY} from '../delivery/delivery.js';
+import {VF_DELIVERY} from '../delivery/delivery-draft.js';
 
 export const vfEmptyCustomer = () => ({
   delivery: {...VF_DELIVERY},

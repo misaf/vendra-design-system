@@ -85,3 +85,13 @@ export declare function summaryRows(
   money: (amount: number) => string,
   num?: (value: number) => string
 ): SummaryRow[];
+
+export declare const VF_FREE_DELIVERY_THRESHOLD: number;
+export declare const VF_FREE_DELIVERY_ZONES: string[];
+export declare const VF_PROMOS: Promo[];
+export declare function vfFreeDelivery(zoneId: string, sub: number): boolean;
+export declare function vfTotals(
+  lines: {unit: number; qty: number}[],
+  delivery: {zone: string; promo?: string},
+  balance?: number | null
+): Totals;

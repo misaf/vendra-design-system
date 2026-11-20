@@ -7,3 +7,17 @@ export declare function fillText(
     freeDeliveryFrom(): string;
   }
 ): string;
+
+export declare function vfDeliveryCutoff(
+  zone: import('./delivery-zones.js').Zone,
+  persian: boolean
+): string;
+export declare function vfDeliveryHint(
+  zone: import('./delivery-zones.js').Zone,
+  persian: boolean
+): string;
+export declare function vfStoreText(
+  text: string,
+  money: (amount: number) => string,
+  persian: boolean
+): string;

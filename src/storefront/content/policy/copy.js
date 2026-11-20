@@ -2,15 +2,10 @@
 // Fees, cut-offs, time slots and store details come from the shared config, so the policies stay current.
 // Each document is {title, intro, sections: [{title, paras: [...], items?: [...]}]}.
 // Each document's date is its own (VF_POLICY_UPDATED), so one change never re-dates the others.
-import {
-  VF_DELIVERY_DAYS,
-  VF_FREE_DELIVERY_THRESHOLD,
-  VF_FREE_DELIVERY_ZONES,
-  VF_SLOTS,
-  VF_ZONES,
-  vfDeliveryCutoff,
-  vfZone
-} from '../../delivery/delivery.js';
+import {VF_DELIVERY_DAYS, VF_SLOTS} from '../../delivery/delivery-schedule.js';
+import {VF_FREE_DELIVERY_THRESHOLD, VF_FREE_DELIVERY_ZONES} from '../../pricing/order-totals.js';
+import {VF_ZONES, vfZone} from '../../delivery/delivery-zones.js';
+import {vfDeliveryCutoff} from '../../delivery/delivery-copy.js';
 import {vfHoursText} from '../../store/store-hours.js';
 import {VF_CURRENCY_NAME, VF_FA_DIGITS, VF_MONEY} from '../../pricing/formatting.js';
 import {VF_STORE, vfFeatures, vfPaymentMethods} from '../../store/store-config.js';

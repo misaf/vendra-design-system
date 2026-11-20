@@ -1,12 +1,10 @@
 // Shared shell values: menus, tabs, store links, favorites and focus helpers.
 import {vfBrand} from '../store/brand.js';
 import {vfFindProduct, vfProductId} from '../catalog/catalog.js';
-import {
-  VF_FREE_DELIVERY_THRESHOLD,
-  VF_ZONES,
-  vfDeliveryCutoff,
-  vfDeliveryDays
-} from '../delivery/delivery.js';
+import {VF_FREE_DELIVERY_THRESHOLD} from '../pricing/order-totals.js';
+import {VF_ZONES} from '../delivery/delivery-zones.js';
+import {vfDeliveryCutoff} from '../delivery/delivery-copy.js';
+import {vfDeliveryDays} from '../delivery/delivery-schedule.js';
 import {VF_FA_DIGITS, VF_MONEY} from '../pricing/formatting.js';
 import {vfDirections} from '../delivery/location.js';
 import {vfPageTenant} from '../../platform/tenant/tenant.js';

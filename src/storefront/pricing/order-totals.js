@@ -1,3 +1,5 @@
+import {vfZone} from '../delivery/delivery-zones.js';
+import {VF_STORE, vfFeatures} from '../store/store-config.js';
 import {latin} from '../../design-system/utils/input.js';
 
 // A promo code as entered: case, spaces and digit scripts don't matter.
@@ -69,3 +71,35 @@ export const summaryRows = (result, code, labels, money, num = String) => [
   {label: labels.fee, value: result.fee ? money(result.fee) : labels.free},
   {label: labels.total, value: money(result.total), strong: true}
 ];
+
+// Free delivery isn't in the API yet (docs/API.md, "Zone rules").
+export const VF_FREE_DELIVERY_THRESHOLD = 5_000_000;
+export const VF_FREE_DELIVERY_ZONES = ['central', 'outer'];
+
+// Sample promo codes. The minimum subtotal is in Toman.
+export const VF_PROMOS = [
+  {code: 'WELCOME10', percent: 10, min: 0},
+  {code: 'ROSES15', percent: 15, min: 4_000_000}
+];
+
+// Whether a zone delivers free for this subtotal.
+export function vfFreeDelivery(zoneId, sub) {
+  return freeDelivery(zoneId, sub, {
+    threshold: VF_FREE_DELIVERY_THRESHOLD,
+    zones: VF_FREE_DELIVERY_ZONES
+  });
+}
+
+// `balance` is the customer's balance when they pay from it (null otherwise): a large enough balance takes
+// the balance discount off the products, after any promo code (when the store takes them).
+export function vfTotals(lines, delivery, balance = null) {
+  return totals(
+    lines,
+    {zone: vfZone(delivery.zone), promo: vfFeatures().promoCodes ? delivery.promo : '', balance},
+    {
+      freeDelivery: {threshold: VF_FREE_DELIVERY_THRESHOLD, zones: VF_FREE_DELIVERY_ZONES},
+      promos: VF_PROMOS,
+      wallet: VF_STORE.wallet
+    }
+  );
+}

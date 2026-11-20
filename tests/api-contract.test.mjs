@@ -12,12 +12,10 @@ import {
   vfApiRecord
 } from '../src/storefront/catalog/catalog.js';
 import {vfSampleBag} from '../src/storefront/cart/cart-lines.js';
-import {
-  VF_API_DELIVERY_ZONES,
-  VF_API_DELIVERY_SCHEDULE,
-  VF_DELIVERY,
-  vfCheckoutRequest
-} from '../src/storefront/delivery/delivery.js';
+import {VF_API_DELIVERY_ZONES} from '../src/storefront/delivery/delivery-zones.js';
+import {VF_API_DELIVERY_SCHEDULE} from '../src/storefront/delivery/delivery-schedule.js';
+import {VF_DELIVERY} from '../src/storefront/delivery/delivery-draft.js';
+import {vfCheckoutRequest} from '../src/storefront/checkout/checkout-request.js';
 import {VF_API_PRODUCT_CATEGORIES} from '../src/storefront/catalog/product-categories.js';
 const spec = JSON.parse(
   fs.readFileSync(new URL('./fixtures/vendra-openapi.json', import.meta.url), 'utf8')

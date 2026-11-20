@@ -1,3 +1,6 @@
+import {vfLineToken} from '../cart/cart-lines.js';
+import {VF_API_DELIVERY_SCHEDULE, vfDeliveryDate} from '../delivery/delivery-schedule.js';
+import {VF_STORE} from '../store/store-config.js';
 import {validLocation} from '../../design-system/utils/coordinates.js';
 
 // The Checkout request (POST /api/sales/checkout) for bag lines and delivery details. `slots` are the
@@ -38,3 +41,23 @@ export const checkoutRequest = (
     deliverySlotId: slot ? slot.id : null
   };
 };
+
+// The Checkout request (POST /api/sales/checkout) for a bag and its delivery details. Fields the API
+// doesn't take yet (recipient phone, sender, typed address, promo code, sizes and add-ons) are listed
+// in docs/API.md. `cartToken` is empty until the API can create carts.
+export function vfCheckoutRequest(
+  lines,
+  delivery,
+  {method = 'card', last4 = '', ref = '', cartToken = ''} = {}
+) {
+  return checkoutRequest(lines, delivery, {
+    slots: VF_API_DELIVERY_SCHEDULE.slots,
+    currencyCode: VF_STORE.currency || 'IRT',
+    deliveryDate: delivery.date || vfDeliveryDate(delivery, new Date(), lines),
+    lineToken: vfLineToken,
+    method,
+    last4,
+    ref,
+    cartToken
+  });
+}

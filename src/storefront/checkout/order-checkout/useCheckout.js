@@ -11,14 +11,12 @@ import {vfProductImage} from '../../catalog/catalog.js';
 import {vfCardMessages, vfLineItems, vfLineToken, vfSampleBag} from '../../cart/cart-lines.js';
 import {vfLineAvailable, vfLineQuantityValid, vfRepriceLines} from '../../cart/cart-lines.js';
 import {paymentOptions, defaultPaymentMethod} from '../payment-options.js';
-import {
-  VF_DELIVERY,
-  vfCheckoutRequest,
-  vfDeliveryDate,
-  vfDeliveryChanged,
-  vfTotals,
-  vfZone
-} from '../../delivery/delivery.js';
+import {VF_DELIVERY} from '../../delivery/delivery-draft.js';
+import {vfCheckoutRequest} from '../checkout-request.js';
+import {vfDeliveryDate} from '../../delivery/delivery-schedule.js';
+import {vfDeliveryChanged} from '../../delivery/delivery-validation.js';
+import {vfTotals} from '../../pricing/order-totals.js';
+import {vfZone} from '../../delivery/delivery-zones.js';
 import {VF_FA_DIGITS, vfSeparator} from '../../pricing/formatting.js';
 import {vfShell} from '../../shell/navigation.js';
 import {vfSummaryRows} from '../../pricing/promotions.js';

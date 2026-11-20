@@ -1,7 +1,7 @@
 // Page behavior. Edit here, then run npm run build.
 import {vfCopy} from './copy.js';
 import {VF_PRODUCT_PLACEHOLDER} from '../../catalog/catalog.js';
-import {vfMobile} from '../../delivery/delivery.js';
+import {mobile as vfMobile} from '../../../design-system/utils/input.js';
 import {vfShell} from '../../shell/navigation.js';
 import {usePageLogic} from '../../shell/page-state.js';
 import {vfAssetBase, vfNow} from '../../../platform/browser/environment.js';

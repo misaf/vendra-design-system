@@ -10,7 +10,8 @@ import {
 } from '../account-data.js';
 import {vfKnownOrders} from '../../orders/order-records.js';
 import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../../catalog/catalog.js';
-import {VF_ZONES, vfMobile} from '../../delivery/delivery.js';
+import {VF_ZONES} from '../../delivery/delivery-zones.js';
+import {mobile as vfMobile} from '../../../design-system/utils/input.js';
 import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../../delivery/location.js';
 import {vfShell} from '../../shell/navigation.js';
 import {VF_ACCOUNT_TABS, vfPageRoute, vfRouteUrl} from '../../shell/routing.js';

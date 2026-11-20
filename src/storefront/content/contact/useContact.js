@@ -1,7 +1,7 @@
 // Page behavior. Edit here, then run npm run build.
 import {vfCopy} from './copy.js';
 import {vfAccountLoad, vfAccountPhone} from '../../customer/account-data.js';
-import {vfMobile} from '../../delivery/delivery.js';
+import {mobile as vfMobile} from '../../../design-system/utils/input.js';
 import {vfDirections, vfLoadLeaflet} from '../../delivery/location.js';
 import {vfShell} from '../../shell/navigation.js';
 import {VF_STORE, vfLiveStore} from '../../store/store-config.js';

@@ -40,3 +40,16 @@ export declare function zoneFromApi(
   zone: ApiRecord,
   extras?: Record<number, {key?: string; cutoff?: string; center?: LatLng}>
 ): Zone;
+
+export declare const VF_API_DELIVERY_ZONES: ApiRecord[];
+export declare const VF_DELIVERY_ZONE_EXTRAS: Record<
+  number,
+  {key: string; cutoff: string; center?: LatLng}
+>;
+export declare const VF_ZONES: Zone[];
+export declare function vfZoneFromApi(
+  zone: ApiRecord,
+  extras?: typeof VF_DELIVERY_ZONE_EXTRAS
+): Zone;
+export declare function vfZone(id: string): Zone;
+export declare function vfZoneAt(location: LatLng | null): string | null;

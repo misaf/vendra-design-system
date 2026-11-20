@@ -20,30 +20,29 @@ import {
   vfMergePriceChanges,
   vfRepriceLines
 } from '../cart-lines.js';
+import {VF_DELIVERY} from '../../delivery/delivery-draft.js';
 import {
-  VF_DELIVERY,
   VF_FREE_DELIVERY_THRESHOLD,
   VF_FREE_DELIVERY_ZONES,
-  VF_ZONES,
-  vfDeliveryCutoff,
+  vfFreeDelivery,
+  vfTotals,
+  VF_PROMOS
+} from '../../pricing/order-totals.js';
+import {VF_ZONES, vfZone, vfZoneAt} from '../../delivery/delivery-zones.js';
+import {vfDeliveryCutoff, vfDeliveryHint} from '../../delivery/delivery-copy.js';
+import {
   vfDeliveryDate,
-  vfDeliveryQuoted,
   vfBagSameDay,
   vfDeliveryDays,
-  vfDeliveryHint,
   vfDeliverySlot,
-  vfDeliverySlots,
-  vfErrors,
-  vfFreeDelivery,
-  vfMobile,
-  vfTotals,
-  vfZone,
-  vfZoneAt
-} from '../../delivery/delivery.js';
+  vfDeliverySlots
+} from '../../delivery/delivery-schedule.js';
+import {vfDeliveryQuoted, vfErrors} from '../../delivery/delivery-validation.js';
+import {mobile as vfMobile} from '../../../design-system/utils/input.js';
 import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../pricing/formatting.js';
 import {vfLoadLeaflet, vfLocationText, vfValidLocation} from '../../delivery/location.js';
 import {vfShell} from '../../shell/navigation.js';
-import {VF_PROMOS, vfPromoCheck, vfSummaryRows} from '../../pricing/promotions.js';
+import {vfPromoCheck, vfSummaryRows} from '../../pricing/promotions.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {VF_STORE, vfFeatures, vfPaymentMethods} from '../../store/store-config.js';
 import {vfDayMonth, vfDayName, vfSlotLabel} from '../../delivery/time.js';

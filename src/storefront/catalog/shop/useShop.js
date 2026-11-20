@@ -1,7 +1,8 @@
 // Page behavior. Edit here, then run npm run build.
 import {vfCopy} from './copy.js';
 import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub, vfReady} from '../catalog.js';
-import {VF_ZONES, vfDeliverableOn, vfDeliveryDays} from '../../delivery/delivery.js';
+import {VF_ZONES} from '../../delivery/delivery-zones.js';
+import {vfDeliverableOn, vfDeliveryDays} from '../../delivery/delivery-schedule.js';
 import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../pricing/formatting.js';
 import {vfShell} from '../../shell/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';

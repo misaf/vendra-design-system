@@ -1,7 +1,7 @@
 // Page behavior. Edit here, then run npm run build.
 import {vfCopy} from './copy.js';
 import {vfAccountExists, vfAccountLogin, vfAccountSave} from '../account-data.js';
-import {vfMobile} from '../../delivery/delivery.js';
+import {mobile as vfMobile} from '../../../design-system/utils/input.js';
 import {vfShell} from '../../shell/navigation.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {usePageLogic} from '../../shell/page-state.js';

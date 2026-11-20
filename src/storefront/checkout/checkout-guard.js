@@ -1,4 +1,4 @@
-import {vfErrors, vfDeliveryChanged} from '../delivery/delivery.js';
+import {vfErrors, vfDeliveryChanged} from '../delivery/delivery-validation.js';
 import {vfLineQuantityValid} from '../cart/cart-lines.js';
 
 // Checkout needs a bag and complete delivery details; otherwise send the customer back to the step they need.

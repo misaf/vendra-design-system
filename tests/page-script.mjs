@@ -139,7 +139,9 @@ function pageScript(name) {
 const sharedFiles = [
   'src/storefront/store/store-config.js',
   'src/storefront/store/brand.js',
-  'src/storefront/delivery/delivery.js',
+  'src/storefront/delivery/delivery-draft.js',
+  'src/storefront/delivery/delivery-schedule.js',
+  'src/storefront/delivery/delivery-validation.js',
   'src/storefront/store/store-hours.js',
   'src/storefront/delivery/location.js',
   'src/storefront/pricing/promotions.js',
@@ -209,7 +211,7 @@ const sharedLogic =
   ]
     .map(file => strip(read(file)))
     .join('\n') +
-  '\nconst pageItems = page, normalizeMobile = mobile, normalizePhone = phone, calculateTotals = totals;\n' +
+  '\nconst pageItems = page, vfMobile = mobile;\n' +
   scoped('analytics', 'src/design-system/utils/analytics.js') +
   scoped('dates', 'src/design-system/utils/dates.js') +
   scoped('format', 'src/design-system/utils/format.js') +

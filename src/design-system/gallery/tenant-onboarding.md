@@ -70,7 +70,7 @@ For a deployment-specific override, set `VF_STORE.brandAssets` in `src/storefron
 - [ ] Preview `?tenant=<slug>` in EN and FA at desktop and phone widths. Confirm logo proportions, text fallback, browser icon, manifest icon URLs and `og:image`. Logo bounds use `--brand-logo-height` (36px), `--brand-logo-mobile-height` (28px), `--brand-logo-footer-height` (56px) and `--brand-logo-width` (220px), without changing header height.
 
 ## 3. Store data (florist · entered in admin)
-The storefront reads all of this as data (`src/storefront/store/store-config.js`, `catalog.js` and `delivery.js` stand in for the admin API, `tests/fixtures/vendra-openapi.json`). No component has it hard-coded.
+The storefront reads all of this as data (`src/storefront/store/store-config.js`, `catalog/catalog.js`, `delivery/delivery-zones.js`, and `delivery/delivery-schedule.js` supply the reference data, `tests/fixtures/vendra-openapi.json`). No component has it hard-coded.
 - [ ] **Store name** in EN and FA. **Contact:** phone, WhatsApp, Instagram, address (EN + FA), map pin, opening hours.
 - [ ] **Currency:** one active currency. Toman and Rial are built in; for any other (USD, EUR, AED…) supply its rate per Toman in the store's `currencies` table and keep it current — `money()` throws for a currency without a rate.
 - [ ] **Delivery:** zones per country, with fee, same-day cut-off, time slots and free-delivery threshold.

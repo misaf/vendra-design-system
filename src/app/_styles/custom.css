@@ -1,6 +1,6 @@
 /* Custom storefront styles. Plain CSS, independent of Tailwind compilation. */
 @import './shell.css';
-@import './information-pages.css';
+@import '../../storefront/content/information-pages.css';
 @import './page-layouts.css';
 @import '../../storefront/shell/ui/collection-carousel.css';
 @import '../../storefront/customer/account/styles.css';

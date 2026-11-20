@@ -34,3 +34,9 @@ export declare function checkoutRequest(
     cartToken?: string;
   }
 ): CheckoutRequest;
+
+export declare function vfCheckoutRequest(
+  lines: Record<string, any>[],
+  delivery: Record<string, any>,
+  options?: {method?: string; last4?: string; ref?: string; cartToken?: string}
+): CheckoutRequest;

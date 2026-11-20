@@ -1,7 +1,7 @@
 import {VF_ADDONS, VF_PRODUCTS, VF_PRODUCT_PLACEHOLDER, VF_SIZES} from '../catalog/catalog.js';
 import {vfLineDetail} from '../cart/cart-lines.js';
 import {vfCustomerId} from '../customer/account-data.js';
-import {VF_DELIVERY} from '../delivery/delivery.js';
+import {VF_DELIVERY} from '../delivery/delivery-draft.js';
 import {lineFromApi} from '../cart/order-line-api.js';
 import {orderFromApi} from './order-api.js';
 

@@ -1,5 +1,5 @@
 // Local demo accounts. Persistence is per phone number; no authentication service is implied.
-import {vfMobile} from '../delivery/delivery.js';
+import {mobile as vfMobile} from '../../design-system/utils/input.js';
 import {vfLatin} from '../pricing/formatting.js';
 import {VF_STORE} from '../store/store-config.js';
 import {vfNow, vfStoredValue} from '../../platform/browser/environment.js';
