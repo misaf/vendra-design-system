@@ -2,8 +2,8 @@
 // its own ErrorBoundary so a single render failure doesn't break the rest of the fixture.
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import * as DS from '../../ui/index.js';
-import {FieldMessage} from '../../ui/components/Field/Field.jsx';
+import * as DS from '../../src/design-system/index.js';
+import {FieldMessage} from '../../src/design-system/components/Field/Field.jsx';
 
 const never = () => new Promise(() => {});
 const tiles = {url: 'data:,', attribution: ''};

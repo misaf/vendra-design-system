@@ -1,6 +1,6 @@
 // Spatial navigation (components/utils/spatial.js): where a remote's arrow keys move focus.
 import assert from 'node:assert/strict';
-import {arrowDirection, nearestInDirection} from '../ui/utils/spatial.js';
+import {arrowDirection, nearestInDirection} from '../src/design-system/utils/spatial.js';
 
 const box = (left, top, width, height) => ({left, top, right: left + width, bottom: top + height});
 

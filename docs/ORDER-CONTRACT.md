@@ -17,12 +17,12 @@ Laravel owns pricing, inventory, delivery availability, order creation and acces
 
 ## Adapter and verification
 
-`server/vendra/` provides typed transport and JSON-LD adapters for exact product lookup, cart detail, delivery quote and schedule, checkout and order detail. Monetary fields carry Laravel's amounts in the indicated currency's minor units. The server factory in [`server/vendra/for-storefront.ts`](../server/vendra/for-storefront.ts) takes a resolved tenant origin, locale and optional customer-scoped access token per request. It sends the configured storefront origin for Laravel's [tenant resolution](https://github.com/misaf/vendra/blob/650c97403052b87a5fec7227a3a1f7183cfa5909/app/Http/Middleware/ResolveApiTenant.php). Issuing the session and using the adapter in the customer flow are part of the pilot integration. Update that integration after agreeing on the contracts above.
+`src/platform/server/laravel/` provides typed transport and JSON-LD adapters for exact product lookup, cart detail, delivery quote and schedule, checkout and order detail. Monetary fields carry Laravel's amounts in the indicated currency's minor units. The server factory in [`src/platform/server/laravel/for-storefront.ts`](../src/platform/server/laravel/for-storefront.ts) takes a resolved tenant origin, locale and optional customer-scoped access token per request. It sends the configured storefront origin for Laravel's [tenant resolution](https://github.com/misaf/vendra/blob/650c97403052b87a5fec7227a3a1f7183cfa5909/app/Http/Middleware/ResolveApiTenant.php). Issuing the session and using the adapter in the customer flow are part of the pilot integration. Update that integration after agreeing on the contracts above.
 
 To regenerate the wire types, run `php artisan api:openapi:export` in the pinned Laravel checkout and save the JSON output. Then run the following from this repository, substituting the export path and full commit SHA.
 
 ```sh
-node tools/generate-vendra-api-types.mjs /path/to/laravel-openapi.json 650c97403052b87a5fec7227a3a1f7183cfa5909 > server/vendra/openapi.generated.d.ts
+node tools/build/generate-vendra-api-types.mjs /path/to/laravel-openapi.json 650c97403052b87a5fec7227a3a1f7183cfa5909 > src/platform/server/laravel/openapi.generated.d.ts
 ```
 
 The export describes the POST inputs as their responses. Local HTTP traces establish that delivery returns `QuotedDelivery` and checkout returns `Order`. The quote adapter checks its observed fields at runtime. The checkout adapter decodes the same order shape as authenticated order detail. See [#162](https://github.com/misaf/vendra-design-system/issues/162) for published schema provenance and drift checking.

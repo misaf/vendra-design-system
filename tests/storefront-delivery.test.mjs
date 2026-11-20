@@ -3,10 +3,7 @@ import vm from 'node:vm';
 import {context, sharedLogic} from './page-script.mjs';
 
 const {ctx} = context();
-vm.runInContext(
-  sharedLogic + '\nthis.totals=vfTotals;this.errors=vfErrors;this.phone=vfPhone;',
-  ctx
-);
+vm.runInContext(sharedLogic + '\nthis.totals=vfTotals;this.errors=vfErrors;this.phone=phone;', ctx);
 // A bag made at the shop counter travels in a link and comes back as the same lines, priced from
 // the catalog; unknown and sold-out products, bad sizes and extras the product can't take drop out.
 {

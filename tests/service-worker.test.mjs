@@ -3,7 +3,10 @@ import {readFile} from 'node:fs/promises';
 import test from 'node:test';
 import {runInNewContext} from 'node:vm';
 
-const worker = await readFile(new URL('../next/sw.js', import.meta.url), 'utf8');
+const worker = await readFile(
+  new URL('../src/platform/browser/service-worker.js', import.meta.url),
+  'utf8'
+);
 
 test('worker activation cleans up only its own outdated caches', async () => {
   for (const scope of ['/', '/vendra-design-system/']) {

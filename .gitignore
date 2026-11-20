@@ -10,8 +10,8 @@ screenshots/
 node_modules
 
 /.next/
-/public/
-/next/out/
-/.next-live/
+/public/*
+!/public/assets/
+/.generated/export/
 /next-env.d.ts
 /.next-types.tsbuildinfo

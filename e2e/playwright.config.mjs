@@ -73,16 +73,15 @@ export function projectsForTarget(build) {
       : [
           {
             name: 'components',
-            testDir: '../ui/components',
+            testDir: '../src/design-system/components',
             testMatch: '*.spec.mjs',
             use: {...devices['Desktop Chrome'], viewport: {width: 1280, height: 900}}
           },
-          // Storefront components and layouts with their own spec
-          // (under app/ or components/storefront/), on the storefront fixture host page.
+          // Colocated storefront component specs run on the storefront fixture host page.
           {
             name: 'storefront-components',
-            testDir: '..',
-            testMatch: '**/{app,components/storefront}/**/*.spec.mjs',
+            testDir: '../src/storefront',
+            testMatch: '*.spec.mjs',
             use: {...devices['Desktop Chrome'], viewport: {width: 1280, height: 900}}
           }
         ])
@@ -91,6 +90,7 @@ export function projectsForTarget(build) {
 
 export default defineConfig({
   testDir: '.',
+  // Match spec basenames across capability folders for both suites.
   testMatch: build ? '*.spec.mjs' : devSpecs,
   testIgnore: ['**/e2e/smoke/**', ...(build ? devSpecs : [])],
   outputDir: build ? './test-results/build' : './test-results/dev',
@@ -102,7 +102,7 @@ export default defineConfig({
   timeout: 60000,
   forbidOnly: ci,
   // One Next.js dev server serves every page; more workers than this starts timing out.
-  // E2E_WORKERS overrides it on a bigger machine (test:e2e:remote).
+  // E2E_WORKERS overrides it on machines with more capacity.
   workers: Number(process.env.E2E_WORKERS) || 2,
   // A retry surfaces load-related flakes as "flaky" in the report instead of failing the run.
   retries: 1,
@@ -143,14 +143,14 @@ export default defineConfig({
   projects: projectsForTarget(build),
   webServer: build
     ? {
-        command: 'npm run build:next && npm run start:next -- --port 4173',
+        command: 'npm run build:demo && npm run preview:demo -- --port 4173',
         cwd: '..',
         url: origin + '/',
         reuseExistingServer: false,
         timeout: 180000
       }
     : {
-        command: 'npm run dev:next -- --hostname 127.0.0.1 --port 5173',
+        command: 'npm run dev:gallery -- --hostname 127.0.0.1 --port 5173',
         cwd: '..',
         url: origin + '/',
         reuseExistingServer: false,

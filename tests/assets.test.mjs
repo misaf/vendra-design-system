@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import playwrightPackage from '@playwright/test/package.json' with {type: 'json'};
 
+import {customCss, tailwindCss} from '../tools/next/fixture-styles.mjs';
 import {featureFiles, routeFolders} from './page-script.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
@@ -22,9 +23,9 @@ for (const [name, folder] of Object.entries(routeFolders)) {
 }
 console.log('Passed page folders: sources, views and no duplicated runtime CSS.');
 
-const tailwind = fs.readFileSync(path.join(root, '_runtime/tailwind.css'), 'utf8');
+const tailwind = await tailwindCss(root);
 assert.ok(!tailwind.includes('.vf-'), 'Custom selectors must stay out of the Tailwind output');
-const custom = fs.readFileSync(path.join(root, '_runtime/custom.css'), 'utf8');
+const custom = customCss(root);
 assert.ok(
   tailwind.includes('.tw\\:hover\\:bg-sunken'),
   'Tailwind must compile the migrated hover state'

@@ -2,10 +2,10 @@
 // sorting or filters — and its hreflang alternate for its own language is exactly that address.
 // Refined shop views (sorted, filtered) are noindex, follow (issue 151).
 import assert from 'node:assert/strict';
-import {vfServerRender} from '../shared/platform/environment.js';
-import {vfPageHead} from '../shared/services/page-metadata.js';
-import {vfReadRoute} from '../shared/services/routing.js';
-import {VF_SEO} from '../shared/services/seo.js';
+import {vfServerRender} from '../src/platform/browser/environment.js';
+import {vfPageHead} from '../src/storefront/shell/page-metadata.js';
+import {vfReadRoute} from '../src/storefront/shell/routing.js';
+import {VF_SEO} from '../src/storefront/shell/seo.js';
 
 const origin = 'https://shop.example';
 const app = origin + '/';

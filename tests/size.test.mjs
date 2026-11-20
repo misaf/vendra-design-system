@@ -30,7 +30,7 @@ const BUDGET = {
 };
 const SMALL = ['Badge', 'Card', 'Chip', 'Skeleton', 'Switch', 'VendraProvider', 'MenuList'];
 
-const ui = path.resolve(import.meta.dirname, '../ui');
+const ui = path.resolve(import.meta.dirname, '../src/design-system');
 const entry = path.resolve(import.meta.dirname, 'fixtures/design-system.js');
 const gzipped = async source => {
   const input = '\0design-system-budget';

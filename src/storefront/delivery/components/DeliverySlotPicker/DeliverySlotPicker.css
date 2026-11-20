@@ -1,0 +1,15 @@
+@media (width < 768px) {
+  .vf-bag-days .ag-choices {
+    display: flex;
+    overflow-x: auto;
+    /* Keep React Aria's positioned radio inputs inside the scrolling region. */
+    position: relative;
+    /* Make room for the focus ring, including at both ends of the strip. */
+    padding: var(--space-2);
+    scroll-padding-inline: var(--space-2);
+  }
+  .vf-bag-days .ag-choice {
+    /* Leave part of the next tile visible at common phone widths. */
+    flex: 0 0 96px;
+  }
+}
