@@ -7,6 +7,7 @@ import test from 'node:test';
 import {brandOutputs, validateBrand} from '../tools/build/brand.mjs';
 import {tenantSpecs, tenantOutputs, validateFontFiles} from '../tools/build/tenants.mjs';
 import {VF_EMAIL} from '../src/communications/templates/email/email-templates.js';
+import {VF_TENANT_EMAIL_THEMES} from '../.generated/tenant-email-themes.js';
 import {vfBrand, vfBrandHead, vfBrandHtml, vfBrandLinks} from '../src/storefront/store/brand.js';
 import {VF_STORE} from '../src/storefront/store/store-config.js';
 import theme from '../src/design-system/tokens/tenant-theme.js';
@@ -296,7 +297,14 @@ for (const [file, content] of tenantOutputs()) {
 
 // 6. Emails carry each tenant's palette, generated from the same spec.
 const emailThemes = VF_EMAIL.themes;
+assert.deepEqual(Object.keys(VF_TENANT_EMAIL_THEMES), Object.keys(tenantSpecs()));
+assert.equal(
+  tenantOutputs().has(path.join(root, 'src/communications/templates/email/email-templates.js')),
+  false,
+  'the generator does not rewrite hand-edited email templates'
+);
 for (const [slug, spec] of Object.entries(tenantSpecs())) {
+  assert.deepEqual(VF_TENANT_EMAIL_THEMES[slug], theme.email(spec));
   assert.deepEqual(emailThemes[slug], theme.email(spec), slug + ' email palette matches its spec');
 }
 const {disp, ...shape} = theme.email(theme.VENDRA);

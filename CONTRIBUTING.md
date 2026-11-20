@@ -23,6 +23,12 @@ Use Node.js 22 (22.22.2 or later). Local browser tests use Google Chrome, and CI
 
 Run one unit suite from the repository root with `node --test tests/api-contract.test.mjs`. Add `--watch` before the file path to rerun it while you edit.
 
+### Tenant source and generated outputs
+
+- **Edit:** tenant specs in `src/design-system/tokens/tenants/*.json`, base token CSS, and the hand-written email templates in `src/communications/templates/email/email-templates.js`.
+- **Generate and commit:** tenant CSS, `tokens/tenants.css`, `tokens/theme.schema.json`, `tokens/design/`, `.generated/tenant-slugs.js`, `.generated/tenants.js`, `.generated/tenant-email-themes.js`, and generated brand assets under `public/assets/`. Run `npm run generate`; `npm run check` rejects stale output. The email templates import tenant palettes from the generated module; generation never rewrites template source.
+- **Build only, do not commit:** `.next/`, `.generated/export/`, and prepared gallery/fixture files under `public/` outside `public/assets/`. The build and development commands recreate these.
+
 ## Demo deployment
 
 The **CI** workflow publishes the GitHub Pages demo after a push to `master` only when
