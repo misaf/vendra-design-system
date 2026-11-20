@@ -1,7 +1,7 @@
 import React from 'react';
-import {Chip} from '../../../../../components/ui/patterns/atoms/Chip/Chip.jsx';
-import {IconButton} from '../../../../../components/ui/components/IconButton/IconButton.jsx';
-import {SearchField} from '../../../../../components/ui/patterns/molecules/SearchField/SearchField.jsx';
+import {Chip} from '../../../../../ui/components/Chip/Chip.jsx';
+import {IconButton} from '../../../../../ui/components/IconButton/IconButton.jsx';
+import {SearchField} from '../../../../../ui/components/SearchField/SearchField.jsx';
 
 export function StorefrontPresentationToolbar({
   search,

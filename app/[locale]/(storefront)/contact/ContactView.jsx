@@ -1,6 +1,6 @@
 // StorefrontContact: the page inside the storefront shell.
 import React from 'react';
-import {Alert} from '../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
+import {Alert} from '../../../../ui/components/Alert/Alert.jsx';
 import {StorefrontContactLayout} from './_components/StorefrontContactLayout/StorefrontContactLayout.jsx';
 import {StorefrontPageHeading} from '../../../../components/storefront/StorefrontPageHeading/StorefrontPageHeading.jsx';
 import {StorefrontContactDetails} from './_components/StorefrontContactDetails/StorefrontContactDetails.jsx';

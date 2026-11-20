@@ -1,5 +1,5 @@
 import React from 'react';
-import {Stepper} from '../../ui/patterns/molecules/Stepper/Stepper.jsx';
+import {Stepper} from '../../../ui/components/Stepper/Stepper.jsx';
 
 export function StorefrontStepProgress({
   steps,

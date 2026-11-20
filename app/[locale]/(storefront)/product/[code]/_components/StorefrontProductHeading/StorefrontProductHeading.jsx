@@ -1,8 +1,8 @@
 import React from 'react';
-import {Badge} from '../../../../../../../components/ui/patterns/atoms/Badge/Badge.jsx';
-import {Button} from '../../../../../../../components/ui/components/Button/Button.jsx';
-import {Price} from '../../../../../../../components/ui/patterns/atoms/Price/Price.jsx';
-import {StockStatus} from '../../../../../../../components/ui/patterns/molecules/StockStatus/StockStatus.jsx';
+import {Badge} from '../../../../../../../ui/components/Badge/Badge.jsx';
+import {Button} from '../../../../../../../ui/components/Button/Button.jsx';
+import {Price} from '../../../../../../../ui/components/Price/Price.jsx';
+import {StockStatus} from '../../../../../../../ui/components/StockStatus/StockStatus.jsx';
 
 export function StorefrontProductHeading({
   productCode,

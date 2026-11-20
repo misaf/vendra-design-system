@@ -1,0 +1,32 @@
+import type {DataAttributes} from '../../utils/root-attributes.js';
+
+export interface SelectOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}
+export interface SelectProps
+  extends
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue' | 'placeholder'>,
+    DataAttributes {
+  /** The trigger button (the focusable control), for focusing it or a form library. */
+  ref?: React.Ref<HTMLButtonElement>;
+  label?: string;
+  /** Helper text below the control, linked with aria-describedby="{id}-hint" */
+  hint?: string;
+  /** Error message: danger border, aria-invalid, and aria-errormessage → the hint element */
+  error?: string;
+  options: (string | SelectOption)[];
+  /** Shown while nothing is chosen. Default: empty */
+  placeholder?: string;
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string) => void;
+  disabled?: boolean;
+  required?: boolean;
+  /** Form field name; React Aria keeps a hidden native select for forms and autofill */
+  name?: string;
+  autoComplete?: string;
+}
+/** React Aria Select: a button that opens a listbox; ↑/↓, Home/End and typing move, Enter/Space choose, Esc closes. */
+export declare function Select(props: SelectProps): React.JSX.Element;

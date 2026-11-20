@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from '../../../../../../../components/ui/components/Button/Button.jsx';
+import {Button} from '../../../../../../../ui/components/Button/Button.jsx';
 
 export function StorefrontPostSocial({
   whatsappLabel,

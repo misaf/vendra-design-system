@@ -1,7 +1,7 @@
 import React from 'react';
-import {Alert} from '../../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {ReminderRow} from '../../../../../../components/ui/patterns/molecules/ReminderRow/ReminderRow.jsx';
+import {Alert} from '../../../../../../ui/components/Alert/Alert.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {ReminderRow} from '../../../../../../ui/components/ReminderRow/ReminderRow.jsx';
 
 export function StorefrontAccountReminders({
   add,

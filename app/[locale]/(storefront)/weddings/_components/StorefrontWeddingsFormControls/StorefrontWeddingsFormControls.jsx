@@ -1,11 +1,11 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Card} from '../../../../../../components/ui/patterns/atoms/Card/Card.jsx';
-import {DatePicker} from '../../../../../../components/ui/components/DatePicker/DatePicker.jsx';
-import {ErrorSummary} from '../../../../../../components/ui/patterns/molecules/ErrorSummary/ErrorSummary.jsx';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
-import {PhoneInput} from '../../../../../../components/ui/patterns/atoms/PhoneInput/PhoneInput.jsx';
-import {Select} from '../../../../../../components/ui/components/Select/Select.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Card} from '../../../../../../ui/components/Card/Card.jsx';
+import {DatePicker} from '../../../../../../ui/components/DatePicker/DatePicker.jsx';
+import {ErrorSummary} from '../../../../../../ui/components/ErrorSummary/ErrorSummary.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
+import {PhoneInput} from '../../../../../../ui/components/PhoneInput/PhoneInput.jsx';
+import {Select} from '../../../../../../ui/components/Select/Select.jsx';
 
 export function StorefrontWeddingsFormControls({
   problems,

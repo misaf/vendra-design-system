@@ -1,9 +1,9 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Card} from '../../../../../../components/ui/patterns/atoms/Card/Card.jsx';
-import {Meter} from '../../../../../../components/ui/patterns/atoms/Meter/Meter.jsx';
-import {OrderSummary} from '../../../../../../components/ui/patterns/organisms/OrderSummary/OrderSummary.jsx';
-import {PromoCodeField} from '../../../../../../components/ui/patterns/molecules/PromoCodeField/PromoCodeField.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Card} from '../../../../../../ui/components/Card/Card.jsx';
+import {Meter} from '../../../../../../ui/components/Meter/Meter.jsx';
+import {OrderSummary} from '../../../../../../ui/components/OrderSummary/OrderSummary.jsx';
+import {PromoCodeField} from '../../../../../../ui/components/PromoCodeField/PromoCodeField.jsx';
 
 export function StorefrontBagSummary({summary, freeDelivery, promo, actions, paymentNote}) {
   return (

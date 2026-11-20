@@ -1,7 +1,7 @@
 import React from 'react';
-import {Input} from '../../../../../../components/ui/components/Input/Input.jsx';
-import {LocationPicker} from '../../../../../../components/ui/patterns/organisms/LocationPicker/LocationPicker.jsx';
-import {Select} from '../../../../../../components/ui/components/Select/Select.jsx';
+import {Input} from '../../../../../../ui/components/Input/Input.jsx';
+import {LocationPicker} from '../../../../../../ui/components/LocationPicker/LocationPicker.jsx';
+import {Select} from '../../../../../../ui/components/Select/Select.jsx';
 
 export function StorefrontBagLocation({picker, zone, fallback, address}) {
   return (

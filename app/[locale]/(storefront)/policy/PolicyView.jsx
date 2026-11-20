@@ -1,6 +1,6 @@
 // StorefrontPolicy: the page inside the storefront shell.
 import React from 'react';
-import {Alert} from '../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
+import {Alert} from '../../../../ui/components/Alert/Alert.jsx';
 import {asList} from '../../../../shared/ui/as-list.js';
 import {StorefrontPolicyLayout} from './_components/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx';
 import {StorefrontPageHeading} from '../../../../components/storefront/StorefrontPageHeading/StorefrontPageHeading.jsx';

@@ -1,6 +1,6 @@
 import React from 'react';
-import {Alert} from '../../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {LineItem} from '../../../../../../components/ui/patterns/molecules/LineItem/LineItem.jsx';
+import {Alert} from '../../../../../../ui/components/Alert/Alert.jsx';
+import {LineItem} from '../../../../../../ui/components/LineItem/LineItem.jsx';
 
 export function StorefrontBagItems({lines, removeLabel, quantityLabels, formatQuantity}) {
   return (

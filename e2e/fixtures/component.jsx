@@ -2,7 +2,7 @@
 // inside VendraProvider, in the page language: ?component=FilterBar&lang=fa.
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {VendraProvider} from '../../components/ui/components/VendraProvider/VendraProvider.jsx';
+import {VendraProvider} from '../../ui/components/VendraProvider/VendraProvider.jsx';
 
 import fixtures from 'fixtures:design-system';
 const query = new URLSearchParams(location.search);

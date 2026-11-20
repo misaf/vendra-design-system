@@ -1,6 +1,6 @@
 import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
-import {TrustSeal} from '../../ui/patterns/molecules/TrustSeal/TrustSeal.jsx';
+import {TrustSeal} from '../../../ui/components/TrustSeal/TrustSeal.jsx';
 
 export function StorefrontCheckoutFooter({links, seals, consentSettingsLabel, onOpenConsent}) {
   return (

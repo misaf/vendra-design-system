@@ -1,8 +1,8 @@
 import {StorefrontLink} from '../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
 import {BrandLogo} from '../BrandLogo/BrandLogo.jsx';
-import {IconButton} from '../../ui/components/IconButton/IconButton.jsx';
-import {TrustSeal} from '../../ui/patterns/molecules/TrustSeal/TrustSeal.jsx';
+import {IconButton} from '../../../ui/components/IconButton/IconButton.jsx';
+import {TrustSeal} from '../../../ui/components/TrustSeal/TrustSeal.jsx';
 import {FooterLinks} from './FooterLinks.jsx';
 
 export function StorefrontFooter({

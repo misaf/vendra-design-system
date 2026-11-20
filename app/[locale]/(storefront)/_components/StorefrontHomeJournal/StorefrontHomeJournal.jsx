@@ -1,7 +1,7 @@
 import React from 'react';
-import {BlogCard} from '../../../../../components/ui/patterns/molecules/BlogCard/BlogCard.jsx';
-import {Button} from '../../../../../components/ui/components/Button/Button.jsx';
-import {SectionHeader} from '../../../../../components/ui/patterns/molecules/SectionHeader/SectionHeader.jsx';
+import {BlogCard} from '../../../../../ui/components/BlogCard/BlogCard.jsx';
+import {Button} from '../../../../../ui/components/Button/Button.jsx';
+import {SectionHeader} from '../../../../../ui/components/SectionHeader/SectionHeader.jsx';
 import {CollectionCarousel} from '../../../../../shared/ui/collection-carousel.jsx';
 
 export function StorefrontHomeJournal({posts, labels, journalHref}) {

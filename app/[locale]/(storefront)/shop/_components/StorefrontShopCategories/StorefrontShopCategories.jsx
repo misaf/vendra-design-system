@@ -1,5 +1,5 @@
 import React from 'react';
-import {Chip} from '../../../../../../components/ui/patterns/atoms/Chip/Chip.jsx';
+import {Chip} from '../../../../../../ui/components/Chip/Chip.jsx';
 
 export function StorefrontShopCategories({categories, label, compact = false}) {
   if (compact)

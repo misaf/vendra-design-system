@@ -1,8 +1,8 @@
 // StorefrontAccount: the page inside the storefront shell.
 import React from 'react';
-import {Alert} from '../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {Button} from '../../../../components/ui/components/Button/Button.jsx';
-import {Tabs} from '../../../../components/ui/patterns/molecules/Tabs/Tabs.jsx';
+import {Alert} from '../../../../ui/components/Alert/Alert.jsx';
+import {Button} from '../../../../ui/components/Button/Button.jsx';
+import {Tabs} from '../../../../ui/components/Tabs/Tabs.jsx';
 import {asList} from '../../../../shared/ui/as-list.js';
 import {StorefrontAccountLayout} from './_components/StorefrontAccountLayout/StorefrontAccountLayout.jsx';
 import {StorefrontAccountOrders} from './_components/StorefrontAccountOrders/StorefrontAccountOrders.jsx';

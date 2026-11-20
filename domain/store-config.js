@@ -1,7 +1,7 @@
 // Store identity and contact details. Change these once, then run npm run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
 import {commerce} from './commerce.js';
-import {LOCALES, localeConfig, plural} from '../components/ui/patterns/utils/locales.js';
+import {LOCALES, localeConfig, plural} from '../ui/utils/locales.js';
 import {vfOnServer} from '../shared/platform/environment.js';
 import {vfRuntime} from '../shared/platform/runtime.js';
 

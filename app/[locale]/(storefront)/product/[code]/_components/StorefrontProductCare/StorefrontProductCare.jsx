@@ -1,7 +1,7 @@
 import {StorefrontLink} from '../../../../../../../shared/ui/StorefrontLink.jsx';
 import React from 'react';
-import {Accordion} from '../../../../../../../components/ui/patterns/molecules/Accordion/Accordion.jsx';
-import {Icon} from '../../../../../../../components/ui/components/Icon/Icon.jsx';
+import {Accordion} from '../../../../../../../ui/components/Accordion/Accordion.jsx';
+import {Icon} from '../../../../../../../ui/components/Icon/Icon.jsx';
 
 export function StorefrontProductCare({deliveryText, inquiry, items}) {
   return (

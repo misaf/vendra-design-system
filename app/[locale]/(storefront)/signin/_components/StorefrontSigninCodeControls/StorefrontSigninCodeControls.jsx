@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {CodeInput} from '../../../../../../components/ui/patterns/atoms/CodeInput/CodeInput.jsx';
-import {ErrorSummary} from '../../../../../../components/ui/patterns/molecules/ErrorSummary/ErrorSummary.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {CodeInput} from '../../../../../../ui/components/CodeInput/CodeInput.jsx';
+import {ErrorSummary} from '../../../../../../ui/components/ErrorSummary/ErrorSummary.jsx';
 
 export function StorefrontSigninCodeControls({problems, code, verify}) {
   return (

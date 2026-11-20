@@ -1,5 +1,5 @@
 import React from 'react';
-import {ArchFrame} from '../../../../../../../components/ui/patterns/atoms/ArchFrame/ArchFrame.jsx';
+import {ArchFrame} from '../../../../../../../ui/components/ArchFrame/ArchFrame.jsx';
 
 export function StorefrontPostClassic({image, paragraphsBefore, quote, heading, paragraphsAfter}) {
   return (

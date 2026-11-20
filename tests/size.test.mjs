@@ -30,7 +30,7 @@ const BUDGET = {
 };
 const SMALL = ['Badge', 'Card', 'Chip', 'Skeleton', 'Switch', 'VendraProvider', 'MenuList'];
 
-const ui = path.resolve(import.meta.dirname, '../components/ui');
+const ui = path.resolve(import.meta.dirname, '../ui');
 const entry = path.resolve(import.meta.dirname, 'fixtures/design-system.js');
 const gzipped = async source => {
   const input = '\0design-system-budget';
@@ -61,13 +61,7 @@ const gzipped = async source => {
   const chunks = output.filter(file => file.type === 'chunk');
   // Keep shared dependencies outside the component size measurement.
   for (const id of chunks.flatMap(chunk => chunk.moduleIds))
-    assert.ok(
-      id === input ||
-        id === entry ||
-        id === path.resolve(ui, '../../domain/commerce.js') ||
-        id.startsWith(ui + path.sep),
-      id + ' got bundled'
-    );
+    assert.ok(id === input || id === entry || id.startsWith(ui + path.sep), id + ' got bundled');
   return {
     bytes: zlib.gzipSync(chunks.map(chunk => chunk.code).join('')).length,
     modules: chunks.flatMap(chunk => chunk.moduleIds).filter(id => id !== input)

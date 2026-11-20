@@ -1,0 +1,77 @@
+'use client';
+
+import React from 'react';
+import {Button} from '../Button/Button.jsx';
+import {cx} from '../../utils/cx.js';
+import {format} from '../../utils/format.js';
+import {useLocaleConfig, usePageLocale} from '../../utils/locale.js';
+import {useMessages} from '../../utils/messages.js';
+import {messages} from './messages.js';
+import {useTrack} from '../../utils/track.js';
+import {useMergedRef} from '../../utils/refs.js';
+
+// "Send a new code" for a one-time code, after a wait. The wait runs on the clock, not on timer
+// ticks, so it is right when the customer comes back from reading the SMS (browsers slow timers in
+// background tabs). While it runs, the time left shows as text; when it ends, the button appears and
+// a polite status says so once. Pressing it calls onResend, starts the wait again and reports
+// `code_resent` (VendraProvider's onEvent).
+export function ResendCode({seconds = 60, onResend, resendLabel, className, style, ref, ...rest}) {
+  const {locale, ref: localeRef} = usePageLocale();
+  const rootRef = useMergedRef(localeRef, ref);
+  const text = useMessages('ResendCode', messages, {resend: resendLabel}, locale);
+  const config = useLocaleConfig(locale);
+  const language = config.code;
+  const track = useTrack();
+  const endsAt = React.useRef(null);
+  const [left, setLeft] = React.useState(seconds);
+  const [ready, setReady] = React.useState(false);
+  const start = React.useCallback(() => {
+    endsAt.current = Date.now() + seconds * 1000;
+    setLeft(seconds);
+    setReady(false);
+  }, [seconds]);
+  React.useEffect(start, [start]);
+  React.useEffect(() => {
+    if (left <= 0) return;
+    const tick = () => {
+      const remaining = Math.max(0, Math.ceil((endsAt.current - Date.now()) / 1000));
+      setLeft(remaining);
+      if (!remaining) setReady(true);
+    };
+    const timer = setInterval(tick, 250);
+    // Coming back to the tab updates at once rather than on the next (throttled) tick.
+    document.addEventListener('visibilitychange', tick);
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', tick);
+    };
+  }, [left > 0]);
+  const time =
+    format.number(Math.floor(left / 60), language) +
+    ':' +
+    format.number(left % 60, language).padStart(2, format.number(0, language));
+  return (
+    <div {...rest} ref={rootRef} className={cx('ag-resend', className)} style={style}>
+      {left > 0 ? (
+        <p className="ag-resend__wait">
+          {text.wait.replace('{time}', config.dir === 'rtl' ? '\u2066' + time + '\u2069' : time)}
+        </p>
+      ) : (
+        <Button
+          variant="secondary"
+          iconStart="rotate-ccw"
+          onClick={() => {
+            start();
+            track('code_resent');
+            if (onResend) onResend();
+          }}
+        >
+          {text.resend}
+        </Button>
+      )}
+      <span role="status" className="ag-sr-only">
+        {ready && left <= 0 ? text.ready : ''}
+      </span>
+    </div>
+  );
+}

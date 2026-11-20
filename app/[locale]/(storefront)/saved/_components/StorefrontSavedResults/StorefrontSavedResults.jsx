@@ -1,6 +1,6 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {ProductCard} from '../../../../../../components/ui/patterns/molecules/ProductCard/ProductCard.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {ProductCard} from '../../../../../../ui/components/ProductCard/ProductCard.jsx';
 
 // action: {kind: 'add', label, ariaLabel, onAdd} | {kind: 'size', label, ariaLabel, href}
 // | {kind: 'unavailable', label}; without one the card shows no bag action.

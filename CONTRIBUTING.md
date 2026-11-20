@@ -14,11 +14,11 @@ Node 20.19+ or 22.12+, and Google Chrome for the browser tests (CI uses Playwrig
 
 ## Every change
 
-1. Edit the sources: `components/ui/patterns/`, `components/ui/tokens/`, `app/`, `guidelines/`. Never edit `components/ui/tokens/design/`, `_runtime/` or a tenant's generated `.css`: the build writes them.
+1. Edit the sources: `ui/components/`, `ui/tokens/`, `app/`, `guidelines/`. Never edit `ui/tokens/design/`, `_runtime/` or a tenant's generated `.css`: the build writes them.
 2. `npm run format`, then `npm run build`.
 3. `npm run check`: generated files match their sources, Prettier, and the CSS lint (colours only from tokens, start/end instead of left/right).
 4. `npm test`: types, storefront logic, copy parity, the package's server render, its size budget and the API contract.
-5. After a change to a component, its CSS, tokens or `components/ui/storefront.css`: `npm run test:e2e`. Storefront tests run against a fresh production build, then source fixtures and component tests run on the development server. Every guideline card and storefront page is screenshot-compared and checked with axe, and every component's own spec runs. When a screenshot differs, open its `-actual.png` and accept it (`npm run test:e2e:update`) only if the change is the one you meant. The Linux baselines are refreshed by the **Update screenshots** workflow (or the same command inside Playwright's Docker image).
+5. After a change to a component, its CSS, tokens or `ui/storefront.css`: `npm run test:e2e`. Storefront tests run against a fresh production build, then source fixtures and component tests run on the development server. Every guideline card and storefront page is screenshot-compared and checked with axe, and every component's own spec runs. When a screenshot differs, open its `-actual.png` and accept it (`npm run test:e2e:update`) only if the change is the one you meant. The Linux baselines are refreshed by the **Update screenshots** workflow (or the same command inside Playwright's Docker image).
 6. Include updated generated tokens and tenant styles in the pull request.
 
 Run one unit suite from the repository root with `node --test tests/api-contract.test.mjs`. Add `--watch` before the file path to rerun it while you edit.
@@ -36,15 +36,15 @@ Manual CI runs on other branches do not deploy. Pages deployments run one at a t
 
 ## A new component
 
-Use the existing Atomic Design layers for reusable UI patterns. Put components specific to a route beside that route.
+Put reusable UI in `ui/components/<Name>/`, UI shared by storefront routes in `components/storefront/`, and route-owned UI in that route’s `_components/` directory. See [Vendra UI ownership](docs/UI.md).
 
 ```sh
-npm run new:component -- Name --level atoms               # component, types, CSS, README, fixture and spec
-npm run new:component -- Name --level molecules --wording # plus English and Persian wording
-npm run new:component -- Name --level organisms --no-css  # when it only reuses other components' classes
+npm run new:component -- Name           # component, types, CSS, README, fixture and spec
+npm run new:component -- Name --wording # plus English and Persian wording
+npm run new:component -- Name --no-css  # when it reuses existing component classes
 ```
 
-The `--` matters: without it npm keeps the flags for itself. The generator adds the folder, imports its CSS in `components/ui/patterns/index.css`, adds it to the gallery inventory (`components/ui/index.js`) and, with `--wording`, adds its type to `ComponentMessages`. Then:
+The `--` matters: without it npm keeps the flags for itself. The generator adds the folder, imports its CSS in `ui/components/index.css`, adds it to the gallery inventory (`ui/index.js`) and, with `--wording`, adds its type to `ComponentMessages`. Then:
 
 - **Fill in the TODOs.** Build on React Aria Components for anything interactive, on `Field` for form controls, and on the existing components (Alert, Button, Price…) before writing new markup. Class names are `ag-…` with `cx()`; tenant data (copy, prices, contact) comes in as props.
 - **Wording.** A component's own words (accessible names, small labels) go in its `messages.js` in English and Persian, read with `useMessages('Name', messages, props, locale)`; never an English default prop. Components that can sit on a page with both languages use `usePageLocale()`.
@@ -63,4 +63,4 @@ The storefront's data has the shape of the Vendra API (`tests/fixtures/vendra-op
 
 ## Tenants
 
-A new or changed theme in `components/ui/tokens/tenants/*.json` must pass the seven Theme builder checks and the Colors → Contrast card; see [guidelines/tenant-onboarding.md](./guidelines/tenant-onboarding.md).
+A new or changed theme in `ui/tokens/tenants/*.json` must pass the seven Theme builder checks and the Colors → Contrast card; see [guidelines/tenant-onboarding.md](./guidelines/tenant-onboarding.md).

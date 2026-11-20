@@ -2,8 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {parseSync} from 'rolldown/experimental';
-import {dependencyViolation} from './atomic.mjs';
-import {componentsFolder, uiFolder} from './paths.mjs';
+import {uiFolder} from './paths.mjs';
 
 // shared/ is split by role, and each folder may import only the folders listed here
 // (its own included). The app's i18n/ modules share the domain rules. A JS module loose in
@@ -32,6 +31,8 @@ const sharedFolder = file => {
   return folder && Object.hasOwn(sharedRules, folder) ? folder : null;
 };
 const isShared = file => ['shared/', 'domain/', 'i18n/'].some(prefix => file.startsWith(prefix));
+const isReusableUi = file => file.startsWith(uiFolder + '/');
+const isStorefrontUi = file => file.startsWith('components/storefront/');
 const isPresentational = file =>
   /^components\/storefront\/[^/]+\//.test(file) ||
   (/^app\/(?!_components\/)/.test(file) && file.includes('/_components/'));
@@ -47,12 +48,8 @@ function sharedDependencyViolation(source, target, relative) {
   if (!relative) allowed = rules.packages.includes(target);
   else if (isShared(target)) allowed = rules.folders.includes(sharedFolder(target));
   // Domain and services use the design system's pure helpers; UI helpers may compose its components.
-  else if (target.startsWith(uiFolder + '/'))
-    allowed =
-      from === 'ui' ||
-      (from !== 'styles' &&
-        (target.startsWith(componentsFolder + '/utils/') ||
-          target.startsWith(uiFolder + '/components/utils/')));
+  else if (isReusableUi(target))
+    allowed = from === 'ui' || (from !== 'styles' && target.startsWith(uiFolder + '/utils/'));
   // Generated data (tenant slugs) the build writes for the store's rules.
   else allowed = !!rules.runtime && target.startsWith('_runtime/');
   return allowed
@@ -62,19 +59,21 @@ function sharedDependencyViolation(source, target, relative) {
 
 function appDependencyViolation(source, target, local) {
   if (isShared(source)) return sharedDependencyViolation(source, target, local);
-  if (source.startsWith(uiFolder + '/') && !local) {
-    if (
-      !['react', 'react-dom', 'react-aria-components', '@internationalized/date'].includes(target)
-    )
-      return `${source}: forbidden UI dependency ${target}`;
+  if (isReusableUi(source)) {
+    const allowed = local
+      ? isReusableUi(target)
+      : ['react', 'react-dom', 'react-aria-components', '@internationalized/date'].includes(target);
+    return allowed ? null : `${source}: forbidden reusable UI dependency ${target}`;
   }
+  if (isStorefrontUi(source) && local && target.startsWith('app/'))
+    return `${source}: shared storefront UI imports a route module: ${target}`;
   if (source.startsWith('server/vendra/') && local && !target.startsWith('server/vendra/')) {
     if (source !== 'server/vendra/for-storefront.ts')
       return `${source}: Laravel adapter imports outside server/vendra: ${target}`;
   }
   if (!isPresentational(source)) return null;
   const allowed = local
-    ? target.startsWith(uiFolder + '/') || sharedFolder(target) === 'ui' || isPresentational(target)
+    ? isReusableUi(target) || sharedFolder(target) === 'ui' || isPresentational(target)
     : target === 'react';
   return allowed ? null : `${source}: forbidden UI dependency ${target}`;
 }
@@ -116,6 +115,7 @@ function walk(directory) {
 const runtimeRoots = [
   'app',
   'components',
+  uiFolder,
   'domain',
   'session',
   'shared',
@@ -131,15 +131,16 @@ const isRuntimeModule = file =>
 function runtimeSources(root) {
   return runtimeRoots
     .flatMap(folder => walk(path.join(root, folder)))
-    .filter(isRuntimeModule)
     .map(file => path.relative(root, file).split(path.sep).join('/'))
+    .filter(file => isRuntimeModule(file) || (isReusableUi(file) && file.endsWith('.d.ts')))
     .sort();
 }
 
 function localDependency(source, specifier) {
   if (specifier.startsWith('.'))
     return path.posix.normalize(path.posix.join(path.posix.dirname(source), specifier));
-  if (specifier.startsWith('@storefront/')) return specifier.slice('@storefront/'.length);
+  if (specifier.startsWith('@storefront/'))
+    return path.posix.normalize(specifier.slice('@storefront/'.length));
   return null;
 }
 
@@ -185,14 +186,19 @@ function checkDependencies(root) {
       if (!reference) return;
       const specifier = reference.value;
       if (typeof specifier !== 'string') {
-        if (isPresentational(source) || isShared(source))
+        if (
+          isReusableUi(source) ||
+          isStorefrontUi(source) ||
+          isPresentational(source) ||
+          isShared(source)
+        )
           violations.push(`${source}: computed import cannot be checked in UI code`);
         return;
       }
       const base = localDependency(source, specifier);
       let target = specifier;
       if (base !== null) {
-        if (base.startsWith('../')) {
+        if (base === '..' || base.startsWith('../')) {
           violations.push(`${source}: dependency outside repository ${base}`);
           return;
         }
@@ -218,8 +224,6 @@ function checkDependencies(root) {
             if (node.type !== 'TSImportType') graph.get(source).add(target);
           }
         }
-        const violation = dependencyViolation(source, target);
-        if (violation) violations.push(violation);
       }
       const violation = appDependencyViolation(source, target, base !== null);
       if (violation) violations.push(violation);

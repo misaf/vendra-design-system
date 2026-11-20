@@ -1,7 +1,7 @@
 // StorefrontWeddings: the page inside the storefront shell.
 import React from 'react';
-import {Alert} from '../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {ArchFrame} from '../../../../components/ui/patterns/atoms/ArchFrame/ArchFrame.jsx';
+import {Alert} from '../../../../ui/components/Alert/Alert.jsx';
+import {ArchFrame} from '../../../../ui/components/ArchFrame/ArchFrame.jsx';
 import {asList} from '../../../../shared/ui/as-list.js';
 import {StorefrontWeddingsLayout} from './_components/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx';
 import {StorefrontWeddingsHeading} from './_components/StorefrontWeddingsHeading/StorefrontWeddingsHeading.jsx';

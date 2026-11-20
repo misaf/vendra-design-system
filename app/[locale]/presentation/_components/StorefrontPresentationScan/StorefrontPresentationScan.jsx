@@ -1,6 +1,6 @@
 import React from 'react';
-import {Alert} from '../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {Dialog} from '../../../../../components/ui/components/Dialog/Dialog.jsx';
+import {Alert} from '../../../../../ui/components/Alert/Alert.jsx';
+import {Dialog} from '../../../../../ui/components/Dialog/Dialog.jsx';
 
 export function StorefrontPresentationScan({open, labels, message, videoId, onClose}) {
   return (

@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Card} from '../../../../../../components/ui/patterns/atoms/Card/Card.jsx';
-import {DetailList} from '../../../../../../components/ui/patterns/molecules/DetailList/DetailList.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Card} from '../../../../../../ui/components/Card/Card.jsx';
+import {DetailList} from '../../../../../../ui/components/DetailList/DetailList.jsx';
 
 export function StorefrontCheckoutDeliveryReview({labels, edit, rows}) {
   return (

@@ -1,6 +1,6 @@
 import React from 'react';
-import {BlogCard} from '../../../../../../../components/ui/patterns/molecules/BlogCard/BlogCard.jsx';
-import {SectionHeader} from '../../../../../../../components/ui/patterns/molecules/SectionHeader/SectionHeader.jsx';
+import {BlogCard} from '../../../../../../../ui/components/BlogCard/BlogCard.jsx';
+import {SectionHeader} from '../../../../../../../ui/components/SectionHeader/SectionHeader.jsx';
 
 export function StorefrontPostRelated({title, accent, stories}) {
   return (

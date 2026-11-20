@@ -1,8 +1,8 @@
 import React from 'react';
-import {Button} from '../../../../../../../components/ui/components/Button/Button.jsx';
-import {IconButton} from '../../../../../../../components/ui/components/IconButton/IconButton.jsx';
-import {Price} from '../../../../../../../components/ui/patterns/atoms/Price/Price.jsx';
-import {QuantityInput} from '../../../../../../../components/ui/patterns/atoms/QuantityInput/QuantityInput.jsx';
+import {Button} from '../../../../../../../ui/components/Button/Button.jsx';
+import {IconButton} from '../../../../../../../ui/components/IconButton/IconButton.jsx';
+import {Price} from '../../../../../../../ui/components/Price/Price.jsx';
+import {QuantityInput} from '../../../../../../../ui/components/QuantityInput/QuantityInput.jsx';
 
 export function StorefrontProductPurchase({summary, quantity, save, add}) {
   return (

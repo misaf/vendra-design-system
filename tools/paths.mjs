@@ -3,8 +3,8 @@ import path from 'node:path';
 
 const repo = path.resolve(import.meta.dirname, '..');
 // Repo-relative, with / separators.
-const uiFolder = 'components/ui';
-const componentsFolder = uiFolder + '/patterns';
+const uiFolder = 'ui';
+const componentsFolder = uiFolder + '/components';
 
 const uiRoot = path.join(repo, uiFolder);
 

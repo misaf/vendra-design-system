@@ -4,7 +4,7 @@
 // shortlist to compare and an order to hand over, and passes either to the customer's phone as a
 // QR code. Unattended, it can play the designs as a slideshow.
 import {vfCopy} from './copy.js';
-import {ToastQueue} from '../../../components/ui/patterns/organisms/ToastRegion/ToastRegion.jsx';
+import {ToastQueue} from '../../../ui/components/ToastRegion/ToastRegion.jsx';
 import {
   VF_ADDONS,
   VF_LINES_PATTERN,

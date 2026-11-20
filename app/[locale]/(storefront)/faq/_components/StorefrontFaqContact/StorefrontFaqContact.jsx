@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button} from '../../../../../../components/ui/components/Button/Button.jsx';
-import {Card} from '../../../../../../components/ui/patterns/atoms/Card/Card.jsx';
-import {Icon} from '../../../../../../components/ui/components/Icon/Icon.jsx';
+import {Button} from '../../../../../../ui/components/Button/Button.jsx';
+import {Card} from '../../../../../../ui/components/Card/Card.jsx';
+import {Icon} from '../../../../../../ui/components/Icon/Icon.jsx';
 
 export function StorefrontFaqContact({title, body, note, whatsapp, contact}) {
   return (

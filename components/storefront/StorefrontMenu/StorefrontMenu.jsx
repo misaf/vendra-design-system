@@ -1,9 +1,9 @@
 import React from 'react';
-import {Dialog} from '../../ui/components/Dialog/Dialog.jsx';
-import {MenuList} from '../../ui/patterns/molecules/MenuList/MenuList.jsx';
-import {NavLink} from '../../ui/patterns/molecules/NavLink/NavLink.jsx';
-import {LanguageSwitch} from '../../ui/patterns/molecules/LanguageSwitch/LanguageSwitch.jsx';
-import {Button} from '../../ui/components/Button/Button.jsx';
+import {Dialog} from '../../../ui/components/Dialog/Dialog.jsx';
+import {MenuList} from '../../../ui/components/MenuList/MenuList.jsx';
+import {NavLink} from '../../../ui/components/NavLink/NavLink.jsx';
+import {LanguageSwitch} from '../../../ui/components/LanguageSwitch/LanguageSwitch.jsx';
+import {Button} from '../../../ui/components/Button/Button.jsx';
 
 export function StorefrontMenu({
   open,

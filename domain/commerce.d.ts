@@ -1,9 +1,9 @@
+import type {LatLng} from '../ui/utils/coordinates.js';
+import type {Stock} from '../ui/utils/stock.js';
+export type {LatLng, Stock};
+
 export type DirectionsApp = 'neshan' | 'balad' | 'google';
 
-export interface LatLng {
-  lat: number;
-  lng: number;
-}
 /** A delivery zone as the storefront uses it (see zoneFromApi). */
 export interface Zone {
   /** The storefront's key, e.g. 'central'. */
@@ -125,12 +125,6 @@ export interface SummaryLabels {
   total: string;
 }
 /** Records as the Vendra API returns them (tests/fixtures/vendra-openapi.json). */
-/** A product's availability: in stock, few left, back soon (on `date`, ISO, when known) or sold out. */
-export type Stock =
-  | {status: 'in'}
-  | {status: 'low'; count: number}
-  | {status: 'soon'; date: string | null}
-  | {status: 'out'};
 export interface ApiRecord {
   id: number;
   [field: string]: any;

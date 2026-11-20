@@ -1,14 +1,14 @@
 import React from 'react';
-import {Alert} from '../../../../../components/ui/patterns/molecules/Alert/Alert.jsx';
-import {Button} from '../../../../../components/ui/components/Button/Button.jsx';
-import {Checkbox} from '../../../../../components/ui/patterns/atoms/Checkbox/Checkbox.jsx';
-import {CodeInput} from '../../../../../components/ui/patterns/atoms/CodeInput/CodeInput.jsx';
-import {Dialog} from '../../../../../components/ui/components/Dialog/Dialog.jsx';
-import {Input} from '../../../../../components/ui/components/Input/Input.jsx';
-import {Picture} from '../../../../../components/ui/patterns/atoms/Picture/Picture.jsx';
-import {SearchField} from '../../../../../components/ui/patterns/molecules/SearchField/SearchField.jsx';
-import {Select} from '../../../../../components/ui/components/Select/Select.jsx';
-import {Switch} from '../../../../../components/ui/patterns/atoms/Switch/Switch.jsx';
+import {Alert} from '../../../../../ui/components/Alert/Alert.jsx';
+import {Button} from '../../../../../ui/components/Button/Button.jsx';
+import {Checkbox} from '../../../../../ui/components/Checkbox/Checkbox.jsx';
+import {CodeInput} from '../../../../../ui/components/CodeInput/CodeInput.jsx';
+import {Dialog} from '../../../../../ui/components/Dialog/Dialog.jsx';
+import {Input} from '../../../../../ui/components/Input/Input.jsx';
+import {Picture} from '../../../../../ui/components/Picture/Picture.jsx';
+import {SearchField} from '../../../../../ui/components/SearchField/SearchField.jsx';
+import {Select} from '../../../../../ui/components/Select/Select.jsx';
+import {Switch} from '../../../../../ui/components/Switch/Switch.jsx';
 
 export function StorefrontPresentationSettings({
   open,

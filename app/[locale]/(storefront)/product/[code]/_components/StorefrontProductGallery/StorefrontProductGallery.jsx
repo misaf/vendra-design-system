@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button} from '../../../../../../../components/ui/components/Button/Button.jsx';
-import {Gallery} from '../../../../../../../components/ui/patterns/organisms/Gallery/Gallery.jsx';
-import {Lightbox} from '../../../../../../../components/ui/patterns/organisms/Lightbox/Lightbox.jsx';
+import {Button} from '../../../../../../../ui/components/Button/Button.jsx';
+import {Gallery} from '../../../../../../../ui/components/Gallery/Gallery.jsx';
+import {Lightbox} from '../../../../../../../ui/components/Lightbox/Lightbox.jsx';
 
 export function StorefrontProductGallery({
   productCode,

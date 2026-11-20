@@ -1,6 +1,6 @@
 import React from 'react';
-import {Chip} from '../../../../../../components/ui/patterns/atoms/Chip/Chip.jsx';
-import {SectionHeader} from '../../../../../../components/ui/patterns/molecules/SectionHeader/SectionHeader.jsx';
+import {Chip} from '../../../../../../ui/components/Chip/Chip.jsx';
+import {SectionHeader} from '../../../../../../ui/components/SectionHeader/SectionHeader.jsx';
 
 export function StorefrontJournalHeading({
   eyebrow,
