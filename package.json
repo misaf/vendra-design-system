@@ -16,7 +16,6 @@
     "test:e2e:demo": "E2E_TARGET=build playwright test -c e2e/playwright.config.mjs",
     "test:e2e": "node e2e/run.mjs",
     "test:e2e:update": "node e2e/run.mjs --update-snapshots",
-    "test:e2e:remote": "node e2e/remote.mjs",
     "format": "prettier --write tools src e2e tests *.mjs *.json",
     "lint": "eslint src/app",
     "lint:css": "stylelint \"src/design-system/components/**/*.css\" \"src/storefront/**/*.css\" \"src/app/**/*.css\"",

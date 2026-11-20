@@ -102,7 +102,7 @@ export default defineConfig({
   timeout: 60000,
   forbidOnly: ci,
   // One Next.js dev server serves every page; more workers than this starts timing out.
-  // E2E_WORKERS overrides it on a bigger machine (test:e2e:remote).
+  // E2E_WORKERS overrides it on machines with more capacity.
   workers: Number(process.env.E2E_WORKERS) || 2,
   // A retry surfaces load-related flakes as "flaky" in the report instead of failing the run.
   retries: 1,
