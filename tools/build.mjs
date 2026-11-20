@@ -4,12 +4,12 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {customCss} from '../apps/florist/build/custom-css.mjs';
-import {generate} from '../apps/florist/build/generate.mjs';
+import {customCss} from '../build/custom-css.mjs';
+import {generate} from '../build/generate.mjs';
 import {brandOutputs} from './brand.mjs';
 import {tenantOutputs, tenantSpecs} from './tenants.mjs';
 
-const root = path.resolve(import.meta.dirname, '../apps/florist');
+const root = path.resolve(import.meta.dirname, '..');
 const check = process.argv.includes('--check');
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'vendra-tailwind-'));
 async function main() {
@@ -19,13 +19,10 @@ async function main() {
     for (const [target, content] of tenantOutputs()) {
       const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
       if (check && content !== current)
-        throw new Error(
-          path.relative(path.resolve(root, '../..'), target) +
-            ' is stale. Run npm --prefix apps/florist run build.'
-        );
+        throw new Error(path.relative(root, target) + ' is stale. Run npm run build.');
       if (!check && content !== current) fs.writeFileSync(target, content);
     }
-    const {VF_STORE} = await import('../apps/florist/shared/domain/store-config.js');
+    const {VF_STORE} = await import('../domain/store-config.js');
     const specs = {default: {}, ...tenantSpecs()};
     if (!specs[VF_STORE.tenant]) throw new Error('Unknown store tenant: ' + VF_STORE.tenant);
     specs[VF_STORE.tenant] = {
@@ -61,8 +58,7 @@ async function main() {
     ]) {
       const target = path.join(root, '_runtime', file);
       const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
-      if (check && css !== current)
-        throw new Error(file + ' is stale. Run npm --prefix apps/florist run build.');
+      if (check && css !== current) throw new Error(file + ' is stale. Run npm run build.');
       if (!check && css !== current) fs.writeFileSync(target, css);
     }
     console.log(

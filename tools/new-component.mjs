@@ -1,15 +1,15 @@
 // npm run new:component -- <Name> --level atoms|molecules|organisms [--wording] [--no-css]
-// Starts apps/florist/design-system/components/<level>/<Name>/ with every file the repo expects (CLAUDE.md rule 3), so the guards in
+// Starts components/ui/patterns/<level>/<Name>/ with every file the repo expects (CLAUDE.md rule 3), so the guards in
 // npm test pass from the first build: the component, its declarations, CSS (added to
 // the design system's components/index.css), README with its Usage section, fixture and spec, and with --wording its
 // built-in English and Persian wording (messages.js, typed in utils/messages.d.ts). It also
-// re-exports the component for the storefront (shell/ds.js). What it can't know is left as TODO.
+// re-exports the component for the storefront (components/ui/index.js). What it can't know is left as TODO.
 import {execFileSync} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {levels} from './atomic.mjs';
-import {repo, componentsFolder, uiRoot} from './paths.mjs';
+import {repo, componentsFolder, uiFolder, uiRoot} from './paths.mjs';
 
 const args = process.argv.slice(2);
 const name = args.find(arg => !arg.startsWith('--'));
@@ -130,7 +130,7 @@ export function Fixture() {
 `;
 
 files[name + '.spec.mjs'] = `import {test, expect} from '@playwright/test';
-import {expectAccessible, openComponent} from '../../../../e2e/component-test.mjs';
+import {expectAccessible, openComponent} from '../../../../../e2e/component-test.mjs';
 
 // TODO: its role and name, keyboard use, wording in both languages and its main props.
 test('renders', async ({page}) => {
@@ -156,9 +156,9 @@ const insertSorted = (file, pattern, line) => {
   fs.writeFileSync(file, lines.join('\n'));
 };
 insertSorted(
-  path.join(repo, 'apps/florist/shell/ds.js'),
-  /^export \* from '\.\.\/design-system\/components\//,
-  `export * from '${path.posix.relative('apps/florist/shell', componentPath)}/${name}.jsx';`
+  path.join(repo, 'components/ui/index.js'),
+  /^export \* from '\.\/patterns\//,
+  `export * from '${'./' + path.posix.relative(uiFolder, componentPath)}/${name}.jsx';`
 );
 if (css)
   fs.appendFileSync(
@@ -181,21 +181,21 @@ execFileSync(
     '--log-level=warn',
     '--write',
     folder,
-    path.join(repo, 'apps/florist/shell/ds.js'),
+    path.join(repo, 'components/ui/index.js'),
     path.join(uiRoot, 'components/utils/messages.d.ts')
   ],
   {stdio: 'inherit'}
 );
 
 console.log(`Created ${componentPath}/ (${Object.keys(files).join(', ')}).
-Added it to apps/florist/shell/ds.js${css ? ', ' + componentsFolder + '/index.css' : ''}${
+Added it to components/ui/index.js${css ? ', ' + componentsFolder + '/index.css' : ''}${
   wording ? ' and the ComponentMessages type' : ''
 }.
 
 Next:
   1. Fill in the TODOs; use it in a storefront template (npm test fails on a component no page or
      component uses), and add it to a guideline card in guidelines/components/.
-  2. npm --prefix apps/florist run format && npm --prefix apps/florist run build
-  3. npm --prefix apps/florist run check && npm --prefix apps/florist test
-  4. npx playwright test -c apps/florist/e2e/playwright.config.mjs ../${componentPath}
+  2. npm run format && npm run build
+  3. npm run check && npm test
+  4. npx playwright test -c e2e/playwright.config.mjs ../${componentPath}
      then the whole test:e2e (CLAUDE.md rule 5).`);

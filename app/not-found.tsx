@@ -1,0 +1,22 @@
+'use client';
+
+import dynamic from 'next/dynamic';
+import {StorefrontScreen} from './_components/StorefrontDocument.jsx';
+import {LiveCatalogNotFound, useLiveCatalog} from './_components/LiveCatalogDocument.jsx';
+import {VF_SEO} from '@storefront/shared/services/seo.js';
+
+const NotFoundScreen = dynamic(() => import('@storefront/app/_not-found/NotFoundScreen.jsx'));
+
+export default function NotFound() {
+  if (useLiveCatalog()) return <LiveCatalogNotFound />;
+  return (
+    <StorefrontScreen
+      address="notfound/"
+      view="notfound"
+      fallbackLang={null}
+      initialTags={VF_SEO.headTags({noindex: true})}
+    >
+      <NotFoundScreen />
+    </StorefrontScreen>
+  );
+}

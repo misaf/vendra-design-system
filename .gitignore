@@ -1,6 +1,6 @@
-apps/florist/_app-build/
-apps/florist/e2e/test-results/
-apps/florist/e2e/playwright-report/
+_app-build/
+e2e/test-results/
+e2e/playwright-report/
 
 # OS and scratch files
 .DS_Store
@@ -9,9 +9,9 @@ scratch/
 screenshots/
 node_modules
 
-/apps/florist/.next/
-/apps/florist/public/
-/apps/florist/next/out/
-/apps/florist/.next-live/
-/apps/florist/next-env.d.ts
-/apps/florist/.next-types.tsbuildinfo
+/.next/
+/public/
+/next/out/
+/.next-live/
+/next-env.d.ts
+/.next-types.tsbuildinfo

@@ -1,24 +1,59 @@
 {
-  "name": "vendra-design-system-workspace",
+  "name": "vendra-florist",
   "private": true,
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.components.json && tsc -p tsconfig.api.json",
+    "build": "node tools/build.mjs",
+    "check": "node tools/build.mjs --check && prettier --check tools components app build communications deployment domain e2e i18n next server session shared styles tests types *.mjs *.json && npm run lint:css",
+    "test": "npm run typecheck && node --test \"tests/*.test.mjs\" \"app/**/*.test.mjs\"",
+    "dev": "npm run dev:next --",
+    "build:app": "npm run build:live",
+    "preview": "npm run start:live --",
+    "test:e2e:dev": "E2E_TARGET=dev playwright test -c e2e/playwright.config.mjs",
+    "test:e2e:build": "E2E_TARGET=build playwright test -c e2e/playwright.config.mjs",
+    "test:e2e": "node e2e/run.mjs",
+    "test:e2e:update": "node e2e/run.mjs --update-snapshots",
+    "test:e2e:remote": "node e2e/remote.mjs",
+    "format": "prettier --write tools components app build communications deployment domain e2e i18n next server session shared styles tests types *.mjs *.json",
+    "lint:css": "stylelint \"components/ui/patterns/**/*.css\" \"components/ui/components/**/*.css\" \"shared/**/*.css\" \"styles/**/*.css\" \"app/**/*.css\"",
+    "new:component": "node tools/new-component.mjs",
+    "dev:next": "npm run build && node next/prepare-assets.mjs && node next/prepare-fixtures.mjs && next dev",
+    "build:next": "npm run build && node next/prepare-assets.mjs && VF_NEXT_EXPORT=1 next build && node next/finish-export.mjs",
+    "start:next": "node next/serve-export.mjs",
+    "test:e2e:next": "playwright test -c tests/e2e/playwright.config.mjs",
+    "build:live": "npm run build && node next/prepare-assets.mjs && next build",
+    "start:live": "next start",
+    "test:e2e:live": "VF_TEST_LIVE=1 npm run test:e2e:next",
+    "build:demo": "npm run build:next",
+    "preview:demo": "npm run start:next --"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/cli": "4.3.4",
+    "@types/node": "22.20.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "prettier": "3.9.10",
+    "rolldown": "1.2.16",
+    "stylelint": "18.0.0",
+    "tailwindcss": "4.3.4",
+    "typescript": "7.0.2"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "dependencies": {
+    "@internationalized/date": "3.12.4",
+    "next": "16.4.6",
+    "qrcode-generator": "2.0.4",
+    "react": "19.3.1",
+    "react-aria-components": "1.22.1",
+    "react-dom": "19.3.1",
+    "server-only": "0.0.1"
+  },
   "description": "Vendra Next.js storefront and its design system.",
   "license": "UNLICENSED",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "dev": "npm --prefix apps/florist run dev:next --",
-    "build": "npm --prefix apps/florist run build",
-    "build:app": "npm --prefix apps/florist run build:live",
-    "preview": "npm --prefix apps/florist run start:live --",
-    "check": "npm --prefix apps/florist run check",
-    "test": "npm --prefix apps/florist test",
-    "test:e2e": "npm --prefix apps/florist run test:e2e --",
-    "new:component": "npm --prefix apps/florist run new:component --",
-    "build:demo": "npm --prefix apps/florist run build:next",
-    "preview:demo": "npm --prefix apps/florist run start:next --"
-  },
   "overrides": {
     "@parcel/watcher": "2.6.0"
   }

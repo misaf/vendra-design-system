@@ -4,7 +4,7 @@
     {
       "name": "vendra-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "apps/florist", "run", "dev"],
+      "runtimeArgs": ["run", "dev"],
       "port": 5173
     }
   ]

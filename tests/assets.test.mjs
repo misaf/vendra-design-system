@@ -1,0 +1,52 @@
+// Each storefront page folder owns its sources and shares the runtime.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import playwrightPackage from '@playwright/test/package.json' with {type: 'json'};
+
+import {featureFiles, routeFolders} from './page-script.mjs';
+
+const root = path.resolve(import.meta.dirname, '..');
+for (const [name, folder] of Object.entries(routeFolders)) {
+  const {logic, screen, view} = featureFiles(name);
+  const files = fs.readdirSync(path.join(root, folder));
+  for (const name of ['tailwind.css', 'custom.css'])
+    assert.ok(!files.includes(name), folder + ' duplicates ' + name);
+  assert.ok(files.includes(logic), folder + ' must own its behavior source');
+  assert.ok(files.includes('copy.js'), folder + ' must own its copy source');
+  assert.ok(files.includes('styles.css'), folder + ' must own its custom CSS source');
+  for (const name of [screen, view])
+    assert.ok(files.includes(name), folder + ' must have its ' + name);
+  const markup = fs.readFileSync(path.join(root, folder, view), 'utf8');
+  assert.ok(!/\bstyle=\{/.test(markup), folder + ' must keep custom styles in CSS classes');
+}
+console.log('Passed page folders: sources, views and no duplicated runtime CSS.');
+
+const tailwind = fs.readFileSync(path.join(root, '_runtime/tailwind.css'), 'utf8');
+assert.ok(!tailwind.includes('.vf-'), 'Custom selectors must stay out of the Tailwind output');
+const custom = fs.readFileSync(path.join(root, '_runtime/custom.css'), 'utf8');
+assert.ok(
+  tailwind.includes('.tw\\:hover\\:bg-sunken'),
+  'Tailwind must compile the migrated hover state'
+);
+assert.ok(
+  custom.includes('.vf-product-add .ag-btn'),
+  'Component internals remain explicit custom exceptions'
+);
+assert.ok(!/@(?:apply|theme|source|import)\b/.test(custom));
+
+// CI and "Update screenshots" run in Playwright's Linux image; it must be the same version as
+// @playwright/test, or the browser differs from the one the -linux baselines were taken with.
+const playwright = playwrightPackage.version;
+const workflows = path.resolve(root, '.github/workflows');
+for (const name of fs.readdirSync(workflows)) {
+  for (const [, tag] of fs
+    .readFileSync(path.join(workflows, name), 'utf8')
+    .matchAll(/mcr\.microsoft\.com\/playwright:v([\w.-]+?)-\w+\b/g))
+    assert.equal(
+      tag,
+      playwright,
+      name + ' uses Playwright image v' + tag + '; @playwright/test is ' + playwright
+    );
+}
+console.log('Passed: the CI Playwright image matches @playwright/test ' + playwright + '.');

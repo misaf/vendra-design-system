@@ -1,16 +1,15 @@
 // Runtime import checks. Paths and diagnostics are repo-relative, with / separators.
 import fs from 'node:fs';
-import {isBuiltin} from 'node:module';
 import path from 'node:path';
 import {parseSync} from 'rolldown/experimental';
-import {layer, dependencyViolation} from './atomic.mjs';
+import {dependencyViolation} from './atomic.mjs';
 import {componentsFolder, uiFolder} from './paths.mjs';
 
-// apps/florist/shared/ is split by role, and each folder may import only the folders listed here
+// shared/ is split by role, and each folder may import only the folders listed here
 // (its own included). The app's i18n/ modules share the domain rules. A JS module loose in
 // shared/ itself, or in a folder not listed, fails: place it by what it does.
 //   platform/  where the storefront runs: address, asset base, clock (no browser at import time)
-//   domain/    pure store rules and sample data
+//   domain/    pure store rules and sample data (at the repository root)
 //   services/  browser services: routing, SEO, focus/lifecycle, page state, offline, API, analytics
 //   ui/        storefront UI helpers the app UI layers may use; never services or persistence
 //   styles/    the storefront's CSS entry points (no modules)
@@ -27,16 +26,15 @@ const sharedRules = {
   styles: {folders: [], packages: []}
 };
 const sharedFolder = file => {
-  if (file.startsWith('apps/florist/i18n/')) return 'translations';
-  const folder = /^apps\/florist\/shared\/([^/]+)\//.exec(file)?.[1];
+  if (file.startsWith('i18n/')) return 'translations';
+  if (file.startsWith('domain/')) return 'domain';
+  const folder = /^shared\/([^/]+)\//.exec(file)?.[1];
   return folder && Object.hasOwn(sharedRules, folder) ? folder : null;
 };
-const isShared = file =>
-  file.startsWith('apps/florist/shared/') || file.startsWith('apps/florist/i18n/');
-const uiLayer = file =>
-  /^apps\/florist\/(?:shell|features\/[^/]+)\/(layouts|organisms|molecules)\//.exec(file)?.[1];
-const protectedSource = file =>
-  uiLayer(file) || file === 'apps/florist/shell/ds.js' || isShared(file);
+const isShared = file => ['shared/', 'domain/', 'i18n/'].some(prefix => file.startsWith(prefix));
+const isPresentational = file =>
+  /^components\/storefront\/[^/]+\//.test(file) ||
+  (/^app\/(?!_components\/)/.test(file) && file.includes('/_components/'));
 
 const misplacedShared = file =>
   `${file}: shared module outside the ${Object.keys(sharedRules).join('/, ')}/ folders`;
@@ -49,43 +47,40 @@ function sharedDependencyViolation(source, target, relative) {
   if (!relative) allowed = rules.packages.includes(target);
   else if (isShared(target)) allowed = rules.folders.includes(sharedFolder(target));
   // Domain and services use the design system's pure helpers; UI helpers may compose its components.
-  else if (target.startsWith(componentsFolder + '/'))
+  else if (target.startsWith(uiFolder + '/'))
     allowed =
-      from === 'ui' || (from !== 'styles' && target.startsWith(componentsFolder + '/utils/'));
+      from === 'ui' ||
+      (from !== 'styles' &&
+        (target.startsWith(componentsFolder + '/utils/') ||
+          target.startsWith(uiFolder + '/components/utils/')));
   // Generated data (tenant slugs) the build writes for the store's rules.
-  else allowed = !!rules.runtime && target.startsWith('apps/florist/_runtime/');
+  else allowed = !!rules.runtime && target.startsWith('_runtime/');
   return allowed
     ? null
     : `${source}: forbidden ${from === 'ui' ? 'UI' : from} dependency ${target}`;
 }
 
-function appDependencyViolation(source, target, relative) {
-  if (!protectedSource(source)) return null;
-  if (isShared(source)) return sharedDependencyViolation(source, target, relative);
-  if (!relative) {
-    const allowed = source !== 'apps/florist/shell/ds.js' && target === 'react';
-    return allowed ? null : `${source}: forbidden UI dependency ${target}`;
+function appDependencyViolation(source, target, local) {
+  if (isShared(source)) return sharedDependencyViolation(source, target, local);
+  if (source.startsWith(uiFolder + '/') && !local) {
+    if (
+      !['react', 'react-dom', 'react-aria-components', '@internationalized/date'].includes(target)
+    )
+      return `${source}: forbidden UI dependency ${target}`;
   }
-  const from = uiLayer(source);
-  let allowed;
-  if (source === 'apps/florist/shell/ds.js') {
-    allowed = !!layer(target) || target.startsWith(uiFolder + '/components/');
-  } else {
-    const to = uiLayer(target);
-    allowed =
-      target === 'react' ||
-      (from === 'layouts'
-        ? to === 'layouts'
-        : target === 'apps/florist/shell/ds.js' ||
-          sharedFolder(target) === 'ui' ||
-          to === 'molecules' ||
-          (from === 'organisms' && to === 'organisms'));
+  if (source.startsWith('server/vendra/') && local && !target.startsWith('server/vendra/')) {
+    if (source !== 'server/vendra/for-storefront.ts')
+      return `${source}: Laravel adapter imports outside server/vendra: ${target}`;
   }
+  if (!isPresentational(source)) return null;
+  const allowed = local
+    ? target.startsWith(uiFolder + '/') || sharedFolder(target) === 'ui' || isPresentational(target)
+    : target === 'react';
   return allowed ? null : `${source}: forbidden UI dependency ${target}`;
 }
 
 // Shared dependencies are imported, never hung on window: the storefront runtime is vfRuntime
-// (apps/florist/shared/platform/runtime.js). Only the guideline cards' compatibility layer,
+// (shared/platform/runtime.js). Only the guideline cards' compatibility layer,
 // guidelines/card-runtime.js (outside the checked folders), sets the design system's AG_* helpers and
 // window.VendraDesignSystem for the cards' classic scripts.
 const cardCompatibility = 'guidelines/card-runtime.js';
@@ -118,115 +113,34 @@ function walk(directory) {
     });
 }
 
+const runtimeRoots = [
+  'app',
+  'components',
+  'domain',
+  'session',
+  'shared',
+  'i18n',
+  'server',
+  'communications'
+];
+const moduleExtensions = ['.js', '.jsx', '.mjs', '.ts', '.tsx', '.mts'];
+const isRuntimeModule = file =>
+  moduleExtensions.some(extension => file.endsWith(extension)) &&
+  !/\.(?:fixture|spec|test|d)\.[^.]+$/.test(file);
+
 function runtimeSources(root) {
-  return [
-    componentsFolder,
-    'apps/florist/shell',
-    'apps/florist/features',
-    'apps/florist/shared',
-    'apps/florist/i18n',
-    'apps/florist/communications'
-  ]
+  return runtimeRoots
     .flatMap(folder => walk(path.join(root, folder)))
-    .filter(file => /\.(js|jsx)$/.test(file) && !/\.(fixture|spec)\.(js|jsx)$/.test(file))
+    .filter(isRuntimeModule)
     .map(file => path.relative(root, file).split(path.sep).join('/'))
     .sort();
 }
 
-const packageRoots = ['packages/ui', 'packages/vendra-api'];
-const workspaceSources = [
-  'apps/florist/app',
-  'apps/florist/server',
-  'apps/florist/i18n',
-  'apps/florist/features',
-  'apps/florist/shell',
-  'apps/florist/shared',
-  'apps/florist/design-system',
-  'apps/florist/communications',
-  ...packageRoots
-];
-const moduleExtensions = /\.[cm]?[jt]sx?$/;
-
-function workspaceViolations(root) {
-  const violations = [];
-  const manifests = new Map(
-    packageRoots.flatMap(folder => {
-      const file = path.join(root, folder, 'package.json');
-      return fs.existsSync(file) ? [[folder, JSON.parse(fs.readFileSync(file, 'utf8'))]] : [];
-    })
-  );
-  const files = workspaceSources
-    .flatMap(folder => walk(path.join(root, folder)))
-    .filter(file => moduleExtensions.test(file));
-  for (const file of files) {
-    const source = path.relative(root, file).split(path.sep).join('/');
-    const owner = packageRoots.find(folder => source.startsWith(folder + '/'));
-    const manifest = manifests.get(owner);
-    const {program, errors} = parseSync(source, fs.readFileSync(file, 'utf8'));
-    for (const error of errors) violations.push(`${source}: parse error: ${error.message}`);
-    const check = specifier => {
-      const target = specifier?.value;
-      if (typeof target !== 'string') {
-        if (owner) violations.push(`${source}: computed import crosses an unchecked boundary`);
-        return;
-      }
-      const local = target.startsWith('.')
-        ? path.posix.normalize(path.posix.join(path.posix.dirname(source), target))
-        : target.startsWith('@storefront/')
-          ? path.posix.join('apps/florist', target.slice('@storefront/'.length))
-          : null;
-      if (local !== null) {
-        // Existing utility entry points share the package's contexts and helper implementations.
-        const uiCompatibilityExport =
-          source.startsWith(componentsFolder + '/utils/') &&
-          local.startsWith(uiFolder + '/components/utils/') &&
-          program.body.every(
-            statement =>
-              statement.type === 'ExportAllDeclaration' || statement.directive === 'use client'
-          );
-        if (
-          owner
-            ? !local.startsWith(owner + '/')
-            : !uiCompatibilityExport &&
-              packageRoots.some(folder => local === folder || local.startsWith(folder + '/'))
-        )
-          violations.push(
-            `${source}: use workspace package exports instead of importing ${target}`
-          );
-        return;
-      }
-      if (!owner) return;
-      const name = target
-        .split('/')
-        .slice(0, target.startsWith('@') ? 2 : 1)
-        .join('/');
-      if (
-        ['next', 'server-only', 'client-only'].includes(name) ||
-        (owner === 'packages/vendra-api' && ['react', 'react-dom', '@vendra/ui'].includes(name)) ||
-        (!isBuiltin(target) &&
-          !Object.hasOwn(manifest?.dependencies || {}, name) &&
-          !Object.hasOwn(manifest?.peerDependencies || {}, name))
-      )
-        violations.push(`${source}: forbidden package dependency ${target}`);
-    };
-    visit(program, node => {
-      if (
-        [
-          'ImportDeclaration',
-          'ExportNamedDeclaration',
-          'ExportAllDeclaration',
-          'ImportExpression'
-        ].includes(node.type) &&
-        node.source
-      )
-        check(node.source);
-      if (node.type === 'TSImportType') check(node.source);
-      if (node.type === 'CallExpression' && node.callee?.name === 'require')
-        check(node.arguments[0]);
-      if (node.type === 'TSExternalModuleReference') check(node.expression);
-    });
-  }
-  return violations;
+function localDependency(source, specifier) {
+  if (specifier.startsWith('.'))
+    return path.posix.normalize(path.posix.join(path.posix.dirname(source), specifier));
+  if (specifier.startsWith('@storefront/')) return specifier.slice('@storefront/'.length);
+  return null;
 }
 
 function visit(node, callback) {
@@ -241,11 +155,7 @@ function visit(node, callback) {
 function checkDependencies(root) {
   const files = runtimeSources(root);
   const graph = new Map(files.map(file => [file, new Set()]));
-  const violations = workspaceViolations(root);
-  const uiManifest = path.join(root, uiFolder, 'package.json');
-  const uiExports = fs.existsSync(uiManifest)
-    ? (JSON.parse(fs.readFileSync(uiManifest, 'utf8')).exports ?? {})
-    : {};
+  const violations = [];
   for (const [source] of graph) {
     if (isShared(source) && !sharedFolder(source)) violations.push(misplacedShared(source));
     const {program, errors} = parseSync(source, fs.readFileSync(path.join(root, source), 'utf8'));
@@ -257,55 +167,61 @@ function checkDependencies(root) {
       const global = source !== cardCompatibility && globalAccess(node);
       if (global)
         violations.push(`${source}: reads or sets the global ${global}; import it instead`);
-      if (
-        ![
-          'ImportDeclaration',
-          'ExportNamedDeclaration',
-          'ExportAllDeclaration',
-          'ImportExpression'
-        ].includes(node.type) ||
-        !node.source
-      )
-        return;
-      const specifier = node.source.value;
+      const reference =
+        node.type === 'TSImportType'
+          ? node.source
+          : node.type === 'CallExpression' && node.callee?.name === 'require'
+            ? node.arguments[0]
+            : node.type === 'TSExternalModuleReference'
+              ? node.expression
+              : [
+                    'ImportDeclaration',
+                    'ExportNamedDeclaration',
+                    'ExportAllDeclaration',
+                    'ImportExpression'
+                  ].includes(node.type)
+                ? node.source
+                : null;
+      if (!reference) return;
+      const specifier = reference.value;
       if (typeof specifier !== 'string') {
-        if (protectedSource(source))
+        if (isPresentational(source) || isShared(source))
           violations.push(`${source}: computed import cannot be checked in UI code`);
         return;
       }
+      const base = localDependency(source, specifier);
       let target = specifier;
-      const relative = specifier.startsWith('.');
-      const uiEntry = specifier.startsWith('@vendra/ui/')
-        ? uiExports['.' + specifier.slice('@vendra/ui'.length)]?.default
-        : undefined;
-      if (relative || uiEntry) {
-        const base = relative
-          ? path.posix.normalize(path.posix.join(path.posix.dirname(source), specifier))
-          : path.posix.join(uiFolder, uiEntry);
-        target = [base, base + '.js', base + '.jsx', base + '/index.js', base + '/index.jsx'].find(
-          candidate =>
-            fs.existsSync(path.join(root, candidate)) &&
-            fs.statSync(path.join(root, candidate)).isFile()
-        );
+      if (base !== null) {
+        if (base.startsWith('../')) {
+          violations.push(`${source}: dependency outside repository ${base}`);
+          return;
+        }
+        const candidates = [
+          base,
+          ...moduleExtensions.flatMap(ext => [base + ext, base + '/index' + ext]),
+          ...(base.endsWith('.js') ? [base.slice(0, -3) + '.d.ts'] : [])
+        ];
+        target = candidates.find(candidate => {
+          const file = path.join(root, candidate);
+          return fs.existsSync(file) && fs.statSync(file).isFile();
+        });
         if (!target) {
           violations.push(`${source}: missing relative dependency ${specifier}`);
           return;
         }
-        if (/\.(js|jsx)$/.test(target)) {
-          if (target.startsWith('../')) {
-            violations.push(`${source}: dependency outside repository ${target}`);
-          } else {
-            if (!graph.has(target)) {
-              graph.set(target, new Set());
-              files.push(target);
-            }
-            graph.get(source).add(target);
+        if (isRuntimeModule(target)) {
+          if (!graph.has(target)) {
+            graph.set(target, new Set());
+            files.push(target);
+          }
+          if (!node.importKind || node.importKind !== 'type') {
+            if (node.type !== 'TSImportType') graph.get(source).add(target);
           }
         }
         const violation = dependencyViolation(source, target);
         if (violation) violations.push(violation);
       }
-      const violation = appDependencyViolation(source, target, relative || !!uiEntry);
+      const violation = appDependencyViolation(source, target, base !== null);
       if (violation) violations.push(violation);
     });
   }
