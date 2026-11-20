@@ -12,5 +12,5 @@ Reusable UI composes other reusable components and takes storefront data through
 
 - Import directly from the component folder, for example `src/design-system/components/Button/Button.jsx`. The gallery uses the exports in `src/design-system/index.js`.
 - The root layout imports `src/design-system/storefront.css`. `VendraProvider` supplies locale and navigation to controls.
-- Edit tenant JSON under `src/design-system/tokens/tenants/` and run `npm run build` to regenerate CSS and design tokens. The generator validates colours, contrast and asset references.
+- Edit tenant JSON under `src/design-system/tokens/tenants/` and run `npm run generate` to regenerate CSS and design tokens. The generator validates colours, contrast and asset references.
 - Run `npm run dev:gallery` and open `/guidelines/ui-gallery.html` to exercise the controls in Clay and Fern in English and Persian.

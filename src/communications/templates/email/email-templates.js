@@ -1,6 +1,6 @@
 // Transactional + reminder emails, EN and FA. VF_EMAIL.render(event, customer, vars, order) → {lang, dir, subject, preheader, html, text}
 // Language: same rule as SMS — customer's account language (localeFor). Send-ready HTML: tables, inline styles, 600px, hex colours, web-safe fonts.
-// Theme: vars.theme = 'default' or a tenant slug from tokens/tenants/, a palette object (keys below), or omit for default. Tenant palettes are generated from tokens/tenants/<slug>.json by npm run build. VF_EMAIL.themeFromCSS(el) reads a tenant's live tokens into a palette (call it in the browser on an element under data-tenant).
+// Theme: vars.theme = 'default' or a tenant slug from tokens/tenants/, a palette object (keys below), or omit for default. Tenant palettes are generated from tokens/tenants/<slug>.json by npm run generate. VF_EMAIL.themeFromCSS(el) reads a tenant's live tokens into a palette (call it in the browser on an element under data-tenant).
 // vars.assetBase must be an absolute URL to where logo-horizontal.png / logo-horizontal-fa.png are hosted (emails can't load relative files).
 // vars.items: [{code, name, qty, price}]; code is the product's unique code and its title, shown as given (Latin, left to right);
 // name describes it (kind, size, extras). Items without a code show the name alone.

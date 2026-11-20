@@ -14,7 +14,7 @@ async function main() {
     for (const [target, content] of tenantOutputs()) {
       const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
       if (check && content !== current)
-        throw new Error(path.relative(root, target) + ' is stale. Run npm run build.');
+        throw new Error(path.relative(root, target) + ' is stale. Run npm run generate.');
       if (!check && content !== current) fs.writeFileSync(target, content);
     }
     const {VF_STORE} = await import('../../src/storefront/store/store-config.js');
@@ -27,7 +27,8 @@ async function main() {
     };
     for (const [target, content] of brandOutputs(specs)) {
       const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
-      if (check && current !== content) throw new Error(target + ' is stale. Run npm run build.');
+      if (check && current !== content)
+        throw new Error(target + ' is stale. Run npm run generate.');
       if (!check && current !== content) {
         fs.mkdirSync(path.dirname(target), {recursive: true});
         fs.writeFileSync(target, content);

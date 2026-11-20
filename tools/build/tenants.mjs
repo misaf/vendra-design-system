@@ -74,7 +74,7 @@ function tenantOutputs() {
   // Storefronts load only their own tenant file; cards that compare tenants load them all.
   result.set(
     path.resolve(folder, '../tenants.css'),
-    '/* GENERATED from tokens/tenants/*.json by npm run build. Every tenant theme, for\n   design-system cards that compare tenants. Storefront pages load only their own tenant file. */\n' +
+    '/* GENERATED from tokens/tenants/*.json by npm run generate. Every tenant theme, for\n   design-system cards that compare tenants. Storefront pages load only their own tenant file. */\n' +
       Object.keys(specs)
         .map(slug => "@import url('tenants/" + slug + ".css');\n")
         .join('')
@@ -94,7 +94,7 @@ function tenantOutputs() {
   result.set(emails, withEmailThemes(fs.readFileSync(emails, 'utf8'), specs));
   result.set(
     path.join(root, '.generated/tenants.js'),
-    '// GENERATED from tokens/tenants/*.json by npm run build.\nwindow.VF_TENANTS = ' +
+    '// GENERATED from tokens/tenants/*.json by npm run generate.\nwindow.VF_TENANTS = ' +
       JSON.stringify(specs, null, 2) +
       ';\n'
   );

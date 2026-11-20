@@ -9,7 +9,7 @@ const root = path.resolve(import.meta.dirname, '../..');
 
 const tenantSlugsFile = path.join(root, '.generated', 'tenant-slugs.js');
 const tenantSlugsModule =
-  '// GENERATED from tokens/tenants/*.json by tools/build/generate.mjs — do not edit. Run npm run build.\n' +
+  '// GENERATED from tokens/tenants/*.json by tools/build/generate.mjs — do not edit. Run npm run generate.\n' +
   'export const VF_TENANT_SLUGS = ' +
   JSON.stringify(tenantSlugs()) +
   ';\nexport const VF_TENANT_BRANDS = ' +

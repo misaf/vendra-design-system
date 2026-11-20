@@ -588,7 +588,7 @@
     return (
       '/* GENERATED from tokens/tenants/' +
       slug +
-      '.json by npm run build. Edit the JSON, not this file.\n   ' +
+      '.json by npm run generate. Edit the JSON, not this file.\n   ' +
       about +
       'Apply with data-tenant="' +
       slug +

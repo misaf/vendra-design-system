@@ -1,4 +1,4 @@
-// GENERATED from tokens/tenants/*.json by npm run build.
+// GENERATED from tokens/tenants/*.json by npm run generate.
 window.VF_TENANTS = {
   "clay": {
     "description": "Sample tenant theme \"Clay\": terracotta and sand palette, sans-serif uppercase display, upright accent words, squared controls and square image frames.",

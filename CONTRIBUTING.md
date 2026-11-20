@@ -15,7 +15,7 @@ Use Node.js 22 (22.22.2 or later). Local browser tests use Google Chrome, and CI
 ## Every change
 
 1. Edit the sources: `src/design-system/components/`, `src/design-system/tokens/`, `src/app/`, `src/design-system/gallery/`. Never edit `src/design-system/tokens/design/`, `.generated/` or a tenant's generated `.css`: the build writes them.
-2. `npm run format`, then `npm run build`.
+2. `npm run format`, then `npm run generate`.
 3. Run `npm run check` to verify generated files, formatting, ESLint for `src/app/` and CSS lint (colours only from tokens, start/end instead of left/right).
 4. `npm test`: types, storefront logic, copy parity, the package's server render, its size budget and the API contract.
 5. After a change to a component, its CSS, tokens or `src/design-system/storefront.css`: `npm run test:e2e`. Storefront tests run against a fresh production build, then source fixtures and component tests run on the development server. Every guideline card and storefront page is screenshot-compared and checked with axe, and every component's own spec runs. When a screenshot differs, open its `-actual.png` and accept it (`npm run test:e2e:update`) only if the change is the one you meant. The Linux baselines are refreshed by the **Update screenshots** workflow (or the same command inside Playwright's Docker image).

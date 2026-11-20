@@ -7,7 +7,7 @@ A florist gets the same storefront as every other Vendra tenant. Only the **them
 - [ ] Set the accent, neutral, ink and footer colours from the florist's brand. Set the heading font, case, accent-word style, control shape and image frame. Every other shade is generated from those four colours.
 - [ ] **Done when:** all seven contrast checks read *Pass*.
 - [ ] Enter the slug (lowercase, hyphens, e.g. `rose-and-moss`) and click **Copy `<slug>.json`**.
-- [ ] Save it as `src/design-system/tokens/tenants/<slug>.json` and run `npm run build`. The build writes `src/design-system/tokens/tenants/<slug>.css` and the tenant's email palette in `src/communications/templates/email/email-templates.js` (never edit either by hand) and refuses a theme that fails any of the seven checks.
+- [ ] Save it as `src/design-system/tokens/tenants/<slug>.json` and run `npm run generate`. The build writes `src/design-system/tokens/tenants/<slug>.css` and the tenant's email palette in `src/communications/templates/email/email-templates.js` (never edit either by hand) and refuses a theme that fails any of the seven checks.
 - [ ] Preview it with `?tenant=<slug>` on any storefront URL. Check Home, Product and Bag in **both EN and FA**.
 - [ ] For the florist's own deployment, set `tenant: '<slug>'` in `src/storefront/store/store-config.js` and rebuild. The storefront then loads only `src/design-system/tokens/tenants/<slug>.css`; nothing else needs editing (cards that compare tenants pick it up from the generated `src/design-system/tokens/tenants.css`).
 
@@ -66,7 +66,7 @@ For a deployment-specific override, set `VF_STORE.brandAssets` in `src/storefron
 
 - [ ] Prepare approved logo, compact mark and light footer artwork. Check contrast against the actual header and footer colours in both languages; transparent artwork must remain readable. Keep essential maskable artwork inside the central 80% circle.
 - [ ] Export PNG icons in the sizes above (the build accepts prepared files; it does not resize them). `public/assets/brand-export-source.html` is a starting point. Supply localized social images.
-- [ ] Run `npm run build`. The build checks asset references and logo dimensions, and generates `assets/tenants/<slug>/manifest-en.webmanifest` and `manifest-fa.webmanifest` (name, short name, the theme's page colour as `theme_color` and `background_color`, and the app icons). Never edit these manifests by hand. Omitted icons and social images use the shared defaults, so replace both before launch.
+- [ ] Run `npm run generate`. The build checks asset references and logo dimensions, and generates `assets/tenants/<slug>/manifest-en.webmanifest` and `manifest-fa.webmanifest` (name, short name, the theme's page colour as `theme_color` and `background_color`, and the app icons). Never edit these manifests by hand. Omitted icons and social images use the shared defaults, so replace both before launch.
 - [ ] Preview `?tenant=<slug>` in EN and FA at desktop and phone widths. Confirm logo proportions, text fallback, browser icon, manifest icon URLs and `og:image`. Logo bounds use `--brand-logo-height` (36px), `--brand-logo-mobile-height` (28px), `--brand-logo-footer-height` (56px) and `--brand-logo-width` (220px), without changing header height.
 
 ## 3. Store data (florist · entered in admin)

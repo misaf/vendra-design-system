@@ -41,13 +41,13 @@ Run from the repo root with Node.js 22 (22.22.2 or later):
 npm ci                                   # install from the root lockfile
 npm run dev                             # Next.js at http://localhost:3000/ → /en/
 npm run dev:gallery                     # storefront and design-system previews
-npm run build   # tenant themes, design tokens and brand assets
+npm run generate                        # tenant themes, design tokens and brand assets
 npm run lint    # Next.js, React and TypeScript lint rules for src/app/
 npm run check   # generated output, formatting, ESLint and CSS lint
 npm test        # typecheck, storefront logic, generation, copy parity, design system
 npm run test:e2e  # Playwright: axe, screenshots, cards, tenants
-npm run build:app                       # build the Next.js server in .next/
-npm run preview                         # start the server at http://localhost:3000/
+npm run build                           # build the Next.js server in .next/
+npm start                               # start the server at http://localhost:3000/
 npm run build:demo                      # export to .generated/export/
 npm run preview:demo                    # serve the static export at http://127.0.0.1:3000/
 npm run test:e2e:build  # the storefront specs against the production build, plus the performance budgets
@@ -59,13 +59,13 @@ npm run test:e2e:remote  # optional: the same tests on a Linux server over ssh (
 
 ## Production integration
 
-Use `npm run build:app` to build the Next.js server for the Vendra storefront image. The Vendra
+Use `npm run build` to build the Next.js server for the Vendra storefront image. The Vendra
 deployment owns the Docker images, routing, and runtime configuration for the storefront and its
-Laravel backend. Set `VF_API_BASE` to the backend origin when starting the storefront server.
+Laravel backend. Set `VF_API_BASE` to the backend origin when starting the storefront server with `npm start`.
 See [API integration](API.md) for the backend URL format.
 
 The server build and the demo export share Next.js's `.next/` build directory. If you run both
-locally, test the server before building the demo, or run `npm run build:app` again before starting it.
+locally, test the server before building the demo, or run `npm run build` again before starting it.
 
 ## GitHub Pages demo
 
@@ -175,7 +175,7 @@ Storefront components may have the same pair beside them under their route or in
 - **`src/app/[locale]/`** owns localized pages and layouts. Its folders follow the customer-facing URLs. `presentation/` serves the counter display. `src/app/_document/` owns the storefront document, session, screen wrapper, and page metadata markup. `src/app/_routing/` builds the initial route and metadata. `src/app/_live-catalog/` renders the request-scoped Laravel catalog.
 - **Public URLs** use `/<locale>/` in links, canonical and alternate tags, and the sitemap.
 - **Navigation:** `tools/next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
-- **Build** uses `build:app` for the Node-hosted app and `build:demo` for the static reference demo. The demo exports every known address through Next.js to `.generated/export/`. Turbopack bundles the storefront styles and fonts directly from source, runs Tailwind through PostCSS, and loads Leaflet on demand. The standalone fixtures compile their own stylesheet files when starting `dev:gallery`. The asset preparation step writes tenant stylesheets to `public/` and clears generated fixture files.
+- **Build** uses `npm run build` for the Node-hosted app and `npm run build:demo` for the static reference demo. The demo exports every known address through Next.js to `.generated/export/`. Turbopack bundles the storefront styles and fonts directly from source, runs Tailwind through PostCSS, and loads Leaflet on demand. The standalone fixtures compile their own stylesheet files when starting `dev:gallery`. The asset preparation step writes tenant stylesheets to `public/` and clears generated fixture files.
 - **Components:** the app imports them from `src/design-system/` directly. The guideline cards (`src/design-system/gallery/**/*.card.jsx`) import `src/design-system/gallery/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Tests** keep feature-specific tests next to the feature and put live-server and static-export smoke specs in [`e2e/smoke/`](../e2e/smoke/). The existing browser fixtures and screenshot baselines remain under `e2e/`.
 
@@ -248,7 +248,7 @@ and pressing Add to bag.
 - **Simulated, local only:** sign-in codes, payments, reminders, saved items, recently viewed, the newsletter flag and the consent choice (`vf-consent`). The browser API client in `src/platform/browser/integrations/` talks to the backend when `apiBase` is set. Its endpoint modules share HTTP handling in `request.js` and submission retry keys in `idempotency.js`.
 - **Policies and contact:** policy text is sample copy that reads fees and areas from `delivery/delivery-zones.js`, so it stays current. Replace it with the florist's own policies before launch.
 - **Preview states:** add `?tenant=clay` (any tenant in `src/design-system/tokens/tenants/`) for another theme; `en/shop/?min=2000000&max=4000000&stock=1`; `fa/shop/?demo=loading` or `?demo=error` (Retry restores results); `en/journal/?demo=loading`; `fa/journal/missing-story/`; `en/track/VB-TEST-1/` (cancelled sample). Checkout takes `demo=error` for the online payment simulation; fill the bag's delivery form first, since an empty bag redirects to the bag page.
-- **Store configuration** (`src/storefront/store/store-config.js`): payment methods (order, card/holder/Sheba, pay-on-delivery zones), optional `features`, `languages`, contact channels (`null` hides one), the payment demo result, currency and API base. Run `npm run build` after changing it.
+- **Store configuration** (`src/storefront/store/store-config.js`): payment methods (order, card/holder/Sheba, pay-on-delivery zones), optional `features`, `languages`, contact channels (`null` hides one), the payment demo result, currency and API base. Run `npm run generate` after changing it.
 - **Integration boundaries:** authentication and payment services come from the consuming project. Reminders are stored locally and send nothing; communication renderers return strings; WhatsApp links open only when clicked. Analytics keep a small local log and reach `vfRuntime.track.subscribe` listeners only after consent, without contact details. `page_view` and `purchase` also say where the visit came from: the landing link's `utm_source`, `utm_medium`, `utm_campaign`, `utm_content` and `utm_term` and the referring site's host (`vfRuntime.track.attribution()`), kept for the tab in session storage (`vf-attribution`) only after the visitor accepts analytics. A tagged landing replaces it; an untagged one (including a return from the bank) keeps the tab's first source. Tag the links the store shares so each channel shows up: the Instagram bio (`?utm_source=instagram&utm_medium=social`), WhatsApp messages (`utm_source=whatsapp&utm_medium=message`) and the presentation's send links (`utm_source=counter&utm_medium=qr`).
 
 
@@ -309,7 +309,7 @@ boot the storefront at the requested address.
 Run the smoke suites from the repo root after their corresponding builds.
 
 ```sh
-npm run build:app
+npm run build
 npm run test:e2e:live
 VF_BASE_PATH=/vendra-design-system VF_ORIGIN=https://misaf.github.io npm run build:demo
 VF_BASE_PATH=/vendra-design-system npm run test:e2e:next

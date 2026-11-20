@@ -1,4 +1,4 @@
-// Store identity and contact details. Change these once, then run npm run build.
+// Store identity and contact details. Change these once, then run npm run generate.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
 import {storeFeatures} from './store-features.js';
 import {LOCALES, localeConfig, plural} from '../../design-system/utils/locales.js';

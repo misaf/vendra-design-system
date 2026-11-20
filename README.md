@@ -96,7 +96,9 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 npm ci                                   # first setup, at the repo root
 npm run dev                             # Next.js storefront at http://localhost:3000/
 npm run dev:gallery                     # storefront and design-system previews
-npm run build   # design tokens, tenant themes and brand assets
+npm run generate                         # design tokens, tenant themes and brand assets
+npm run build                            # production storefront
+npm start                                # start the production storefront
 npm run format  # Prettier
 npm run check   # generated files current + formatting
 npm test        # typecheck and unit tests

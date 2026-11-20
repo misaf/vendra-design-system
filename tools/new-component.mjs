@@ -186,7 +186,7 @@ Added it to src/design-system/index.js${css ? ', ' + componentsFolder + '/index.
 Next:
   1. Fill in the TODOs; use it in a storefront template (npm test fails on a component no page or
      component uses), and add it to a guideline card in src/design-system/gallery/components/.
-  2. npm run format && npm run build
+  2. npm run format && npm run generate
   3. npm run check && npm test
   4. npm run test:e2e:dev -- --project=components ${componentPath}
      then npm run test:e2e.`);
