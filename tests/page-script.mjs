@@ -109,7 +109,7 @@ function featureFiles(name) {
 }
 
 function pageScript(name) {
-  const folder = name === 'site' ? 'src/storefront/shell/session' : routeFolders[name];
+  const folder = name === 'site' ? 'src/storefront/session' : routeFolders[name];
   const parts = [];
   if (['home', 'journal', 'post'].includes(name))
     parts.push(read('src/storefront/content/journal-content.js'));
@@ -133,7 +133,7 @@ function pageScript(name) {
   return parts.map(strip).join('\n\n') + componentHarness(files.hook);
 }
 
-// The shared storefront logic (shared/), in load order, as one script whose declarations are
+// Shared storefront modules, in load order, as one script whose declarations are
 // globals, as page logic expects them in a vm context. The runtime (src/platform/browser/runtime.js) is
 // installed at the end and exposed as the context's vfRuntime.
 const sharedFiles = [
@@ -191,14 +191,25 @@ const sharedLogic =
   '\n' +
   strip(read('src/design-system/utils/coordinates.js')) +
   '\n' +
-  scoped(
-    'commerce',
+  [
     'src/storefront/store/store-clock.js',
     'src/storefront/store/opening-hours.js',
     'src/storefront/delivery/delivery-window.js',
     'src/storefront/pricing/order-totals.js',
-    'src/storefront/commerce/commerce.js'
-  ) +
+    'src/storefront/catalog/search-index.js',
+    'src/storefront/delivery/delivery-zones.js',
+    'src/storefront/catalog/pagination.js',
+    'src/storefront/delivery/delivery-copy.js',
+    'src/storefront/catalog/product-api.js',
+    'src/storefront/cart/order-line-api.js',
+    'src/storefront/orders/order-api.js',
+    'src/storefront/store/store-features.js',
+    'src/storefront/checkout/payment-options.js',
+    'src/storefront/checkout/checkout-request.js'
+  ]
+    .map(file => strip(read(file)))
+    .join('\n') +
+  '\nconst pageItems = page, normalizeMobile = mobile, normalizePhone = phone, calculateTotals = totals;\n' +
   scoped('analytics', 'src/design-system/utils/analytics.js') +
   scoped('dates', 'src/design-system/utils/dates.js') +
   scoped('format', 'src/design-system/utils/format.js') +

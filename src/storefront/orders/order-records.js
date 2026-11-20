@@ -2,7 +2,8 @@ import {VF_ADDONS, VF_PRODUCTS, VF_PRODUCT_PLACEHOLDER, VF_SIZES} from '../catal
 import {vfLineDetail} from '../cart/cart-lines.js';
 import {vfCustomerId} from '../customer/account-data.js';
 import {VF_DELIVERY} from '../delivery/delivery.js';
-import {commerce} from '../commerce/commerce.js';
+import {lineFromApi} from '../cart/order-line-api.js';
+import {orderFromApi} from './order-api.js';
 
 // GET /api/sales/orders — sample orders shaped like the Vendra API (Order, OrderLine). Each line's
 // metadata carries what the order needs beyond the API's fields, as strings: the product code
@@ -72,7 +73,7 @@ export const VF_SAMPLE_ORDER_EXTRAS = {
 
 // The storefront's bag line from an API OrderLine.
 export function vfLineFromApi(line) {
-  return commerce.lineFromApi(line, {
+  return lineFromApi(line, {
     products: VF_PRODUCTS,
     sizes: VF_SIZES,
     addons: VF_ADDONS,
@@ -83,7 +84,7 @@ export function vfLineFromApi(line) {
 
 // The storefront's order object from an API Order plus its extras.
 export function vfOrderFromApi(order, extras = VF_SAMPLE_ORDER_EXTRAS) {
-  return commerce.orderFromApi(order, {
+  return orderFromApi(order, {
     line: vfLineFromApi,
     delivery: {...VF_DELIVERY, ...extras.delivery},
     method: extras.method,

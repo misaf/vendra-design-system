@@ -1,7 +1,7 @@
 // The studio's opening hours as text, from VF_STORE.hours on the store's clock (VF_STORE.timeZone).
-// The rules are commerce.openingStatus/hoursSummary/hoursExceptions; this file only words them.
+// The rules are openingStatus/hoursSummary/hoursExceptions; this file only words them.
 // Persian times use Persian digits, isolated so they stay left to right inside a sentence.
-import {commerce} from '../commerce/commerce.js';
+import {hoursSummary, openingStatus, hoursExceptions} from './opening-hours.js';
 import {VF_STORE} from './store-config.js';
 import {vfNow} from '../../platform/browser/environment.js';
 
@@ -28,7 +28,7 @@ const hoursDateName = (iso, fa) =>
 // The weekly hours in one line: "Daily 08:00–22:00", "Sat–Wed 08:00–22:00; Thu 10:00–18:00; Fri closed".
 export function vfHoursText(lang, hours = VF_STORE.hours) {
   const fa = lang === 'fa';
-  const groups = commerce.hoursSummary(hours);
+  const groups = hoursSummary(hours);
   return groups
     .map(({days, ranges}) => {
       const first = days[0],
@@ -57,7 +57,7 @@ export function vfHoursText(lang, hours = VF_STORE.hours) {
 // "Closed · opens 08:00 tomorrow", "Closed today for Nowruz · opens 12:00 tomorrow".
 export function vfOpeningStatus(lang, now = vfNow(), hours = VF_STORE.hours) {
   const fa = lang === 'fa';
-  const status = commerce.openingStatus(hours, now, VF_STORE.timeZone);
+  const status = openingStatus(hours, now, VF_STORE.timeZone);
   const label = status.exception?.label?.[fa ? 'fa' : 'en'] || '';
   const next = status.next;
   const when = !next
@@ -101,7 +101,7 @@ export function vfOpeningStatus(lang, now = vfNow(), hours = VF_STORE.hours) {
 // Special hours coming up within `days` days, one line each: "Nowruz, Sun 21 March: closed".
 export function vfHoursNotices(lang, now = vfNow(), days = 14, hours = VF_STORE.hours) {
   const fa = lang === 'fa';
-  return commerce.hoursExceptions(hours, days, now, VF_STORE.timeZone).map(item => {
+  return hoursExceptions(hours, days, now, VF_STORE.timeZone).map(item => {
     const label = item.label?.[fa ? 'fa' : 'en'];
     const date = hoursDateName(item.date, fa);
     const value =

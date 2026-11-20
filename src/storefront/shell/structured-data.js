@@ -9,7 +9,7 @@ import {vfRouteUrl} from './routing.js';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const SCHEMA = 'https://schema.org/';
-// The storefront's stock statuses (commerce.stockStatus) as schema.org availability.
+// The storefront's stock statuses (stockStatus in catalog/product-api.js) as schema.org availability.
 const AVAILABILITY = {
   in: 'InStock',
   low: 'LimitedAvailability',

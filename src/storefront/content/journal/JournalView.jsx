@@ -3,12 +3,12 @@ import React from 'react';
 import {Pagination} from '../../../design-system/components/Pagination/Pagination.jsx';
 import {SearchField} from '../../../design-system/components/SearchField/SearchField.jsx';
 import {asList} from '../../shell/ui/as-list.js';
-import {StorefrontJournalLayout} from './_components/StorefrontJournalLayout/StorefrontJournalLayout.jsx';
-import {StorefrontJournalHeading} from './_components/StorefrontJournalHeading/StorefrontJournalHeading.jsx';
-import {StorefrontJournalEmpty} from './_components/StorefrontJournalEmpty/StorefrontJournalEmpty.jsx';
-import {StorefrontJournalLoading} from './_components/StorefrontJournalLoading/StorefrontJournalLoading.jsx';
-import {StorefrontJournalFeatured} from './_components/StorefrontJournalFeatured/StorefrontJournalFeatured.jsx';
-import {StorefrontJournalStories} from './_components/StorefrontJournalStories/StorefrontJournalStories.jsx';
+import {StorefrontJournalLayout} from './components/StorefrontJournalLayout/StorefrontJournalLayout.jsx';
+import {StorefrontJournalHeading} from './components/StorefrontJournalHeading/StorefrontJournalHeading.jsx';
+import {StorefrontJournalEmpty} from './components/StorefrontJournalEmpty/StorefrontJournalEmpty.jsx';
+import {StorefrontJournalLoading} from './components/StorefrontJournalLoading/StorefrontJournalLoading.jsx';
+import {StorefrontJournalFeatured} from './components/StorefrontJournalFeatured/StorefrontJournalFeatured.jsx';
+import {StorefrontJournalStories} from './components/StorefrontJournalStories/StorefrontJournalStories.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
 
 export function View({v}) {

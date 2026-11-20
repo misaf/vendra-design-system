@@ -1,6 +1,6 @@
 // Store identity and contact details. Change these once, then run npm run build.
 // Localized fields use {en, fa}; phone numbers and URLs remain left-to-right.
-import {commerce} from '../commerce/commerce.js';
+import {storeFeatures} from './store-features.js';
 import {LOCALES, localeConfig, plural} from '../../design-system/utils/locales.js';
 import {vfOnServer} from '../../platform/browser/environment.js';
 import {vfRuntime} from '../../platform/browser/runtime.js';
@@ -12,9 +12,9 @@ export const VF_STORE = {
   /** @type {('en' | 'fa')[]} */
   languages: ['en', 'fa'],
   // Optional parts of the storefront: each id turns one on; leave one out to turn it off (its page,
-  // links and fields go with it). The ids: commerce.STORE_FEATURES in commerce.js.
+  // links and fields go with it). The ids: STORE_FEATURES in store-features.js.
   // Add-ons and the handwritten card's message follow VF_ADDONS in catalog.js.
-  /** @type {import('../commerce/commerce.js').StoreFeature[]} */
+  /** @type {import('./store-features.js').StoreFeature[]} */
   features: ['promoCodes', 'sameDay', 'weddings', 'journal', 'reminders', 'newsletter'],
   currency: 'IRT', // The active currency: a key in `currencies`.
   // Units per 1 Toman (prices are stored in Toman). Toman and Rial are fixed; the others are SAMPLE
@@ -82,7 +82,7 @@ export const VF_STORE = {
   // The store's IANA time zone: opening hours, delivery dates and same-day cut-offs follow its clock,
   // wherever the customer is.
   timeZone: 'Asia/Tehran',
-  // Opening hours on the store's clock (commerce OpeningHours). `week` lists runs of weekdays
+  // Opening hours on the store's clock (OpeningHours in opening-hours.d.ts). `week` lists runs of weekdays
   // (0 Sunday … 6 Saturday) with "HH:MM" times; a closing time at or before the opening time runs
   // past midnight. `exceptions` replace one date's hours (holidays): `closed: true` or their own
   // opens/closes, with an optional label. The Nowruz dates are SAMPLES.
@@ -128,8 +128,8 @@ export const VF_STORE = {
   },
   // How this store takes payment: each entry turns one method on, and the checkout lists them in this
   // order and starts on the first one the order can use (the balance, when it covers the order). Leave one out to turn it off (the account's Balance tab goes with `wallet`). Methods and
-  // their settings: commerce.PAYMENT_METHODS in commerce.js.
-  /** @type {import('../commerce/commerce.js').PaymentMethod[]} */
+  // their settings: PAYMENT_METHODS in checkout/payment-options.js.
+  /** @type {import('../checkout/payment-options.js').PaymentMethod[]} */
   paymentMethods: [
     {id: 'wallet'},
     {
@@ -148,7 +148,7 @@ export const VF_STORE = {
 // Each optional part of the storefront as on or off (vfFeatures().promoCodes…), read from
 // VF_STORE.features each time.
 export function vfFeatures() {
-  return commerce.storeFeatures(VF_STORE.features);
+  return storeFeatures(VF_STORE.features);
 }
 // Every language the storefront has copy for, by code: its tag, direction, digits, calendar and
 // switch label (the package's LOCALES). A new language adds its entry here, its code to

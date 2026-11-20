@@ -1,8 +1,6 @@
 // Sample storefront delivery rules. Amounts are in Toman; cut-offs use the store's time zone.
 // VF_API_DELIVERY_ZONES and VF_API_DELIVERY_SCHEDULE are sample responses shaped like the Vendra API
 // (DeliveryZone, DeliverySchedule); a live store replaces them with API data.
-// The rules themselves are in commerce.js; the vf*
-// functions below pass this store's data to them.
 // maxDistanceKm is the zone's reach from its center (default: the studio pin in store-config.js). The
 // delivery pin picks the smallest zone that reaches it; a pin beyond every zone is outside the delivery area.
 import {vfFindProduct} from '../catalog/catalog.js';
@@ -10,7 +8,16 @@ import {vfLineHasCard, vfLineToken, vfLineProductId} from '../cart/cart-lines.js
 import {vfValidLocation} from './location.js';
 import {VF_PROMOS} from '../pricing/promotions.js';
 import {VF_STORE, vfFeatures} from '../store/store-config.js';
-import {commerce} from '../commerce/commerce.js';
+import {zoneFromApi, zoneAt} from './delivery-zones.js';
+import {cutoffText, isoDate, openDay, deliverySlots, deliveryDays} from './delivery-window.js';
+import {fillText} from './delivery-copy.js';
+import {
+  phone as normalizePhone,
+  mobile as normalizeMobile,
+  isMobile
+} from '../../design-system/utils/input.js';
+import {freeDelivery, totals as calculateTotals} from '../pricing/order-totals.js';
+import {checkoutRequest} from '../checkout/checkout-request.js';
 import {vfNow} from '../../platform/browser/environment.js';
 
 // GET /api/delivery/zones
@@ -81,7 +88,7 @@ export const VF_API_DELIVERY_SCHEDULE = {
 
 // The storefront's zone object from an API DeliveryZone plus its extras.
 export function vfZoneFromApi(zone, extras = VF_DELIVERY_ZONE_EXTRAS) {
-  return commerce.zoneFromApi(zone, extras);
+  return zoneFromApi(zone, extras);
 }
 
 export const VF_ZONES = [...VF_API_DELIVERY_ZONES]
@@ -125,7 +132,7 @@ export const VF_DELIVERY = {
 };
 
 export function vfDeliveryCutoff(zone, persian) {
-  return commerce.cutoffText(zone.cutoff, persian);
+  return cutoffText(zone.cutoff, persian);
 }
 
 // "Same day before 18:00"; '' when the store doesn't deliver the same day.
@@ -137,7 +144,7 @@ export function vfDeliveryHint(zone, persian) {
 // Fills delivery placeholders in text from the API (FAQ answers, pages), so fees and cut-offs stay
 // current: {fee:<zone>}, {cutoff:<zone>} (zone keys as in VF_ZONES) and {freeDeliveryFrom}.
 export function vfStoreText(text, money, persian) {
-  return commerce.fillText(text, {
+  return fillText(text, {
     fee: id => money(vfZone(id).fee),
     cutoff: id => vfDeliveryCutoff(vfZone(id), persian),
     freeDeliveryFrom: () => money(VF_FREE_DELIVERY_THRESHOLD)
@@ -150,35 +157,33 @@ export function vfZone(id) {
 
 // The zone id for a delivery pin, or null when the pin is outside every zone.
 export function vfZoneAt(location) {
-  return commerce.zoneAt(location, VF_ZONES, VF_STORE.studio);
+  return zoneAt(location, VF_ZONES, VF_STORE.studio);
 }
 
 export function vfIsoDate(date) {
-  return commerce.isoDate(date);
+  return isoDate(date);
 }
 
 // The next VF_DELIVERY_DAYS days for a zone, starting tomorrow when same-day delivery is disabled.
 export function vfDeliveryDays(zoneId, now = vfNow(), lines = []) {
-  return commerce
-    .deliveryDays(
-      vfZone(zoneId).cutoff,
-      {
-        days: VF_DELIVERY_DAYS,
-        timeZone: VF_DELIVERY_TIME_ZONE,
-        soldOutDates: VF_SOLD_OUT_DATES,
-        sameDay: vfFeatures().sameDay && vfBagSameDay(lines)
-      },
-      now
-    )
-    .map(day => ({
-      ...day,
-      soldOut: day.soldOut || day.offset === VF_SAMPLE_SOLD_OUT_IN_DAYS,
-      noOpenSlots:
-        VF_SLOTS.length === 0 ||
-        (day.offset === 0 &&
-          !day.pastCutoff &&
-          vfDeliverySlots(day.iso, now).every(slot => slot.closed))
-    }));
+  return deliveryDays(
+    vfZone(zoneId).cutoff,
+    {
+      days: VF_DELIVERY_DAYS,
+      timeZone: VF_DELIVERY_TIME_ZONE,
+      soldOutDates: VF_SOLD_OUT_DATES,
+      sameDay: vfFeatures().sameDay && vfBagSameDay(lines)
+    },
+    now
+  ).map(day => ({
+    ...day,
+    soldOut: day.soldOut || day.offset === VF_SAMPLE_SOLD_OUT_IN_DAYS,
+    noOpenSlots:
+      VF_SLOTS.length === 0 ||
+      (day.offset === 0 &&
+        !day.pastCutoff &&
+        vfDeliverySlots(day.iso, now).every(slot => slot.closed))
+  }));
 }
 
 // Every configuration in a mixed bag must be ready for same-day delivery.
@@ -213,13 +218,13 @@ export function vfDeliverableOn(product, iso, now = vfNow()) {
 // The chosen day when it is still open, otherwise the first open day.
 export function vfDeliveryDate(delivery, now = vfNow(), lines = []) {
   const days = vfDeliveryDays(delivery.zone, now, lines).filter(day => !day.noOpenSlots);
-  return commerce.openDay(days, delivery.date);
+  return openDay(days, delivery.date);
 }
 
 // Every slot on a day, each marked closed when it is today and too close to its end.
 export function vfDeliverySlots(iso, now = vfNow()) {
   if (!iso) return [];
-  return commerce.deliverySlots(iso, VF_SLOTS, VF_SLOT_LEAD_MINUTES, now, VF_DELIVERY_TIME_ZONE);
+  return deliverySlots(iso, VF_SLOTS, VF_SLOT_LEAD_MINUTES, now, VF_DELIVERY_TIME_ZONE);
 }
 
 // A time choice belongs to its date and must still be open.
@@ -236,18 +241,18 @@ export function vfDeliveryChanged(delivery, now = vfNow(), lines = []) {
 }
 
 export function vfPhone(value) {
-  return commerce.phone(value);
+  return normalizePhone(value);
 }
 
 // An Iranian mobile as 09xxxxxxxxx however it was typed (+98…, 9…), or '' when it isn't one.
 // Forms validate with it, and store and compare numbers in this form.
 export function vfMobile(value) {
-  return commerce.mobile(value);
+  return normalizeMobile(value);
 }
 
 // Problems in the delivery details, in form order. Bag lines with a handwritten card need its message.
 export function vfErrors(delivery, lines = []) {
-  const mobile = value => !commerce.isMobile(value);
+  const mobile = value => !isMobile(value);
   const pinned = !delivery.noMap && vfValidLocation(delivery.location);
   return {
     name: !String(delivery.name || '').trim(),
@@ -265,7 +270,7 @@ export function vfErrors(delivery, lines = []) {
 
 // Whether a zone delivers free for this subtotal.
 export function vfFreeDelivery(zoneId, sub) {
-  return commerce.freeDelivery(zoneId, sub, {
+  return freeDelivery(zoneId, sub, {
     threshold: VF_FREE_DELIVERY_THRESHOLD,
     zones: VF_FREE_DELIVERY_ZONES
   });
@@ -279,7 +284,7 @@ export function vfCheckoutRequest(
   delivery,
   {method = 'card', last4 = '', ref = '', cartToken = ''} = {}
 ) {
-  return commerce.checkoutRequest(lines, delivery, {
+  return checkoutRequest(lines, delivery, {
     slots: VF_API_DELIVERY_SCHEDULE.slots,
     currencyCode: VF_STORE.currency || 'IRT',
     deliveryDate: delivery.date || vfDeliveryDate(delivery, new Date(), lines),
@@ -294,7 +299,7 @@ export function vfCheckoutRequest(
 // `balance` is the customer's balance when they pay from it (null otherwise): a large enough balance takes
 // the balance discount off the products, after any promo code (when the store takes them).
 export function vfTotals(lines, delivery, balance = null) {
-  return commerce.totals(
+  return calculateTotals(
     lines,
     {zone: vfZone(delivery.zone), promo: vfFeatures().promoCodes ? delivery.promo : '', balance},
     {

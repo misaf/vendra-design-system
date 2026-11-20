@@ -2,11 +2,11 @@
 import React from 'react';
 import {Alert} from '../../../design-system/components/Alert/Alert.jsx';
 import {asList} from '../../shell/ui/as-list.js';
-import {StorefrontPolicyLayout} from './_components/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx';
+import {StorefrontPolicyLayout} from './components/StorefrontPolicyLayout/StorefrontPolicyLayout.jsx';
 import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading.jsx';
-import {StorefrontPolicyNavigation} from './_components/StorefrontPolicyNavigation/StorefrontPolicyNavigation.jsx';
-import {StorefrontPolicyContents} from './_components/StorefrontPolicyContents/StorefrontPolicyContents.jsx';
-import {StorefrontPolicyDocument} from './_components/StorefrontPolicyDocument/StorefrontPolicyDocument.jsx';
+import {StorefrontPolicyNavigation} from './components/StorefrontPolicyNavigation/StorefrontPolicyNavigation.jsx';
+import {StorefrontPolicyContents} from './components/StorefrontPolicyContents/StorefrontPolicyContents.jsx';
+import {StorefrontPolicyDocument} from './components/StorefrontPolicyDocument/StorefrontPolicyDocument.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
 
 export function View({v}) {

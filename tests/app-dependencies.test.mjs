@@ -92,7 +92,7 @@ check(
   },
   /forbidden reusable UI dependency/
 );
-const routeComponent = 'src/storefront/example/_components/Receipt/Receipt.jsx';
+const routeComponent = 'src/storefront/example/components/Receipt/Receipt.jsx';
 check('route components can compose shared storefront UI', {
   [routeComponent]: "export {Label} from '@storefront/src/storefront/shell/components/Label';",
   'src/storefront/shell/components/Label/index.jsx': 'export const Label = () => null;'
@@ -149,7 +149,7 @@ check(
   'route components cannot import integration services',
   {
     [service]: '',
-    'src/storefront/example/_components/Receipt.jsx': `import '@storefront/src/platform/browser/integrations/api.js';`
+    'src/storefront/example/components/Receipt.jsx': `import '@storefront/src/platform/browser/integrations/api.js';`
   },
   /forbidden UI dependency/
 );

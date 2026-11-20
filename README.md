@@ -14,7 +14,9 @@ The [storefront UI](./docs/UI.md) owns Button, Input, Dialog, DatePicker, and th
 
 Tenant themes are generated from `src/design-system/tokens/tenants/<slug>.json`. The storefront theme generator in `src/design-system/tokens/tenant-theme.js` exposes `tenantCss`, `validate`, `checks`, and the design token helpers. It validates slugs, settings, and contrast before generating CSS.
 
-`commerce` holds the storefront rules as pure functions that take the tenant's data: delivery zones and days, totals with promo and balance discounts, the payment methods a store offers (`PAYMENT_METHODS`, `paymentOptions`: each is a feature the store turns on in its settings) and its other optional parts (`STORE_FEATURES`, `storeFeatures`: promo codes, same-day delivery, weddings, journal, reminders, newsletter), the Checkout request and adapters from Vendra API records (`productFromApi`, `orderFromApi`…). The reference templates run on the same functions. Pass the store's IANA `timeZone` in `commerce.deliveryDays` options and as the fifth argument of `commerce.deliverySlots` so dates, cut-offs and slot lead times use the store clock. Omission preserves device-local behavior; invalid zones throw `RangeError`. Opening hours follow the same clock: `commerce.openingStatus(hours, now, timeZone)` says whether the store is open and when that next changes, from weekly hours plus dated exceptions (holidays); `hoursSummary` groups the week for display and `hoursExceptions` lists special hours coming up. The sample store sets `VF_STORE.timeZone` (`Asia/Tehran`) and `VF_STORE.hours` in `src/storefront/store/store-config.js`; `VF_DELIVERY_TIME_ZONE` follows it.
+Storefront rules live with the capability that owns them. The [storefront architecture guide](./docs/STOREFRONT.md) maps delivery, pricing, checkout, and other capabilities to their folders. The guideline cards call the same rules through the `commerce` entry point.
+
+Pass the store's IANA `timeZone` in the options for `deliveryDays` and as the fifth argument to `deliverySlots` so dates, cutoffs, and slot lead times follow the store clock. Omission uses the device time zone, and invalid zones throw `RangeError`. Opening hours follow the same clock. `openingStatus` gives the next opening or closing time, `hoursSummary` groups the week for display, and `hoursExceptions` lists upcoming special hours. The reference tenant sets `VF_STORE.timeZone` (`Asia/Tehran`) and `VF_STORE.hours` in `src/storefront/store/store-config.js`.
 
 Wrap the app in `VendraProvider` with the page's locale. Components that name their own buttons (Dialog's close, Carousel's arrows, QuantityInput's −/+, DatePicker's calendar…) then use their English or Persian built-in wording (each component's own `messages.js`, so a component carries only its own words), and React Aria formats numbers and dates for that locale. Props still win; `messages` adds a language or changes wording. `navigate` (your router's push) makes the components' links navigate client-side:
 
@@ -78,7 +80,7 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 | Path | Contents |
 |---|---|
 | `src/app/` | Next.js routes, layouts, metadata, and global CSS. |
-| `src/storefront/` | Business capabilities with their rules, screens, styles, copy, and tests. |
+| `src/storefront/` | Business capabilities with their rules, screens, styles, copy, and tests. The `session/` folder coordinates state across routes, and `shell/` owns navigation and page layout. |
 | `src/communications/` | Customer language selection, email, SMS, WhatsApp, and previews. |
 | `src/design-system/` | Reusable controls, design tokens, tenant themes, fonts, and gallery. |
 | `src/platform/` | Laravel transport, browser integrations, tenant resolution, and locale parsing. |

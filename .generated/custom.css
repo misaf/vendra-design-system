@@ -560,7 +560,7 @@ html {
 }
 
 
-/* Source: src/storefront/delivery/_components/DeliverySlotPicker/DeliverySlotPicker.css */
+/* Source: src/storefront/delivery/components/DeliverySlotPicker/DeliverySlotPicker.css */
 @media (width < 768px) {
   .vf-bag-days .ag-choices {
     display: flex;

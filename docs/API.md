@@ -2,7 +2,7 @@
 
 The [Laravel order contract](./ORDER-CONTRACT.md) records the current pilot operations, backend gaps and typed adapters. The [live florist pilot audit](./PILOT-AUDIT.md#laravel-contract-findings) compares this snapshot with the Laravel source and records what to verify against the pilot deployment.
 
-The [OpenAPI snapshot](../tests/fixtures/vendra-openapi.json) captures the API Platform JSON-LD/Hydra contract used by the sample data. The [sample catalog](../src/storefront/catalog/catalog.js) uses records shaped like those responses, and adapters in `src/storefront/commerce/commerce.js` convert them for the storefront. `npm test` checks sample records and the checkout request against the snapshot through `tests/api-contract.test.mjs`.
+The [OpenAPI snapshot](../tests/fixtures/vendra-openapi.json) captures the API Platform JSON-LD/Hydra contract used by the sample data. The [sample catalog](../src/storefront/catalog/catalog.js) uses records shaped like those responses, and the adapters in `src/storefront/catalog/product-api.js` convert them for the storefront. `npm test` checks sample records and the checkout request against the snapshot through `tests/api-contract.test.mjs`.
 
 Part A is the state of this repo. Part B lists what the backend doesn't provide yet; those changes belong in the vendra backend.
 

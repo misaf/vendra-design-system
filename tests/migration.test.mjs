@@ -574,7 +574,7 @@ function page(name, c, props = {}) {
     // The rules: in the store's order, unknown ids dropped, each usable or not for this order.
     const options = json(
       vm.runInContext(
-        `commerce.paymentOptions([{id: 'cod', zones: ['central']}, {id: 'paypal'}, {id: 'wallet'},
+        `paymentOptions([{id: 'cod', zones: ['central']}, {id: 'paypal'}, {id: 'wallet'},
           {id: 'online'}], {zone: 'tehran', balance: 100, total: 500})`,
         store
       )
@@ -588,7 +588,7 @@ function page(name, c, props = {}) {
       ]
     );
     assert.equal(
-      vm.runInContext(`commerce.defaultPaymentMethod(${JSON.stringify(options)}, 'cod')`, store),
+      vm.runInContext(`defaultPaymentMethod(${JSON.stringify(options)}, 'cod')`, store),
       'online'
     );
     // Card-to-card only: no choice to make, its steps show; the bag, terms and account follow.
@@ -641,17 +641,14 @@ function page(name, c, props = {}) {
   {
     const {c: store} = environment();
     const json = value => JSON.parse(JSON.stringify(value));
-    assert.deepEqual(
-      json(vm.runInContext("commerce.storeFeatures(['journal', 'paypal'])", store)),
-      {
-        promoCodes: false,
-        sameDay: false,
-        weddings: false,
-        journal: true,
-        reminders: false,
-        newsletter: false
-      }
-    );
+    assert.deepEqual(json(vm.runInContext("storeFeatures(['journal', 'paypal'])", store)), {
+      promoCodes: false,
+      sameDay: false,
+      weddings: false,
+      journal: true,
+      reminders: false,
+      newsletter: false
+    });
     vm.runInContext(
       `VF_STORE.features = []; VF_STORE.languages = ['fa']; VF_STORE.whatsapp = null;
        VF_STORE.instagram = null; VF_STORE.paymentMethods = [{id: 'whatsapp'}, {id: 'online'}];`,

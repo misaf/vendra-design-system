@@ -4,7 +4,7 @@
 | --- | --- |
 | Reusable design-system components | `src/design-system/components/<Name>/` |
 | Storefront components shared across routes | `src/storefront/shell/components/` |
-| Components owned by a capability | That capability's `_components/` directory |
+| Components owned by a capability | That capability's `components/` directory |
 
 Keep implementation, declarations, styles, fixture, spec and README together in the component's folder. Use `npm run new:component -- Name` to scaffold a reusable component.
 

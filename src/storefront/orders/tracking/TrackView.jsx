@@ -1,15 +1,15 @@
 // StorefrontTrack: the page inside the storefront shell.
 import React from 'react';
 import {Alert} from '../../../design-system/components/Alert/Alert.jsx';
-import {StorefrontTrackLayout} from './_components/StorefrontTrackLayout/StorefrontTrackLayout.jsx';
+import {StorefrontTrackLayout} from './components/StorefrontTrackLayout/StorefrontTrackLayout.jsx';
 import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading.jsx';
-import {StorefrontTrackLookup} from './_components/StorefrontTrackLookup/StorefrontTrackLookup.jsx';
-import {StorefrontTrackProgress} from './_components/StorefrontTrackProgress/StorefrontTrackProgress.jsx';
-import {StorefrontTrackDeliveryPhoto} from './_components/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx';
-import {StorefrontTrackOrderDetails} from './_components/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx';
-import {StorefrontTrackOrderActions} from './_components/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx';
-import {StorefrontOrderSummaryCard} from '../../pricing/_components/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx';
-import {StorefrontTrackReorderDialog} from './_components/StorefrontTrackReorderDialog/StorefrontTrackReorderDialog.jsx';
+import {StorefrontTrackLookup} from './components/StorefrontTrackLookup/StorefrontTrackLookup.jsx';
+import {StorefrontTrackProgress} from './components/StorefrontTrackProgress/StorefrontTrackProgress.jsx';
+import {StorefrontTrackDeliveryPhoto} from './components/StorefrontTrackDeliveryPhoto/StorefrontTrackDeliveryPhoto.jsx';
+import {StorefrontTrackOrderDetails} from './components/StorefrontTrackOrderDetails/StorefrontTrackOrderDetails.jsx';
+import {StorefrontTrackOrderActions} from './components/StorefrontTrackOrderActions/StorefrontTrackOrderActions.jsx';
+import {StorefrontOrderSummaryCard} from '../../pricing/components/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx';
+import {StorefrontTrackReorderDialog} from './components/StorefrontTrackReorderDialog/StorefrontTrackReorderDialog.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
 
 export function View({v}) {

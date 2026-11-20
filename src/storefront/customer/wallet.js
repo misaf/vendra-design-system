@@ -4,7 +4,7 @@
 import {vfAccountLoad, vfAccountPhone, vfAccountSave} from './account-data.js';
 import {vfAmountFromInput} from '../pricing/formatting.js';
 import {VF_STORE} from '../store/store-config.js';
-import {commerce} from '../commerce/commerce.js';
+import {balanceDiscountOn, balanceDiscount} from '../pricing/order-totals.js';
 
 // {balance, history}; history is newest first: {id, kind: 'topup' | 'order', amount (negative for payments), at, order?}.
 export function vfWalletOf(account) {
@@ -23,12 +23,12 @@ export function vfWalletBalance() {
 
 // Paying from a balance of at least discountFrom earns the balance discount.
 export function vfBalanceDiscountOn(balance) {
-  return commerce.balanceDiscountOn(balance, VF_STORE.wallet);
+  return balanceDiscountOn(balance, VF_STORE.wallet);
 }
 
 // discountPercent of the products' price (after any promo code) when the balance earns it.
 export function vfBalanceDiscount(balance, products) {
-  return commerce.balanceDiscount(balance, products, VF_STORE.wallet);
+  return balanceDiscount(balance, products, VF_STORE.wallet);
 }
 
 // A top-up amount typed in the store's active currency, as Toman; '' when nothing is typed.

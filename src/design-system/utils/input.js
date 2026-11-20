@@ -17,3 +17,5 @@ export const mobile = value => {
   if (/^9\d{9}$/.test(digits)) digits = '0' + digits;
   return /^09\d{9}$/.test(digits) ? digits : '';
 };
+
+export const isMobile = value => mobile(value) !== '';

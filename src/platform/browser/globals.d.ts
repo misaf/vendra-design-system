@@ -6,7 +6,7 @@
 interface Window {
   // The runtime, exposed by the Next.js client entry for tests and QA.
   __vfRuntime?: import('./runtime.js').VfRuntime;
-  // The click-through site's page object (src/storefront/shell/session/useStorefrontSession.js), for tests.
+  // The click-through site's page object (src/storefront/session/useStorefrontSession.js), for tests.
   __vfSite?: any;
   // Leaflet, loaded on demand by src/storefront/delivery/location.js.
   L: any;

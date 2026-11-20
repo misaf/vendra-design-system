@@ -3,7 +3,7 @@
 import {createContext, Fragment, Suspense, useContext, useLayoutEffect, useState} from 'react';
 import Link from 'next/link';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
-import {useStorefrontSession} from '../../storefront/shell/session/useStorefrontSession.js';
+import {useStorefrontSession} from '../../storefront/session/useStorefrontSession.js';
 import {StorefrontPageContext} from '../../storefront/shell/ui/storefront-page.js';
 import {StorefrontLinkContext} from '../../storefront/shell/ui/StorefrontLink.jsx';
 import {Alert} from '../../design-system/components/Alert/Alert.jsx';

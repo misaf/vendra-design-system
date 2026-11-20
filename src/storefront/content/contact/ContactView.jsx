@@ -1,11 +1,11 @@
 // StorefrontContact: the page inside the storefront shell.
 import React from 'react';
 import {Alert} from '../../../design-system/components/Alert/Alert.jsx';
-import {StorefrontContactLayout} from './_components/StorefrontContactLayout/StorefrontContactLayout.jsx';
+import {StorefrontContactLayout} from './components/StorefrontContactLayout/StorefrontContactLayout.jsx';
 import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading.jsx';
-import {StorefrontContactDetails} from './_components/StorefrontContactDetails/StorefrontContactDetails.jsx';
-import {StorefrontContactFormControls} from './_components/StorefrontContactFormControls/StorefrontContactFormControls.jsx';
-import {StorefrontContactCompletion} from './_components/StorefrontContactCompletion/StorefrontContactCompletion.jsx';
+import {StorefrontContactDetails} from './components/StorefrontContactDetails/StorefrontContactDetails.jsx';
+import {StorefrontContactFormControls} from './components/StorefrontContactFormControls/StorefrontContactFormControls.jsx';
+import {StorefrontContactCompletion} from './components/StorefrontContactCompletion/StorefrontContactCompletion.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
 
 export function View({v}) {

@@ -3,9 +3,9 @@ import React from 'react';
 import {EmptyState} from '../../../design-system/components/EmptyState/EmptyState.jsx';
 import {SectionHeader} from '../../../design-system/components/SectionHeader/SectionHeader.jsx';
 import {asList} from '../ui/as-list.js';
-import {StorefrontNotfoundLayout} from './_components/StorefrontNotfoundLayout/StorefrontNotfoundLayout.jsx';
-import {StorefrontNotfoundActions} from './_components/StorefrontNotfoundActions/StorefrontNotfoundActions.jsx';
-import {StorefrontNotfoundProducts} from './_components/StorefrontNotfoundProducts/StorefrontNotfoundProducts.jsx';
+import {StorefrontNotfoundLayout} from './components/StorefrontNotfoundLayout/StorefrontNotfoundLayout.jsx';
+import {StorefrontNotfoundActions} from './components/StorefrontNotfoundActions/StorefrontNotfoundActions.jsx';
+import {StorefrontNotfoundProducts} from './components/StorefrontNotfoundProducts/StorefrontNotfoundProducts.jsx';
 import {Shell} from '../components/Shell.jsx';
 
 export function View({v}) {

@@ -3,13 +3,13 @@ import React from 'react';
 import {Alert} from '../../../design-system/components/Alert/Alert.jsx';
 import {ArchFrame} from '../../../design-system/components/ArchFrame/ArchFrame.jsx';
 import {asList} from '../../shell/ui/as-list.js';
-import {StorefrontWeddingsLayout} from './_components/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx';
-import {StorefrontWeddingsHeading} from './_components/StorefrontWeddingsHeading/StorefrontWeddingsHeading.jsx';
-import {StorefrontWeddingsServices} from './_components/StorefrontWeddingsServices/StorefrontWeddingsServices.jsx';
-import {StorefrontWeddingsStory} from './_components/StorefrontWeddingsStory/StorefrontWeddingsStory.jsx';
-import {StorefrontWeddingsInquiryIntro} from './_components/StorefrontWeddingsInquiryIntro/StorefrontWeddingsInquiryIntro.jsx';
-import {StorefrontWeddingsFormControls} from './_components/StorefrontWeddingsFormControls/StorefrontWeddingsFormControls.jsx';
-import {StorefrontWeddingsCompletion} from './_components/StorefrontWeddingsCompletion/StorefrontWeddingsCompletion.jsx';
+import {StorefrontWeddingsLayout} from './components/StorefrontWeddingsLayout/StorefrontWeddingsLayout.jsx';
+import {StorefrontWeddingsHeading} from './components/StorefrontWeddingsHeading/StorefrontWeddingsHeading.jsx';
+import {StorefrontWeddingsServices} from './components/StorefrontWeddingsServices/StorefrontWeddingsServices.jsx';
+import {StorefrontWeddingsStory} from './components/StorefrontWeddingsStory/StorefrontWeddingsStory.jsx';
+import {StorefrontWeddingsInquiryIntro} from './components/StorefrontWeddingsInquiryIntro/StorefrontWeddingsInquiryIntro.jsx';
+import {StorefrontWeddingsFormControls} from './components/StorefrontWeddingsFormControls/StorefrontWeddingsFormControls.jsx';
+import {StorefrontWeddingsCompletion} from './components/StorefrontWeddingsCompletion/StorefrontWeddingsCompletion.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
 
 export function View({v}) {

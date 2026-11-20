@@ -2,17 +2,18 @@
 // components, and formats a location.
 // Map tiles and the starting view are set in store-config.js (VF_STORE.map).
 import {VF_FA_DIGITS} from '../pricing/formatting.js';
-import {commerce} from '../commerce/commerce.js';
+import {validLocation, pinLocation} from '../../design-system/utils/coordinates.js';
+import {directionsLinks} from './delivery-zones.js';
 import {vfAssetBase} from '../../platform/browser/environment.js';
 import {VF_MAPS_APPS} from './location-messages.js';
 
 export function vfValidLocation(location) {
-  return commerce.validLocation(location);
+  return validLocation(location);
 }
 
 // Six decimals is about 10 cm: plenty for a front door, and keeps stored orders tidy.
 export function vfPinLocation(latlng) {
-  return commerce.pinLocation(latlng);
+  return pinLocation(latlng);
 }
 
 export function vfLocationText(location, fa) {
@@ -28,7 +29,7 @@ export function vfLocationText(location, fa) {
 // the page's language and ordered for it: Neshan and Balad first in Persian. [] without a valid point.
 export function vfDirections(location, lang) {
   const names = VF_MAPS_APPS[lang] || VF_MAPS_APPS.en;
-  return commerce.directionsLinks(location, lang).map(({app, href}) => ({
+  return directionsLinks(location, lang).map(({app, href}) => ({
     app,
     label: names[app],
     href

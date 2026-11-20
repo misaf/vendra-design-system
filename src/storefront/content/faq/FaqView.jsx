@@ -1,10 +1,10 @@
 // StorefrontFaq: the page inside the storefront shell.
 import React from 'react';
 import {asList} from '../../shell/ui/as-list.js';
-import {StorefrontFaqLayout} from './_components/StorefrontFaqLayout/StorefrontFaqLayout.jsx';
+import {StorefrontFaqLayout} from './components/StorefrontFaqLayout/StorefrontFaqLayout.jsx';
 import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading.jsx';
-import {StorefrontFaqQuestions} from './_components/StorefrontFaqQuestions/StorefrontFaqQuestions.jsx';
-import {StorefrontFaqContact} from './_components/StorefrontFaqContact/StorefrontFaqContact.jsx';
+import {StorefrontFaqQuestions} from './components/StorefrontFaqQuestions/StorefrontFaqQuestions.jsx';
+import {StorefrontFaqContact} from './components/StorefrontFaqContact/StorefrontFaqContact.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
 
 export function View({v}) {

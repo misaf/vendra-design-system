@@ -1,16 +1,16 @@
 // StorefrontPost: the page inside the storefront shell.
 import React from 'react';
 import {asList} from '../../../shell/ui/as-list.js';
-import {StorefrontPostLayout} from './_components/StorefrontPostLayout/StorefrontPostLayout.jsx';
-import {StorefrontPostLoading} from './_components/StorefrontPostLoading/StorefrontPostLoading.jsx';
-import {StorefrontPostMissing} from './_components/StorefrontPostMissing/StorefrontPostMissing.jsx';
-import {StorefrontPostHeading} from './_components/StorefrontPostHeading/StorefrontPostHeading.jsx';
-import {StorefrontPostBlocks} from './_components/StorefrontPostBlocks/StorefrontPostBlocks.jsx';
-import {StorefrontPostClassic} from './_components/StorefrontPostClassic/StorefrontPostClassic.jsx';
-import {StorefrontPostActions} from './_components/StorefrontPostActions/StorefrontPostActions.jsx';
-import {StorefrontPostSocial} from './_components/StorefrontPostSocial/StorefrontPostSocial.jsx';
-import {StorefrontPostProducts} from './_components/StorefrontPostProducts/StorefrontPostProducts.jsx';
-import {StorefrontPostRelated} from './_components/StorefrontPostRelated/StorefrontPostRelated.jsx';
+import {StorefrontPostLayout} from './components/StorefrontPostLayout/StorefrontPostLayout.jsx';
+import {StorefrontPostLoading} from './components/StorefrontPostLoading/StorefrontPostLoading.jsx';
+import {StorefrontPostMissing} from './components/StorefrontPostMissing/StorefrontPostMissing.jsx';
+import {StorefrontPostHeading} from './components/StorefrontPostHeading/StorefrontPostHeading.jsx';
+import {StorefrontPostBlocks} from './components/StorefrontPostBlocks/StorefrontPostBlocks.jsx';
+import {StorefrontPostClassic} from './components/StorefrontPostClassic/StorefrontPostClassic.jsx';
+import {StorefrontPostActions} from './components/StorefrontPostActions/StorefrontPostActions.jsx';
+import {StorefrontPostSocial} from './components/StorefrontPostSocial/StorefrontPostSocial.jsx';
+import {StorefrontPostProducts} from './components/StorefrontPostProducts/StorefrontPostProducts.jsx';
+import {StorefrontPostRelated} from './components/StorefrontPostRelated/StorefrontPostRelated.jsx';
 import {Shell} from '../../../shell/components/Shell.jsx';
 
 export function View({v}) {

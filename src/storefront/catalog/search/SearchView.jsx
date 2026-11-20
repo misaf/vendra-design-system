@@ -1,11 +1,11 @@
 // StorefrontSearch: the page inside the storefront shell.
 import React from 'react';
 import {asList} from '../../shell/ui/as-list.js';
-import {StorefrontSearchLayout} from './_components/StorefrontSearchLayout/StorefrontSearchLayout.jsx';
-import {StorefrontSearchControls} from './_components/StorefrontSearchControls/StorefrontSearchControls.jsx';
-import {StorefrontSearchPopular} from './_components/StorefrontSearchPopular/StorefrontSearchPopular.jsx';
-import {StorefrontSearchResults} from './_components/StorefrontSearchResults/StorefrontSearchResults.jsx';
-import {StorefrontSearchEmpty} from './_components/StorefrontSearchEmpty/StorefrontSearchEmpty.jsx';
+import {StorefrontSearchLayout} from './components/StorefrontSearchLayout/StorefrontSearchLayout.jsx';
+import {StorefrontSearchControls} from './components/StorefrontSearchControls/StorefrontSearchControls.jsx';
+import {StorefrontSearchPopular} from './components/StorefrontSearchPopular/StorefrontSearchPopular.jsx';
+import {StorefrontSearchResults} from './components/StorefrontSearchResults/StorefrontSearchResults.jsx';
+import {StorefrontSearchEmpty} from './components/StorefrontSearchEmpty/StorefrontSearchEmpty.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
 
 export function View({v}) {

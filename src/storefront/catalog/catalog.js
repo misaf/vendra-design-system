@@ -8,7 +8,8 @@
 // Amounts are in Toman. Sample products use locally stored AI-generated demonstration photos; the neutral placeholder remains a fallback.
 import {VF_API_PRODUCT_CATEGORIES} from './product-categories.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from './categories.js';
-import {commerce} from '../commerce/commerce.js';
+import {apiRecord, productFromApi} from './product-api.js';
+import {normalizeCode, searchIndex, matchesSearch} from './search-index.js';
 import {VF_STORE} from '../store/store-config.js';
 import {vfAssetBase, vfStoredValue} from '../../platform/browser/environment.js';
 export const VF_PRODUCT_PLACEHOLDER = 'assets/placeholders/product.svg';
@@ -262,13 +263,13 @@ export const VF_PRODUCT_EXTRAS = {
 
 // An API record by its IRI (e.g. /api/catalog/product-prices/201) from a sample list.
 export function vfApiRecord(list, iri) {
-  return commerce.apiRecord(list, iri);
+  return apiRecord(list, iri);
 }
 
 // The storefront's product object from an API Product, its price, photos and category, plus the
 // storefront-only extras.
 export function vfProductFromApi(product, sources = {}) {
-  return commerce.productFromApi(product, {
+  return productFromApi(product, {
     prices: sources.prices || VF_API_PRODUCT_PRICES,
     media: sources.media || VF_API_MULTIMEDIA,
     categories: sources.categories || VF_API_PRODUCT_CATEGORIES,
@@ -308,7 +309,7 @@ export const VF_ADDONS = [
 
 // Case, spaces, dashes and Persian or Arabic digits don't matter when a code is typed.
 export function vfNormalizeToken(text) {
-  return commerce.normalizeCode(text);
+  return normalizeCode(text);
 }
 
 // A product by its code, typed any way, or by its old slug (ivory, ivory-classic); null when unknown.
@@ -346,7 +347,7 @@ export function vfProductSub(product, lang = 'en') {
 }
 
 // A product photo for Picture, with its alt text in `lang`. `asset` is a URL or a photo
-// (commerce.imageFromApi); a relative URL is resolved against the asset base (vfAssetBase).
+// (imageFromApi in product-api.js); a relative URL is resolved against the asset base (vfAssetBase).
 export function vfProductImage(
   product,
   lang = 'en',
@@ -390,13 +391,13 @@ export function vfProductImages(product, lang = 'en') {
   );
 }
 
-// Each product's search index (commerce.searchIndex of its kind, description and category in both
+// Each product's search index (searchIndex of its kind, description and category in both
 // languages), built once per product rather than on every keystroke.
 const vfProductSearchIndexes = new WeakMap();
 function vfProductSearchIndex(product) {
   let index = vfProductSearchIndexes.get(product);
   if (index === undefined) {
-    index = commerce.searchIndex(
+    index = searchIndex(
       ['en', 'fa']
         .map(
           lang =>
@@ -416,14 +417,12 @@ function vfProductSearchIndex(product) {
 // The products a search finds (the search page and the counter presentation). A product code, typed
 // whole or in part (3 or more characters), finds its product; so do its kind and description, with
 // every word of the query in any order, however Persian is typed (Arabic ي/ك, half-spaces, diacritics,
-// digits: commerce.normalizeSearchText).
+// digits: normalizeSearchText in search-index.js).
 export function vfSearchProducts(text, products = VF_PRODUCTS) {
   const q = String(text || '').trim();
   const code = vfNormalizeToken(q);
   const byCode = p => code.length >= 3 && vfNormalizeToken(p.id).includes(code);
-  return q
-    ? products.filter(p => byCode(p) || commerce.matchesSearch(vfProductSearchIndex(p), q))
-    : [];
+  return q ? products.filter(p => byCode(p) || matchesSearch(vfProductSearchIndex(p), q)) : [];
 }
 
 // Each product's [English, Persian] detail text, from Product.description, keyed by product code.

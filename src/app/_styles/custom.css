@@ -5,7 +5,7 @@
 @import '../../storefront/shell/ui/collection-carousel.css';
 @import '../../storefront/customer/account/styles.css';
 @import '../../storefront/cart/bag/styles.css';
-@import '../../storefront/delivery/_components/DeliverySlotPicker/DeliverySlotPicker.css';
+@import '../../storefront/delivery/components/DeliverySlotPicker/DeliverySlotPicker.css';
 @import '../../storefront/checkout/order-checkout/styles.css';
 @import '../../storefront/content/contact/styles.css';
 @import '../../storefront/shell/error/styles.css';

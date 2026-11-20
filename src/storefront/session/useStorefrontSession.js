@@ -4,8 +4,8 @@ import {
   vfAccountPhone,
   vfClearPrivateSession,
   vfCustomerId
-} from '../../customer/account-data.js';
-import {vfProduct, vfProductIds} from '../../catalog/catalog.js';
+} from '../customer/account-data.js';
+import {vfProduct, vfProductIds} from '../catalog/catalog.js';
 import {
   vfLineItems,
   vfLineToken,
@@ -13,18 +13,18 @@ import {
   vfUndoCardAddition,
   vfLinesFromParam,
   vfSampleBag
-} from '../../cart/cart-lines.js';
+} from '../cart/cart-lines.js';
 import {
   vfLineQuantityMax,
   vfMergePriceChanges,
   vfReorderBag,
   vfRepriceLines
-} from '../../cart/cart-lines.js';
-import {VF_DELIVERY, vfMobile} from '../../delivery/delivery.js';
-import {VF_STORE, vfLanguage} from '../../store/store-config.js';
-import {vfCheckoutBlocked, vfCheckoutFallback} from '../../checkout/checkout-guard.js';
-import {vfCustomerState, vfEmptyCustomer, vfGuestCustomers} from '../../customer/customer-draft.js';
-import {vfPageTenant} from '../../../platform/tenant/tenant.js';
+} from '../cart/cart-lines.js';
+import {VF_DELIVERY, vfMobile} from '../delivery/delivery.js';
+import {VF_STORE, vfLanguage} from '../store/store-config.js';
+import {vfCheckoutBlocked, vfCheckoutFallback} from '../checkout/checkout-guard.js';
+import {vfCustomerState, vfEmptyCustomer, vfGuestCustomers} from '../customer/customer-draft.js';
+import {vfPageTenant} from '../../platform/tenant/tenant.js';
 import {
   VF_ROUTES,
   VF_ROUTE_EXTRA,
@@ -32,10 +32,10 @@ import {
   vfInApp,
   vfReadRoute,
   vfRouteUrl
-} from '../routing.js';
-import {vfOnServer, vfStoredValue} from '../../../platform/browser/environment.js';
-import {useLifecycle, usePageLogic} from '../page-state.js';
-import {vfRuntime} from '../../../platform/browser/runtime.js';
+} from '../shell/routing.js';
+import {vfOnServer, vfStoredValue} from '../../platform/browser/environment.js';
+import {useLifecycle, usePageLogic} from '../shell/page-state.js';
+import {vfRuntime} from '../../platform/browser/runtime.js';
 const VF_BAG0 = vfSampleBag();
 // One session for the whole site, whichever page it was opened on.
 const VF_SESSION = 'vendra-template:' + vfAppBase();

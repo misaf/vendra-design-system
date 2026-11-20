@@ -1,13 +1,13 @@
 // StorefrontSignin: the page inside the storefront shell.
 import React from 'react';
 import {Button} from '../../../design-system/components/Button/Button.jsx';
-import {StorefrontSigninLayout} from './_components/StorefrontSigninLayout/StorefrontSigninLayout.jsx';
+import {StorefrontSigninLayout} from './components/StorefrontSigninLayout/StorefrontSigninLayout.jsx';
 import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading.jsx';
-import {StorefrontSigninPhoneControls} from './_components/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx';
-import {StorefrontSigninCodeControls} from './_components/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx';
-import {StorefrontSigninResend} from './_components/StorefrontSigninResend/StorefrontSigninResend.jsx';
-import {StorefrontSigninPolicies} from './_components/StorefrontSigninPolicies/StorefrontSigninPolicies.jsx';
-import {StorefrontSigninCompletion} from './_components/StorefrontSigninCompletion/StorefrontSigninCompletion.jsx';
+import {StorefrontSigninPhoneControls} from './components/StorefrontSigninPhoneControls/StorefrontSigninPhoneControls.jsx';
+import {StorefrontSigninCodeControls} from './components/StorefrontSigninCodeControls/StorefrontSigninCodeControls.jsx';
+import {StorefrontSigninResend} from './components/StorefrontSigninResend/StorefrontSigninResend.jsx';
+import {StorefrontSigninPolicies} from './components/StorefrontSigninPolicies/StorefrontSigninPolicies.jsx';
+import {StorefrontSigninCompletion} from './components/StorefrontSigninCompletion/StorefrontSigninCompletion.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
 
 export function View({v}) {

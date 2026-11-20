@@ -36,7 +36,7 @@ Manual CI runs on other branches do not deploy. Pages deployments run one at a t
 
 ## A new component
 
-Put reusable UI in `src/design-system/components/<Name>/`, UI shared by storefront routes in `src/storefront/shell/components/`, and feature-owned UI in the capability’s `_components/` directory. See [Vendra UI ownership](docs/UI.md).
+Put reusable UI in `src/design-system/components/<Name>/`, UI shared by storefront routes in `src/storefront/shell/components/`, and feature-owned UI in the capability’s `components/` directory. See [Vendra UI ownership](docs/UI.md).
 
 ```sh
 npm run new:component -- Name           # component, types, CSS, README, fixture and spec

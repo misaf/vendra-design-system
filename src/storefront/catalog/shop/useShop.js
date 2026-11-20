@@ -8,7 +8,7 @@ import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {VF_STORE, vfFeatures} from '../../store/store-config.js';
 import {VF_CATEGORY_COPY, VF_SHOP_OCCASIONS, VF_SHOP_OCCASION_COPY} from '../categories.js';
 import {vfDayMonth, vfDayName} from '../../delivery/time.js';
-import {commerce} from '../../commerce/commerce.js';
+import {page as pageItems} from '../pagination.js';
 import {useLifecycle, usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 import {vfSelectItem, vfShowList} from '../../../platform/browser/list-tracking.js';
@@ -107,7 +107,7 @@ function vals(page) {
     .filter(p => s.chips.every(id => VF_CHIPS.find(c => c[0] === id)[1](p)));
   if (s.sort === 'low') list = [...list].sort((a, b) => a.price - b.price);
   if (s.sort === 'high') list = [...list].sort((a, b) => b.price - a.price);
-  const paged = commerce.page(list, route.page, VF_STORE.shopPageSize);
+  const paged = pageItems(list, route.page, VF_STORE.shopPageSize);
   vfShowList(page, 'shop', demo ? [] : paged.items);
   const activeFilters = [
     ...(s.occasion !== 'all'

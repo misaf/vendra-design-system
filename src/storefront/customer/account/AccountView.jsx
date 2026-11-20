@@ -4,17 +4,17 @@ import {Alert} from '../../../design-system/components/Alert/Alert.jsx';
 import {Button} from '../../../design-system/components/Button/Button.jsx';
 import {Tabs} from '../../../design-system/components/Tabs/Tabs.jsx';
 import {asList} from '../../shell/ui/as-list.js';
-import {StorefrontAccountLayout} from './_components/StorefrontAccountLayout/StorefrontAccountLayout.jsx';
-import {StorefrontAccountOrders} from './_components/StorefrontAccountOrders/StorefrontAccountOrders.jsx';
-import {StorefrontAccountSaved} from './_components/StorefrontAccountSaved/StorefrontAccountSaved.jsx';
-import {StorefrontAccountAddresses} from './_components/StorefrontAccountAddresses/StorefrontAccountAddresses.jsx';
-import {StorefrontAccountReminders} from './_components/StorefrontAccountReminders/StorefrontAccountReminders.jsx';
-import {StorefrontAccountProfile} from './_components/StorefrontAccountProfile/StorefrontAccountProfile.jsx';
-import {StorefrontAccountAddressEditor} from './_components/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx';
-import {StorefrontAccountReminderEditor} from './_components/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx';
-import {StorefrontAccountEditorDialog} from './_components/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx';
+import {StorefrontAccountLayout} from './components/StorefrontAccountLayout/StorefrontAccountLayout.jsx';
+import {StorefrontAccountOrders} from './components/StorefrontAccountOrders/StorefrontAccountOrders.jsx';
+import {StorefrontAccountSaved} from './components/StorefrontAccountSaved/StorefrontAccountSaved.jsx';
+import {StorefrontAccountAddresses} from './components/StorefrontAccountAddresses/StorefrontAccountAddresses.jsx';
+import {StorefrontAccountReminders} from './components/StorefrontAccountReminders/StorefrontAccountReminders.jsx';
+import {StorefrontAccountProfile} from './components/StorefrontAccountProfile/StorefrontAccountProfile.jsx';
+import {StorefrontAccountAddressEditor} from './components/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx';
+import {StorefrontAccountReminderEditor} from './components/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx';
+import {StorefrontAccountEditorDialog} from './components/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx';
 import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading.jsx';
-import {StorefrontAccountBalancePanel} from './_components/StorefrontAccountBalancePanel/StorefrontAccountBalancePanel.jsx';
+import {StorefrontAccountBalancePanel} from './components/StorefrontAccountBalancePanel/StorefrontAccountBalancePanel.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
 
 export function View({v}) {

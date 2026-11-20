@@ -29,8 +29,7 @@ function exposesMain(file, visited = new Set()) {
   for (const match of code.matchAll(/import\s*\{([^}]+)\}\s*from ['"]([^'"]+\.jsx)['"]/g)) {
     const importedFile = path.resolve(path.dirname(file), match[2]);
     const source = path.relative(root, importedFile).split(path.sep).join('/');
-    if (!source.includes('/_components/') && !source.startsWith('src/storefront/shell/components/'))
-      continue;
+    if (!source.startsWith('src/storefront/') || !source.includes('/components/')) continue;
     for (const imported of match[1].split(',')) {
       const [name, localName = name] = imported.trim().split(/\s+as\s+/);
       if (new RegExp('<' + localName + '\\b').test(code) && exposesMain(importedFile, visited))
@@ -43,7 +42,7 @@ function exposesMain(file, visited = new Set()) {
 let parsed = 0;
 for (const [name, folder] of Object.entries({
   ...routeFolders,
-  site: 'src/storefront/shell/session'
+  site: 'src/storefront/session'
 })) {
   const script = pageScript(name);
   if (name !== 'site')
@@ -64,7 +63,7 @@ for (const [name, folder] of Object.entries({
       values.sums.at(-1).value,
       'Sticky action total must match the order summary'
     );
-  if (folder === 'src/storefront/shell/session') {
+  if (folder === 'src/storefront/session') {
     // A bag and a shortlist handed over from the counter join the visitor's own, once.
     {
       const {ctx: hc, history: handHistory} = context();

@@ -1,14 +1,14 @@
 // StorefrontHome: the page inside the storefront shell.
 import React from 'react';
 import {asList} from '../../shell/ui/as-list.js';
-import {StorefrontHomeLayout} from './_components/StorefrontHomeLayout/StorefrontHomeLayout.jsx';
-import {StorefrontHomeCategories} from './_components/StorefrontHomeCategories/StorefrontHomeCategories.jsx';
-import {StorefrontHomeFeatured} from './_components/StorefrontHomeFeatured/StorefrontHomeFeatured.jsx';
-import {StorefrontHomeOccasions} from './_components/StorefrontHomeOccasions/StorefrontHomeOccasions.jsx';
-import {StorefrontHomeStudio} from './_components/StorefrontHomeStudio/StorefrontHomeStudio.jsx';
-import {StorefrontHomeWeddings} from './_components/StorefrontHomeWeddings/StorefrontHomeWeddings.jsx';
-import {StorefrontHomeJournal} from './_components/StorefrontHomeJournal/StorefrontHomeJournal.jsx';
-import {StorefrontHomeNewsletter} from './_components/StorefrontHomeNewsletter/StorefrontHomeNewsletter.jsx';
+import {StorefrontHomeLayout} from './components/StorefrontHomeLayout/StorefrontHomeLayout.jsx';
+import {StorefrontHomeCategories} from './components/StorefrontHomeCategories/StorefrontHomeCategories.jsx';
+import {StorefrontHomeFeatured} from './components/StorefrontHomeFeatured/StorefrontHomeFeatured.jsx';
+import {StorefrontHomeOccasions} from './components/StorefrontHomeOccasions/StorefrontHomeOccasions.jsx';
+import {StorefrontHomeStudio} from './components/StorefrontHomeStudio/StorefrontHomeStudio.jsx';
+import {StorefrontHomeWeddings} from './components/StorefrontHomeWeddings/StorefrontHomeWeddings.jsx';
+import {StorefrontHomeJournal} from './components/StorefrontHomeJournal/StorefrontHomeJournal.jsx';
+import {StorefrontHomeNewsletter} from './components/StorefrontHomeNewsletter/StorefrontHomeNewsletter.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
 
 export function View({v}) {

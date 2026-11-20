@@ -13,7 +13,8 @@ Start at the feature you want to change. Next.js route files in `src/app/` selec
 | Orders and tracking | `src/storefront/orders/` |
 | Journal, policy, FAQ, contact, and weddings | `src/storefront/content/` |
 | In-store presentation | `src/storefront/presentation/` |
-| Header, footer, navigation, and session coordination | `src/storefront/shell/` |
+| Header, footer, and navigation | `src/storefront/shell/` |
+| State shared by cart, customer, and checkout across routes | `src/storefront/session/` |
 | Laravel transport and browser integrations | `src/platform/` |
 
 Route groups are omitted from public URLs. The checkout group serves `/en/bag/` and `/en/checkout/`. The root document mounts the session coordinator above the locale segment, so draft state survives route and language changes.
@@ -26,11 +27,11 @@ Keep English and Persian keys and list shapes in sync in `copy.js`. Unit tests c
 
 ## Business capabilities
 
-Use `src/storefront/<capability>/` for the rules, sample data, and shared bilingual copy a capability owns. For example, change cutoffs and slot availability in `delivery/delivery-window.js`, total and discount calculations in `pricing/order-totals.js`, and opening hours in `store/opening-hours.js`. Prefer importing the owning module for new code. The `commerce/commerce.js` entry composes the rules used by the storefront and the guideline cards.
+Use `src/storefront/<capability>/` for the rules, sample data, and shared bilingual copy a capability owns. For example, change cutoffs and slot availability in `delivery/delivery-window.js`, total and discount calculations in `pricing/order-totals.js`, and opening hours in `store/opening-hours.js`. Import rules and types from the owning capability. The guideline cards use `commerce/commerce.js` to access those same rules.
 
 The import checker allows capability modules to use each other, platform helpers, pure design-system utilities, and generated tenant data. Browser services may use these capabilities. Reusable controls and presentational route components receive business data through props. `npm test` checks these import boundaries and detects cycles.
 
-**Adding a page:** add a folder and `page.tsx` in the appropriate `src/app/[locale]/` route group. Keep the screen, state, copy, styles, and tests with the owning capability under `src/storefront/`. Register the storefront URL in `src/storefront/shell/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
+**Adding a page:** add a folder and `page.tsx` in the appropriate `src/app/[locale]/` route group. Keep the screen, state, copy, styles, and tests with the owning capability under `src/storefront/`. Place feature-owned UI in its `components/` directory. Register the storefront URL in `src/storefront/shell/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
 
 ## Commands
 

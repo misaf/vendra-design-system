@@ -10,7 +10,7 @@ const repo = path.resolve(import.meta.dirname, '..');
 
 // Preserve browser fixture coverage as route components move next to their routes.
 const uiRoots = [
-  ...Object.values(routeFolders).map(folder => path.join(repo, folder, '_components')),
+  ...Object.values(routeFolders).map(folder => path.join(repo, folder, 'components')),
   path.join(repo, 'components/storefront')
 ];
 const grandfathered = new Set(storefrontComponentsWithoutSpecs);

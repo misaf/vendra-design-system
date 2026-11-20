@@ -1,6 +1,6 @@
 // Shared Persian digits and currency formatting, on the package's format helpers (utils/format.js).
 import {VF_STORE} from '../store/store-config.js';
-import {commerce} from '../commerce/commerce.js';
+import {latin} from '../../design-system/utils/input.js';
 import {format} from '../../design-system/utils/format.js';
 // Separates the parts of a line of details. Persian uses its comma: a raised dot beside Persian
 // digits reads as zero (۰), so «جمع · ۱» looks like ten. Takes the language or `fa` as a boolean.
@@ -8,7 +8,7 @@ export const vfSeparator = lang => (lang === true || lang === 'fa' ? '، ' : ' �
 export const VF_FA_DIGITS = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
 // Persian or Arabic digits typed into a field, as Latin digits; null and undefined become ''.
 export function vfLatin(value) {
-  return commerce.latin(value);
+  return latin(value);
 }
 // The active currency's entry in the store's table ({rate, decimals, symbol, en, fa}).
 const vfCurrency = () => VF_STORE.currencies[VF_STORE.currency];

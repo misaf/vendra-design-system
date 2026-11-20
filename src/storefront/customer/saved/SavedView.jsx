@@ -2,11 +2,11 @@
 import React from 'react';
 import {SectionHeader} from '../../../design-system/components/SectionHeader/SectionHeader.jsx';
 import {asList} from '../../shell/ui/as-list.js';
-import {StorefrontSavedLayout} from './_components/StorefrontSavedLayout/StorefrontSavedLayout.jsx';
-import {StorefrontSavedRemovalNotice} from './_components/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx';
-import {StorefrontSavedResults} from './_components/StorefrontSavedResults/StorefrontSavedResults.jsx';
-import {StorefrontSavedEmpty} from './_components/StorefrontSavedEmpty/StorefrontSavedEmpty.jsx';
-import {StorefrontProductAdded} from '../../catalog/product/_components/StorefrontProductAdded/StorefrontProductAdded.jsx';
+import {StorefrontSavedLayout} from './components/StorefrontSavedLayout/StorefrontSavedLayout.jsx';
+import {StorefrontSavedRemovalNotice} from './components/StorefrontSavedRemovalNotice/StorefrontSavedRemovalNotice.jsx';
+import {StorefrontSavedResults} from './components/StorefrontSavedResults/StorefrontSavedResults.jsx';
+import {StorefrontSavedEmpty} from './components/StorefrontSavedEmpty/StorefrontSavedEmpty.jsx';
+import {StorefrontProductAdded} from '../../catalog/product/components/StorefrontProductAdded/StorefrontProductAdded.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
 
 export function View({v}) {

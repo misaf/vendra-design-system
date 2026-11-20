@@ -15,9 +15,10 @@ const cardCompatibility = gallery + 'card-runtime.js';
 const isReusableUi = file => file.startsWith(uiFolder + '/') && !file.startsWith(gallery);
 const isStorefrontUi = file => file.startsWith(shell + 'components/');
 const isPresentational = file =>
-  (file.startsWith(storefront) && file.includes('/_components/')) ||
-  (file.startsWith(shell + 'components/') &&
-    file.slice((shell + 'components/').length).includes('/'));
+  file.startsWith(storefront) &&
+  (isStorefrontUi(file)
+    ? file.slice((shell + 'components/').length).includes('/')
+    : file.includes('/components/'));
 const isUiHelper = file => file.startsWith(shell + 'ui/');
 const isDomain = file =>
   file === shell + 'shell.js' ||

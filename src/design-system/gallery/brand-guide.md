@@ -230,7 +230,7 @@ All text comes in through props (no hard-coded copy). Numbers are passed pre-loc
 **Helpers** (not components)
 - `src/design-system/utils/cx.js` → `cx(...names)`: joins class names and skips empty values.
 - `src/design-system/utils/format.js` → `.format`: `CURRENCIES` (the fixed ones: Toman and Rial), `money(n, {currency, lang, currencies})` (throws for a currency without a rate), `number()`. An ES module: `import {format}` from the package; the storefront imports it.
-- `src/storefront/commerce/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The storefront imports it.
+- `src/storefront/commerce/commerce.js` → `.commerce`: storefront rules as pure functions taking the tenant's data: delivery zones, days and slots, totals with promo and balance discounts, summary rows, text placeholders, the Checkout request and Vendra API adapters. The gallery uses this entry point to demonstrate rules from the owning storefront capabilities.
 - `src/design-system/utils/dates.js` → `.dates`: `j2g`, `g2j`, `fullDate`, `dayMonth`, `monthNames`, `iso`/`fromIso`, `digits`. An ES module, like `format.js`.
 - `src/storefront/shell/seo.js` → `VF_SEO` and `src/platform/browser/page-focus.js` → `VF_NAV`: storefront modules; see *Routing & URLs* and *Structured data*.
 - `src/communications/templates/email/email-templates.js` → `VF_EMAIL` (an ES module export, as is `VF_NOTIFY` from `notifications.js`): `render(event, customer, vars, order)`. Theme it with `vars.theme` = `'default'`, a tenant slug or the palette from `VF_EMAIL.themeFromCSS(el)`.

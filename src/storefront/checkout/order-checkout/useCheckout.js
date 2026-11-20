@@ -10,7 +10,7 @@ import {vfAccountLocale, vfAccountPhone, vfCustomerId} from '../../customer/acco
 import {vfProductImage} from '../../catalog/catalog.js';
 import {vfCardMessages, vfLineItems, vfLineToken, vfSampleBag} from '../../cart/cart-lines.js';
 import {vfLineAvailable, vfLineQuantityValid, vfRepriceLines} from '../../cart/cart-lines.js';
-import {commerce} from '../../commerce/commerce.js';
+import {paymentOptions, defaultPaymentMethod} from '../payment-options.js';
 import {
   VF_DELIVERY,
   vfCheckoutRequest,
@@ -135,7 +135,7 @@ function vals(page) {
   const balanceTotals = vfTotals(items, delivery, balance);
   const canUseBalance = balance != null && balance >= balanceTotals.total;
   // The methods this store offers (VF_STORE.paymentMethods), each usable for this order or not.
-  const options = commerce.paymentOptions(vfPaymentMethods(), {
+  const options = paymentOptions(vfPaymentMethods(), {
     zone: delivery.zone,
     balance,
     total: balanceTotals.total
@@ -144,7 +144,7 @@ function vals(page) {
   const usable = id => options.some(option => option.id === id && option.available);
   // After a failed payment or order: the first usable method that isn't the one that failed.
   const otherThan = id => (options.find(option => option.available && option.id !== id) || {id}).id;
-  const method = order ? order.method || 'card' : commerce.defaultPaymentMethod(options, s.method),
+  const method = order ? order.method || 'card' : defaultPaymentMethod(options, s.method),
     P = C.migration,
     PW = P.wallet;
   const apiFailure = s.apiFailure;

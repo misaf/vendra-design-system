@@ -1,10 +1,13 @@
-// Search text (src/storefront/commerce/commerce.js): Persian typed any way finds what is indexed.
+// Search text (src/storefront/catalog/search-index.js): Persian typed any way finds what is indexed.
 import assert from 'node:assert/strict';
-import {commerce} from '../src/storefront/commerce/commerce.js';
+import {
+  normalizeSearchText,
+  searchIndex,
+  matchesSearch
+} from '../src/storefront/catalog/search-index.js';
 import {VF_PRODUCTS, vfSearchProducts} from '../src/storefront/catalog/catalog.js';
 import {VF_POSTS} from '../src/storefront/content/journal-content.js';
 
-const {normalizeSearchText, searchIndex, matchesSearch} = commerce;
 const finds = (text, query) => matchesSearch(searchIndex(text), query);
 
 // Arabic letters as their Persian forms.

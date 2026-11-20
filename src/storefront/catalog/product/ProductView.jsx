@@ -4,16 +4,16 @@ import {Breadcrumb} from '../../../design-system/components/Breadcrumb/Breadcrum
 import {ErrorBoundary} from '../../../design-system/components/ErrorBoundary/ErrorBoundary.jsx';
 import {ToastRegion} from '../../../design-system/components/ToastRegion/ToastRegion.jsx';
 import {asList} from '../../shell/ui/as-list.js';
-import {StorefrontProductLayout} from './_components/StorefrontProductLayout/StorefrontProductLayout.jsx';
-import {StorefrontProductGallery} from './_components/StorefrontProductGallery/StorefrontProductGallery.jsx';
-import {StorefrontProductHeading} from './_components/StorefrontProductHeading/StorefrontProductHeading.jsx';
-import {StorefrontProductConfiguration} from './_components/StorefrontProductConfiguration/StorefrontProductConfiguration.jsx';
-import {StorefrontProductPurchase} from './_components/StorefrontProductPurchase/StorefrontProductPurchase.jsx';
-import {StorefrontProductCare} from './_components/StorefrontProductCare/StorefrontProductCare.jsx';
-import {StorefrontProductAdded} from './_components/StorefrontProductAdded/StorefrontProductAdded.jsx';
-import {StorefrontProductSticky} from './_components/StorefrontProductSticky/StorefrontProductSticky.jsx';
+import {StorefrontProductLayout} from './components/StorefrontProductLayout/StorefrontProductLayout.jsx';
+import {StorefrontProductGallery} from './components/StorefrontProductGallery/StorefrontProductGallery.jsx';
+import {StorefrontProductHeading} from './components/StorefrontProductHeading/StorefrontProductHeading.jsx';
+import {StorefrontProductConfiguration} from './components/StorefrontProductConfiguration/StorefrontProductConfiguration.jsx';
+import {StorefrontProductPurchase} from './components/StorefrontProductPurchase/StorefrontProductPurchase.jsx';
+import {StorefrontProductCare} from './components/StorefrontProductCare/StorefrontProductCare.jsx';
+import {StorefrontProductAdded} from './components/StorefrontProductAdded/StorefrontProductAdded.jsx';
+import {StorefrontProductSticky} from './components/StorefrontProductSticky/StorefrontProductSticky.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
-import {StorefrontProductRecent} from './_components/StorefrontProductRecent/StorefrontProductRecent.jsx';
+import {StorefrontProductRecent} from './components/StorefrontProductRecent/StorefrontProductRecent.jsx';
 
 export function View({v}) {
   return (

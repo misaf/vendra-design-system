@@ -1,213 +1,84 @@
 import type {LatLng} from '../../design-system/utils/coordinates.js';
 import type {Stock} from '../../design-system/utils/stock.js';
+import type {
+  normalizeCode,
+  normalizeSearchText,
+  searchIndex,
+  matchesSearch
+} from '../catalog/search-index.js';
+import type {directionsLinks, distanceKm, zoneAt, zoneFromApi} from '../delivery/delivery-zones.js';
+import type {page} from '../catalog/pagination.js';
+import type {fillText} from '../delivery/delivery-copy.js';
+import type {apiRecord, stockStatus, imageFromApi, productFromApi} from '../catalog/product-api.js';
+import type {lineFromApi} from '../cart/order-line-api.js';
+import type {ORDER_STATUS, orderFromApi} from '../orders/order-api.js';
+import type {STORE_FEATURES, storeFeatures} from '../store/store-features.js';
+import type {
+  PAYMENT_METHODS,
+  paymentOptions,
+  defaultPaymentMethod
+} from '../checkout/payment-options.js';
+import type {checkoutRequest} from '../checkout/checkout-request.js';
+
+import type {
+  isoDate,
+  cutoffText,
+  deliveryDays,
+  openDay,
+  deliverySlots,
+  openSlot
+} from '../delivery/delivery-window.js';
+import type {openingStatus, hoursSummary, hoursExceptions} from '../store/opening-hours.js';
+import type {
+  promoCode,
+  freeDelivery,
+  promoCheck,
+  discount,
+  balanceDiscountOn,
+  balanceDiscount,
+  totals,
+  summaryRows
+} from '../pricing/order-totals.js';
+
 export type {LatLng, Stock};
+export type {DeliveryDay, SlotHours, DeliverySlotState} from '../delivery/delivery-window.js';
+export type {
+  OpeningRange,
+  OpeningException,
+  OpeningHours,
+  OpeningStatus,
+  OpeningGroup
+} from '../store/opening-hours.js';
+export type {
+  Promo,
+  PromoResult,
+  BalanceRules,
+  FreeDeliveryRules,
+  TotalsRules,
+  Totals,
+  SummaryRow,
+  SummaryLabels
+} from '../pricing/order-totals.js';
+export type {DirectionsApp, Zone} from '../delivery/delivery-zones.js';
+export type {ApiRecord, ApiPhoto} from '../catalog/product-api.js';
+export type {Size, Addon} from '../cart/order-line-api.js';
+export type {StoreFeature} from '../store/store-features.js';
+export type {PaymentMethodId, PaymentMethod, PaymentOption} from '../checkout/payment-options.js';
+export type {CheckoutRequest, DeliverySlot} from '../checkout/checkout-request.js';
 
-export type DirectionsApp = 'neshan' | 'balad' | 'google';
-
-/** A delivery zone as the storefront uses it (see zoneFromApi). */
-export interface Zone {
-  /** The storefront's key, e.g. 'central'. */
-  id: string;
-  apiId?: number;
-  /** Delivery fee in Toman. */
-  fee: number;
-  /** Same-day cut-off, "18:00". */
-  cutoff: string;
-  /** Reach in km from `center`, or from the studio. */
-  km: number;
-  center?: LatLng;
-  en: string;
-  fa: string;
-}
-export interface DeliveryDay {
-  iso: string;
-  date: Date;
-  offset: number;
-  soldOut: boolean;
-  pastCutoff: boolean;
-}
-/** A delivery slot's start and end hour, e.g. {start: '08', end: '12'}. */
-export interface SlotHours {
-  start: string;
-  end: string;
-}
-/** A product size; `price` is added to the product's price. */
-export interface Size {
-  id: string;
-  price: number;
-  name: Record<'en' | 'fa', string>;
-  detail: Record<'en' | 'fa', string>;
-}
-/** An extra a product can take, such as a handwritten card. */
-export interface Addon {
-  id: string;
-  price: number;
-  name: Record<'en' | 'fa', string>;
-}
-export interface DeliverySlotState {
-  start: string;
-  end: string;
-  closed: boolean;
-}
-/** One run of opening hours: weekdays (0 Sunday … 6 Saturday) and "HH:MM" times on the store's clock.
- * A `closes` at or before `opens` runs past midnight; "24:00" is midnight. */
-export interface OpeningRange {
-  days: number[];
-  opens: string;
-  closes: string;
-}
-/** Hours on one ISO date that replace the weekly hours: `closed`, or its own opens/closes. */
-export interface OpeningException {
-  date: string;
-  closed?: boolean;
-  opens?: string;
-  closes?: string;
-  /** What the day is, e.g. {en: 'Nowruz', fa: 'نوروز'}. */
-  label?: Record<'en' | 'fa', string>;
-}
-export interface OpeningHours {
-  week: OpeningRange[];
-  exceptions?: OpeningException[];
-}
-export interface OpeningStatus {
-  open: boolean;
-  /** When the store next opens or closes; null when nothing changes within a week. */
-  next: {iso: string; offset: number; time: string} | null;
-  /** Today's exception, when there is one. */
-  exception: OpeningException | null;
-}
-export interface OpeningGroup {
-  days: number[];
-  /** Empty when closed. */
-  ranges: {opens: string; closes: string}[];
-}
-export interface Promo {
-  code: string;
-  percent: number;
-  /** Smallest subtotal the code accepts. */
-  min: number;
-}
-export type PromoResult = {promo: Promo} | {error: 'unknown'} | {error: 'min'; min: number};
-export interface BalanceRules {
-  discountFrom: number;
-  discountPercent: number;
-}
-export interface FreeDeliveryRules {
-  threshold: number;
-  /** Zone keys that deliver free above the threshold. */
-  zones: string[];
-}
-export interface TotalsRules {
-  freeDelivery?: FreeDeliveryRules;
-  promos?: Promo[];
-  wallet?: BalanceRules;
-}
-export interface Totals {
-  sub: number;
-  fee: number;
-  discount: number;
-  balanceDiscount?: number;
-  balancePercent?: number;
-  total: number;
-}
-export interface SummaryRow {
-  label: string;
-  value: string;
-  strong?: boolean;
-}
-export interface SummaryLabels {
-  sub: string;
-  discount: string;
-  /** Localized label template with a {percent} placeholder for the formatted percentage. */
-  balanceDiscount: string;
-  fee: string;
-  free: string;
-  total: string;
-}
-/** Records as the Vendra API returns them (tests/fixtures/vendra-openapi.json). */
-export interface ApiRecord {
-  id: number;
-  [field: string]: any;
-}
-export interface DeliverySlot {
-  id: number;
-  name: Record<string, string>;
-  /** "08:00" */
-  startsAt: string;
-  endsAt: string;
-}
-/** The Checkout request body (POST /api/sales/checkout). */
-/** A way to pay; also the Checkout `gateway`. */
-/** An optional part of the storefront a store turns on (commerce.STORE_FEATURES). */
-export type StoreFeature =
-  'promoCodes' | 'sameDay' | 'weddings' | 'journal' | 'reminders' | 'newsletter';
-export type PaymentMethodId = 'online' | 'card' | 'cod' | 'wallet' | 'whatsapp';
-/** One of the store's payment methods, with its settings. A store offers the methods it lists. */
-export type PaymentMethod =
-  | {id: 'online'}
-  | {
-      id: 'card';
-      /** The store's card, 16 digits */
-      cardNumber: string;
-      /** Localized: {en, fa} */
-      holder: Record<string, string>;
-      bank: Record<string, string>;
-      /** The account's IBAN (IR…), shown with a copy button */
-      sheba?: string;
-    }
-  | {
-      id: 'cod';
-      /** Delivery zone ids where the courier takes payment. Default: every zone */
-      zones?: string[];
-    }
-  | {id: 'wallet'}
-  | {id: 'whatsapp'};
-export type PaymentOption = PaymentMethod & {
-  available: boolean;
-  /** Why it can't be used for this order */
-  reason?: 'zone' | 'signIn' | 'balance';
-};
-export interface CheckoutRequest {
-  cartToken: string;
-  currencyCode: string | null;
-  gateway: string | null;
-  paymentReference: string | null;
-  cardMessage: string | null;
-  recipientName: string | null;
-  addressId: number | null;
-  latitude: number | null;
-  longitude: number | null;
-  deliveryDate: string | null;
-  deliverySlotId: number | null;
-}
 export interface Commerce {
-  /** Every payment method the package knows, in its default order. */
-  STORE_FEATURES: StoreFeature[];
-  /** The store's feature list as one boolean per STORE_FEATURES id; unknown ids are dropped. */
-  storeFeatures(list: readonly string[] | null | undefined): Record<StoreFeature, boolean>;
-  PAYMENT_METHODS: PaymentMethodId[];
-  /** The store's methods (in its order, unknown ids dropped), each marked available or not for this
-   * order: pay on delivery outside its zones, or a balance that is missing or short of `total`. */
-  paymentOptions(
-    methods: PaymentMethod[],
-    order?: {zone?: string; balance?: number | null; total?: number}
-  ): PaymentOption[];
-  /** `chosen` while usable, else the balance when it covers the order, else the first usable; null when none is. */
-  defaultPaymentMethod(options: PaymentOption[], chosen?: string | null): PaymentMethodId | null;
+  STORE_FEATURES: typeof STORE_FEATURES;
+  storeFeatures: typeof storeFeatures;
+  PAYMENT_METHODS: typeof PAYMENT_METHODS;
+  paymentOptions: typeof paymentOptions;
+  defaultPaymentMethod: typeof defaultPaymentMethod;
   /** Persian and Arabic digits → Latin. */
   latin(value: unknown): string;
-  /** A product code typed any way → "VF7K2M4Q". */
-  normalizeCode(text: string): string;
-  /** Text for searching: Arabic letters as Persian (ي → ی, ك → ک, ة → ه, أ → ا …), no diacritics,
-   * stretching, half-spaces or punctuation, Latin digits, lower case, single spaces. */
-  normalizeSearchText(text: unknown): string;
-  /** Searchable text as an index for `matchesSearch`: normalized, spaces removed so a query word may
-   * span them (دستهگل finds دسته‌گل). Build it once per record. */
-  searchIndex(text: unknown): string;
-  /** Whether an index from `searchIndex` holds every word of `query`, in any order; an empty query matches nothing. */
-  matchesSearch(index: string, query: string): boolean;
-  /** A promo code typed any way → "WELCOME10". */
-  promoCode(value: string): string;
+  normalizeCode: typeof normalizeCode;
+  normalizeSearchText: typeof normalizeSearchText;
+  searchIndex: typeof searchIndex;
+  matchesSearch: typeof matchesSearch;
+  promoCode: typeof promoCode;
   /** A phone number without spaces, brackets or dashes, in Latin digits. */
   phone(value: string): string;
   /** An Iranian mobile number as 09xxxxxxxxx, however it was typed (09…, 9…, +98…, 98…, 0098…,
@@ -218,158 +89,36 @@ export interface Commerce {
   validLocation(location: unknown): location is LatLng;
   /** A point rounded to six decimals (about 10 cm). */
   pinLocation(point: LatLng): LatLng;
-  /** Neshan, Balad and Google Maps links to the place: Neshan and Balad first in Persian, Google
-   * Maps first otherwise. [] for a missing or invalid point. */
-  directionsLinks(
-    location: LatLng | null | undefined,
-    language: string
-  ): {app: DirectionsApp; href: string}[];
-  distanceKm(a: LatLng, b: LatLng): number;
-  /** The smallest zone reaching the pin, from its center or `origin`; null outside every zone. */
-  zoneAt(
-    location: LatLng | null,
-    zones: Pick<Zone, 'id' | 'km' | 'center'>[],
-    origin: LatLng
-  ): string | null;
-  /** "YYYY-MM-DD" in local time. */
-  isoDate(date: Date): string;
-  /** "18:00", or Persian digits isolated for a Persian sentence. */
-  cutoffText(cutoff: string, persian: boolean): string;
-  deliveryDays(
-    cutoff: string,
-    /** sameDay: false starts tomorrow. timeZone is the store IANA zone (omitted: device zone).
-     * Invalid zones throw RangeError. Dates are local-noon label carriers, not timestamps. */
-    options: {days: number; soldOutDates?: string[]; sameDay?: boolean; timeZone?: string},
-    now?: Date
-  ): DeliveryDay[];
-  /** The chosen day when open, otherwise the first open day. */
-  openDay(days: DeliveryDay[], chosen?: string): string | undefined;
-  deliverySlots(
-    iso: string,
-    slots: SlotHours[],
-    leadMinutes: number,
-    now?: Date,
-    /** Store IANA time zone; omitted uses the device zone. Invalid zones throw RangeError. */
-    timeZone?: string
-  ): DeliverySlotState[];
-  /** The chosen slot's start when open, otherwise the first open slot's. Undefined when none is open. */
-  openSlot(slots: DeliverySlotState[], chosen: string): string | undefined;
-  /** Open or closed at `now` on the store's clock (IANA `timeZone`; omitted: device zone), and the
-   * next change within a week. Invalid zones throw RangeError. */
-  openingStatus(hours: OpeningHours, now?: Date, timeZone?: string): OpeningStatus;
-  /** Weekly hours as runs of consecutive weekdays with the same ranges, from `firstDay` (default 6). */
-  hoursSummary(hours: OpeningHours, firstDay?: number): OpeningGroup[];
-  /** Exceptions dated today through `days` days ahead on the store's clock, in date order. */
-  hoursExceptions(
-    hours: OpeningHours,
-    days: number,
-    now?: Date,
-    timeZone?: string
-  ): OpeningException[];
-  freeDelivery(zoneId: string, subtotal: number, rules?: FreeDeliveryRules): boolean;
-  promoCheck(value: string, subtotal: number, promos: Promo[]): PromoResult;
-  discount(code: string, subtotal: number, promos: Promo[]): number;
-  balanceDiscountOn(balance: number | null, rules?: BalanceRules): boolean;
-  balanceDiscount(balance: number | null, products: number, rules?: BalanceRules): number;
-  totals(
-    lines: {unit: number; qty: number}[],
-    order: {zone: Pick<Zone, 'id' | 'fee'>; promo?: string; balance?: number | null},
-    rules: TotalsRules
-  ): Totals;
-  summaryRows(
-    totals: Totals,
-    code: string,
-    labels: SummaryLabels,
-    money: (amount: number) => string,
-    num?: (value: number) => string
-  ): SummaryRow[];
-  /** "Show more" paging: the first `page` pages of `size` items. `total` defaults to the list's
-   * length; pass the API's total when the list holds only the pages loaded so far. */
-  page<T>(
-    list: T[],
-    page: number,
-    size: number,
-    total?: number
-  ): {items: T[]; page: number; shown: number; total: number; hasMore: boolean};
-  /** Fills {fee:<zone>}, {cutoff:<zone>} and {freeDeliveryFrom}. */
-  fillText(
-    text: string,
-    values: {
-      fee(zoneId: string): string;
-      cutoff(zoneId: string): string;
-      freeDeliveryFrom(): string;
-    }
-  ): string;
-  /** A record by its IRI from a list. */
-  apiRecord<T extends ApiRecord>(list: T[], iri: string | null | undefined): T | null;
-  /** How available an API Product is, from inStock, quantity, stockThreshold, availableSoon and availabilityDate. */
-  stockStatus(product: ApiRecord): Stock;
-  /** A photo for Picture from an API Multimedia record (null without a URL). responsiveImages:
-   * "<width>" → URL in the photo's format, "<format> <width>" ("avif 480", "webp 960") → smaller
-   * formats; customProperties: width, height, placeholder (data: URI), alt_en, alt_fa. */
-  imageFromApi(record: ApiRecord | null | undefined, lang?: 'en' | 'fa'): ApiPhoto | null;
-  /** A storefront product from an API Product, with storefront-only `extras` by token. `image` and
-   * `images` are photos for Picture; `en.alts` / `fa.alts` hold their alt text. */
-  productFromApi(
-    product: ApiRecord,
-    sources: {
-      prices: ApiRecord[];
-      media: ApiRecord[];
-      categories: ApiRecord[];
-      extras?: Record<string, Record<string, any>>;
-      placeholder: string;
-    }
-  ): Record<string, any>;
-  /** A storefront zone from an API DeliveryZone, with `extras` by zone id. */
-  zoneFromApi(
-    zone: ApiRecord,
-    extras?: Record<number, {key?: string; cutoff?: string; center?: LatLng}>
-  ): Zone;
-  /** A bag line from an API OrderLine (metadata: token, size, addons, cardMessage). */
-  lineFromApi(
-    line: ApiRecord,
-    options: {
-      products: Record<string, any>[];
-      sizes: Size[];
-      addons: Addon[];
-      placeholder: string;
-      describe(product: any, size: Size | null, addons: Addon[], lang: 'en' | 'fa'): string;
-    }
-  ): Record<string, any>;
-  /** API order status → storefront step. */
-  ORDER_STATUS: Record<string, string>;
-  orderFromApi(
-    order: ApiRecord,
-    options: {
-      line(line: ApiRecord): Record<string, any>;
-      delivery: Record<string, any>;
-      method: string;
-      preferredLocale: 'en' | 'fa';
-    }
-  ): Record<string, any>;
-  checkoutRequest(
-    lines: Record<string, any>[],
-    delivery: Record<string, any>,
-    options: {
-      slots: DeliverySlot[];
-      currencyCode?: string;
-      deliveryDate?: string;
-      lineToken?(line: Record<string, any>): string;
-      method?: string;
-      last4?: string;
-      ref?: string;
-      cartToken?: string;
-    }
-  ): CheckoutRequest;
-}
-export interface ApiPhoto {
-  src: string;
-  srcSet?: string;
-  sources?: Array<{type: string; srcSet: string}>;
-  width?: number;
-  height?: number;
-  placeholder?: string;
-  alt?: string;
+  directionsLinks: typeof directionsLinks;
+  distanceKm: typeof distanceKm;
+  zoneAt: typeof zoneAt;
+  isoDate: typeof isoDate;
+  cutoffText: typeof cutoffText;
+  deliveryDays: typeof deliveryDays;
+  openDay: typeof openDay;
+  deliverySlots: typeof deliverySlots;
+  openSlot: typeof openSlot;
+  openingStatus: typeof openingStatus;
+  hoursSummary: typeof hoursSummary;
+  hoursExceptions: typeof hoursExceptions;
+  freeDelivery: typeof freeDelivery;
+  promoCheck: typeof promoCheck;
+  discount: typeof discount;
+  balanceDiscountOn: typeof balanceDiscountOn;
+  balanceDiscount: typeof balanceDiscount;
+  totals: typeof totals;
+  summaryRows: typeof summaryRows;
+  page: typeof page;
+  fillText: typeof fillText;
+  apiRecord: typeof apiRecord;
+  stockStatus: typeof stockStatus;
+  imageFromApi: typeof imageFromApi;
+  productFromApi: typeof productFromApi;
+  zoneFromApi: typeof zoneFromApi;
+  lineFromApi: typeof lineFromApi;
+  ORDER_STATUS: typeof ORDER_STATUS;
+  orderFromApi: typeof orderFromApi;
+  checkoutRequest: typeof checkoutRequest;
 }
 /** Storefront commerce rules (delivery, totals, promo and balance discounts, API adapters) as pure functions. */
 export declare const commerce: Commerce;
