@@ -1,6 +1,9 @@
 import React from 'react';
+import type {ReactNode} from 'react';
 
-export function StorefrontFaqLayout({heading, questions, contact}) {
+type FaqLayoutProps = {heading: ReactNode; questions: ReactNode; contact: ReactNode};
+
+export function StorefrontFaqLayout({heading, questions, contact}: FaqLayoutProps) {
   return (
     <main id="main" tabIndex={-1} className="vf-info">
       <header className="vf-info-header tw:max-w-prose tw:flex tw:flex-col tw:gap-4 tw:mb-7">

@@ -1,9 +1,19 @@
 import React from 'react';
+import type {ReactNode} from 'react';
 import {Button} from '../../../../../design-system/components/Button/Button.jsx';
 import {Card} from '../../../../../design-system/components/Card/Card.jsx';
 import {Icon} from '../../../../../design-system/components/Icon/Icon.jsx';
 
-export function StorefrontFaqContact({title, body, note, whatsapp, contact}) {
+type ContactLink = {href: string; label: ReactNode};
+type FaqContactProps = {
+  title: ReactNode;
+  body: ReactNode;
+  note: ReactNode;
+  whatsapp: ContactLink | null;
+  contact: ContactLink;
+};
+
+export function StorefrontFaqContact({title, body, note, whatsapp, contact}: FaqContactProps) {
   return (
     <>
       <Card padding={28}>

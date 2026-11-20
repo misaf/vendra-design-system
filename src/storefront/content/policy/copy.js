@@ -20,6 +20,7 @@ export const VF_POLICY_UPDATED = {
   terms: '2026-10-01',
   accessibility: '2026-07-05'
 };
+/** @param {{fa: boolean, lang: 'en' | 'fa'}} S */
 export function vfCopy(S) {
   const fa = S.fa;
   const L = fa ? 'fa' : 'en';

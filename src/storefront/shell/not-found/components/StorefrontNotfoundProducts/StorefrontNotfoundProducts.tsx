@@ -1,7 +1,22 @@
 import React from 'react';
 import {ProductCard} from '../../../../../design-system/components/ProductCard/ProductCard.jsx';
+import type {ProductCardProps} from '../../../../../design-system/components/ProductCard/ProductCard.js';
 
-export function StorefrontNotfoundProducts({products, photoLabel, saveLabel}) {
+type Recommendation = Pick<ProductCardProps, 'images' | 'name' | 'price' | 'stock' | 'href'> & {
+  sub?: string;
+};
+
+type NotFoundProductsProps = {
+  products: Recommendation[];
+  photoLabel?: string;
+  saveLabel?: string;
+};
+
+export function StorefrontNotfoundProducts({
+  products,
+  photoLabel,
+  saveLabel
+}: NotFoundProductsProps) {
   return (
     <>
       {products.map((p, $index) => (

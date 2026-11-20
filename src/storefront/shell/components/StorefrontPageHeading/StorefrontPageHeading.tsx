@@ -1,20 +1,30 @@
 import React from 'react';
+import type {ReactNode} from 'react';
 
 const introClass = {
   page: 'vf-page-intro tw:text-secondary tw:m-0 tw:max-w-measure tw:text-md tw:leading-body tw:text-pretty',
   info: 'vf-page-intro tw:m-0 tw:text-md tw:leading-body tw:text-secondary tw:text-pretty'
 };
 
+type PageHeadingProps = {
+  level?: 'h1' | 'h2' | 'h3';
+  eyebrow?: ReactNode;
+  title: ReactNode;
+  accent?: ReactNode;
+  intro?: ReactNode;
+  meta?: ReactNode;
+  variant?: keyof typeof introClass;
+};
+
 export function StorefrontPageHeading({
-  level = 'h1',
-  eyebrow = undefined,
+  level: Heading = 'h1',
+  eyebrow,
   title,
-  accent = undefined,
-  intro = undefined,
-  meta = undefined,
+  accent,
+  intro,
+  meta,
   variant = 'page'
-}) {
-  const Heading = /** @type {'h1' | 'h2' | 'h3'} */ (level);
+}: PageHeadingProps) {
   return (
     <>
       {eyebrow != null ? (

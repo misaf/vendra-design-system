@@ -1,5 +1,5 @@
 import {storefrontPage} from '@storefront/src/app/_routing/route-page';
-import NotFoundScreen from '../../../storefront/shell/not-found/NotFoundScreen.jsx';
+import NotFoundScreen from '../../../storefront/shell/not-found/NotFoundScreen';
 import {VF_STORE} from '@storefront/src/storefront/store/store-config.js';
 
 export function generateStaticParams({params}: {params: {locale: string}}) {

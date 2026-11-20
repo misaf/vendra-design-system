@@ -1,13 +1,15 @@
 // StorefrontFaq: the page inside the storefront shell.
 import React from 'react';
 import {asList} from '../../shell/ui/as-list.js';
-import {StorefrontFaqLayout} from './components/StorefrontFaqLayout/StorefrontFaqLayout.jsx';
-import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading.jsx';
-import {StorefrontFaqQuestions} from './components/StorefrontFaqQuestions/StorefrontFaqQuestions.jsx';
-import {StorefrontFaqContact} from './components/StorefrontFaqContact/StorefrontFaqContact.jsx';
+import {StorefrontFaqLayout} from './components/StorefrontFaqLayout/StorefrontFaqLayout';
+import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading';
+import {StorefrontFaqQuestions} from './components/StorefrontFaqQuestions/StorefrontFaqQuestions';
+import {StorefrontFaqContact} from './components/StorefrontFaqContact/StorefrontFaqContact';
 import {Shell} from '../../shell/components/Shell.jsx';
 
-export function View({v}) {
+import type {useFaq} from './useFaq.js';
+
+export function View({v}: {v: ReturnType<typeof useFaq>}) {
   return (
     <Shell
       v={v}

@@ -19,9 +19,9 @@ const componentDirs = {
   storefront: ['src/storefront']
 };
 
-async function list(dir, suffix) {
+async function list(dir, ...suffixes) {
   return (await readdir(join(root, dir), {recursive: true}))
-    .filter(file => file.endsWith(suffix))
+    .filter(file => suffixes.some(suffix => file.endsWith(suffix)))
     .map(file => join(dir, file));
 }
 
@@ -76,7 +76,7 @@ const fixtures = Object.fromEntries(
   await Promise.all(
     Object.entries(componentDirs).map(async ([group, directories]) => [
       '\0fixtures:' + group,
-      (await Promise.all(directories.map(dir => list(dir, '.fixture.jsx')))).flat()
+      (await Promise.all(directories.map(dir => list(dir, '.fixture.jsx', '.fixture.tsx')))).flat()
     ])
   )
 );

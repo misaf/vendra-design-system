@@ -1,5 +1,5 @@
 import React from 'react';
-import {StorefrontErrorActions} from './StorefrontErrorActions.jsx';
+import {StorefrontErrorActions} from './StorefrontErrorActions';
 const copy = {
   en: {
     retry: 'Try again',
@@ -18,9 +18,9 @@ const copy = {
     alternatePhone: 'تماس با استودیو'
   }
 };
-export function Fixture({lang}) {
+export function Fixture({lang}: {lang: keyof typeof copy}) {
   const [alternate, setAlternate] = React.useState(false);
-  const [events, setEvents] = React.useState([]);
+  const [events, setEvents] = React.useState<string[]>([]);
   const t = copy[lang];
   return (
     <>

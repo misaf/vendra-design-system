@@ -5,7 +5,7 @@
 
 /* Scan maintained markup only, never generated runtimes or dependencies. */
 @source "../**/*.{js,jsx}";
-@source "../../storefront/**/*.{js,jsx}";
+@source "../../storefront/**/*.{js,jsx,tsx}";
 
 /* Inline aliases resolve on the current tenant / language wrapper. */
 @theme inline {

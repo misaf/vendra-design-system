@@ -1,11 +1,19 @@
 import React from 'react';
+import type {ReactNode} from 'react';
+
+type NotFoundLayoutProps = {
+  message: ReactNode;
+  actions: ReactNode;
+  recommendationHeading: ReactNode;
+  recommendations: ReactNode;
+};
 
 export function StorefrontNotfoundLayout({
   message,
   actions,
   recommendationHeading,
   recommendations
-}) {
+}: NotFoundLayoutProps) {
   return (
     <main id="main" tabIndex={-1} className="vf-shopping tw:mx-auto">
       <div className="vf-notfound-message tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-prose tw:gap-4h">

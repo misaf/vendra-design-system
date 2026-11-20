@@ -1,6 +1,6 @@
 import {storefrontPage} from '@storefront/src/app/_routing/route-page';
 import JournalScreen from '../../../storefront/content/journal/JournalScreen.jsx';
 import {vfFeatures} from '@storefront/src/storefront/store/store-config.js';
-import NotFound from '../../../storefront/shell/not-found/NotFoundScreen.jsx';
+import NotFound from '../../../storefront/shell/not-found/NotFoundScreen';
 
 export default storefrontPage('journal', vfFeatures().journal ? JournalScreen : NotFound);

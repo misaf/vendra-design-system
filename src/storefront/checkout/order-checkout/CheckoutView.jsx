@@ -8,7 +8,7 @@ import {StorefrontCheckoutReceipt} from './components/StorefrontCheckoutReceipt/
 import {StorefrontCheckoutSubmission} from './components/StorefrontCheckoutSubmission/StorefrontCheckoutSubmission.jsx';
 import {StorefrontCheckoutNotices} from './components/StorefrontCheckoutNotices/StorefrontCheckoutNotices.jsx';
 import {StorefrontStepProgress} from '../../shell/components/StorefrontStepProgress/StorefrontStepProgress.jsx';
-import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading.jsx';
+import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading';
 import {StorefrontCheckoutBank} from './components/StorefrontCheckoutBank/StorefrontCheckoutBank.jsx';
 import {StorefrontCheckoutConfirmation} from './components/StorefrontCheckoutConfirmation/StorefrontCheckoutConfirmation.jsx';
 import {StorefrontOrderSummaryCard} from '../../pricing/components/StorefrontOrderSummaryCard/StorefrontOrderSummaryCard.jsx';

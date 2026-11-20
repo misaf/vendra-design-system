@@ -1,5 +1,15 @@
 import React from 'react';
+import type {ReactNode} from 'react';
 import {Button} from '../../../../../design-system/components/Button/Button.jsx';
+
+type ErrorActionsProps = {
+  retryLabel: ReactNode;
+  onRetry: () => void;
+  homeLabel: ReactNode;
+  homeHref?: string;
+  phoneLabel: ReactNode;
+  phoneHref?: string;
+};
 
 export function StorefrontErrorActions({
   retryLabel,
@@ -8,7 +18,7 @@ export function StorefrontErrorActions({
   homeHref,
   phoneLabel,
   phoneHref
-}) {
+}: ErrorActionsProps) {
   return (
     <>
       <Button variant="primary" iconStart="rotate-ccw" onClick={onRetry}>

@@ -1,5 +1,6 @@
 // Bilingual notfound copy. Edit here, then run npm run build.
 // Formatting helpers keep delivery fees and tenant-specific store details current.
+/** @param {{lang: 'en' | 'fa'}} S */
 export function vfCopy(S) {
   return {
     en: {

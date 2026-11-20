@@ -1,7 +1,11 @@
 import {StorefrontLink} from '../../../../shell/ui/StorefrontLink';
 import React from 'react';
+import type {AriaAttributes} from 'react';
 
-export function StorefrontPolicyNavigation({label, links}) {
+type PolicyLink = {href: string; label: string; current?: AriaAttributes['aria-current']};
+type PolicyNavigationProps = {label: string; links: PolicyLink[]};
+
+export function StorefrontPolicyNavigation({label, links}: PolicyNavigationProps) {
   return (
     <nav aria-label={label} className="vf-policy-switch tw:mb-7">
       <ul className="tw:flex tw:flex-wrap tw:gap-2 tw:m-0 tw:p-0 tw:list-none">

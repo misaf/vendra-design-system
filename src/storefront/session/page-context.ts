@@ -11,6 +11,12 @@ type StorefrontPageProps = Pick<
 
 export const StorefrontPageContext = createContext<StorefrontPageProps | null>(null);
 
+export type StorefrontPreviewProps = Partial<Pick<StorefrontPageProps, 'updateHead'>> & {
+  lang?: string;
+  tenant?: string | null;
+  mobile?: boolean;
+};
+
 export function useStorefrontPageProps<Props>(props: Props) {
   return useContext(StorefrontPageContext) ?? props;
 }

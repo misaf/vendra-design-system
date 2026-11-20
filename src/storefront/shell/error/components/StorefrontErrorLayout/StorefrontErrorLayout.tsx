@@ -1,6 +1,13 @@
 import React from 'react';
+import type {ReactNode} from 'react';
 
-export function StorefrontErrorLayout({message, actions}) {
+export function StorefrontErrorLayout({
+  message,
+  actions
+}: {
+  message: ReactNode;
+  actions: ReactNode;
+}) {
   return (
     <main id="main" tabIndex={-1} className="vf-shopping tw:mx-auto">
       <div className="vf-error-message tw:mx-auto tw:flex tw:flex-col tw:items-center tw:max-w-prose tw:gap-4h">

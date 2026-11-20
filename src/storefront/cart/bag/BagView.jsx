@@ -15,7 +15,7 @@ import {DeliverySlotPicker} from '../../delivery/components/DeliverySlotPicker/D
 import {StorefrontBagCards} from './components/StorefrontBagCards/StorefrontBagCards.jsx';
 import {StorefrontBagSender} from './components/StorefrontBagSender/StorefrontBagSender.jsx';
 import {StorefrontBagDeliveryIntro} from './components/StorefrontBagDeliveryIntro/StorefrontBagDeliveryIntro.jsx';
-import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading.jsx';
+import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading';
 import {Shell} from '../../shell/components/Shell.jsx';
 
 export function View({v}) {

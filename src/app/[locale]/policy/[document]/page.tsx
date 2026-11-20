@@ -1,5 +1,5 @@
 import {storefrontPage} from '@storefront/src/app/_routing/route-page';
-import PolicyScreen from '../../../../storefront/content/policy/PolicyScreen.jsx';
+import PolicyScreen from '../../../../storefront/content/policy/PolicyScreen';
 import {VF_POLICIES} from '@storefront/src/storefront/content/policy-documents.js';
 
 export function generateStaticParams() {

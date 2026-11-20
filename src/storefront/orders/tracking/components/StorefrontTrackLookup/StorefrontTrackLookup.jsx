@@ -3,7 +3,7 @@ import {Alert} from '../../../../../design-system/components/Alert/Alert.jsx';
 import {Button} from '../../../../../design-system/components/Button/Button.jsx';
 import {Input} from '../../../../../design-system/components/Input/Input.jsx';
 import {PhoneInput} from '../../../../../design-system/components/PhoneInput/PhoneInput.jsx';
-import {StorefrontPageHeading} from '../../../../shell/components/StorefrontPageHeading/StorefrontPageHeading.jsx';
+import {StorefrontPageHeading} from '../../../../shell/components/StorefrontPageHeading/StorefrontPageHeading';
 
 export function StorefrontTrackLookup({
   heading,

@@ -1,7 +1,11 @@
 import React from 'react';
+import type {ReactNode} from 'react';
 import {Accordion} from '../../../../../design-system/components/Accordion/Accordion.jsx';
+import type {AccordionItem} from '../../../../../design-system/components/Accordion/Accordion.js';
 
-export function StorefrontFaqQuestions({groups}) {
+type QuestionGroup = {id: string; title: ReactNode; open?: string; items: AccordionItem[]};
+
+export function StorefrontFaqQuestions({groups}: {groups: QuestionGroup[]}) {
   return (
     <>
       {groups.map((group, $index) => (

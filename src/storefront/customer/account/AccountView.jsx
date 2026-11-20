@@ -13,7 +13,7 @@ import {StorefrontAccountProfile} from './components/StorefrontAccountProfile/St
 import {StorefrontAccountAddressEditor} from './components/StorefrontAccountAddressEditor/StorefrontAccountAddressEditor.jsx';
 import {StorefrontAccountReminderEditor} from './components/StorefrontAccountReminderEditor/StorefrontAccountReminderEditor.jsx';
 import {StorefrontAccountEditorDialog} from './components/StorefrontAccountEditorDialog/StorefrontAccountEditorDialog.jsx';
-import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading.jsx';
+import {StorefrontPageHeading} from '../../shell/components/StorefrontPageHeading/StorefrontPageHeading';
 import {StorefrontAccountBalancePanel} from './components/StorefrontAccountBalancePanel/StorefrontAccountBalancePanel.jsx';
 import {Shell} from '../../shell/components/Shell.jsx';
 

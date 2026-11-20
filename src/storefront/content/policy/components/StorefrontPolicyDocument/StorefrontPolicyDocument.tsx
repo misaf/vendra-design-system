@@ -1,6 +1,14 @@
 import React from 'react';
 
-export function StorefrontPolicyDocument({sections}) {
+type PolicySection = {
+  id: string;
+  title: string;
+  paras: {text: string}[];
+  hasItems: boolean;
+  items: {text: string}[];
+};
+
+export function StorefrontPolicyDocument({sections}: {sections: PolicySection[]}) {
   return (
     <>
       {sections.map((s, $index) => (

@@ -22,6 +22,7 @@ function vals(page) {
   const id = page.props.doc ?? vfPageRoute(page.props).id ?? VF_POLICIES[0];
   const C = vfCopy(S);
   const docId = C.docs[id] ? id : VF_POLICIES[0];
+  /** @type {{title: string, intro: string, sections: {title: string, paras?: string[], items?: string[]}[]}} */
   const d = C.docs[docId];
   // The document's own date: Jalali in Persian, Gregorian in English.
   const updated = VF_POLICY_UPDATED[docId];

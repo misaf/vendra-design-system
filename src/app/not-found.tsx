@@ -6,7 +6,7 @@ import {LiveCatalogNotFound, useLiveCatalog} from './_live-catalog/LiveCatalogDo
 import {VF_SEO} from '@storefront/src/storefront/shell/seo.js';
 
 const NotFoundScreen = dynamic(
-  () => import('@storefront/src/storefront/shell/not-found/NotFoundScreen.jsx')
+  () => import('@storefront/src/storefront/shell/not-found/NotFoundScreen')
 );
 
 export default function NotFound() {

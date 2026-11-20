@@ -105,7 +105,16 @@ function featureFiles(name) {
       tracking: 'Track'
     }[slug] || slug[0].toUpperCase() + slug.slice(1);
   const hook = 'use' + title;
-  return {hook, logic: hook + '.js', view: title + 'View.jsx', screen: title + 'Screen.jsx'};
+  const source = stem =>
+    ['.tsx', '.jsx']
+      .map(ext => stem + ext)
+      .find(file => fs.existsSync(path.join(templates, routeFolders[name], file))) ?? stem + '.tsx';
+  return {
+    hook,
+    logic: hook + '.js',
+    view: source(title + 'View'),
+    screen: source(title + 'Screen')
+  };
 }
 
 function pageScript(name) {

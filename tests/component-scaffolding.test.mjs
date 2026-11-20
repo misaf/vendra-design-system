@@ -19,7 +19,7 @@ for (const folder of uiRoots) {
   for (const name of fs.readdirSync(folder)) {
     const base = path.join(folder, name, name);
     const spec = fs.existsSync(base + '.spec.mjs');
-    const fixture = fs.existsSync(base + '.fixture.jsx');
+    const fixture = ['.fixture.jsx', '.fixture.tsx'].some(suffix => fs.existsSync(base + suffix));
     assert.equal(spec, fixture, name + ': a spec needs its fixture and vice versa');
     if (spec) assert.ok(!grandfathered.has(name), name + ' has a spec now');
     else if (grandfathered.has(name))

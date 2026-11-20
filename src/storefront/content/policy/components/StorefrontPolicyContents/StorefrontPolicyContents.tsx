@@ -1,6 +1,8 @@
 import React from 'react';
 
-export function StorefrontPolicyContents({label, sections}) {
+type PolicyContentsProps = {label: string; sections: {href: string; title: string}[]};
+
+export function StorefrontPolicyContents({label, sections}: PolicyContentsProps) {
   return (
     <nav aria-label={label} className="vf-info-toc vf-sticky-panel tw:flex tw:flex-col tw:gap-1">
       <div className="vf-info-eyebrow tw:text-xs tw:font-medium tw:tracking-eyebrow tw:uppercase tw:text-quiet">

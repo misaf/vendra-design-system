@@ -1,11 +1,13 @@
 // StorefrontError: the page inside the storefront shell.
 import React from 'react';
 import {EmptyState} from '../../../design-system/components/EmptyState/EmptyState.jsx';
-import {StorefrontErrorLayout} from './components/StorefrontErrorLayout/StorefrontErrorLayout.jsx';
-import {StorefrontErrorActions} from './components/StorefrontErrorActions/StorefrontErrorActions.jsx';
+import {StorefrontErrorLayout} from './components/StorefrontErrorLayout/StorefrontErrorLayout';
+import {StorefrontErrorActions} from './components/StorefrontErrorActions/StorefrontErrorActions';
 import {Shell} from '../components/Shell.jsx';
 
-export function View({v}) {
+import type {useError} from './useError.js';
+
+export function View({v}: {v: ReturnType<typeof useError>}) {
   return (
     <Shell
       v={v}

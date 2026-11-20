@@ -26,10 +26,14 @@ function exposesMain(file, visited = new Set()) {
   visited.add(file);
   const code = fs.readFileSync(file, 'utf8');
   if (/<main\s+id="main"/.test(code)) return true;
-  for (const match of code.matchAll(/import\s*\{([^}]+)\}\s*from ['"]([^'"]+\.jsx)['"]/g)) {
-    const importedFile = path.resolve(path.dirname(file), match[2]);
-    const source = path.relative(root, importedFile).split(path.sep).join('/');
+  for (const match of code.matchAll(/import\s*\{([^}]+)\}\s*from ['"](\.[^'"]+)['"]/g)) {
+    const target = path.resolve(path.dirname(file), match[2]);
+    const source = path.relative(root, target).split(path.sep).join('/');
     if (!source.startsWith('src/storefront/') || !source.includes('/components/')) continue;
+    const importedFile = [target, target + '.tsx', target + '.jsx'].find(
+      file => fs.existsSync(file) && fs.statSync(file).isFile()
+    );
+    if (!importedFile) continue;
     for (const imported of match[1].split(',')) {
       const [name, localName = name] = imported.trim().split(/\s+as\s+/);
       if (new RegExp('<' + localName + '\\b').test(code) && exposesMain(importedFile, visited))
@@ -258,7 +262,8 @@ for (const file of ['src/storefront'].flatMap(folder =>
   fs
     .readdirSync(path.join(root, folder), {recursive: true})
     .filter(
-      file => /(?:\.jsx|(?:^|[\\/])use[A-Z]\w*\.js)$/.test(file) && !file.endsWith('.fixture.jsx')
+      file =>
+        /(?:\.[jt]sx|(?:^|[\\/])use[A-Z]\w*\.js)$/.test(file) && !/\.fixture\.[jt]sx$/.test(file)
     )
     .map(file => path.join(folder, file))
 ))

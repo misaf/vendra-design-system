@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button} from '../../../../../design-system/components/Button/Button.jsx';
-import {StorefrontPageHeading} from '../../../../shell/components/StorefrontPageHeading/StorefrontPageHeading.jsx';
+import {StorefrontPageHeading} from '../../../../shell/components/StorefrontPageHeading/StorefrontPageHeading';
 
 export function StorefrontWeddingsHeading({eyebrow, title, accent, intro, plan, whatsapp}) {
   return (

@@ -32,7 +32,8 @@ export const VF_API_FAQ_CATEGORIES = [
 ];
 
 // GET /api/content/faqs
-export const VF_API_FAQS = [
+/** @type {[number, string, number, string, string, string, string][]} */
+const VF_FAQ_ROWS = [
   [
     1,
     'zones',
@@ -114,22 +115,30 @@ export const VF_API_FAQS = [
     'چگونه گل‌ها را تازه نگه دارم؟',
     'ساقه‌ها را مورب کوتاه کنید و هر دو روز آب را عوض کنید. گل‌ها را دور از آفتاب مستقیم، گرما و میوه رسیده نگه دارید. برای باکس گل یا گیاه، روش نگهداری مخصوص آن را از استودیو بپرسید.'
   ]
-].map(([id, slug, categoryId, questionEn, answerEn, questionFa, answerFa], index) => ({
-  id,
-  name: {en: questionEn, fa: questionFa},
-  description: {en: answerEn, fa: answerFa},
-  slug: {en: slug, fa: String(questionFa).replace(/[؟?]/g, '').trim().replace(/\s+/g, '-')},
-  position: index + 1,
-  active: true,
-  faqCategory: {id: categoryId, type: 'FaqCategory', label: null},
-  multimedia: []
-}));
+];
+
+export const VF_API_FAQS = VF_FAQ_ROWS.map(
+  ([id, slug, categoryId, questionEn, answerEn, questionFa, answerFa], index) => ({
+    id,
+    name: {en: questionEn, fa: questionFa},
+    description: {en: answerEn, fa: answerFa},
+    slug: {en: slug, fa: String(questionFa).replace(/[؟?]/g, '').trim().replace(/\s+/g, '-')},
+    position: index + 1,
+    active: true,
+    faqCategory: {id: categoryId, type: 'FaqCategory', label: null},
+    multimedia: []
+  })
+);
 
 // FAQ groups for the page: each active category with its active questions, in position order, as
 // [slug, title, [[slug, question, answer]]], answers with delivery values filled in.
+/** @param {'en' | 'fa'} lang
+ * @param {(amount: number) => string} money
+ */
 function vfFaqGroups(lang, money) {
   const byPosition = (a, b) => a.position - b.position;
-  return VF_API_FAQ_CATEGORIES.filter(category => category.active)
+  /** @type {[string, string, [string, string, string][]][]} */
+  const groups = VF_API_FAQ_CATEGORIES.filter(category => category.active)
     .sort(byPosition)
     .map(category => [
       category.slug.en,
@@ -141,10 +150,11 @@ function vfFaqGroups(lang, money) {
           faq.name[lang],
           vfStoreText(faq.description[lang], money, lang === 'fa')
         ])
-    ])
-    .filter(group => group[2].length);
+    ]);
+  return groups.filter(group => group[2].length);
 }
 
+/** @param {{lang: 'en' | 'fa', m: (amount: number) => string}} S */
 export function vfCopy(S) {
   const copy = {
     en: {

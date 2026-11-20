@@ -87,6 +87,7 @@ export function vfShell(self, page) {
         : ['shop', 'product', 'saved', 'search'].includes(page)
           ? 'shop'
           : '';
+  /** @type {Record<string, string>} */
   const href = {};
   VF_ROUTES.forEach(r => {
     href[r] = VF_SEO.hrefFor(
@@ -257,7 +258,7 @@ export function vfShell(self, page) {
     policyLinks: VF_POLICIES.map(doc => ({
       ...policyLink(doc),
       label: T.policies[doc],
-      current: doc === policyDoc ? 'page' : undefined
+      current: /** @type {'page' | undefined} */ (doc === policyDoc ? 'page' : undefined)
     })),
     productLink: (id, context = {}) => ({
       href: vfRouteUrl({

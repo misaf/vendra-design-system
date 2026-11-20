@@ -1,4 +1,5 @@
 // Bilingual server-error copy. Edit here, then run npm run build.
+/** @param {{lang: 'en' | 'fa'}} S */
 export function vfCopy(S) {
   return {
     en: {

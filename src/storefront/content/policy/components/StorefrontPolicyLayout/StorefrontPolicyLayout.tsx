@@ -1,4 +1,13 @@
 import React from 'react';
+import type {ReactNode} from 'react';
+
+type PolicyLayoutProps = {
+  heading: ReactNode;
+  policyNavigation: ReactNode;
+  notice: ReactNode;
+  tableOfContents: ReactNode;
+  document: ReactNode;
+};
 
 export function StorefrontPolicyLayout({
   heading,
@@ -6,7 +15,7 @@ export function StorefrontPolicyLayout({
   notice,
   tableOfContents,
   document
-}) {
+}: PolicyLayoutProps) {
   return (
     <main id="main" tabIndex={-1} className="vf-info">
       <header className="vf-info-header tw:max-w-prose tw:flex tw:flex-col tw:gap-4 tw:mb-7">

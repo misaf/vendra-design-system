@@ -1,5 +1,5 @@
 import React from 'react';
-import {StorefrontFaqQuestions} from './StorefrontFaqQuestions.jsx';
+import {StorefrontFaqQuestions} from './StorefrontFaqQuestions';
 const copy = {
   en: {
     delivery: 'Delivery',
@@ -30,7 +30,7 @@ const copy = {
     replacement: 'بازه ارسال انتخابی شما تایید شده است.'
   }
 };
-export function Fixture({lang}) {
+export function Fixture({lang}: {lang: keyof typeof copy}) {
   const [mode, setMode] = React.useState('two');
   const [replacement, setReplacement] = React.useState(false);
   const t = copy[lang];
