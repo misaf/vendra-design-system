@@ -30,7 +30,6 @@ export default function config() {
       NEXT_PUBLIC_VF_BASE_PATH: basePath,
       NEXT_PUBLIC_VF_RENDER_TIME: process.env.VF_RENDER_TIME || String(Date.now()),
       NEXT_PUBLIC_VF_NEXT_EXPORT: String(demo)
-    },
-    turbopack: {root: import.meta.dirname}
+    }
   };
 }
