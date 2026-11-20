@@ -95,7 +95,7 @@ Later sources win, so the tenant file overrides the base colours (Style Dictiona
 ```sh
 npm ci                                   # first setup, at the repo root
 npm run dev                             # Next.js development at http://localhost:3000/
-npm run build   # design tokens, Tailwind, tenant CSS, generated template sections
+npm run build   # design tokens, tenant themes and brand assets
 npm run format  # Prettier
 npm run check   # generated files current + formatting
 npm test        # typecheck and unit tests

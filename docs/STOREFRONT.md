@@ -40,7 +40,7 @@ Run from the repo root with Node.js 22 (22.22.2 or later):
 ```sh
 npm ci                                   # install from the root lockfile
 npm run dev                             # Next.js at http://localhost:3000/ → /en/
-npm run build   # Tailwind, custom CSS, tenant themes, design tokens
+npm run build   # tenant themes, design tokens and brand assets
 npm run lint    # Next.js, React and TypeScript lint rules for src/app/
 npm run check   # generated output, formatting, ESLint and CSS lint
 npm test        # typecheck, storefront logic, generation, copy parity, design system
@@ -174,7 +174,7 @@ Storefront components may have the same pair beside them under their route or in
 - **`src/app/[locale]/`** owns localized pages and layouts. Its folders follow the customer-facing URLs. `presentation/` serves the counter display. `src/app/_document/` owns the storefront document, session, screen wrapper, and page metadata markup. `src/app/_routing/` builds the initial route and metadata. `src/app/_live-catalog/` renders the request-scoped Laravel catalog.
 - **Public URLs** use `/<locale>/` in links, canonical and alternate tags, and the sitemap.
 - **Navigation:** `tools/next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
-- **Build** uses `build:app` for the Node-hosted app and `build:demo` for the static reference demo. The demo exports every known address through Next.js to `.generated/export/`. Turbopack bundles the design system fonts and loads Leaflet on demand. The asset preparation step writes tenant stylesheets to `public/` and clears generated fixture files.
+- **Build** uses `build:app` for the Node-hosted app and `build:demo` for the static reference demo. The demo exports every known address through Next.js to `.generated/export/`. Turbopack bundles the storefront styles and fonts directly from source, runs Tailwind through PostCSS, and loads Leaflet on demand. The standalone development fixtures compile their own stylesheet files. The asset preparation step writes tenant stylesheets to `public/` and clears generated fixture files.
 - **Components:** the app imports them from `src/design-system/` directly. The guideline cards (`src/design-system/gallery/**/*.card.jsx`) import `src/design-system/gallery/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.
 - **Tests** keep feature-specific tests next to the feature and put live-server and static-export smoke specs in [`e2e/smoke/`](../e2e/smoke/). The existing browser fixtures and screenshot baselines remain under `e2e/`.
 

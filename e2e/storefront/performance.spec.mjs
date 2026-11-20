@@ -11,7 +11,7 @@ const BUDGET = {
   firstPageJsKb: 350,
   // A direct guest visit to checkout opens delivery and also loads the Leaflet map.
   checkoutJsKb: 370,
-  // One shared stylesheet for every page: 24KB since the counter presentation and the
+  // Shared styles total about 24KB since the counter presentation and the
   // product-code and delivery-review work of October 2026.
   firstPageCssKb: 27,
   firstPageFontKb: 110,

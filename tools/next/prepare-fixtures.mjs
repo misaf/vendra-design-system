@@ -4,6 +4,7 @@ import {dirname, join, normalize} from 'node:path';
 import {rolldown} from 'rolldown';
 
 import {repo, uiFolder as ui, componentsFolder as components} from '../paths.mjs';
+import {customCss, tailwindCss} from './fixture-styles.mjs';
 import {
   communicationsPreviews,
   emailTemplates,
@@ -29,12 +30,7 @@ async function list(dir, ...suffixes) {
 async function copy(file) {
   const to = join(publicDir, fixtureOutput(file));
   await mkdir(dirname(to), {recursive: true});
-  if (file === '.generated/custom.css') {
-    const css = await readFile(join(root, file), 'utf8');
-    await writeFile(to, css.replaceAll('../public/assets/', '../assets/'));
-  } else {
-    await copyFile(join(root, file), to);
-  }
+  await copyFile(join(root, file), to);
 }
 
 const entries = new Set([emailTemplates]);
@@ -67,11 +63,16 @@ await Promise.all(
     ui + '/styles.css',
     ...(await list(ui + '/tokens', '.css')),
     ...(await list(ui + '/components', '.css')),
-    ...(await list(ui + '/assets/fonts', '.woff2')),
-    '.generated/tailwind.css',
-    '.generated/custom.css'
+    ...(await list(ui + '/assets/fonts', '.woff2'))
   ].map(copy)
 );
+
+const runtimeDir = join(publicDir, '_runtime');
+await mkdir(runtimeDir, {recursive: true});
+await Promise.all([
+  writeFile(join(runtimeDir, 'tailwind.css'), await tailwindCss(root)),
+  writeFile(join(runtimeDir, 'custom.css'), customCss(root))
+]);
 
 // Standalone fixture documents load Leaflet by URL outside the Next.js app.
 await mkdir(leafletDir, {recursive: true});
