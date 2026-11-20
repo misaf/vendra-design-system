@@ -17,6 +17,5 @@ src/design-system/storefront.css
 _app-build/
 .next/
 public/
-.next-live/
 next-env.d.ts
 .next-types.tsbuildinfo

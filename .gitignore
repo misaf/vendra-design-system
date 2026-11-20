@@ -13,6 +13,5 @@ node_modules
 /public/*
 !/public/assets/
 /.generated/export/
-/.next-live/
 /next-env.d.ts
 /.next-types.tsbuildinfo

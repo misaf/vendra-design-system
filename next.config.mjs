@@ -1,10 +1,8 @@
-import {PHASE_DEVELOPMENT_SERVER} from 'next/constants.js';
 import {VF_STORE} from './src/storefront/store/store-config.js';
 
 const basePath = process.env.VF_BASE_PATH || '';
 
-export default function config(phase) {
-  const dev = phase === PHASE_DEVELOPMENT_SERVER;
+export default function config() {
   const demo = process.env.VF_NEXT_EXPORT === '1';
   if (demo && VF_STORE.apiBase.trim())
     throw new Error(
@@ -12,7 +10,7 @@ export default function config(phase) {
     );
   return {
     ...(demo
-      ? {output: 'export'}
+      ? {output: 'export', distDir: '.generated/export'}
       : {
           async redirects() {
             return [
@@ -20,7 +18,6 @@ export default function config(phase) {
             ];
           }
         }),
-    distDir: demo ? '.generated/export' : dev ? '.next' : '.next-live',
     // Next.js references the current build's route validators through next-env.d.ts.
     experimental: {strictRouteTypes: true},
     agentRules: false,

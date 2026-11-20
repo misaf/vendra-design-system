@@ -44,7 +44,7 @@ npm run build   # Tailwind, custom CSS, tenant themes, design tokens
 npm run check   # fails on stale generated output, unformatted code or a CSS lint error (raw colours, left/right sides: stylelint.config.mjs)
 npm test        # typecheck, storefront logic, generation, copy parity, design system
 npm run test:e2e  # Playwright: axe, screenshots, cards, tenants
-npm run build:app                       # build the Next.js server
+npm run build:app                       # build the Next.js server in .next/
 npm run preview                         # start the server at http://localhost:3000/
 npm run build:demo                      # export to .generated/export/
 npm run preview:demo                    # serve the static export at http://127.0.0.1:3000/
@@ -61,6 +61,9 @@ Use `npm run build:app` to build the Next.js server for the Vendra storefront im
 deployment owns the Docker images, routing, and runtime configuration for the storefront and its
 Laravel backend. Set `VF_API_BASE` to the backend origin when starting the storefront server.
 See [API integration](API.md) for the backend URL format.
+
+The server build and the demo export share Next.js's `.next/` build directory. If you run both
+locally, test the server before building the demo, or run `npm run build:app` again before starting it.
 
 ## GitHub Pages demo
 
