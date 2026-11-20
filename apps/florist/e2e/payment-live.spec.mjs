@@ -99,7 +99,7 @@ test('a live payment goes where the API says, and only the API confirms it', asy
   // The bank takes the POSTed form and sends the customer back, claiming `result=paid`.
   await page.route(BANK, route => {
     posted.push({method: route.request().method(), body: route.request().postData()});
-    const back = new URL('/apps/storefront/app/en/checkout/', page.url());
+    const back = new URL('/en/checkout/', page.url());
     back.search = new URLSearchParams({
       payment: 'return',
       order: NUMBER,

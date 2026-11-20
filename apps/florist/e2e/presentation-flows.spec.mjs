@@ -421,7 +421,7 @@ test('scanning a design’s tag opens it full screen', async ({page}) => {
     // @ts-ignore
     window.BarcodeDetector = class {
       async detect() {
-        return [{rawValue: location.origin + '/apps/storefront/app/en/product/VF-8RD5WN/'}];
+        return [{rawValue: location.origin + '/en/product/VF-8RD5WN/'}];
       }
     };
   });

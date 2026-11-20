@@ -1,7 +1,6 @@
 import {expect, test} from '@playwright/test';
 
 const base = process.env.VF_BASE_PATH || '';
-const published = base + '/apps/storefront/app';
 const product = 'VF-7K2M4Q';
 const orderNumber = 'VN-PILOT-1042';
 const live = process.env.VF_TEST_LIVE === '1';
@@ -12,13 +11,13 @@ for (const [locale, direction] of [
 ]) {
   const fa = locale === 'fa';
 
-  test('localized and published product routes load in ' + locale, async ({page, request}) => {
+  test('canonical product routes load in ' + locale, async ({page, request}) => {
     const path = '/' + locale + '/product/' + product + '/';
-    const canonical = published + path;
+    const canonical = base + path;
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
 
-    const response = await page.goto(base + path);
+    const response = await page.goto(canonical);
     expect(response.status()).toBe(200);
     await expect(page.locator('html')).toHaveAttribute('lang', locale);
     await expect(page.locator('html')).toHaveAttribute('dir', direction);
@@ -31,26 +30,22 @@ for (const [locale, direction] of [
     );
     expect(errors).toEqual([]);
 
-    const legacy = await request.get(canonical, {maxRedirects: 0});
-    expect(legacy.status()).toBe(200);
-    expect(await legacy.text()).toContain('<html lang="' + locale + '" dir="' + direction + '"');
+    const legacy = await request.get(base + '/apps/storefront/app' + path, {maxRedirects: 0});
+    expect(legacy.status()).toBe(404);
   });
 
   test('missing routes return HTTP 404 in ' + locale, async ({page, request}) => {
-    for (const prefix of [base, published]) {
-      for (const segment of [
-        'product/does-not-exist',
-        'shop/does-not-exist',
-        'journal/does-not-exist',
-        'no-such-route'
-      ]) {
-        const path = prefix + '/' + locale + '/' + segment + '/';
-        const response = await request.get(path, {maxRedirects: 0});
-        expect(response.status(), path).toBe(404);
-      }
+    for (const segment of [
+      'product/does-not-exist',
+      'shop/does-not-exist',
+      'journal/does-not-exist',
+      'no-such-route'
+    ]) {
+      const path = base + '/' + locale + '/' + segment + '/';
+      const response = await request.get(path, {maxRedirects: 0});
+      expect(response.status(), path).toBe(404);
     }
-    // Check the rendered fallback, including the demo's base-prefixed published URLs.
-    await page.goto(published + '/' + locale + '/product/does-not-exist/');
+    await page.goto(base + '/' + locale + '/product/does-not-exist/');
     await expect(page.locator('html')).toHaveAttribute('lang', locale);
     await expect(page.locator('main h1')).toContainText(fa ? 'پژمرده شده.' : 'wilted.');
   });
@@ -77,12 +72,7 @@ for (const [locale, direction] of [
         });
       });
       const path =
-        published +
-        '/' +
-        locale +
-        '/checkout/?payment=return&order=' +
-        orderNumber +
-        '&result=paid';
+        base + '/' + locale + '/checkout/?payment=return&order=' + orderNumber + '&result=paid';
       const response = await page.goto(path);
       expect(response.status()).toBe(200);
       await expect(page).toHaveURL(url => url.pathname + url.search === path);
@@ -99,7 +89,7 @@ for (const [locale, direction] of [
   );
 
   test('runtime tracking links open the lookup in ' + locale, async ({page}) => {
-    const response = await page.goto(published + '/' + locale + '/track/DEMO1234/');
+    const response = await page.goto(base + '/' + locale + '/track/DEMO1234/');
     expect(response.status()).toBe(live ? 200 : 404);
     await expect(page.locator('main h1')).toHaveText(
       locale === 'fa' ? 'پیگیری سفارش.' : 'Track an order.'

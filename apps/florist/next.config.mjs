@@ -12,16 +12,20 @@ export default function config(phase) {
       ? {output: 'export'}
       : {
           async redirects() {
-            const destination = '/apps/storefront/app/' + VF_STORE.languages[0] + '/';
-            return ['/', '/apps/storefront/app/'].map(source => ({
-              source,
-              destination,
-              permanent: false
-            }));
+            return [
+              {source: '/', destination: '/' + VF_STORE.languages[0] + '/', permanent: false}
+            ];
           }
         }),
     distDir: demo ? 'next/out' : dev ? '.next' : '.next-live',
-    typescript: {tsconfigPath: dev || demo ? 'tsconfig.next.json' : 'tsconfig.live.json'},
+    // The export type check excludes route validators left over from a previous dev run.
+    typescript: {
+      tsconfigPath: dev
+        ? 'tsconfig.next.json'
+        : demo
+          ? 'tsconfig.export.json'
+          : 'tsconfig.live.json'
+    },
     agentRules: false,
     basePath,
     trailingSlash: true,

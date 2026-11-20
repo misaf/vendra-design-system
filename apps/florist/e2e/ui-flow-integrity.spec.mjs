@@ -55,7 +55,7 @@ for (const lang of ['en', 'fa']) {
     const checked = slots.getByRole('radio', {checked: true});
     await expect(checked).toHaveCount(0);
     await page.evaluate(() => {
-      const key = 'vendra-template:/apps/storefront/app/';
+      const key = 'vendra-template:/';
       const previous = JSON.parse(sessionStorage.getItem(key));
       delete previous.explicitDeliverySlots;
       Object.assign(previous.customers.guest.delivery, {date: '2026-10-06', slot: '12'});

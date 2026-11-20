@@ -26,10 +26,10 @@ for (const lang of ['en', 'fa']) {
 
   const readRoute = vm.runInContext('vfReadRoute', c);
   const writeRoute = vm.runInContext('vfRouteUrl', c);
-  const route = readRoute(`/apps/storefront/app/${lang}/product/VF-7K2M4Q/?date=2026-10-06`);
+  const route = readRoute(`/${lang}/product/VF-7K2M4Q/?date=2026-10-06`);
   assert.equal(route.date, '2026-10-06');
   assert.equal(readRoute(writeRoute(route)).date, route.date);
-  assert.equal(readRoute('/apps/storefront/app/product/VF-7K2M4Q/?date=2026-02-31').date, '');
+  assert.equal(readRoute('/en/product/VF-7K2M4Q/?date=2026-02-31').date, '');
   const {logic: product} = loadPage('product', {
     lang,
     routeInfo: route,
@@ -396,17 +396,11 @@ console.log(
     assert.equal(profile.renderVals().saveError, '');
     assert.ok(profile.state.notice);
     assert.equal(vm.runInContext("vfAccountLoad('09120000000').profile.name", pc), 'Keep my input');
-    const route = vm.runInContext(
-      'vfReadRoute',
-      pc
-    )(`/apps/storefront/app/${lang}/account/?tab=balance&next=checkout`);
+    const route = vm.runInContext('vfReadRoute', pc)(`/${lang}/account/?tab=balance&next=checkout`);
     assert.equal(route.next, 'checkout');
     assert.ok(vm.runInContext('vfRouteUrl', pc)(route).includes('next=checkout'));
     assert.equal(
-      vm.runInContext(
-        'vfReadRoute',
-        pc
-      )('/apps/storefront/app/account/?tab=balance&next=https://example.com').next,
+      vm.runInContext('vfReadRoute', pc)('/en/account/?tab=balance&next=https://example.com').next,
       undefined
     );
     const returning = loadPage('account', {

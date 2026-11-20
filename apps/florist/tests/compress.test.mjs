@@ -16,8 +16,8 @@ try {
   const text = 'export const words = ' + JSON.stringify('flower '.repeat(MIN_SIZE)) + ';\n';
   const files = {
     '_next/static/chunks/page-home-Ab12Cd34.js': text,
-    'apps/storefront/app/en/index.html': '<!doctype html>' + '<p>Vendra</p>'.repeat(MIN_SIZE),
-    'apps/storefront/app/small.js': 'export {};\n',
+    'en/index.html': '<!doctype html>' + '<p>Vendra</p>'.repeat(MIN_SIZE),
+    'small.js': 'export {};\n',
     '_next/static/chunks/jost-Ab12Cd34.woff2': text,
     'assets/products/rose.webp': text
   };
@@ -26,10 +26,7 @@ try {
     fs.writeFileSync(path.join(outDir, name), source);
   }
   const compressed = (await precompress(outDir)).map(name => name.replaceAll(path.sep, '/')).sort();
-  assert.deepEqual(compressed, [
-    '_next/static/chunks/page-home-Ab12Cd34.js',
-    'apps/storefront/app/en/index.html'
-  ]);
+  assert.deepEqual(compressed, ['_next/static/chunks/page-home-Ab12Cd34.js', 'en/index.html']);
   for (const name of compressed) {
     const file = path.join(outDir, name);
     const source = fs.readFileSync(file);
@@ -40,7 +37,7 @@ try {
     assert.deepEqual(zlib.gunzipSync(gz), source, name + '.gz round-trips');
   }
   for (const name of [
-    'apps/storefront/app/small.js',
+    'small.js',
     '_next/static/chunks/jost-Ab12Cd34.woff2',
     'assets/products/rose.webp'
   ])
@@ -71,13 +68,7 @@ assert.match(
 );
 assert.doesNotMatch(block('^~ /apps/storefront/design-system/assets/fonts/'), /immutable/);
 assert.doesNotMatch(block('~ ^/(assets|apps/storefront/_vendor)/'), /immutable/);
-for (const location of [
-  '= /apps/storefront/app/sw.js',
-  '^~ /apps/storefront/design-system/tokens/tenants/',
-  '/apps/storefront/app/',
-  '= /404.html',
-  '/'
-])
+for (const location of ['^~ /apps/storefront/design-system/tokens/tenants/', '= /404.html', '/'])
   assert.match(block(location), /Cache-Control "no-cache"/, location + ' is revalidated');
 // The not-found page is served with status 404, which add_header skips without `always`.
 assert.match(block('= /404.html'), /Cache-Control "no-cache" always;/);

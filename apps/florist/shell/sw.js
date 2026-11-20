@@ -7,9 +7,8 @@
 const sw = /** @type {any} */ (self);
 // Cache each localized presentation document.
 // The file cache has a fixed limit, so a tablet that runs for months does not fill up.
-const SCOPE = new URL(sw.registration.scope).pathname;
-const ROOT = new URL('../../..', sw.location.href).pathname;
-const CACHE_PREFIX = 'vf-' + encodeURIComponent(SCOPE);
+const ROOT = new URL(sw.registration.scope).pathname;
+const CACHE_PREFIX = 'vf-' + encodeURIComponent(ROOT);
 const PAGES = CACHE_PREFIX + '-pages-next-v1';
 const FILES = CACHE_PREFIX + '-files-next-v1';
 const FILES_MAX = 400;
@@ -20,7 +19,7 @@ const FILE = /\.(js|css|svg|png|jpe?g|webp|avif|woff2?)$/i;
 const PHOTO = /\.(svg|png|jpe?g|webp|avif)$/i;
 const immutable = url => url.pathname.startsWith(ROOT + '_next/static/');
 const displayDocument = pathname =>
-  pathname.startsWith(SCOPE) && /^[a-z-]+\/presentation\/$/.test(pathname.slice(SCOPE.length));
+  pathname.startsWith(ROOT) && /^[a-z-]+\/presentation\/$/.test(pathname.slice(ROOT.length));
 const noStore = response =>
   /(?:^|,)\s*no-store\s*(?:,|$)/i.test(response.headers.get('Cache-Control') || '');
 
@@ -32,7 +31,9 @@ sw.addEventListener('activate', (/** @type {any} */ event) =>
       .then(names =>
         Promise.all(
           names
-            .filter(name => name.startsWith(CACHE_PREFIX) && ![PAGES, FILES].includes(name))
+            // Match through the last encoded slash, which terminates the cache's scope.
+            .filter(name => name.match(/^vf-.*%2F-/)?.[0] === CACHE_PREFIX + '-')
+            .filter(name => name !== PAGES && name !== FILES)
             .map(name => caches.delete(name))
         )
       )
@@ -103,7 +104,13 @@ sw.addEventListener('fetch', (/** @type {any} */ event) => {
     event.respondWith(fromNetwork(request, url.origin + url.pathname));
   } else if (API_PUBLIC.test(url.pathname)) event.respondWith(fromNetwork(request, request));
   else if (isApi(url.pathname)) return;
-  else if (FILE.test(url.pathname)) fromFiles(event, request, url);
+  else if (
+    FILE.test(url.pathname) &&
+    [ROOT + '_next/', ROOT + 'assets/', ROOT + 'apps/storefront/'].some(prefix =>
+      url.pathname.startsWith(prefix)
+    )
+  )
+    fromFiles(event, request, url);
 });
 
 // Cache hashed app assets from the build manifest and explicit product photos. Never cache a

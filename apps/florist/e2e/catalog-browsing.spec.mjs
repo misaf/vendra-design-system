@@ -108,10 +108,13 @@ test('shop head follows sorting changes made in place', async ({page}, info) => 
   await page.getByRole('option', {name: 'Featured', exact: true}).click();
   await expect(page).not.toHaveURL(/sort=/);
   await expect(robots).toHaveCount(0);
-  await expect(page.locator('link[rel=canonical]')).toHaveAttribute('href', /\/app\/en\/shop\/$/);
+  await expect(page.locator('link[rel=canonical]')).toHaveAttribute(
+    'href',
+    new URL('/en/shop/', page.url()).href
+  );
   await expect(page.locator('link[rel=alternate][hreflang=fa]')).toHaveAttribute(
     'href',
-    /\/app\/fa\/shop\/$/
+    new URL('/fa/shop/', page.url()).href
   );
 });
 

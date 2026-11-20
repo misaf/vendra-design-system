@@ -6,7 +6,7 @@ The bilingual storefront uses Next.js App Router for the server build and static
 
 | Previous location | Current location and what to edit there |
 | --- | --- |
-| `next/app/apps/storefront/app/[lang]/` | `app/[locale]/` owns localized routes, layouts and route parameters. `app/apps/storefront/app/[locale]/` forwards the published URLs to those same routes. |
+| Nested App Router wrappers | `app/[locale]/` owns localized routes, layouts and route parameters. |
 | `next/app/` route helpers | `server/` owns route data loading and metadata. `i18n/` owns locale selection and shared translations. |
 | Older `features/shop/`, `features/bag/`, `features/track/` and `features/presentation/` paths | Edit the workflow in `features/catalog/`, `features/cart/`, `features/tracking/` or `features/counter/`. Keep its views, copy, styles and focused tests together. |
 | `design-system/components/utils/commerce.{js,d.ts}` | Edit shared delivery, pricing and payment rules in `shared/domain/commerce.js` and their types in `shared/domain/commerce.d.ts`. |
@@ -16,7 +16,7 @@ The bilingual storefront uses Next.js App Router for the server build and static
 
 The remaining storefront controls live in `design-system/components/` and follow Atomic Design.
 Storefront views consume both sets of controls through `shell/ds.js`.
-The workspace lives in `apps/florist/`. The demo serves published URLs under its configured base path, such as `/vendra-design-system/apps/storefront/app/fa/`.
+The workspace lives in `apps/florist/`. The demo serves canonical URLs under its configured base path, such as `/vendra-design-system/fa/`.
 
 ## Where to edit
 
@@ -170,7 +170,7 @@ The Next.js layout uses `app/_components/StorefrontDocument.jsx` to initialize b
 
 A JS module loose in `shared/` or in any other folder fails the check: place a new module by what it does.
 
-**Adding a page:** copy a similar folder under `features/`. Name its screen, view and state hook for the feature, and keep `copy.js` and `styles.css` beside them. Add a TypeScript page in the appropriate `app/[locale]/` route group and a compatibility entry under `app/apps/storefront/app/[locale]/`. Register the storefront URL in `shared/services/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
+**Adding a page:** copy a similar folder under `features/`. Name its screen, view and state hook for the feature, and keep `copy.js` and `styles.css` beside them. Add a TypeScript page in the appropriate `app/[locale]/` route group. Register the storefront URL in `shared/services/routing.js`, and add its copy and SEO title. Add menu entries and CSS imports where needed.
 
 ## Commands
 
@@ -178,7 +178,7 @@ Run from the repo root (Node 20.19+ or 22.12+):
 
 ```sh
 npm ci                                   # install all workspaces from the root lockfile
-npm run dev                             # Next.js at http://localhost:3000/ → /apps/storefront/app/en/
+npm run dev                             # Next.js at http://localhost:3000/ → /en/
 npm --prefix apps/florist run build   # Tailwind, custom CSS, tenant themes, design tokens
 npm --prefix apps/florist run check   # fails on stale generated output, unformatted code or a CSS lint error (raw colours, left/right sides: stylelint.config.mjs)
 npm --prefix apps/florist test        # typecheck, storefront logic, generation, copy parity, design system
@@ -191,7 +191,7 @@ npm --prefix apps/florist run test:e2e:build  # the storefront specs against the
 npm --prefix apps/florist run test:e2e:remote  # optional: the same tests on a Linux server over ssh (see Browser tests)
 ```
 
-- **One page on its own:** `/apps/storefront/app/en/?page=checkout` renders that page with its default props.
+- **One page on its own:** `/en/?page=checkout` renders that page with its default props.
 - **Tenant list only:** `node apps/florist/build/generate.mjs` from the repository root rewrites `_runtime/tenant-slugs.js` from `packages/ui/tokens/tenants/`.
 
 ## GitHub Pages demo
@@ -202,7 +202,7 @@ Repository Settings → Pages → Source must be **GitHub Actions**. CI sets
 The uploaded artifact is `apps/florist/next/out/`.
 
 The repository's Pages root opens the storefront; direct links can select a view and language:
-`https://misaf.github.io/vendra-design-system/apps/storefront/app/en/presentation/`. This hosts the
+`https://misaf.github.io/vendra-design-system/en/presentation/`. This hosts the
 sample-data demo; live API services need their own backend.
 
 ### Prerendering and hydration
@@ -299,7 +299,7 @@ Storefront molecules, organisms and layouts may have the same pair beside them u
 `_runtime/` is generated; never edit it.
 
 - **`app/[locale]/`** owns localized pages and layouts. The `(shop)` group covers catalog, account, tracking and content, `(checkout)` covers bag and checkout, and `(counter)` covers presentation. The root document keeps the session alive across groups and language switches. `server/` builds the initial route and metadata and is the home for future request-scoped Laravel integration.
-- **Public URLs** retain their `/apps/storefront/app/<locale>/` prefix during the rebuild. The short `/<locale>/` routes share the same implementation and point to the published paths in canonical and alternate tags. The compatibility entries preserve direct product links, checkout return queries and counter handoffs.
+- **Public URLs** use `/<locale>/` in links, canonical and alternate tags, and the sitemap.
 - **Navigation:** `next/link` and the App Router handle page transitions. Search, filters, and form steps update the current URL through Next.js’s History API integration. React Aria links use the same App Router adapter.
 - **Build** uses `build:app` for the Node-hosted app and `build:demo` for the static reference demo. The demo exports every known address through Next.js to `next/out/`. It serves the shared UI package’s fonts and tenant CSS at their existing public paths.
 - **Components:** the app imports them from `design-system/components/` through `shell/ds.js`. The guideline cards (`guidelines/**/*.card.jsx`) import `guidelines/card-runtime.js`, which puts the components and helpers on `window.VendraDesignSystem` (and `AG_*`) for their scripts.

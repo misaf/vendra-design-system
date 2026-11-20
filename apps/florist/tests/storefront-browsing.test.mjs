@@ -8,7 +8,7 @@ for (const lang of ['en', 'fa']) {
   const {logic: site, ctx: c} = loadPage(
     'site',
     {lang},
-    '/apps/storefront/app/' + lang + '/shop/bouquets/?filters=roses&sort=low'
+    '/' + lang + '/shop/bouquets/?filters=roses&sort=low'
   );
   const entries = [];
   for (const method of ['pushState', 'replaceState'])
@@ -33,7 +33,7 @@ for (const lang of ['en', 'fa']) {
   assert.equal(reloaded.renderVals().store.searchReturn.sort, 'low');
   c.history.state = {vfSearchReturn: 'https://example.com/'};
   assert.equal(new c.Logic({lang}).state.searchReturn, null);
-  c.history.state = {vfSearchReturn: '/apps/storefront/app/search/?q=loop'};
+  c.history.state = {vfSearchReturn: '/en/search/?q=loop'};
   assert.equal(new c.Logic({lang}).state.searchReturn, null);
 
   const calls = [];
@@ -46,7 +46,7 @@ for (const lang of ['en', 'fa']) {
   sc.setTimeout = () => 0;
   assert.equal(search.renderVals().q, query);
   const close = new URL(search.renderVals().closeHref, 'http://localhost');
-  assert.equal(close.pathname, '/apps/storefront/app/' + lang + '/shop/bouquets/');
+  assert.equal(close.pathname, '/' + lang + '/shop/bouquets/');
   assert.equal(close.searchParams.get('filters'), 'roses');
   search.renderVals().setQ('VF-8RD5WN');
   assert.equal(calls.at(-1)[0].q, 'VF-8RD5WN');
@@ -168,18 +168,16 @@ for (const lang of ['en', 'fa']) {
 {
   const {ctx: c} = context();
   vm.runInContext(sharedLogic + '\nthis.read=vfReadRoute;this.params=vfRouteUrl;', c);
-  const route = c.read(
-    '/apps/storefront/app/en/product/VF-7K2M4Q/?size=classic&addons=vase,card,vase'
-  );
+  const route = c.read('/en/product/VF-7K2M4Q/?size=classic&addons=vase,card,vase');
   assert.equal(route.size, 'classic');
   assert.deepEqual(Array.from(route.addons), ['card', 'vase']);
   const restored = c.read(c.params(route));
   assert.equal(restored.size, route.size);
   assert.deepEqual(Array.from(restored.addons), ['card', 'vase']);
-  const invalid = c.read('/apps/storefront/app/product/VF-8RD5WN/?size=huge&addons=vase,unknown');
+  const invalid = c.read('/en/product/VF-8RD5WN/?size=huge&addons=vase,unknown');
   assert.equal(invalid.size, null);
   assert.deepEqual(Array.from(invalid.addons), []);
-  const badSize = c.read('/apps/storefront/app/product/VF-7K2M4Q/?size=huge&addons=unknown');
+  const badSize = c.read('/en/product/VF-7K2M4Q/?size=huge&addons=unknown');
   assert.equal(badSize.size, 'petite');
   assert.deepEqual(Array.from(badSize.addons), []);
   const {logic} = loadPage('product', {routeInfo: route});
@@ -264,7 +262,7 @@ for (const lang of ['en', 'fa']) {
   const {logic: shop} = loadPage(
     'shop',
     {lang, go: r => (next = r)},
-    '/apps/storefront/app/shop/bouquets/?sort=low&filters=under3,same'
+    '/en/shop/bouquets/?sort=low&filters=under3,same'
   );
   let v = shop.renderVals();
   assert.equal(v.items.length, 2);
@@ -355,14 +353,8 @@ for (const lang of ['en', 'fa']) {
   assert.equal(reload.qty, 2);
   assert.ok(reload.addons.some(addon => addon.on));
   assert.equal(restored.date, '2026-10-21');
-  assert.equal(
-    vm.runInContext('vfReadRoute', c)('/apps/storefront/app/product/VF-7K2M4Q/?qty=-1').qty,
-    1
-  );
-  assert.equal(
-    vm.runInContext('vfReadRoute', c)('/apps/storefront/app/product/VF-7K2M4Q/?qty=Infinity').qty,
-    1
-  );
+  assert.equal(vm.runInContext('vfReadRoute', c)('/en/product/VF-7K2M4Q/?qty=-1').qty, 1);
+  assert.equal(vm.runInContext('vfReadRoute', c)('/en/product/VF-7K2M4Q/?qty=Infinity').qty, 1);
   const scarce = loadPage('product', {
     lang,
     routeInfo: {view: 'product', id: 'VF-9FA2KE', qty: 99}
@@ -371,7 +363,7 @@ for (const lang of ['en', 'fa']) {
 }
 console.log('Passed product size, extras, quantity and delivery-date URL recovery.');
 {
-  const {logic: product, ctx: c} = loadPage('product', {}, '/apps/storefront/app/en/?page=product');
+  const {logic: product, ctx: c} = loadPage('product', {}, '/en/?page=product');
   c.history.replaceState = (_, __, url) => setAddress(c, url);
   product.renderVals().setSize('generous');
   product.renderVals().setQty(2);

@@ -97,7 +97,7 @@ test('a signed-in recipient sees the whole order after a lookup with the senderâ
 });
 
 test('the standalone track page shows its whole sample order', async ({page}) => {
-  await page.goto('/apps/storefront/app/?page=track&lang=en');
+  await page.goto('/?page=track&lang=en');
   await expect(page.locator('.vf-track-summary')).toContainText('Total');
   await expect(page.locator('main').getByRole('link', {name: 'Order again'})).toBeVisible();
 });

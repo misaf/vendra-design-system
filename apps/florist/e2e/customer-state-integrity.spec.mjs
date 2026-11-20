@@ -49,7 +49,7 @@ for (const lang of ['en', 'fa']) {
       page.on('pageerror', error => errors.push(error.message));
       if (existing)
         await page.addInitScript(() => {
-          const key = 'vendra-template:/apps/storefront/app/';
+          const key = 'vendra-template:/';
           if (!sessionStorage.getItem(key))
             sessionStorage.setItem(
               key,
@@ -64,9 +64,9 @@ for (const lang of ['en', 'fa']) {
               })
             );
         });
-      await openSite(page, 'saved', lang, {
-        ids: 'VF-3HX9TP,VF-3HX9TP,VF-NOPE00'
-      });
+      const handoff = siteUrl('saved', lang, {ids: 'VF-3HX9TP,VF-3HX9TP,VF-NOPE00'});
+      await page.goto(handoff);
+      await expect(page).toHaveURL(url => url.pathname === '/' + lang + '/saved/' && !url.search);
       const snapshot = async () => {
         // Full navigations can show prerendered content before the site's state has mounted.
         await page.waitForFunction(() => window.__vfSite?.state);
@@ -107,7 +107,7 @@ for (const lang of ['en', 'fa']) {
       await expect(page.locator('#main')).toBeVisible();
       await expect.poll(snapshot).toMatchObject(initial);
       const persisted = await page.evaluate(() =>
-        JSON.parse(sessionStorage.getItem('vendra-template:/apps/storefront/app/'))
+        JSON.parse(sessionStorage.getItem('vendra-template:/'))
       );
       expect(persisted.saved).toEqual(initial.saved);
       expect(persisted.bag).toEqual(initial.bag);
@@ -553,7 +553,7 @@ for (const lang of ['en', 'fa']) {
       await page.clock.install({time: MORNING});
       await page.addInitScript(
         ({target, other, action}) => {
-          const key = 'vendra-template:/apps/storefront/app/';
+          const key = 'vendra-template:/';
           if (!sessionStorage.getItem(key))
             sessionStorage.setItem(
               key,

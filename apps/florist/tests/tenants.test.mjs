@@ -346,7 +346,8 @@ for (const [file, source] of manifests) {
     assert.ok(url.pathname.startsWith('/shop/assets/'));
     assert.ok(fs.existsSync(path.join(root, url.pathname.slice('/shop/'.length))));
   }
-  assert.ok(new URL(manifest.start_url, base).pathname.startsWith('/shop/apps/storefront/app/'));
+  assert.equal(new URL(manifest.start_url, base).pathname, '/shop/' + manifest.lang + '/');
+  assert.equal(new URL(manifest.scope, base).pathname, '/shop/');
   if (file.includes('/clay/')) {
     assert.match(manifest.start_url, /tenant=clay/);
     assert.equal(manifest.short_name, fa ? 'کلی' : 'Clay');

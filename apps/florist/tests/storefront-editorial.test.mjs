@@ -28,7 +28,7 @@ Promise.all([import('../build/routes.mjs'), import('../i18n/journal-content.js')
       assert.deepEqual(Object.keys(alternates), ['en', 'fa', 'x-default'], loc + ' alternates');
       assert.ok(Object.values(alternates).includes(loc), loc + ' lists itself as an alternate');
       assert.equal(alternates['x-default'], alternates.en, loc + ' x-default is English');
-      assert.equal(alternates.fa, alternates.en.replace('/app/en/', '/app/fa/'));
+      assert.equal(alternates.fa, alternates.en.replace('/en/', '/fa/'));
     }
     const months = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ');
     for (const post of VF_POSTS) {
@@ -45,7 +45,7 @@ Promise.all([import('../build/routes.mjs'), import('../i18n/journal-content.js')
       for (const lang of ['en', 'fa'])
         assert.ok(
           sitemap.includes(
-            '<loc>https://shop.example/apps/storefront/app/' +
+            '<loc>https://shop.example/' +
               lang +
               '/journal/' +
               post.id +
@@ -106,14 +106,12 @@ Promise.all([
     assert.ok(ids.includes(next), old + ' moves to a listed post');
     for (const lang of ['en', 'fa'])
       assert.equal(
-        vfReadRoute(`/apps/storefront/app/${lang}/journal/${old}/`).post,
+        vfReadRoute(`/${lang}/journal/${old}/`).post,
         next,
         old + ' opens ' + next + ' in ' + lang
       );
     assert.ok(
-      nginx.includes(
-        `rewrite ^/apps/storefront/app/(en|fa)/journal/${old}/?$ /apps/storefront/app/$1/journal/${next}/ permanent;`
-      ),
+      nginx.includes(`rewrite ^/(en|fa)/journal/${old}/?$ /$1/journal/${next}/ permanent;`),
       'nginx redirects ' + old + ' to ' + next
     );
   }

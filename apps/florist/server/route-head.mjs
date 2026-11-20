@@ -63,7 +63,7 @@ export async function tenantFontUrls(tenant, lang, base = '/') {
  * @param {{base?: string, origin?: string, lang?: 'en' | 'fa'}} [options]
  */
 export function routeHead(path, {base = '/', origin = '', lang: fallbackLang} = {}) {
-  const url = base + 'apps/storefront/app/' + path;
+  const url = base + path;
   // These helpers run synchronously. The address is cleared before React renders the route.
   vfServerRender({url, base, origin});
   try {

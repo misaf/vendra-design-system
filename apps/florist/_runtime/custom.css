@@ -816,6 +816,10 @@ html {
   :where(body:has(.vf-presentation-tag)) > :not(.vf-presentation-tag, :has(.vf-presentation-tag)) {
     display: none;
   }
+  /* The opening transform makes the fixed tag relative to the dialog until it finishes. */
+  .ag-dialog:has(.vf-presentation-tag) {
+    animation: none;
+  }
   .vf-presentation-tag,
   .vf-presentation-tag * {
     visibility: visible;

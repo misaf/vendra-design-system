@@ -10,7 +10,7 @@ for (const address of [
   'fa/?page=shop'
 ]) {
   test(`the standalone page ${address} opens in Persian`, async ({page}) => {
-    await page.goto('/apps/storefront/app/' + address);
+    await page.goto('/' + address);
     await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
     await expect(page).toHaveTitle(/گل‌فروشی وندرا/);
@@ -58,7 +58,7 @@ test('a page that fails to load offers a reload', async ({page}) => {
 
 test('a standalone page that fails to load offers a reload', async ({page}) => {
   await page.route(pageChunk('shop'), route => route.abort());
-  await page.goto('/apps/storefront/app/fa/?page=shop');
+  await page.goto('/fa/?page=shop');
   await expect(page.getByRole('alert').filter({hasText: 'این صفحه بارگذاری نشد.'})).toBeVisible();
   await expect(page).toHaveTitle('این صفحه بارگذاری نشد. · گل‌فروشی وندرا');
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');

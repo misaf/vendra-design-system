@@ -8,11 +8,7 @@ for (const lang of ['en', 'fa']) {
     ['saved', 'ids=VF-3HX9TP'],
     ['bag', 'lines=VF-8RD5WN...2']
   ]) {
-    const {logic: site, ctx: c} = loadPage(
-      'site',
-      {lang},
-      `/apps/storefront/app/${lang}/${view}/?${handover}`
-    );
+    const {logic: site, ctx: c} = loadPage('site', {lang}, `/${lang}/${view}/?${handover}`);
     let stored;
     c.sessionStorage.setItem = (_, value) => {
       stored = value;
@@ -22,7 +18,7 @@ for (const lang of ['en', 'fa']) {
     c.window.addEventListener = c.document.addEventListener = () => {};
     site.lifecycle.didMount();
     assert.ok(stored, 'initial handover is saved on mount without an edit');
-    setAddress(c, `/apps/storefront/app/${lang}/${view}/`);
+    setAddress(c, `/${lang}/${view}/`);
     const restored = new c.Logic({lang});
     const plain = value => JSON.parse(JSON.stringify(value));
     assert.deepEqual(plain(restored.state.saved), plain(site.state.saved));
@@ -73,7 +69,7 @@ for (const lang of ['en', 'fa']) {
 // A bag kept from an earlier visit is priced from the current catalog when it opens and again
 // before delivery and payment; each changed line says so and the totals follow the new prices.
 for (const lang of ['en', 'fa']) {
-  const {logic: first, ctx: c} = loadPage('site', {lang}, `/apps/storefront/app/${lang}/bag/`);
+  const {logic: first, ctx: c} = loadPage('site', {lang}, `/${lang}/bag/`);
   const plain = value => JSON.parse(JSON.stringify(value));
   const money = value => vm.runInContext('VF_MONEY', c)(value, lang === 'fa');
   const current = plain(first.state.bag);
@@ -90,11 +86,11 @@ for (const lang of ['en', 'fa']) {
     to: current[0].unit
   });
   // Unseen price changes keep a direct checkout visit and an order on the bag.
-  setAddress(c, `/apps/storefront/app/${lang}/checkout/`);
+  setAddress(c, `/${lang}/checkout/`);
   const direct = new c.Logic({lang});
   assert.equal(direct.state.route, 'bag');
   assert.equal(direct.state.routeInfo.step, 'bag', 'a direct checkout visit opens the bag notices');
-  setAddress(c, `/apps/storefront/app/${lang}/bag/`);
+  setAddress(c, `/${lang}/bag/`);
   let unseenRoute;
   const {logic: unseen} = loadPage('checkout', {
     lang,

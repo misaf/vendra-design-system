@@ -13,7 +13,7 @@ const ctx = {
   setTimeout,
   clearTimeout,
   location: {
-    pathname: '/apps/storefront/app/',
+    pathname: '/',
     search: '',
     href: 'http://localhost/'
   },
@@ -136,19 +136,19 @@ assert.equal(
 
 // Each page has a path of its own: language, screen and the screen's one id, ending in a slash.
 const paths = {
-  '/apps/storefront/app/': {view: 'home'},
-  '/apps/storefront/app/fa/': {view: 'home', lang: 'fa'},
-  '/apps/storefront/app/en/shop/': {view: 'shop', lang: 'en', cat: 'all'},
-  '/apps/storefront/app/fa/shop/boxes/': {view: 'shop', lang: 'fa', cat: 'boxes'},
-  '/apps/storefront/app/en/product/VF-7K2M4Q/': {view: 'product', lang: 'en', id: 'VF-7K2M4Q'},
-  '/apps/storefront/app/en/journal/': {view: 'journal', lang: 'en'},
-  '/apps/storefront/app/en/journal/morning-at-the-studio/': {
+  '/': {view: 'home'},
+  '/fa/': {view: 'home', lang: 'fa'},
+  '/en/shop/': {view: 'shop', lang: 'en', cat: 'all'},
+  '/fa/shop/boxes/': {view: 'shop', lang: 'fa', cat: 'boxes'},
+  '/en/product/VF-7K2M4Q/': {view: 'product', lang: 'en', id: 'VF-7K2M4Q'},
+  '/en/journal/': {view: 'journal', lang: 'en'},
+  '/en/journal/morning-at-the-studio/': {
     view: 'post',
     post: 'morning-at-the-studio'
   },
-  '/apps/storefront/app/en/policy/privacy/': {view: 'policy', id: 'privacy'},
-  '/apps/storefront/app/en/track/VB-10491/': {view: 'track', id: 'VB-10491'},
-  '/apps/storefront/app/en/faq': {view: 'faq', lang: 'en'}
+  '/en/policy/privacy/': {view: 'policy', id: 'privacy'},
+  '/en/track/VB-10491/': {view: 'track', id: 'VB-10491'},
+  '/en/faq': {view: 'faq', lang: 'en'}
 };
 for (const [url, expected] of Object.entries(paths)) {
   const route = ctx.vfReadRoute(url);
@@ -158,19 +158,19 @@ for (const [url, expected] of Object.entries(paths)) {
 // Unknown screens, ids that don't exist, extra segments, a post addressed as its own screen and
 // paths outside the app are not found; the language stays.
 for (const url of [
-  '/apps/storefront/app/en/nowhere/',
-  '/apps/storefront/app/en/shop/boxes/extra/',
-  '/apps/storefront/app/en/shop/not-a-category/',
-  '/apps/storefront/app/en/product/',
-  '/apps/storefront/app/en/product/VF-NOPE00/',
-  '/apps/storefront/app/en/post/morning-at-the-studio/',
-  '/apps/storefront/app/en/faq/extra/',
-  '/apps/storefront/app/en/policy/nothing/',
-  '/apps/storefront/app/en/product/%3Cscript%3E/',
+  '/en/nowhere/',
+  '/en/shop/boxes/extra/',
+  '/en/shop/not-a-category/',
+  '/en/product/',
+  '/en/product/VF-NOPE00/',
+  '/en/post/morning-at-the-studio/',
+  '/en/faq/extra/',
+  '/en/policy/nothing/',
+  '/en/product/%3Cscript%3E/',
   '/elsewhere/en/shop/'
 ])
   assert.equal(ctx.vfReadRoute(url).view, 'notfound', url);
-assert.equal(ctx.vfReadRoute('/apps/storefront/app/fa/nowhere/').lang, 'fa');
+assert.equal(ctx.vfReadRoute('/fa/nowhere/').lang, 'fa');
 // Writing a route gives the same path back, with only page state in the query.
 for (const route of [
   {view: 'home', lang: 'en'},
@@ -185,27 +185,21 @@ for (const route of [
     ctx.vfRouteUrl(route),
     route.view
   );
-assert.equal(ctx.vfRouteUrl({view: 'home', lang: 'en'}), '/apps/storefront/app/en/');
-assert.equal(
-  ctx.vfRouteUrl({view: 'shop', lang: 'fa', cat: 'all'}),
-  '/apps/storefront/app/fa/shop/'
-);
+assert.equal(ctx.vfRouteUrl({view: 'home', lang: 'en'}), '/en/');
+assert.equal(ctx.vfRouteUrl({view: 'shop', lang: 'fa', cat: 'all'}), '/fa/shop/');
 assert.equal(
   ctx.vfRouteUrl({view: 'product', lang: 'en', id: 'VF-7K2M4Q', cat: 'boxes'}),
-  '/apps/storefront/app/en/product/VF-7K2M4Q/'
+  '/en/product/VF-7K2M4Q/'
 );
 assert.equal(
   ctx.vfRouteUrl({view: 'post', lang: 'en', post: 'morning-at-the-studio'}),
-  '/apps/storefront/app/en/journal/morning-at-the-studio/'
+  '/en/journal/morning-at-the-studio/'
 );
-assert.equal(
-  ctx.vfRouteUrl({view: 'bag', lang: 'en', step: 'delivery'}),
-  '/apps/storefront/app/en/bag/?step=delivery'
-);
+assert.equal(ctx.vfRouteUrl({view: 'bag', lang: 'en', step: 'delivery'}), '/en/bag/?step=delivery');
 
 // Shop occasions round-trip through the URL; unknown ones fall back to all.
-assert.equal(ctx.vfReadRoute('/apps/storefront/app/shop/?occasion=sympathy').occasion, 'sympathy');
-assert.equal(ctx.vfReadRoute('/apps/storefront/app/shop/?occasion=halloween').occasion, 'all');
+assert.equal(ctx.vfReadRoute('/en/shop/?occasion=sympathy').occasion, 'sympathy');
+assert.equal(ctx.vfReadRoute('/en/shop/?occasion=halloween').occasion, 'all');
 assert.match(
   ctx.vfRouteUrl({view: 'shop', lang: 'en', cat: 'all', occasion: 'birthday'}),
   /occasion=birthday/
@@ -216,9 +210,9 @@ assert.doesNotMatch(
 );
 
 // "Show more" pages round-trip through the URL; anything but a small positive number is page 1.
-assert.equal(ctx.vfReadRoute('/apps/storefront/app/shop/?page=2').page, 2);
+assert.equal(ctx.vfReadRoute('/en/shop/?page=2').page, 2);
 for (const bad of ['0', '-1', '2.5', 'two', '1000'])
-  assert.equal(ctx.vfReadRoute('/apps/storefront/app/shop/?page=' + bad).page, 1);
+  assert.equal(ctx.vfReadRoute('/en/shop/?page=' + bad).page, 1);
 assert.match(ctx.vfRouteUrl({view: 'shop', lang: 'en', cat: 'all', page: 3}), /page=3/);
 assert.doesNotMatch(ctx.vfRouteUrl({view: 'shop', lang: 'en', cat: 'all', page: 1}), /page/);
 

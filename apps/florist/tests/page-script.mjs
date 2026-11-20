@@ -174,7 +174,7 @@ const sharedLogic =
 
 // Sets the test page's address: a path under the app, with its query.
 function setAddress(ctx, url) {
-  const address = new URL(url, 'http://localhost/apps/storefront/app/');
+  const address = new URL(url, 'http://localhost/');
   ctx.location.pathname = address.pathname;
   ctx.location.search = address.search;
 }
@@ -196,9 +196,9 @@ function context() {
     setTimeout,
     clearTimeout,
     location: {
-      pathname: '/apps/storefront/app/',
+      pathname: '/',
       search: '',
-      href: 'http://localhost/apps/storefront/app/'
+      href: 'http://localhost/'
     },
     history: {
       pushState: (_, __, url) => history.push(['push', url]),

@@ -224,9 +224,7 @@ test('the delivery pin is required and travels with the order', async ({page}) =
   await next.click();
   await expect(page.locator('#vf-last4')).toBeVisible();
   const location = await page.evaluate(
-    () =>
-      JSON.parse(sessionStorage.getItem('vendra-template:/apps/storefront/app/') || '{}').delivery
-        ?.location
+    () => JSON.parse(sessionStorage.getItem('vendra-template:/') || '{}').delivery?.location
   );
   expect(location).toEqual({lat: expect.any(Number), lng: expect.any(Number)});
 });

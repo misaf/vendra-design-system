@@ -44,7 +44,7 @@ export function routePayload(segment) {
   return new RegExp('/' + segment + '/(?:index|__next\\.[^/?]+)\\.txt(?:\\?|$)');
 }
 
-export const SITE = '/apps/storefront/app/';
+export const SITE = '/';
 export const LANGS = ['en', 'fa'];
 
 // Every routed view, with the parameters a view needs to render instead of falling back to notfound.

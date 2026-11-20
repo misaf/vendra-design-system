@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 import {chooseDeliveryTime, stubMapTiles} from '../../e2e/helpers.mjs';
 
-const app = (process.env.VF_BASE_PATH || '') + '/apps/storefront/app/';
+const app = (process.env.VF_BASE_PATH || '') + '/';
 const product = 'VF-7K2M4Q';
 const orderNumber = 'VN-PILOT-1042';
 

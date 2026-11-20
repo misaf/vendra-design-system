@@ -66,7 +66,7 @@ for (const folder of [
     // A bag and a shortlist handed over from the counter join the visitor's own, once.
     {
       const {ctx: hc, history: handHistory} = context();
-      setAddress(hc, '/apps/storefront/app/en/bag/?lines=VF-8RD5WN...2');
+      setAddress(hc, '/en/bag/?lines=VF-8RD5WN...2');
       vm.runInContext(sharedLogic, hc);
       vm.runInContext(script + '\nthis.Logic=Component;', hc);
       const handed = new hc.Logic({lang: 'en', tenant: 'default'});
@@ -75,12 +75,8 @@ for (const folder of [
         [['VF-8RD5WN', 2]],
         'a fresh visitor gets only the handed-over bag'
       );
-      assert.deepEqual(
-        [...handHistory.at(-1)],
-        ['replace', '/apps/storefront/app/en/bag/'],
-        'the link is dropped'
-      );
-      setAddress(hc, '/apps/storefront/app/en/saved/?ids=VF-3HX9TP,VF-NOPE00');
+      assert.deepEqual([...handHistory.at(-1)], ['replace', '/en/bag/'], 'the link is dropped');
+      setAddress(hc, '/en/saved/?ids=VF-3HX9TP,VF-NOPE00');
       const shortlisted = new hc.Logic({lang: 'en', tenant: 'default'});
       assert.deepEqual([...shortlisted.state.saved], ['VF-3HX9TP']);
     }
@@ -90,7 +86,7 @@ for (const folder of [
     history.length = 0;
     logic.navigate('shop');
     assert.equal(logic.state.route, 'shop');
-    assert.deepEqual(history[0], ['push', '/apps/storefront/app/en/shop/']);
+    assert.deepEqual(history[0], ['push', '/en/shop/']);
     logic.navigate({view: 'product', id: 'ivory-classic', lang: 'fa'});
     assert.equal(logic.state.route, 'product');
     assert.equal(

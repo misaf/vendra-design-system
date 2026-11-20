@@ -32,7 +32,6 @@ import {
   vfRouteUrl
 } from '../../shared/services/routing.js';
 import {vfOnServer, vfStoredValue} from '../../shared/platform/environment.js';
-import {VF_SEO} from '../../shared/services/seo.js';
 import {useLifecycle, usePageLogic} from '../../shared/services/page-state.js';
 import {vfRuntime} from '../../shared/platform/runtime.js';
 const VF_BAG0 = vfSampleBag();
@@ -95,7 +94,7 @@ function vfJoinLines(bag, lines) {
 function vfSearchReturnRoute() {
   if (vfOnServer()) return null;
   const value = history.state?.vfSearchReturn;
-  if (typeof value !== 'string' || !value.startsWith(vfAppBase())) return null;
+  if (typeof value !== 'string' || !vfInApp(value)) return null;
   const route = vfReadRoute(value);
   return route.view === 'search' ? null : route;
 }
@@ -456,8 +455,7 @@ export function useStorefrontSession(props) {
         requested.lines ||
         requested.ids ||
         (['product', 'post'].includes(requested.view) &&
-          VF_SEO.publishedPath(new URL(address, location.href).pathname) !==
-            new URL(canonical, location.href).pathname)
+          new URL(address, location.href).pathname !== new URL(canonical, location.href).pathname)
       )
         page.navigate(initial.routeInfo, true);
     };
