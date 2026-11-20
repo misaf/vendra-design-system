@@ -1,6 +1,7 @@
 'use client';
 
 import {Fragment, Suspense, useContext, useLayoutEffect, useState} from 'react';
+import type {ComponentType, ReactNode} from 'react';
 import {Alert} from '../../design-system/components/Alert/Alert.jsx';
 import {Button} from '../../design-system/components/Button/Button.jsx';
 import {LiveRegion} from '../../design-system/components/LiveRegion/LiveRegion.jsx';
@@ -10,32 +11,54 @@ import {PageBoundary} from '../../storefront/shell/components/PageError.jsx';
 import {tenantRendered} from '../../storefront/shell/components/tenant-theme.js';
 import {VF_ROUTES} from '../../storefront/shell/routing.js';
 import {VF_SEO} from '../../storefront/shell/seo.js';
-import {StorefrontPageContext} from '../../storefront/shell/ui/storefront-page.js';
+import {StorefrontPageContext} from '../../storefront/session/page-context';
 import {vfLanguage, vfLocale} from '../../storefront/store/store-config.js';
-import {PageHead} from './PageHead.jsx';
-import {StorefrontContext} from './StorefrontSession.jsx';
-import {lazyPage} from './preview-screens.js';
+import {PageHead, type HeadTags} from './PageHead';
+import {StorefrontContext} from './StorefrontSession';
+import {lazyPage} from './preview-screens';
 
-const previews = Object.fromEntries(VF_ROUTES.map(name => [name, lazyPage(name, true)]));
+const previews: Partial<Record<string, ReturnType<typeof lazyPage>>> = Object.fromEntries(
+  VF_ROUTES.map(name => [name, lazyPage(name, true)])
+);
 
-const alternateScreens = {
+const alternateScreens: Partial<Record<string, ComponentType>> = {
   bag: BagRouteScreen,
   signin: lazyPage('signin'),
   track: lazyPage('track'),
   notfound: lazyPage('notfound')
 };
 
-export function StorefrontScreen({children, view, fallbackLang, initialTags, address}) {
-  const [head, setHead] = useState(null);
+type StorefrontScreenProps = {
+  children: ReactNode;
+  view: string;
+  fallbackLang: string | null;
+  initialTags: HeadTags;
+  address: string;
+};
+
+export function StorefrontScreen({
+  children,
+  view,
+  fallbackLang,
+  initialTags,
+  address
+}: StorefrontScreenProps) {
+  const [head, setHead] = useState<{address: string; tags: HeadTags; serialized: string} | null>(
+    null
+  );
   // Initial tags travel in Next.js route data. The view can update them after a query change,
   // checkout step, or session restore. React owns these nodes for the entire navigation.
-  const updateHead = values => {
-    const tags = JSON.stringify(VF_SEO.headTags(values));
+  const updateHead = (values: Parameters<typeof VF_SEO.headTags>[0]) => {
+    const tags = VF_SEO.headTags(values);
+    const serialized = JSON.stringify(tags);
     setHead(previous =>
-      previous?.address === address && previous.tags === tags ? previous : {address, tags}
+      previous?.address === address && previous.serialized === serialized
+        ? previous
+        : {address, tags, serialized}
     );
   };
   const values = useContext(StorefrontContext);
+  if (!values) throw new Error('StorefrontScreen requires a StorefrontSession');
   const {routeInfo, store, go, tenant, setLang, preview} = values;
   useLayoutEffect(() => tenantRendered(tenant), [tenant]);
   useLayoutEffect(() => {
@@ -68,7 +91,7 @@ export function StorefrontScreen({children, view, fallbackLang, initialTags, add
   return (
     <VendraProvider locale={vfLocale(lang).tag} navigate={values.routerNavigate}>
       <PageHead
-        tags={head?.address === address ? JSON.parse(head.tags) : initialTags}
+        tags={head?.address === address ? head.tags : initialTags}
         tenant={tenant}
         lang={lang}
       />

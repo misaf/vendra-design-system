@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import {useStorefrontPageProps} from '../../shell/ui/storefront-page.js';
+import {useStorefrontPageProps} from '../../session/page-context';
 import {useSearch} from './useSearch.js';
 import {View} from './SearchView.jsx';
 

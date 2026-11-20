@@ -1,0 +1,21 @@
+{
+  // Checks legacy storefront and browser JavaScript while callers migrate to strict TypeScript.
+  // Unused imports and variables are errors. No JavaScript is emitted.
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": false,
+    "target": "es2023",
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react",
+    "types": ["react"],
+    "noUnusedLocals": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/storefront/**/*", "src/platform/browser/**/*", "src/platform/tenant/**/*"],
+  // Browser specs run in Node under Playwright.
+  "exclude": ["src/platform/browser/vendor/**", "**/*.spec.mjs", "**/*.test.mjs"]
+}

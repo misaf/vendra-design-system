@@ -24,9 +24,10 @@ const modules = {
   weddings: () => import('../../storefront/content/weddings/WeddingsScreen.jsx')
 };
 
-export function lazyPage(name, preview = false) {
+export function lazyPage(name: string, preview = false) {
   return React.lazy(async () => {
-    const {default: Page, defaults} = await modules[name]();
+    if (!Object.hasOwn(modules, name)) throw new Error('Unknown storefront preview: ' + name);
+    const {default: Page, defaults} = await modules[name as keyof typeof modules]();
     return {
       default: preview ? props => React.createElement(Page, {...defaults, ...props}) : Page
     };

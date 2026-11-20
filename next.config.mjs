@@ -21,14 +21,8 @@ export default function config(phase) {
           }
         }),
     distDir: demo ? '.generated/export' : dev ? '.next' : '.next-live',
-    // The export type check excludes route validators left over from a previous dev run.
-    typescript: {
-      tsconfigPath: dev
-        ? 'tsconfig.next.json'
-        : demo
-          ? 'tsconfig.export.json'
-          : 'tsconfig.live.json'
-    },
+    // Next.js references the current build's route validators through next-env.d.ts.
+    experimental: {strictRouteTypes: true},
     agentRules: false,
     basePath,
     trailingSlash: true,

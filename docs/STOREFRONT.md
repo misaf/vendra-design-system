@@ -285,6 +285,10 @@ Physical iPad/Safari, WebOS, Tizen and Android TV still require checks on the in
 
 ## Next.js development and static export
 
+Development, the live server build, and the demo export share the strict root `tsconfig.json`.
+Next.js points `next-env.d.ts` at the current mode's generated route types. `npm run typecheck`
+also checks legacy storefront JavaScript and JSX with `tsconfig.storefront.json`.
+
 ```sh
 npm run dev
 npm run build:demo

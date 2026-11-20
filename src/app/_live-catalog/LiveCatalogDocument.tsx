@@ -2,6 +2,7 @@
 
 import {usePathname} from 'next/navigation';
 import {createContext, useContext} from 'react';
+import type {ReactNode} from 'react';
 
 const LiveCatalogContext = createContext(false);
 
@@ -14,7 +15,7 @@ function useLiveLocale() {
   return /^\/(?:apps\/storefront\/app\/)?fa(?:\/|$)/.test(pathname) ? 'fa' : 'en';
 }
 
-export function LiveCatalogDocument({children}) {
+export function LiveCatalogDocument({children}: {children: ReactNode}) {
   const lang = useLiveLocale();
   return (
     <html lang={lang} dir={lang === 'fa' ? 'rtl' : 'ltr'} data-lang={lang}>

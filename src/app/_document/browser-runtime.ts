@@ -5,7 +5,7 @@ import {vfRuntime} from '../../platform/browser/runtime.js';
 import {vfInstallRuntime} from '../../platform/browser/integrations/runtime.js';
 import {vfApplyTenant, vfTenant} from '../../platform/tenant/tenant.js';
 
-export const base = process.env.NEXT_PUBLIC_VF_BASE_PATH;
+export const base = process.env.NEXT_PUBLIC_VF_BASE_PATH ?? '';
 vfConfigureRendering(base + '/', Number(process.env.NEXT_PUBLIC_VF_RENDER_TIME));
 
 if (typeof window !== 'undefined') {

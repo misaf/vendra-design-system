@@ -1,17 +1,20 @@
 'use client';
 
 import {usePathname} from 'next/navigation';
+import type {ReactNode} from 'react';
 import {VF_TENANT_SLUGS} from '../../../.generated/tenant-slugs.js';
 import {vfReadRoute} from '../../storefront/shell/routing.js';
 import {VF_STORE, vfLocale} from '../../storefront/store/store-config.js';
-import {base} from './browser-runtime.js';
-import {StorefrontSession} from './StorefrontSession.jsx';
+import {base} from './browser-runtime';
+import {StorefrontSession} from './StorefrontSession';
 
 // Keep the session above the language segment so pending checkout and navigation state
 // survive switching languages through the App Router.
-export function StorefrontDocument({children, tenant}) {
+export function StorefrontDocument({children, tenant}: {children: ReactNode; tenant: string}) {
   const pathname = usePathname();
-  const locale = vfLocale(vfReadRoute(base + pathname).lang || VF_STORE.languages[0]);
+  const route = vfReadRoute(base + pathname);
+  const lang = 'lang' in route && typeof route.lang === 'string' ? route.lang : '';
+  const locale = vfLocale(lang || VF_STORE.languages[0]);
   return (
     <html lang={locale.code} dir={locale.dir} data-lang={locale.code} suppressHydrationWarning>
       <head>

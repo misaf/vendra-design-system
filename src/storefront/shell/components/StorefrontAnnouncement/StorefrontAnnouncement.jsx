@@ -1,4 +1,4 @@
-import {StorefrontLink} from '../../ui/StorefrontLink.jsx';
+import {StorefrontLink} from '../../ui/StorefrontLink';
 import React from 'react';
 import {AnnouncementBar} from '../../../../design-system/components/AnnouncementBar/AnnouncementBar.jsx';
 import {Icon} from '../../../../design-system/components/Icon/Icon.jsx';

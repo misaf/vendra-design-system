@@ -1,7 +1,7 @@
 import 'server-only';
 import {notFound} from 'next/navigation';
 import type {ComponentType} from 'react';
-import {StorefrontScreen} from '../_document/StorefrontScreen.jsx';
+import {StorefrontScreen} from '../_document/StorefrontScreen';
 import {routeHead} from './route-head.mjs';
 import {requireLocale} from '@storefront/src/platform/locale/route-locale';
 import {liveCatalogBase} from '../_live-catalog/catalog-mode';

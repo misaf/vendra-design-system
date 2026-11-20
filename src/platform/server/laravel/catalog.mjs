@@ -1,3 +1,4 @@
+// @ts-check
 /** @param {string} base */
 function catalogLocation(base) {
   const url = new URL(base);
@@ -35,6 +36,7 @@ async function readCollection(base, resource, query = {}) {
     )
       throw new Error('Invalid florist catalog pagination');
     seen.add(page.href);
+    /** @type {Response} */
     const response = await fetch(page, {
       headers: {Accept: 'application/ld+json'},
       cache: 'no-store',

@@ -1,4 +1,4 @@
-import {StorefrontLink} from '../../ui/StorefrontLink.jsx';
+import {StorefrontLink} from '../../ui/StorefrontLink';
 import React from 'react';
 import {Dialog} from '../../../../design-system/components/Dialog/Dialog.jsx';
 import {Button} from '../../../../design-system/components/Button/Button.jsx';

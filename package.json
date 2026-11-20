@@ -2,7 +2,7 @@
   "name": "vendra-florist",
   "private": true,
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.components.json && tsc -p tsconfig.api.json",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.storefront.json",
     "build": "node tools/build/build.mjs",
     "check": "node tools/build/build.mjs --check && prettier --check tools src e2e tests *.mjs *.json && npm run lint:css",
     "test": "npm run typecheck && node --test \"tests/*.test.mjs\" \"src/storefront/**/*.test.mjs\"",

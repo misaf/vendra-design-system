@@ -1,4 +1,4 @@
-import {StorefrontLink} from '../../../../shell/ui/StorefrontLink.jsx';
+import {StorefrontLink} from '../../../../shell/ui/StorefrontLink';
 import React from 'react';
 import {ArchFrame} from '../../../../../design-system/components/ArchFrame/ArchFrame.jsx';
 import {Price} from '../../../../../design-system/components/Price/Price.jsx';

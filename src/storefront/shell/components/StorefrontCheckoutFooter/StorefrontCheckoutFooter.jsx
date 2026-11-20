@@ -1,4 +1,4 @@
-import {StorefrontLink} from '../../ui/StorefrontLink.jsx';
+import {StorefrontLink} from '../../ui/StorefrontLink';
 import React from 'react';
 import {TrustSeal} from '../../../../design-system/components/TrustSeal/TrustSeal.jsx';
 

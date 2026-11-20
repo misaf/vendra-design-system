@@ -1,6 +1,6 @@
 import type {ReactNode} from 'react';
-import {StorefrontDocument} from './_document/StorefrontDocument.jsx';
-import {LiveCatalogDocument} from './_live-catalog/LiveCatalogDocument.jsx';
+import {StorefrontDocument} from './_document/StorefrontDocument';
+import {LiveCatalogDocument} from './_live-catalog/LiveCatalogDocument';
 import {liveCatalogBase} from './_live-catalog/catalog-mode';
 import {VF_STORE} from '@storefront/src/storefront/store/store-config.js';
 import '@storefront/.generated/tailwind.css';

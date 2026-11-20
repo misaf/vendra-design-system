@@ -1,17 +1,20 @@
 import {createContext, Suspense, useLayoutEffect} from 'react';
+import type {ComponentPropsWithoutRef, ReactNode} from 'react';
 import Link from 'next/link';
 import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {vfSetHydrating} from '../../platform/browser/environment.js';
 import {vfRuntime} from '../../platform/browser/runtime.js';
 import {useStorefrontSession} from '../../storefront/session/useStorefrontSession.js';
 import {vfInApp} from '../../storefront/shell/routing.js';
-import {StorefrontLinkContext} from '../../storefront/shell/ui/StorefrontLink.jsx';
+import {StorefrontLinkContext} from '../../storefront/shell/ui/StorefrontLink';
 import {VF_STORE} from '../../storefront/store/store-config.js';
-import {base} from './browser-runtime.js';
+import {base} from './browser-runtime';
 
-export const StorefrontContext = createContext(null);
+export const StorefrontContext = createContext<ReturnType<typeof useStorefrontSession> | null>(
+  null
+);
 
-function AppLink({href, ...props}) {
+function AppLink({href, ...props}: ComponentPropsWithoutRef<'a'>) {
   if (
     typeof href !== 'string' ||
     !href.startsWith(base + '/') ||
@@ -25,7 +28,7 @@ function AppLink({href, ...props}) {
   return <Link {...props} href={href.slice(base.length)} prefetch={false} />;
 }
 
-function SearchState({onAddress}) {
+function SearchState({onAddress}: {onAddress: (url: string) => void}) {
   const pathname = usePathname();
   const search = useSearchParams();
   useLayoutEffect(() => {
@@ -34,13 +37,15 @@ function SearchState({onAddress}) {
   return null;
 }
 
-export function StorefrontSession({children, lang}) {
+type Navigation = {replace?: boolean; scroll?: boolean; document?: boolean};
+
+export function StorefrontSession({children, lang}: {children: ReactNode; lang: string}) {
   const router = useRouter();
   const pathname = usePathname();
   const values = useStorefrontSession({
     lang,
     initialUrl: base + pathname,
-    navigate(url, {replace, scroll, document}) {
+    navigate(url: string, {replace, scroll, document}: Navigation) {
       if (document) {
         location[replace ? 'replace' : 'assign'](url);
         return;

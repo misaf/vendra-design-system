@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import {useStorefrontPageProps} from '../ui/storefront-page.js';
+import {useStorefrontPageProps} from '../../session/page-context';
 import {useError} from './useError.js';
 import {View} from './ErrorView.jsx';
 

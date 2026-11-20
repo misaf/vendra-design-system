@@ -1,4 +1,4 @@
-import {StorefrontLink} from '../../../../shell/ui/StorefrontLink.jsx';
+import {StorefrontLink} from '../../../../shell/ui/StorefrontLink';
 import React from 'react';
 import {Accordion} from '../../../../../design-system/components/Accordion/Accordion.jsx';
 import {Icon} from '../../../../../design-system/components/Icon/Icon.jsx';
