@@ -1,13 +1,13 @@
 # Generated, vendored or third-party files.
 **/node_modules/
-_runtime/
-_vendor/
+.generated/
 e2e/__screenshots__/
 e2e/test-results/
 e2e/playwright-report/
 tests/fixtures/vendra-openapi.json
-ui/tokens/
-ui/storefront.css
+src/design-system/gallery/
+src/design-system/tokens/
+src/design-system/storefront.css
 **/package-lock.json
 # HTML pages and partials keep their exact whitespace: it is rendered, and the generator
 # writes marked regions into the storefront pages.
@@ -16,7 +16,5 @@ ui/storefront.css
 _app-build/
 .next/
 public/
-next/out/
-.next-live/
 next-env.d.ts
 .next-types.tsbuildinfo

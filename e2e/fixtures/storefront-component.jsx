@@ -2,7 +2,7 @@
 // ?component=StorefrontCheckoutMethods&lang=fa.
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {VendraProvider} from '../../ui/components/VendraProvider/VendraProvider.jsx';
+import {VendraProvider} from '../../src/design-system/components/VendraProvider/VendraProvider.jsx';
 
 import fixtures from 'fixtures:storefront';
 const query = new URLSearchParams(location.search);
@@ -11,7 +11,7 @@ const lang = query.get('lang') === 'fa' ? 'fa' : 'en';
 document.documentElement.lang = lang;
 document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
 const load = Object.entries(fixtures).find(([file]) =>
-  file.endsWith('/' + name + '/' + name + '.fixture.jsx')
+  ['.jsx', '.tsx'].some(ext => file.endsWith('/' + name + '/' + name + '.fixture' + ext))
 )?.[1];
 if (!load) throw new Error('No storefront fixture for ' + name);
 load().then(({Fixture}) =>

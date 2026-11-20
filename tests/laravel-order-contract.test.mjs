@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {test} from 'node:test';
-import {createVendraApi, VendraApiError} from '../server/vendra/index.mjs';
+import {createVendraApi, VendraApiError} from '../src/platform/server/laravel/index.mjs';
 
 const wire = JSON.parse(
   readFileSync(new URL('./fixtures/laravel-order-contract.json', import.meta.url))

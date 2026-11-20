@@ -1,11 +1,12 @@
 // Regression coverage for features consolidated into the maintained templates.
 import assert from 'node:assert/strict';
+import {fixtureOutput, fixtureSource} from '../tools/next/fixture-paths.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
-import {VF_EMAIL} from '../communications/email-templates.js';
-import {VF_NOTIFY} from '../communications/notifications.js';
-import {VF_POSTS} from '../i18n/journal-content.js';
+import {VF_EMAIL} from '../src/communications/templates/email/email-templates.js';
+import {VF_NOTIFY} from '../src/communications/templates/notifications.js';
+import {VF_POSTS} from '../src/storefront/content/journal-content.js';
 import {pageScript, sharedLogic} from './page-script.mjs';
 const root = path.resolve(import.meta.dirname, '..'),
   read = p => fs.readFileSync(path.join(root, p), 'utf8');
@@ -534,7 +535,12 @@ function page(name, c, props = {}) {
             ? [dir + '/' + e.name]
             : []
       );
-  const cards = ['ui/components', 'guidelines', 'communications', 'e2e/fixtures']
+  const cards = [
+    'src/design-system/components',
+    'src/design-system/gallery',
+    'src/communications/previews',
+    'e2e/fixtures'
+  ]
     .flatMap(htmlFiles)
     .filter(f => read(f).startsWith('<!-- @dsCard'));
   assert.ok(cards.length >= 30, 'found ' + cards.length + ' cards');
@@ -542,7 +548,12 @@ function page(name, c, props = {}) {
     for (const [, url] of read(card).matchAll(
       /<(?:script|link)\b[^>]*?(?:src|href)="([^"#:]+?)(?:[?#][^"]*)?"/g
     ))
-      assert.ok(fs.existsSync(path.join(root, path.dirname(card), url)), card + ' → ' + url);
+      assert.ok(
+        fs.existsSync(
+          path.join(root, fixtureSource(path.join(path.dirname(fixtureOutput(card)), url)))
+        ),
+        card + ' → ' + url
+      );
   // Each payment method is a feature the store turns on by listing it (VF_STORE.paymentMethods).
   {
     const {c: store} = environment();
@@ -563,7 +574,7 @@ function page(name, c, props = {}) {
     // The rules: in the store's order, unknown ids dropped, each usable or not for this order.
     const options = json(
       vm.runInContext(
-        `commerce.paymentOptions([{id: 'cod', zones: ['central']}, {id: 'paypal'}, {id: 'wallet'},
+        `paymentOptions([{id: 'cod', zones: ['central']}, {id: 'paypal'}, {id: 'wallet'},
           {id: 'online'}], {zone: 'tehran', balance: 100, total: 500})`,
         store
       )
@@ -577,7 +588,7 @@ function page(name, c, props = {}) {
       ]
     );
     assert.equal(
-      vm.runInContext(`commerce.defaultPaymentMethod(${JSON.stringify(options)}, 'cod')`, store),
+      vm.runInContext(`defaultPaymentMethod(${JSON.stringify(options)}, 'cod')`, store),
       'online'
     );
     // Card-to-card only: no choice to make, its steps show; the bag, terms and account follow.
@@ -630,17 +641,14 @@ function page(name, c, props = {}) {
   {
     const {c: store} = environment();
     const json = value => JSON.parse(JSON.stringify(value));
-    assert.deepEqual(
-      json(vm.runInContext("commerce.storeFeatures(['journal', 'paypal'])", store)),
-      {
-        promoCodes: false,
-        sameDay: false,
-        weddings: false,
-        journal: true,
-        reminders: false,
-        newsletter: false
-      }
-    );
+    assert.deepEqual(json(vm.runInContext("storeFeatures(['journal', 'paypal'])", store)), {
+      promoCodes: false,
+      sameDay: false,
+      weddings: false,
+      journal: true,
+      reminders: false,
+      newsletter: false
+    });
     vm.runInContext(
       `VF_STORE.features = []; VF_STORE.languages = ['fa']; VF_STORE.whatsapp = null;
        VF_STORE.instagram = null; VF_STORE.paymentMethods = [{id: 'whatsapp'}, {id: 'online'}];`,

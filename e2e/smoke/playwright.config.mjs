@@ -16,7 +16,7 @@ export default defineConfig({
   },
   webServer: {
     cwd: fileURLToPath(new URL('../../', import.meta.url)),
-    command: `npm run ${live ? 'start:live' : 'start:next'} -- --port 3034 --hostname 127.0.0.1`,
+    command: `npm ${live ? 'start' : 'run preview:demo'} -- --port 3034 --hostname 127.0.0.1`,
     url: url + base + '/',
     reuseExistingServer: false
   }

@@ -4,13 +4,13 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
-import {brandOutputs, validateBrand} from '../tools/brand.mjs';
-import {tenantSpecs, tenantOutputs, validateFontFiles} from '../tools/tenants.mjs';
-import {VF_EMAIL} from '../communications/email-templates.js';
-import {vfBrand, vfBrandHead, vfBrandHtml, vfBrandLinks} from '../domain/brand.js';
-import {VF_STORE} from '../domain/store-config.js';
-import theme from '../ui/tokens/tenant-theme.js';
-import {vfServerRender} from '../shared/platform/environment.js';
+import {brandOutputs, validateBrand} from '../tools/build/brand.mjs';
+import {tenantSpecs, tenantOutputs, validateFontFiles} from '../tools/build/tenants.mjs';
+import {VF_EMAIL} from '../src/communications/templates/email/email-templates.js';
+import {vfBrand, vfBrandHead, vfBrandHtml, vfBrandLinks} from '../src/storefront/store/brand.js';
+import {VF_STORE} from '../src/storefront/store/store-config.js';
+import theme from '../src/design-system/tokens/tenant-theme.js';
+import {vfServerRender} from '../src/platform/browser/environment.js';
 
 const root = path.resolve(import.meta.dirname, '..');
 
@@ -26,7 +26,7 @@ function distance(a, b) {
 }
 
 // 1. The Vendra spec reproduces the hand-tuned default palette in tokens/colors.css.
-const colors = fs.readFileSync(path.join(root, 'ui/tokens/colors.css'), 'utf8');
+const colors = fs.readFileSync(path.join(root, 'src/design-system/tokens/colors.css'), 'utf8');
 const vendra = theme.tokens(theme.VENDRA).ramps;
 for (const name of Object.keys(vendra).filter(n => !n.startsWith('--stem-'))) {
   const declared = colors.match(new RegExp(name + ':(#[0-9A-F]{6})', 'i'))[1];
@@ -37,7 +37,9 @@ for (const name of Object.keys(vendra).filter(n => !n.startsWith('--stem-'))) {
 }
 
 // 2. Generation is deterministic, keeps the base colours and applies overrides.
-const clay = JSON.parse(fs.readFileSync(path.join(root, 'ui/tokens/tenants/clay.json'), 'utf8'));
+const clay = JSON.parse(
+  fs.readFileSync(path.join(root, 'src/design-system/tokens/tenants/clay.json'), 'utf8')
+);
 assert.equal(theme.css('clay', clay), theme.css('clay', clay));
 const ramps = theme.tokens(clay).ramps;
 assert.equal(ramps['--peony-500'], clay.colours.accent);
@@ -112,7 +114,9 @@ const accepts = spec => {
   }
 };
 assert.deepEqual(
-  JSON.parse(fs.readFileSync(path.join(root, 'ui/tokens/theme.schema.json'), 'utf8')),
+  JSON.parse(
+    fs.readFileSync(path.join(root, 'src/design-system/tokens/theme.schema.json'), 'utf8')
+  ),
   schema,
   'tokens/theme.schema.json is current (run the build)'
 );
@@ -259,9 +263,9 @@ for (const name of [
       ),
     /clay\.font\.files\.latin: no file/
   );
-  const fontsFolder = fs.mkdtempSync(path.join(root, 'assets/.font-test-'));
+  const fontsFolder = fs.mkdtempSync(path.join(root, 'public/assets/.font-test-'));
   try {
-    const relative = path.relative(root, fontsFolder);
+    const relative = path.relative(path.join(root, 'public'), fontsFolder);
     fs.writeFileSync(path.join(fontsFolder, 'real.woff2'), Buffer.from('wOF2\0\x01\0\0'));
     fs.writeFileSync(path.join(fontsFolder, 'fake.woff2'), 'wOFFxxxx');
     validateFontFiles({...font, files: {latin: relative + '/real.woff2'}}, 'clay.font');
@@ -338,11 +342,13 @@ for (const [file, source] of manifests) {
   assert.equal(manifest.background_color, manifest.theme_color, file + ' background_color');
   assert.equal(manifest.icons.length, 3);
   assert.ok(manifest.icons.some(icon => icon.purpose === 'maskable'));
-  const base = new URL('https://example.com/shop/' + path.relative(root, file));
+  const base = new URL(
+    'https://example.com/shop/' + path.relative(path.join(root, 'public'), file)
+  );
   for (const icon of manifest.icons) {
     const url = new URL(icon.src, base);
     assert.ok(url.pathname.startsWith('/shop/assets/'));
-    assert.ok(fs.existsSync(path.join(root, url.pathname.slice('/shop/'.length))));
+    assert.ok(fs.existsSync(path.join(root, 'public', url.pathname.slice('/shop/'.length))));
   }
   assert.equal(new URL(manifest.start_url, base).pathname, '/shop/' + manifest.lang + '/');
   assert.equal(new URL(manifest.scope, base).pathname, '/shop/');
@@ -426,16 +432,19 @@ test('Tenant branding and deployment asset paths', t => {
   for (const lang of ['en', 'fa']) {
     for (const link of vfBrandLinks('fern', lang)) used.add(link.href);
     const manifest = JSON.parse(
-      manifests.get(path.join(root, `assets/tenants/default/manifest-${lang}.webmanifest`))
+      manifests.get(path.join(root, `public/assets/tenants/default/manifest-${lang}.webmanifest`))
     );
     for (const {src} of manifest.icons)
       used.add(path.posix.normalize('assets/tenants/default/' + src));
   }
-  const metadata = fs.readFileSync(path.join(root, 'shared/services/page-metadata.js'), 'utf8');
+  const metadata = fs.readFileSync(
+    path.join(root, 'src/storefront/shell/page-metadata.js'),
+    'utf8'
+  );
   assert.match(metadata, /`assets\/social\/og-default-\$\{lang\}\.png`/);
   for (const lang of ['en', 'fa']) used.add(`assets/social/og-default-${lang}.png`);
   for (const folder of ['assets/icons', 'assets/social'])
-    for (const name of fs.readdirSync(path.join(root, folder)))
+    for (const name of fs.readdirSync(path.join(root, 'public', folder)))
       assert.ok(
         used.has(folder + '/' + name),
         folder + '/' + name + ' is not used by the storefront'

@@ -1,8 +1,7 @@
 # Run by hand after a deliberate visual change: it renders every card and page in the same
 # Linux image as CI and commits the changed -linux screenshots to a non-default branch. Look
-# at the committed images before merging, as with the local -darwin ones. It runs on the
-# self-hosted runner when the repository variable E2E_RUNS_ON names one (see ci.yml); only people
-# with write access can start it.
+# at the committed images before merging, as with the local -darwin ones. Only people with
+# write access can start it.
 name: Update screenshots
 
 on:
@@ -32,15 +31,14 @@ jobs:
     needs: validate-branch
     permissions:
       contents: write
-    runs-on: ${{ vars.E2E_RUNS_ON && fromJSON(vars.E2E_RUNS_ON) || 'ubuntu-24.04' }}
+    runs-on: ubuntu-24.04
     timeout-minutes: 75
     container:
       image: mcr.microsoft.com/playwright:v1.65.0-noble
-      options: ${{ vars.E2E_RUNS_ON && format('--ipc=host --memory=5g --memory-swap=5g{0}', vars.E2E_CPUS && format(' --cpus={0}', vars.E2E_CPUS) || '') || '--ipc=host' }}
+      options: --ipc=host
     env:
       CI: 'true'
       HOME: /root
-      E2E_WORKERS: ${{ vars.E2E_RUNS_ON && vars.E2E_WORKERS || '' }}
     steps:
       - uses: actions/checkout@v7
       # The image ships its own Node; use the 22 the other jobs and local runs use. (Under the
@@ -64,8 +62,3 @@ jobs:
             git commit -m 'Update the Linux screenshots'
             git push
           fi
-      # The container runs as root; hand the checkout back to the runner's user so a self-hosted
-      # runner can clean it before the next job.
-      - name: Return the workspace to the runner user
-        if: always()
-        run: chown -R "$(stat -c %u:%g "$RUNNER_TEMP")" "$GITHUB_WORKSPACE"

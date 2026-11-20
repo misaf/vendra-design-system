@@ -1,13 +1,13 @@
 // Route metadata comes from the same catalog and translations as the Next.js pages.
 // The actual static HTML and hydration are exercised against the exported app in Playwright.
 import assert from 'node:assert/strict';
-import {routeHead, tenantFontUrls} from '../server/route-head.mjs';
-import {storefrontRoutes} from '../build/routes.mjs';
-import {VF_POSTS} from '../i18n/journal-content.js';
-import {vfAbsoluteUrl, vfServerRender} from '../shared/platform/environment.js';
-import {VF_STORE, vfLiveStore} from '../domain/store-config.js';
-import {VF_SEO} from '../shared/services/seo.js';
-import {vfFindProduct} from '../domain/catalog.js';
+import {routeHead, tenantFontUrls} from '../src/app/_routing/route-head.mjs';
+import {storefrontRoutes} from '../tools/build/routes.mjs';
+import {VF_POSTS} from '../src/storefront/content/journal-content.js';
+import {vfAbsoluteUrl, vfServerRender} from '../src/platform/browser/environment.js';
+import {VF_STORE, vfLiveStore} from '../src/storefront/store/store-config.js';
+import {VF_SEO} from '../src/storefront/shell/seo.js';
+import {vfFindProduct} from '../src/storefront/catalog/catalog.js';
 
 const origin = 'https://shop.example';
 const app = origin + '/';

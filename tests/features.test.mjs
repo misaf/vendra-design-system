@@ -31,7 +31,7 @@ ctx.window = {React: {}, innerWidth: 1280};
 vm.createContext(ctx);
 vm.runInContext(
   sharedLogic +
-    '\nObject.assign(this, {vfLatin, vfPhone, vfNormalizeToken, VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteUrl, vfRecentlyViewed, vfRememberViewed, vfShowList, vfReportLists, vfSelectItem, analytics});',
+    '\nObject.assign(this, {vfLatin, phone, vfNormalizeToken, VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteUrl, vfRecentlyViewed, vfRememberViewed, vfShowList, vfReportLists, vfSelectItem, analytics});',
   ctx
 );
 
@@ -39,7 +39,7 @@ vm.runInContext(
 assert.equal(ctx.vfLatin('۰۹۱۲ ٣٤٥'), '0912 345');
 assert.equal(ctx.vfLatin(undefined), '');
 assert.equal(ctx.vfLatin(null), '');
-assert.equal(ctx.vfPhone('(۰۹۱۲) ۳۴۵-۶۷۸۹'), '09123456789');
+assert.equal(ctx.phone('(۰۹۱۲) ۳۴۵-۶۷۸۹'), '09123456789');
 assert.equal(ctx.vfNormalizeToken('vf-۷k2m ۴q'), 'VF7K2M4Q');
 
 // Delivery days: seven from today, the sample sold-out day, and today closing at the zone cut-off.

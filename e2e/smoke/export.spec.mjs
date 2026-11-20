@@ -5,6 +5,28 @@ const app = (process.env.VF_BASE_PATH || '') + '/';
 const product = 'VF-7K2M4Q';
 const orderNumber = 'VN-PILOT-1042';
 
+test('the static export serves the sitemap, robots file, and compressed copies', async ({
+  request
+}) => {
+  const origin = process.env.VF_ORIGIN || '';
+  const sitemapPath = app + 'sitemap.xml';
+  const sitemap = await request.get(sitemapPath);
+  await expect(sitemap).toBeOK();
+  const xml = await sitemap.text();
+  for (const lang of ['en', 'fa'])
+    expect(xml).toContain('<loc>' + origin + app + lang + '/shop/</loc>');
+
+  const robots = await request.get(app + 'robots.txt');
+  await expect(robots).toBeOK();
+  expect(await robots.text()).toContain('Sitemap: ' + origin + sitemapPath);
+
+  for (const encoding of ['br', 'gzip']) {
+    const result = await request.head(sitemapPath, {headers: {'Accept-Encoding': encoding}});
+    await expect(result).toBeOK();
+    expect(result.headers()['content-encoding']).toBe(encoding);
+  }
+});
+
 async function replayCheckout(page) {
   const orders = new Map();
   const attempts = [];

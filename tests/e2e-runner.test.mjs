@@ -13,7 +13,7 @@ const check = (args, suites, target = '', success = true) => {
   assert.ifError(result.error);
   const output = result.stdout + result.stderr;
   assert.equal(result.status === 0, success, output);
-  for (const suite of ['build', 'dev'])
+  for (const suite of ['demo', 'dev'])
     assert.equal(output.includes(`> test:e2e:${suite}\n`), suites.includes(suite), output);
   return output;
 };
@@ -22,15 +22,15 @@ let output = check(['--project=components'], ['dev']);
 assert.match(output, /\[components\]/);
 assert.doesNotMatch(output, /\[(?:mobile|desktop|tv|tablet|touch-phone)\]/);
 
-output = check(['--project', 'tv', 'tablet', 'touch-phone'], ['build']);
+output = check(['--project', 'tv', 'tablet', 'touch-phone'], ['demo']);
 for (const project of ['tv', 'tablet', 'touch-phone']) assert.ok(output.includes(`[${project}]`));
 
-output = check(['--project=components', '--project', 'tv'], ['build', 'dev']);
+output = check(['--project=components', '--project', 'tv'], ['demo', 'dev']);
 assert.match(output, /\[components\]/);
 assert.match(output, /\[tv\]/);
 assert.doesNotMatch(output, /\[(?:mobile|desktop|tablet|touch-phone)\]/);
 
-output = check(['--project=*top', '--project=COMP*'], ['build', 'dev']);
+output = check(['--project=*top', '--project=COMP*'], ['demo', 'dev']);
 assert.match(output, /\[desktop\]/);
 assert.match(output, /\[components\]/);
 assert.doesNotMatch(output, /\[(?:mobile|tv|tablet|touch-phone)\]/);
@@ -41,7 +41,7 @@ check(['--project=no-match*'], [], '', false);
 check(['--project'], [], '', false);
 check(['--project=components'], ['dev'], 'dev');
 check(['--project=tv'], [], 'dev', false);
-check([], ['build', 'dev']);
+check([], ['demo', 'dev']);
 
 console.log(
   'Passed: combined browser CLI project routing, wildcards, target selection and errors.'

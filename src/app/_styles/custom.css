@@ -1,0 +1,29 @@
+/* Storefront styles share a layer with the design system components. Keep cascade order. */
+@import './shell.css' layer(vendra.components);
+@import '../../storefront/content/information-pages.css' layer(vendra.components);
+@import './page-layouts.css' layer(vendra.components);
+@import '../../storefront/shell/ui/collection-carousel.css' layer(vendra.components);
+@import '../../storefront/customer/account/styles.css' layer(vendra.components);
+@import '../../storefront/cart/bag/styles.css' layer(vendra.components);
+@import '../../storefront/delivery/components/DeliverySlotPicker/DeliverySlotPicker.css'
+  layer(vendra.components);
+@import '../../storefront/checkout/order-checkout/styles.css' layer(vendra.components);
+@import '../../storefront/content/contact/styles.css' layer(vendra.components);
+@import '../../storefront/shell/error/styles.css' layer(vendra.components);
+@import '../../storefront/content/faq/styles.css' layer(vendra.components);
+@import '../../storefront/catalog/home/styles.css' layer(vendra.components);
+@import '../../storefront/content/journal/styles.css' layer(vendra.components);
+@import '../../storefront/shell/not-found/styles.css' layer(vendra.components);
+@import '../../storefront/content/policy/styles.css' layer(vendra.components);
+@import '../../storefront/content/journal/post/styles.css' layer(vendra.components);
+@import '../../storefront/presentation/styles.css' layer(vendra.components);
+@import '../../storefront/catalog/product/styles.css' layer(vendra.components);
+@import '../../storefront/customer/saved/styles.css' layer(vendra.components);
+@import '../../storefront/catalog/search/styles.css' layer(vendra.components);
+@import '../../storefront/catalog/shop/styles.css' layer(vendra.components);
+@import '../../storefront/customer/sign-in/styles.css' layer(vendra.components);
+@import '../../storefront/orders/tracking/styles.css' layer(vendra.components);
+@import '../../storefront/content/weddings/styles.css' layer(vendra.components);
+@import './responsive-spacing.css' layer(vendra.components);
+@import './commerce-spacing.css' layer(vendra.components);
+@import './headings.css' layer(vendra.components);

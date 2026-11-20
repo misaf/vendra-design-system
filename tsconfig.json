@@ -1,29 +1,32 @@
 {
-  // Type-checks the storefront app, pages and shared logic as plain JavaScript and JSX; nothing is
-  // emitted. Unused imports and variables are errors.
+  // Strict checks for TypeScript, design-system declarations, and the Laravel adapter.
   "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
-    "noEmit": true,
-    "strict": false,
     "target": "es2023",
-    "lib": ["es2023", "dom", "dom.iterable"],
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "checkJs": false,
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": false,
+    "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
-    "jsx": "react",
-    "types": ["react"],
-    "noUnusedLocals": true,
-    "skipLibCheck": true
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "types": ["next", "next/image-types/global", "node", "react", "react-dom"],
+    "incremental": true,
+    "tsBuildInfoFile": ".next-types.tsbuildinfo",
+    "plugins": [{"name": "next"}],
+    "paths": {"@storefront/*": ["./*"]}
   },
   "include": [
-    "shared/**/*",
-    "domain/**/*",
-    "types/*.d.ts",
-    "session/**/*",
-    "components/storefront/**/*",
-    "app/**/*.js",
-    "app/**/*.jsx"
+    "next-env.d.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/platform/server/laravel/**/*.mjs",
+    "tests/fixtures/component-types.tsx",
+    "tests/fixtures/theme-types.mts"
   ],
-  // Browser specs run in Node under Playwright, like the package components' specs.
-  "exclude": ["app/_components/**", "**/*.spec.mjs", "**/*.test.mjs"]
+  "exclude": ["node_modules"]
 }

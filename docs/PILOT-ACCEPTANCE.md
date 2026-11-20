@@ -18,5 +18,5 @@ Run the export tests locally with Node 22 and Playwright Chromium.
 ```sh
 npm ci
 npm run build:demo
-npm run test:e2e:next
+npm run test:smoke:demo
 ```

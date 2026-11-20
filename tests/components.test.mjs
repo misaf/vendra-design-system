@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 const root = path.resolve(import.meta.dirname, '..');
-const packageComponents = path.resolve(root, 'ui/components');
+const packageComponents = path.resolve(root, 'src/design-system/components');
 const sourcesIn = folder =>
   fs
     .readdirSync(folder, {recursive: true})
@@ -15,7 +15,7 @@ const sources = sourcesIn(packageComponents);
 const components = sources.map(file => path.basename(file, '.jsx'));
 assert.equal(components.length, new Set(components).size, 'duplicate component implementation');
 const used = new Set();
-for (const file of [...sources, ...['components/storefront', 'shared', 'app'].flatMap(sourcesIn)]) {
+for (const file of [...sources, ...['src/storefront', 'src/app'].flatMap(sourcesIn)]) {
   const code = fs.readFileSync(file, 'utf8');
   for (const match of code.matchAll(/from ['"][^'"]+\/([A-Za-z][A-Za-z0-9]*)\.jsx['"]/g))
     used.add(match[1]);

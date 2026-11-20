@@ -18,7 +18,7 @@ concurrency:
 
 permissions:
   contents: read
-  # The runner job reads which files a pull request changes.
+  # The changes job reads which files a pull request changes.
   pull-requests: read
 
 jobs:
@@ -33,7 +33,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      # Formatting, and Tailwind, design tokens, tenant CSS and the tenant list match their sources.
+      # Formatting, linting, and generated output.
       - run: npm run check
       # Types, storefront logic, tenants, the package's server render, its bundle size and the API
       # contract.
@@ -42,21 +42,12 @@ jobs:
   # Skips the browser tests when a push or pull request changes only .github/ (Dependabot's action
   # bumps, workflow edits): run CI by hand after a workflow change that the browser tests need to
   # prove. Manual runs always test.
-  # Picks the machine for the browser tests. With the repository variable E2E_RUNS_ON set (a JSON
-  # label list such as ["self-hosted","vendra-e2e"]), pushes, manual runs and pull requests from
-  # this repository's own branches run on that self-hosted runner, with E2E_WORKERS workers. Pull
-  # requests from forks always stay on GitHub's runners, so outside code never reaches the server.
-  # There the container is capped at E2E_CPUS cores (when set) and 5 GB, so the server's own
-  # services keep the rest.
-  runner:
-    name: Pick the browser-test runner
+  changes:
+    name: Check which files changed
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     outputs:
       e2e: ${{ steps.changes.outputs.e2e }}
-      labels: ${{ steps.pick.outputs.labels }}
-      workers: ${{ steps.pick.outputs.workers }}
-      options: ${{ steps.pick.outputs.options }}
     steps:
       - id: changes
         env:
@@ -79,42 +70,19 @@ jobs:
           else
             echo 'e2e=true' >> "$GITHUB_OUTPUT"
           fi
-      - id: pick
-        env:
-          RUNS_ON: ${{ vars.E2E_RUNS_ON }}
-          WORKERS: ${{ vars.E2E_WORKERS }}
-          CPUS: ${{ vars.E2E_CPUS }}
-          TRUSTED: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
-        run: |
-          if [ -n "$RUNS_ON" ] && [ "$TRUSTED" = true ]; then
-            limits=' --memory=5g --memory-swap=5g'
-            if [ -n "$CPUS" ]; then limits="$limits --cpus=$CPUS"; fi
-            {
-              echo "labels=$RUNS_ON"
-              echo "workers=$WORKERS"
-              echo "options=--ipc=host$limits"
-            } >> "$GITHUB_OUTPUT"
-          else
-            {
-              echo 'labels="ubuntu-24.04"'
-              echo 'workers='
-              echo 'options=--ipc=host'
-            } >> "$GITHUB_OUTPUT"
-          fi
 
   e2e:
     name: Development fixtures and components
-    needs: [check, runner]
-    if: needs.runner.outputs.e2e == 'true'
-    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
+    needs: [check, changes]
+    if: needs.changes.outputs.e2e == 'true'
+    runs-on: ubuntu-24.04
     timeout-minutes: 75
     container:
       image: mcr.microsoft.com/playwright:v1.65.0-noble
-      options: ${{ needs.runner.outputs.options }}
+      options: --ipc=host
     env:
       CI: 'true'
       HOME: /root
-      E2E_WORKERS: ${{ needs.runner.outputs.workers }}
     steps:
       - uses: actions/checkout@v7
       # The image ships its own Node; use the 22 the other jobs and local runs use. (Under the
@@ -134,25 +102,19 @@ jobs:
             e2e/playwright-report
             e2e/test-results
           retention-days: 14
-      # The container runs as root; hand the checkout back to the runner's user so a self-hosted
-      # runner can clean it before the next job.
-      - name: Return the workspace to the runner user
-        if: always()
-        run: chown -R "$(stat -c %u:%g "$RUNNER_TEMP")" "$GITHUB_WORKSPACE"
 
   e2e-build:
     name: Production storefront, visuals and performance
-    needs: [check, runner]
-    if: needs.runner.outputs.e2e == 'true'
-    runs-on: ${{ fromJSON(needs.runner.outputs.labels) }}
+    needs: [check, changes]
+    if: needs.changes.outputs.e2e == 'true'
+    runs-on: ubuntu-24.04
     timeout-minutes: 75
     container:
       image: mcr.microsoft.com/playwright:v1.65.0-noble
-      options: ${{ needs.runner.outputs.options }}
+      options: --ipc=host
     env:
       CI: 'true'
       HOME: /root
-      E2E_WORKERS: ${{ needs.runner.outputs.workers }}
     steps:
       - uses: actions/checkout@v7
       # The image ships its own Node; use the 22 the other jobs and local runs use. (Under the
@@ -164,16 +126,16 @@ jobs:
       - run: npm ci
       - name: Build and smoke-test the live Next.js storefront
         run: |
-          npm run build:app
-          npm run test:e2e:live
-      - run: npm run test:e2e:build
+          npm run build
+          npm run test:smoke:app
+      - run: npm run test:e2e:demo
       - name: Test the Next.js export under the Pages base path
         env:
           VF_BASE_PATH: /${{ github.event.repository.name }}
           VF_ORIGIN: https://${{ github.repository_owner }}.github.io
         run: |
-          npm run build:next
-          npm run test:e2e:next
+          npm run build:demo
+          npm run test:smoke:demo
       - name: Keep the report
         if: failure()
         uses: actions/upload-artifact@v7
@@ -183,11 +145,6 @@ jobs:
             e2e/playwright-report
             e2e/test-results
           retention-days: 14
-      # The container runs as root; hand the checkout back to the runner's user so a self-hosted
-      # runner can clean it before the next job.
-      - name: Return the workspace to the runner user
-        if: always()
-        run: chown -R "$(stat -c %u:%g "$RUNNER_TEMP")" "$GITHUB_WORKSPACE"
 
   pages-build:
     name: Build the Pages demo
@@ -208,13 +165,13 @@ jobs:
       - run: npm ci
       - run: npm run check
       # Prerendered pages name their absolute address (canonical, og:url, og:image).
-      - run: npm run build:next
+      - run: npm run build:demo
         env:
           VF_BASE_PATH: /${{ github.event.repository.name }}
           VF_ORIGIN: https://${{ github.repository_owner }}.github.io
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: next/out
+          path: .generated/export
 
   pages-deploy:
     name: Deploy the Pages demo

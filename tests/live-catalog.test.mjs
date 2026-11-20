@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {loadLiveCategories, loadLiveProducts} from '../server/vendra/catalog.mjs';
+import {loadLiveCategories, loadLiveProducts} from '../src/platform/server/laravel/catalog.mjs';
 
 const base = 'https://florist-backend.example.test/store';
 const product = {token: 'LIVE-1', latestProductPrice: {amount: 240000, currency: 'IRT'}};
