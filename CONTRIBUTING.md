@@ -35,6 +35,10 @@ The **CI** workflow publishes the GitHub Pages demo after a push to `master` onl
 the unit tests, browser tests, and production tools/build/performance budgets all
 succeed. Failed, cancelled, or skipped checks prevent deployment. Pull requests do not deploy.
 
+The deployment uses the same Pages export that passed the smoke tests. CI keeps the artifact
+for seven days so a failed deployment can be retried with the tested files. After the artifact
+expires, run CI on `master` to build and test a fresh export.
+
 Changes confined to `.github/` skip the browser tests on push, so they also skip deployment.
 To deploy those changes or manually redeploy, open **Actions → CI → Run workflow**, select
 `master`, and run it. This runs every check before building and deploying the same commit.
