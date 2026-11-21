@@ -307,7 +307,7 @@ for (const lang of ['en', 'fa']) {
     store: {bag: lines, delivery, complete: o => (order = o)}
   });
   checkout.renderVals().setLast4('1234');
-  checkout.renderVals().place();
+  checkout.renderVals().submitOrder();
   assert.ok(order.id.startsWith('VN-'));
   assert.equal(order.status, 'received');
   site.renderVals().store.complete(order);

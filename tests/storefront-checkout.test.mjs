@@ -274,7 +274,7 @@ console.log(
       }
     };
     checkout.renderVals().setMethod('cod');
-    checkout.renderVals().place();
+    checkout.renderVals().submitOrder();
     assert.equal(site.state.checkoutPending, true);
     const pending = loadPage('checkout', {lang, store: site.renderVals().store}).logic;
     assert.equal(
@@ -282,7 +282,7 @@ console.log(
       true,
       'pending submission survives a page remount'
     );
-    pending.renderVals().place();
+    pending.renderVals().submitOrder();
     assert.equal(calls, 1);
     site.renderVals().store.setQty(site.state.bag[0].id, 2);
     site.renderVals().store.setDelivery({address: 'Newer street 24 unit 5'});
@@ -323,6 +323,56 @@ console.log(
     c.sessionStorage.getItem = () => session;
     assert.equal(new c.Logic({lang}).state.orders.length, 2, 'history survives a reload');
 
+    const {logic: retrySite, ctx: retryContext} = loadPage('site', {lang});
+    readyDelivery(retrySite, retryContext);
+    const retryCheckout = loadPage('checkout', {lang, store: retrySite.renderVals().store});
+    retryCheckout.ctx.setTimeout = () => 0;
+    const requests = [];
+    retryCheckout.ctx.vfRuntime.api = {
+      live: true,
+      async checkout(request) {
+        requests.push(plain(request));
+        if (requests.length === 1) throw {kind: 'timeout'};
+        return {number: 'VN-RETRIED'};
+      }
+    };
+    const retryPage = retryCheckout.logic;
+    retryPage.renderVals().setMethod('card');
+    retryPage.renderVals().setLast4('1234');
+    retryPage.renderVals().setRef('ORIGINAL-RECEIPT');
+    const submit = retryPage.renderVals().submitOrder;
+    const firstSubmission = submit();
+    await submit();
+    await firstSubmission;
+    assert.equal(requests.length, 1, 'a second call before render does not submit again');
+    assert.equal(retrySite.state.checkoutPending, false);
+    assert.equal(retryPage.renderVals().unconfirmed, true);
+
+    retryPage.renderVals().retry();
+    assert.equal(retryPage.renderVals().unconfirmed, false);
+    assert.equal(retryPage.renderVals().receiptLocked, true);
+    assert.ok(retryPage.renderVals().methodOptions.every(option => option.disabled));
+    retryPage.renderVals().setMethod('cod');
+    retryPage.renderVals().setLast4('9999');
+    retryPage.renderVals().setRef('CHANGED-RECEIPT');
+    assert.equal(retryPage.state.method, 'card');
+    assert.equal(retryPage.state.last4, '1234');
+    assert.equal(retryPage.state.ref, 'ORIGINAL-RECEIPT');
+
+    // The session may have newer bag and delivery data by the time the retry runs.
+    retrySite.renderVals().store.setQty(retrySite.state.bag[0].id, 2);
+    retrySite.renderVals().store.setDelivery({name: 'Another Recipient', date: '2000-01-01'});
+    retryPage.props.store = retrySite.renderVals().store;
+    await retryPage.renderVals().submitOrder();
+    assert.equal(requests.length, 2);
+    assert.equal(requests[0].paymentReference, '1234 ORIGINAL-RECEIPT');
+    assert.deepEqual(requests[1], requests[0], 'the retry sends the original request');
+    assert.equal(retryPage.renderVals().receiptLocked, false);
+    assert.equal(retrySite.state.orders.length, 1);
+    assert.equal(retrySite.state.orders[0].delivery.name, 'Recipient');
+    assert.equal(retrySite.state.orders[0].lines[0].qty, 1);
+    assert.equal(retrySite.state.bag[0].qty, 2, 'the original order leaves the newer bag intact');
+
     const {logic: receiptSite, ctx: rc} = loadPage('site', {lang});
     rc.setTimeout = () => 0;
     readyDelivery(receiptSite, rc);
@@ -335,7 +385,7 @@ console.log(
     const changed = loadPage('checkout', {lang, store: receiptSite.renderVals().store});
     changed.ctx.setTimeout = () => 0;
     assert.equal(changed.logic.renderVals().receiptChanged, true);
-    changed.logic.renderVals().place();
+    changed.logic.renderVals().submitOrder();
     assert.equal(receiptSite.state.order, null, 'a changed amount needs explicit confirmation');
     assert.equal(changed.logic.state.ref, 'EARLIER-RECEIPT');
     changed.logic.renderVals().setRef('UPDATED-RECEIPT');
@@ -348,7 +398,7 @@ console.log(
     assert.ok(receiptSite.state.paymentDraft.receiptAmount > originalAmount);
     const confirmed = loadPage('checkout', {lang, store: receiptSite.renderVals().store}).logic;
     assert.equal(confirmed.renderVals().receiptChanged, false, 'confirmation survives a remount');
-    confirmed.renderVals().place();
+    confirmed.renderVals().submitOrder();
     assert.equal(receiptSite.state.order.ref, 'UPDATED-RECEIPT');
     assert.equal(receiptSite.state.bag.length, 0);
 
@@ -446,14 +496,14 @@ for (const lang of ['en', 'fa']) {
     throw new Error('Storage full');
   };
   checkout.renderVals().setMethod('online');
-  checkout.renderVals().place();
+  checkout.renderVals().submitOrder();
   assert.equal(submitted, 0, 'a missing recovery record blocks the API submission too');
   assert.equal(checkout.state.payment, null);
   assert.ok(checkout.renderVals().paymentSaveError);
   c.vfRuntime.api.live = false;
   let saved;
   c.sessionStorage.setItem = (_, value) => (saved = JSON.parse(value));
-  checkout.renderVals().place();
+  checkout.renderVals().submitOrder();
   assert.equal(checkout.state.payment.status, 'redirecting');
   assert.equal(saved.id, checkout.state.payment.record.id);
   assert.equal(checkout.renderVals().paymentSaveError, '');
