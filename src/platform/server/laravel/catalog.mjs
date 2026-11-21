@@ -1,6 +1,9 @@
 // @ts-check
-/** @param {string} base */
-function catalogLocation(base) {
+/**
+ * @param {string} base
+ * @param {string} resource
+ */
+function catalogResourceUrl(base, resource) {
   const url = new URL(base);
   if (
     !['https:', 'http:'].includes(url.protocol) ||
@@ -10,7 +13,18 @@ function catalogLocation(base) {
     url.hash
   )
     throw new Error('Invalid florist API base');
+  url.pathname = url.pathname.replace(/\/$/, '') + '/api/catalog/' + resource;
   return url;
+}
+
+/** @param {URL} url @param {AbortSignal} signal */
+function fetchCatalog(url, signal) {
+  return fetch(url, {
+    headers: {Accept: 'application/ld+json'},
+    cache: 'no-store',
+    redirect: 'error',
+    signal
+  });
 }
 
 /**
@@ -19,8 +33,7 @@ function catalogLocation(base) {
  * @param {Record<string, string>} [query]
  */
 async function readCollection(base, resource, query = {}) {
-  const url = catalogLocation(base);
-  url.pathname = url.pathname.replace(/\/$/, '') + '/api/catalog/' + resource;
+  const url = catalogResourceUrl(base, resource);
   url.search = new URLSearchParams(query).toString();
   const deadline = AbortSignal.timeout(10000);
   const seen = new Set();
@@ -36,13 +49,7 @@ async function readCollection(base, resource, query = {}) {
     )
       throw new Error('Invalid florist catalog pagination');
     seen.add(page.href);
-    /** @type {Response} */
-    const response = await fetch(page, {
-      headers: {Accept: 'application/ld+json'},
-      cache: 'no-store',
-      redirect: 'error',
-      signal: deadline
-    });
+    const response = await fetchCatalog(page, deadline);
     if (!response.ok) throw new Error('Florist catalog request failed');
     const data = await response.json();
     const members = data?.member ?? data?.['hydra:member'];
@@ -55,6 +62,24 @@ async function readCollection(base, resource, query = {}) {
     page = next ? new URL(next, page) : null;
   }
   return records;
+}
+
+/** @param {unknown} price */
+function referencedPriceId(price) {
+  if (typeof price !== 'string') return null;
+  const match = /\/api\/catalog\/product-prices\/(\d+)$/.exec(price);
+  const id = match ? Number(match[1]) : NaN;
+  return Number.isSafeInteger(id) ? id : null;
+}
+
+/** @param {string} base @param {number} id @param {AbortSignal} signal */
+async function readPrice(base, id, signal) {
+  // The reference supplies only the ID; the storefront config supplies the backend.
+  const response = await fetchCatalog(catalogResourceUrl(base, 'product-prices/' + id), signal);
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error('Florist catalog request failed');
+  const price = await response.json();
+  return price?.id === id ? price : null;
 }
 
 /** @param {string} base */
@@ -92,20 +117,22 @@ async function readProducts(base, query) {
  * @param {CatalogProduct[]} records
  */
 async function resolvePrices(base, records) {
-  /** @param {unknown} price */
-  const isPriceReference = price =>
-    typeof price === 'string' && /\/api\/catalog\/product-prices\/\d+$/.test(price);
-  // Read prices from the configured backend and use the IRI only as a lookup key.
-  const prices = records.some(record => isPriceReference(record.latestProductPrice))
-    ? (await readCollection(base, 'product-prices', {itemsPerPage: '100'})).filter(record =>
-        Number.isSafeInteger(record?.id)
-      )
-    : [];
-  return records.map(record => {
-    const price = record.latestProductPrice;
-    if (typeof price !== 'string') return record;
-    const id = isPriceReference(price) ? Number(price.split('/').pop()) : null;
-    return {...record, latestProductPrice: prices.find(price => price.id === id) ?? null};
+  const priceIds = records.map(record => referencedPriceId(record.latestProductPrice));
+  const uniqueIds = [...new Set(priceIds.filter(id => id !== null))];
+  const prices = new Map();
+  const deadline = AbortSignal.timeout(10000);
+  const batchSize = 10;
+  for (let start = 0; start < uniqueIds.length; start += batchSize) {
+    const batch = uniqueIds.slice(start, start + batchSize);
+    await Promise.all(
+      batch.map(async id => {
+        prices.set(id, await readPrice(base, id, deadline));
+      })
+    );
+  }
+  return records.map((record, index) => {
+    if (typeof record.latestProductPrice !== 'string') return record;
+    return {...record, latestProductPrice: prices.get(priceIds[index]) ?? null};
   });
 }
 

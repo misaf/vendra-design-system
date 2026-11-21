@@ -46,7 +46,7 @@ test('loads active category data and keeps an empty live catalog empty', async t
   assert.deepEqual(await loadLiveProducts(base), []);
 });
 
-test('resolves JSON-LD latest price references across price pages', async t => {
+test('reads each referenced price once from the configured backend', async t => {
   const latest = {
     '@id': '/api/catalog/product-prices/201',
     id: 201,
@@ -54,31 +54,40 @@ test('resolves JSON-LD latest price references across price pages', async t => {
     currency: 'IRT'
   };
   const referenced = {...product, latestProductPrice: latest['@id']};
+  const repeated = {
+    token: 'REPEATED',
+    latestProductPrice: 'https://elsewhere.example.test/api/catalog/product-prices/201'
+  };
   const missing = {token: 'MISSING', latestProductPrice: '/api/catalog/product-prices/999'};
   const unpriced = {token: 'UNPRICED', latestProductPrice: null};
+  const embedded = {...product, token: 'EMBEDDED'};
+  const invalid = {token: 'INVALID', latestProductPrice: '/api/catalog/product-prices/invalid'};
   const paths = [];
-  t.mock.method(globalThis, 'fetch', async url => {
+  t.mock.method(globalThis, 'fetch', async (url, options) => {
     assert.equal(url.origin, new URL(base).origin);
+    assert.equal(options.headers.Accept, 'application/ld+json');
+    assert.equal(options.cache, 'no-store');
+    assert.equal(options.redirect, 'error');
     paths.push(url.pathname + url.search);
     if (url.pathname.endsWith('/products'))
-      return Response.json({member: [referenced, missing, unpriced]});
-    if (!url.searchParams.has('page'))
-      return Response.json({
-        member: [{id: 200, amount: 160000, currency: 'IRT'}],
-        view: {next: '?itemsPerPage=100&page=2'}
-      });
-    return Response.json({'hydra:member': [latest]});
+      return Response.json({member: [referenced, repeated, missing, unpriced, embedded, invalid]});
+    if (url.pathname.endsWith('/product-prices/201')) return Response.json(latest);
+    if (url.pathname.endsWith('/product-prices/999')) return new Response(null, {status: 404});
+    assert.fail('Unexpected catalog request: ' + url.href);
   });
 
   assert.deepEqual(await loadLiveProducts(base), [
     {...referenced, latestProductPrice: latest},
+    {...repeated, latestProductPrice: latest},
     {...missing, latestProductPrice: null},
-    unpriced
+    unpriced,
+    embedded,
+    {...invalid, latestProductPrice: null}
   ]);
   assert.deepEqual(paths, [
     '/store/api/catalog/products',
-    '/store/api/catalog/product-prices?itemsPerPage=100',
-    '/store/api/catalog/product-prices?itemsPerPage=100&page=2'
+    '/store/api/catalog/product-prices/201',
+    '/store/api/catalog/product-prices/999'
   ]);
 });
 
@@ -108,21 +117,36 @@ test('rejects pagination that leaves the catalog endpoint or loops', async t => 
   }
 });
 
-test('looks up the exact product and resolves only its price', async t => {
+test('looks up the exact product despite more than 50 pages of price history', async t => {
   const price = {id: 201, amount: 0, currency: 'IRT'};
   const referenced = {...product, latestProductPrice: '/api/catalog/product-prices/201'};
+  const unrelated = {token: 'OTHER', latestProductPrice: '/api/catalog/product-prices/202'};
+  const paths = [];
   t.mock.method(globalThis, 'fetch', async url => {
+    paths.push(url.pathname + url.search);
     if (url.pathname.endsWith('/products')) {
       assert.equal(url.searchParams.get('token'), product.token);
-      return Response.json({member: [referenced]});
+      return Response.json({member: [unrelated, referenced]});
     }
-    return Response.json({member: [price]});
+    if (url.pathname.endsWith('/product-prices')) {
+      const page = Number(url.searchParams.get('page') ?? 1);
+      return Response.json({
+        member: [page === 1 ? price : {...price, id: 201 + page}],
+        view: page < 51 ? {next: '?itemsPerPage=100&page=' + (page + 1)} : {}
+      });
+    }
+    if (url.pathname.endsWith('/product-prices/201')) return Response.json(price);
+    assert.fail('Unexpected catalog request: ' + url.href);
   });
   assert.deepEqual(await lookupLiveProduct(base, product.token), {
     kind: 'found',
     product: {...product, latestProductPrice: price},
     price: {amount: 0, currency: 'IRT'}
   });
+  assert.deepEqual(paths, [
+    '/store/api/catalog/products?token=LIVE-1',
+    '/store/api/catalog/product-prices/201'
+  ]);
 });
 
 test('a successful lookup with no exact match skips unrelated price references', async t => {
@@ -146,9 +170,11 @@ test('an existing product can have no usable current price', async t => {
     '/api/catalog/product-prices/999'
   ]) {
     const unpriced = {...product, latestProductPrice};
-    fetchMock.mock.mockImplementation(async url =>
-      Response.json({member: url.pathname.endsWith('/products') ? [unpriced] : []})
-    );
+    fetchMock.mock.mockImplementation(async url => {
+      if (url.pathname.endsWith('/products')) return Response.json({member: [unpriced]});
+      assert.equal(url.pathname, '/store/api/catalog/product-prices/999');
+      return new Response(null, {status: 404});
+    });
     const result = await lookupLiveProduct(base, product.token);
     assert.equal(result.kind, 'found');
     assert.equal(result.product.token, product.token);
