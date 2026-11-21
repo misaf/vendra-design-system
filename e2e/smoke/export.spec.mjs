@@ -96,6 +96,8 @@ for (const lang of ['en', 'fa']) {
         .first()
         .click();
       await expect(page).toHaveURL(new RegExp(productPath + '$'));
+      await expect(page.locator('.vf-product-description')).toHaveText(/\S/);
+      await expect(page.locator('.vf-product-price')).toHaveText(/\d|[۰-۹]/);
       await page
         .getByRole('button', {name: fa ? 'افزودن به سبد' : 'Add to bag', exact: true})
         .filter({visible: true})
