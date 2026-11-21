@@ -1,6 +1,8 @@
 // @ts-check
 
-import {responseError, VendraApiError} from './errors.mjs';
+import {productPriceReferenceId} from '../../../storefront/catalog/laravel/price.js';
+import {reviewCartSelection} from '../../../storefront/cart/review.js';
+import {isRecord, responseError, VendraApiError} from './errors.mjs';
 import {
   cartFromApi,
   collection,
@@ -74,6 +76,35 @@ export function createVendraApi({apiOrigin, fetch: fetchApi = fetch}) {
     return data;
   }
 
+  /** @param {unknown} data */
+  async function readProduct(data) {
+    const priceId = isRecord(data) ? productPriceReferenceId(data.latestProductPrice) : null;
+    const price = priceId
+      ? await request(`/api/catalog/product-prices/${priceId}`).catch(error => {
+          if (error instanceof VendraApiError && error.kind === 'not-found') return null;
+          throw error;
+        })
+      : null;
+    return productFromApi(data, price);
+  }
+
+  /** @param {number} id */
+  async function getCart(id) {
+    return cartFromApi(await request(`/api/sales/carts/${resourceId(id)}`));
+  }
+
+  /** @param {number} id */
+  async function getProductById(id) {
+    try {
+      const product = await readProduct(await request(`/api/catalog/products/${resourceId(id)}`));
+      if (product.id !== id) throw new VendraApiError('invalid-response');
+      return product;
+    } catch (error) {
+      if (error instanceof VendraApiError && error.kind === 'not-found') return null;
+      throw error;
+    }
+  }
+
   return {
     /** @param {string} code The exact Laravel product token. */
     async getProductByCode(code) {
@@ -82,14 +113,30 @@ export function createVendraApi({apiOrigin, fetch: fetchApi = fetch}) {
       );
       if (total === 0 && members.length === 0) return null;
       if (total !== 1 || members.length !== 1) throw new VendraApiError('invalid-response');
-      const product = productFromApi(members[0]);
+      const product = await readProduct(members[0]);
       if (product.code !== code) throw new VendraApiError('invalid-response');
       return product;
     },
 
+    getCart,
+
     /** @param {number} id */
-    async getCart(id) {
-      return cartFromApi(await request(`/api/sales/carts/${resourceId(id)}`));
+    async reviewCart(id) {
+      const cart = await getCart(id);
+      const productIds = new Set(
+        cart.lines.filter(line => line.sellableType === 'product').map(line => line.sellableId)
+      );
+      const products = new Map(
+        await Promise.all(
+          [...productIds].map(async id => /** @type {const} */ ([id, await getProductById(id)]))
+        )
+      );
+      return {
+        ...cart,
+        lines: cart.lines.map(line =>
+          reviewCartSelection(line, products.get(line.sellableId) ?? null)
+        )
+      };
     },
 
     /** @param {QuoteInput} input */

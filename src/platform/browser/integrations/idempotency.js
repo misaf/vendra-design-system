@@ -66,9 +66,9 @@ export function createIdempotentSubmission(request) {
     delete keys[scope];
     writeKeys(keys);
   };
-  const submit = async (scope, path, body) => {
+  const submit = async (scope, path, body, decode = result => result) => {
     const key = idempotencyKey(scope, body);
-    const result = await request('POST', path, body, {idempotencyKey: key});
+    const result = decode(await request('POST', path, body, {idempotencyKey: key}));
     settleKey(scope, key);
     return result;
   };

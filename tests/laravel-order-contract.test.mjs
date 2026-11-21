@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {test} from 'node:test';
+import {lookupLiveProduct} from '../src/platform/server/laravel/catalog.mjs';
 import {createVendraApi, VendraApiError} from '../src/platform/server/laravel/index.mjs';
 
 const wire = JSON.parse(
@@ -143,4 +144,63 @@ test('preserves a rejected delivery date as a field error for review', async () 
     status: 422,
     issues: [{field: 'deliveryDate', message: wire.closedDate.violations[0].message}]
   });
+});
+
+test('catalog and cart review use an edited bouquet offer while order history keeps the purchase', async t => {
+  const originalProduct = wire.products.member[0];
+  const purchasedLine = {...wire.order.lines[0], lineAmount: 9500};
+  const receipt = {...wire.order, lines: [purchasedLine]};
+  let edited = false;
+  const handle = url => {
+    const product = {
+      ...originalProduct,
+      name: edited ? {en: 'Garden roses', fa: 'رز باغی'} : originalProduct.name,
+      inStock: !edited,
+      latestProductPrice: '/api/catalog/product-prices/1'
+    };
+    if (url.pathname === '/api/catalog/products') {
+      return Response.json({...wire.products, member: [product]});
+    }
+    if (url.pathname === '/api/catalog/products/1') return Response.json(product);
+    const price = {id: 1, amount: edited ? 6200 : 4800, currency: 'USD'};
+    if (url.pathname === '/api/catalog/product-prices/1') return Response.json(price);
+    if (url.pathname === '/api/catalog/product-prices') return Response.json({member: [price]});
+    if (url.pathname === '/api/sales/carts/1') return Response.json(wire.cart);
+    if (url.pathname === '/api/sales/checkout') return Response.json(receipt, {status: 201});
+    assert.equal(url.pathname, '/api/sales/orders/1');
+    return Response.json(receipt);
+  };
+  const api = withApi(handle);
+  t.mock.method(globalThis, 'fetch', handle);
+
+  assert.equal((await api.getProductByCode(originalProduct.token)).price.amount, 4800);
+  const purchase = await api.submitCheckout(checkoutInput, submissionKey);
+  edited = true;
+
+  const catalog = await api.getProductByCode(originalProduct.token);
+  const detail = await lookupLiveProduct(apiOrigin, originalProduct.token);
+  assert.equal(detail.kind, 'found');
+  assert.deepEqual(detail.product.name, catalog.name);
+  assert.deepEqual(detail.price, catalog.price);
+  assert.equal(catalog.name.en, 'Garden roses');
+  assert.equal(catalog.name.fa, 'رز باغی');
+  assert.deepEqual(catalog.price, {amount: 6200, currency: 'USD'});
+  const {selection, offer} = (await api.reviewCart(1)).lines[0];
+  assert.equal(selection.productCode, originalProduct.token);
+  assert.equal(selection.quantity, 2);
+  assert.deepEqual(selection.selectedAddOns, ['card', 'chocolate']);
+  assert.deepEqual(offer, {name: catalog.name, price: catalog.price, inStock: false});
+
+  const history = await api.getOrder(1);
+  assert.deepEqual(history.lines, purchase.lines);
+  const [{name, quantity, unitAmount, lineAmount}] = history.lines;
+  assert.deepEqual(
+    {name, quantity, unitAmount, lineAmount},
+    {
+      name: 'Red roses',
+      quantity: 2,
+      unitAmount: 4800,
+      lineAmount: 9500
+    }
+  );
 });
