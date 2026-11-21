@@ -1,4 +1,7 @@
 // @ts-check
+import {createStorefrontFetch} from './storefront-fetch.mjs';
+
+/** @typedef {{base: string, storefrontOrigin?: string, locale: 'en' | 'fa'}} CatalogContext */
 /** @param {string} base */
 function catalogLocation(base) {
   const url = new URL(base);
@@ -14,12 +17,13 @@ function catalogLocation(base) {
 }
 
 /**
- * @param {string} base
+ * @param {CatalogContext} catalog
  * @param {string} resource
  * @param {Record<string, string>} [query]
  */
-async function readCollection(base, resource, query = {}) {
-  const url = catalogLocation(base);
+async function readCollection(catalog, resource, query = {}) {
+  const url = catalogLocation(catalog.base);
+  const fetchPage = createStorefrontFetch(catalog);
   url.pathname = url.pathname.replace(/\/$/, '') + '/api/catalog/' + resource;
   url.search = new URLSearchParams(query).toString();
   const deadline = AbortSignal.timeout(10000);
@@ -37,7 +41,7 @@ async function readCollection(base, resource, query = {}) {
       throw new Error('Invalid florist catalog pagination');
     seen.add(page.href);
     /** @type {Response} */
-    const response = await fetch(page, {
+    const response = await fetchPage(page, {
       headers: {Accept: 'application/ld+json'},
       cache: 'no-store',
       redirect: 'error',
@@ -57,9 +61,9 @@ async function readCollection(base, resource, query = {}) {
   return records;
 }
 
-/** @param {string} base */
-export async function loadLiveCategories(base) {
-  const records = await readCollection(base, 'product-categories');
+/** @param {CatalogContext} catalog */
+export async function loadLiveCategories(catalog) {
+  const records = await readCollection(catalog, 'product-categories');
   if (records.some(record => !Number.isSafeInteger(record?.id) || !record.slug || !record.name))
     throw new Error('Invalid florist category');
   return records.filter(record => record.active !== false);
@@ -76,28 +80,28 @@ export async function loadLiveCategories(base) {
  */
 
 /**
- * @param {string} base
+ * @param {CatalogContext} catalog
  * @param {Record<string, string>} [query]
  * @returns {Promise<CatalogProduct[]>}
  */
-async function readProducts(base, query) {
-  const records = await readCollection(base, 'products', query);
+async function readProducts(catalog, query) {
+  const records = await readCollection(catalog, 'products', query);
   if (records.some(record => typeof record?.token !== 'string' || !record.token.trim()))
     throw new Error('Invalid florist product');
   return records;
 }
 
 /**
- * @param {string} base
+ * @param {CatalogContext} catalog
  * @param {CatalogProduct[]} records
  */
-async function resolvePrices(base, records) {
+async function resolvePrices(catalog, records) {
   /** @param {unknown} price */
   const isPriceReference = price =>
     typeof price === 'string' && /\/api\/catalog\/product-prices\/\d+$/.test(price);
   // Read prices from the configured backend and use the IRI only as a lookup key.
   const prices = records.some(record => isPriceReference(record.latestProductPrice))
-    ? (await readCollection(base, 'product-prices', {itemsPerPage: '100'})).filter(record =>
+    ? (await readCollection(catalog, 'product-prices', {itemsPerPage: '100'})).filter(record =>
         Number.isSafeInteger(record?.id)
       )
     : [];
@@ -110,11 +114,11 @@ async function resolvePrices(base, records) {
 }
 
 /**
- * @param {string} base
+ * @param {CatalogContext} catalog
  * @param {Record<string, string>} [query]
  */
-export async function loadLiveProducts(base, query) {
-  return resolvePrices(base, await readProducts(base, query));
+export async function loadLiveProducts(catalog, query) {
+  return resolvePrices(catalog, await readProducts(catalog, query));
 }
 
 /** @param {unknown} price @returns {ProductPrice | null} */
@@ -140,16 +144,16 @@ export function currentProductPrice(price) {
  */
 
 /**
- * @param {string} base
+ * @param {CatalogContext} catalog
  * @param {string} token
  * @returns {Promise<ProductLookup>}
  */
-export async function lookupLiveProduct(base, token) {
+export async function lookupLiveProduct(catalog, token) {
   try {
-    const records = await readProducts(base, {token});
+    const records = await readProducts(catalog, {token});
     const match = records.find(record => record.token === token);
     if (!match) return {kind: 'missing'};
-    const [product] = await resolvePrices(base, [match]);
+    const [product] = await resolvePrices(catalog, [match]);
     return {kind: 'found', product, price: currentProductPrice(product.latestProductPrice)};
   } catch {
     return {kind: 'unavailable'};

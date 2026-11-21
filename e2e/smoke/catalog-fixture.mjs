@@ -10,12 +10,22 @@ const product = {
 createServer((request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
   if (url.pathname === '/') return response.end('Catalog fixture ready');
-  if (url.pathname !== '/api/catalog/products') {
+  if (url.pathname !== '/store/api/catalog/products') {
     response.writeHead(404);
     return response.end();
   }
 
   const token = url.searchParams.get('token');
+  const locale = /-(en|fa)(?:-|$)/.exec(token)?.[1];
+  if (
+    request.headers.origin !== 'https://florist.example.test' ||
+    !locale ||
+    request.headers['accept-language'] !== locale
+  ) {
+    response.writeHead(400);
+    return response.end();
+  }
+
   const failure = /^(ERROR|TIMEOUT)-(en|fa)-\d+-\d+$/.exec(token)?.[1];
   if (failure && !retried.has(token)) {
     retried.add(token);
@@ -24,16 +34,23 @@ createServer((request, response) => {
     return response.end();
   }
 
+  const priced = token === `PRICED-${locale}`;
+  const unpriced = token === `UNPRICED-${locale}`;
+  response.writeHead(200, {'Content-Type': 'application/ld+json'});
+  if (priced && !url.searchParams.has('page')) {
+    const next = '?' + new URLSearchParams({token, page: '2'});
+    return response.end(JSON.stringify({'hydra:member': [], 'hydra:view': {'hydra:next': next}}));
+  }
+
   const member =
-    token === 'PRICED' || token === 'UNPRICED' || failure
+    priced || unpriced || failure
       ? [
           {
             ...product,
             token,
-            latestProductPrice: token === 'UNPRICED' ? null : {amount: 240000, currency: 'IRT'}
+            latestProductPrice: unpriced ? null : {amount: 240000, currency: 'IRT'}
           }
         ]
       : [];
-  response.writeHead(200, {'Content-Type': 'application/ld+json'});
   response.end(JSON.stringify({'hydra:member': member}));
 }).listen(Number(process.argv[2]), '127.0.0.1');
