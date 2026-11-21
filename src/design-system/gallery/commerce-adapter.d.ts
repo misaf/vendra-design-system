@@ -10,7 +10,7 @@ import type {directionsLinks, distanceKm, zoneAt, zoneFromApi} from '../../store
 import type {page} from '../../storefront/catalog/pagination.js';
 import type {fillText} from '../../storefront/delivery/delivery-copy.js';
 import type {apiRecord, stockStatus, imageFromApi, productFromApi} from '../../storefront/catalog/product-api.js';
-import type {lineFromApi} from '../../storefront/cart/order-line-api.js';
+import type {purchasedLineView} from '../../storefront/orders/order-line-view.js';
 import type {ORDER_STATUS, orderFromApi} from '../../storefront/orders/order-api.js';
 import type {STORE_FEATURES, storeFeatures} from '../../storefront/store/store-features.js';
 import type {
@@ -61,7 +61,7 @@ export type {
 } from '../../storefront/pricing/order-totals.js';
 export type {DirectionsApp, Zone} from '../../storefront/delivery/delivery-zones.js';
 export type {ApiRecord, ApiPhoto} from '../../storefront/catalog/product-api.js';
-export type {Size, Addon} from '../../storefront/cart/order-line-api.js';
+export type {Size, Addon} from '../../storefront/orders/order-line-view.js';
 export type {StoreFeature} from '../../storefront/store/store-features.js';
 export type {PaymentMethodId, PaymentMethod, PaymentOption} from '../../storefront/checkout/payment-options.js';
 export type {CheckoutRequest, DeliverySlot} from '../../storefront/checkout/checkout-request.js';
@@ -115,7 +115,7 @@ export interface Commerce {
   imageFromApi: typeof imageFromApi;
   productFromApi: typeof productFromApi;
   zoneFromApi: typeof zoneFromApi;
-  lineFromApi: typeof lineFromApi;
+  purchasedLineView: typeof purchasedLineView;
   ORDER_STATUS: typeof ORDER_STATUS;
   orderFromApi: typeof orderFromApi;
   checkoutRequest: typeof checkoutRequest;

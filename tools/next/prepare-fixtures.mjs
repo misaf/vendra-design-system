@@ -16,6 +16,7 @@ import {
 const root = repo;
 const publicDir = join(root, 'public');
 const leafletDir = join(publicDir, 'apps/storefront/_vendor/leaflet');
+const tenantTheme = ui + '/tokens/tenant-theme.js';
 const componentDirs = {
   'design-system': [components],
   storefront: ['src/storefront']
@@ -47,7 +48,7 @@ for (const dir of [gallery, components, 'e2e/fixtures', communicationsPreviews])
       if (match[0].includes('type="module"')) {
         entries.add(path);
         html = html.replace(match[0], match[0].replace(/\.jsx(?=")/, '.js'));
-      } else {
+      } else if (path !== tenantTheme) {
         await copy(path);
       }
     }
@@ -55,6 +56,17 @@ for (const dir of [gallery, components, 'e2e/fixtures', communicationsPreviews])
     await mkdir(dirname(to), {recursive: true});
     await writeFile(to, html);
   }
+}
+
+// The Theme builder loads this classic script before its React card. Bundle the
+// Node entry point to keep the same URL and window.VF_TENANT_THEME API.
+const themeBundle = await rolldown({input: join(root, tenantTheme), platform: 'browser'});
+try {
+  const file = join(publicDir, fixtureOutput(tenantTheme));
+  await mkdir(dirname(file), {recursive: true});
+  await themeBundle.write({file, format: 'iife', name: 'VF_TENANT_THEME', exports: 'default'});
+} finally {
+  await themeBundle.close();
 }
 
 await Promise.all(

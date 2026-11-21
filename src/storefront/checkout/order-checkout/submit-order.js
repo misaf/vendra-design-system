@@ -9,6 +9,8 @@ import {
 import {vfAccountLocale, vfCustomerId} from '../../customer/account-data.js';
 import {vfDeliveryDate} from '../../delivery/delivery-schedule.js';
 import {vfDeliveryChanged} from '../../delivery/delivery-validation.js';
+import {snapshotDemoOrderLine} from '../../orders/order-line-view.js';
+import {vfPurchasedHistoryLine} from '../../orders/order-records.js';
 import {vfLiveStore} from '../../store/store-config.js';
 import {vfCheckoutRequest} from '../checkout-request.js';
 import {vfKeepPayment} from './payment-recovery.js';
@@ -120,6 +122,7 @@ export async function submitOrder(
       ? {
           ...record,
           id: result?.number || record.id,
+          lines: result?.lines?.map(line => vfPurchasedHistoryLine(line)) ?? record.lines,
           // Use the entire total from the API so discounts are only counted once.
           totals: result?.totals || record.totals
         }
@@ -168,7 +171,7 @@ function createAttempt({
     id: 'VN-' + now.getTime(),
     status: 'received',
     createdAt: now.toISOString(),
-    lines: items.map(line => ({...line})),
+    lines: items.map(snapshotDemoOrderLine),
     delivery: {...delivery, date: delivery.date || vfDeliveryDate(delivery, now, items)},
     totals: {...totals},
     last4,
@@ -176,6 +179,6 @@ function createAttempt({
   };
   return {
     record,
-    request: live ? vfCheckoutRequest(record.lines, record.delivery, {method, last4, ref}) : null
+    request: live ? vfCheckoutRequest(items, record.delivery, {method, last4, ref}) : null
   };
 }

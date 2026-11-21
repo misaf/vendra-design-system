@@ -507,6 +507,48 @@ function page(name, c, props = {}) {
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(live.state.failed, true);
   assert.equal(live.state.order, null);
+  const acceptedLine = {
+    id: 1,
+    sellableType: 'product',
+    sellableId: 101,
+    name: 'Accepted bouquet',
+    quantity: 2,
+    unitAmount: 1000,
+    lineAmount: 1800,
+    metadata: {token: 'VF-7K2M4Q'}
+  };
+  const keys = [];
+  const fetchBeforeCheckout = c.fetch;
+  c.fetch = async (url, options) => {
+    assert.equal(new URL(url).pathname, '/api/sales/checkout');
+    keys.push(options.headers['Idempotency-Key']);
+    return {
+      ok: true,
+      status: 201,
+      json: async () => ({
+        number: 'VN-TEST-ACCEPTED',
+        itemsAmount: 1800,
+        deliveryAmount: 0,
+        totalAmount: 1800,
+        lines: [keys.length === 1 ? {...acceptedLine, lineAmount: null} : acceptedLine]
+      })
+    };
+  };
+  live.renderVals().retry();
+  await live.renderVals().submitOrder();
+  assert.equal(live.renderVals().unconfirmed, true);
+  assert.equal(live.state.order, null);
+  live.renderVals().retry();
+  await live.renderVals().submitOrder();
+  assert.ok(keys[0]);
+  assert.deepEqual(keys, [keys[0], keys[0]]);
+  assert.equal(live.state.order.id, 'VN-TEST-ACCEPTED');
+  const track = page('tracking', c, {store: {lastOrder: live.state.order}});
+  const shownLine = track.renderVals().lines[0];
+  assert.equal(shownLine.name, acceptedLine.name);
+  assert.match(shownLine.meta, /× 2/);
+  assert.match(shownLine.total, /1,800/);
+  c.fetch = fetchBeforeCheckout;
   c.vfRuntime.api.setBase('');
   const cod = page('checkout', c);
   cod.props.store = {

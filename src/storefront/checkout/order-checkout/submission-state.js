@@ -23,7 +23,7 @@ export function checkoutSubmissionFailure(error, attempt, previousAttempt) {
   const kind = error?.kind || 'http';
   const recovery = checkoutValidation(error?.fields);
   const uncertain =
-    ['timeout', 'network', 'conflict', 'server'].includes(kind) ||
+    ['timeout', 'network', 'conflict', 'server', 'invalid-response'].includes(kind) ||
     (previousAttempt && kind === 'offline');
   return {
     failed: true,

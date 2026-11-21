@@ -317,13 +317,19 @@ assert.deepEqual(
     .map(slot => slot.closed),
   [true, false]
 );
-const line = commerce.lineFromApi(
+const line = commerce.purchasedLineView(
   {
+    id: 1,
+    sellableType: 'product',
     sellableId: 5,
-    name: 'VF-1',
+    productCode: 'VF-1',
+    name: 'Red roses',
     quantity: 2,
     unitAmount: 900_000,
-    metadata: {token: 'VF-1', size: 'large', addons: 'card'}
+    lineAmount: 1_800_000,
+    size: 'large',
+    selectedAddOns: ['card'],
+    cardMessage: null
   },
   {
     products: [{id: 'VF-1', apiId: 5, image: 'rose.jpg'}],

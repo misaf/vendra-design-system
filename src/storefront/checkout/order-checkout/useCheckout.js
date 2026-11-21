@@ -13,7 +13,6 @@ import {
   vfCardMessages,
   vfLineAvailable,
   vfLineQuantityValid,
-  vfLineToken,
   vfSampleBag
 } from '../../cart/cart-lines.js';
 import {paymentOptions, defaultPaymentMethod} from '../payment-options.js';
@@ -29,6 +28,7 @@ import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {VF_STORE, vfLiveStore, vfPaymentMethods} from '../../store/store-config.js';
 import {vfDeliveryWhen} from '../../delivery/time.js';
 import {vfOrderMessage} from '../order-message.js';
+import {orderLineDisplay} from '../../orders/order-line-view.js';
 import {
   vfBalanceDiscountOn,
   vfWalletBalance,
@@ -484,12 +484,15 @@ function checkoutViewProps(page) {
       else if (s.payment.record) vfVerifyPayment(page, number, 'paid');
       else leavePaymentUrl();
     },
-    lines: items.map(l => ({
-      image: vfProductImage(l, L),
-      name: vfLineToken(l),
-      meta: l[L][1] + ' · × ' + (fa ? VF_FA_DIGITS(l.qty) : l.qty),
-      total: m(l.unit * l.qty)
-    })),
+    lines: items.map(line => {
+      const {name, detail, quantity, amount} = orderLineDisplay(line, L);
+      return {
+        image: vfProductImage(line, L),
+        name,
+        meta: (detail ? detail + ' · ' : '') + '× ' + (fa ? VF_FA_DIGITS(quantity) : quantity),
+        total: m(amount)
+      };
+    }),
     sums: vfSummaryRows(
       totals,
       delivery.promo,

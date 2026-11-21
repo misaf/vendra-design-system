@@ -1,6 +1,6 @@
 # StorefrontBagSender
 
-Composes the sender section/title/hint and controlled name/phone grid from explicit labels and field descriptors. Preserves section/heading/input IDs, classes/order, labels, required/error props, name autocomplete, phone keypad/direction/placeholder and shared PhoneInput defaults.
+Composes the sender section/title/hint and controlled name/phone grid from explicit labels and field descriptors. The phone field references the delivery-updates hint in its accessible description alongside any field error. Preserves section/heading/input IDs, classes/order, labels, required/error props, name autocomplete, phone keypad/direction/placeholder and shared PhoneInput defaults.
 
 View retains descriptor mapping and delivery-step visibility. Bag/shared logic retains sender values, signed-in prefill, validation, persistence, customer isolation and error-summary focus. No page model, state/effects, browser APIs or commerce rules belong here.
 

@@ -1,4 +1,4 @@
-import type {ApiRecord} from '../catalog/product-api.js';
+import type {PurchasedOrderLine} from './purchase.js';
 
 /** A product size; `price` is added to the product's price. */
 export interface Size {
@@ -15,9 +15,9 @@ export interface Addon {
   name: Record<'en' | 'fa', string>;
 }
 
-/** A bag line from an API OrderLine (metadata: token, size, addons, cardMessage). */
-export declare function lineFromApi(
-  line: ApiRecord,
+/** View data for an accepted order line. */
+export declare function purchasedLineView(
+  line: PurchasedOrderLine,
   options: {
     products: Record<string, any>[];
     sizes: Size[];
@@ -26,3 +26,12 @@ export declare function lineFromApi(
     describe(product: any, size: Size | null, addons: Addon[], lang: 'en' | 'fa'): string;
   }
 ): Record<string, any>;
+
+export declare function orderLineDisplay(
+  line: Record<string, any>,
+  locale: 'en' | 'fa'
+): {name: string; detail: string; quantity: number; amount: number};
+
+export declare function snapshotDemoOrderLine<T>(
+  line: T
+): T & {acceptedName: string; acceptedAmount: number};
