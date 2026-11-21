@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, openFooterGroup, pageChunk, routePayload, siteUrl} from '../helpers.mjs';
+import {openSite, openFooterGroup, pageChunks, routePayload, siteUrl} from '../helpers.mjs';
 
 test.use({reducedMotion: 'reduce'});
 
@@ -62,7 +62,7 @@ async function focusedHeading(page, lang) {
 
 for (const lang of ['en', 'fa']) {
   test(`post stays visible while its client code loads (${lang})`, async ({page}, info) => {
-    const gate = await hold(page, pageChunk('post'));
+    const gate = await hold(page, pageChunks('post'));
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     try {
@@ -89,7 +89,7 @@ for (const lang of ['en', 'fa']) {
   });
 
   test(`initial module readiness preserves first-load focus (${lang})`, async ({page}, info) => {
-    const gate = await hold(page, pageChunk('site'));
+    const gate = await hold(page, pageChunks('site'));
     try {
       await page.goto(siteUrl('shop', lang), {waitUntil: 'domcontentloaded'});
       await gate.requested;

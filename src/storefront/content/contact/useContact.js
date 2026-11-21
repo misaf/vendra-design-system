@@ -1,10 +1,11 @@
 // Page behavior. Edit here, then run npm run build.
+import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {vfAccountLoad, vfAccountPhone} from '../../customer/account-data.js';
 import {mobile as vfMobile} from '../../../design-system/utils/input.js';
 import {vfLoadLeaflet} from '../../../platform/browser/integrations/leaflet.js';
 import {vfDirections} from '../../delivery/location.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {VF_STORE, vfLiveStore} from '../../store/store-config.js';
 import {vfHoursNotices, vfHoursText, vfOpeningStatus} from '../../store/store-hours.js';
 import {useLifecycle, usePageLogic} from '../../shell/page-state.js';
@@ -159,7 +160,7 @@ function vals(page) {
       page.setState({
         sent: false
       });
-      S.focus('vf-cmsg');
+      VF_NAV.focusById('vf-cmsg');
     },
     name: s.name,
     nameErr: fieldErrors.name,
@@ -180,7 +181,7 @@ function vals(page) {
       // One problem goes straight to its field; several go to the summary that lists them.
       const wrong = FIELDS.filter(([key]) => invalid[key]);
       if (wrong.length) {
-        S.focus(wrong.length > 1 ? 'vf-contact-errors' : wrong[0][1]);
+        VF_NAV.focusById(wrong.length > 1 ? 'vf-contact-errors' : wrong[0][1]);
         return;
       }
       const success = () => {
@@ -191,7 +192,7 @@ function vals(page) {
           apiError: '',
           submitted: false
         });
-        S.focus('vf-contact-success');
+        VF_NAV.focusById('vf-contact-success');
       };
       if (!vfRuntime.api.live) {
         success();
@@ -216,7 +217,9 @@ function vals(page) {
           const {fields, apiError} = vfInquiryFailure(error, S.lang);
           const wrong = FIELDS.filter(([key]) => fields[key]);
           page.setState({busy: false, apiFields: fields, apiError});
-          S.focus(wrong.length > 1 ? 'vf-contact-errors' : wrong[0]?.[1] || 'vf-contact-api-error');
+          VF_NAV.focusById(
+            wrong.length > 1 ? 'vf-contact-errors' : wrong[0]?.[1] || 'vf-contact-api-error'
+          );
         });
     }
   };

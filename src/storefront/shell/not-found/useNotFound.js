@@ -1,7 +1,7 @@
 // Page behavior. Edit here, then run npm run build.
 import {vfCopy} from './copy.js';
 import {VF_PRODUCTS, vfProductImage, vfProductSub} from '../../catalog/catalog.js';
-import {vfShell} from '../navigation.js';
+import {vfShell} from '../shell-props.js';
 import {usePageLogic} from '../page-state.js';
 import {useStorefrontPage} from '../page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values

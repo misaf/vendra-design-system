@@ -3,7 +3,7 @@
 // the app shows when the API is down. It offers a retry, the way home, and the phone, so an order
 // can still be placed.
 import {vfCopy} from './copy.js';
-import {vfShell} from '../navigation.js';
+import {vfShell} from '../shell-props.js';
 import {usePageLogic} from '../page-state.js';
 import {useStorefrontPage} from '../page-lifecycle.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values

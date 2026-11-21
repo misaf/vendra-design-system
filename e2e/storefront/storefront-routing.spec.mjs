@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, pageChunk, routePayload, scanAxe} from '../helpers.mjs';
+import {openSite, pageChunks, routePayload, scanAxe} from '../helpers.mjs';
 
 // A page shown on its own (?page=<name>) opens in the language asked for, wherever ?lang= sits.
 for (const address of [
@@ -45,7 +45,7 @@ test('the server-error page offers a retry, the way home and the phone', async (
 
 // A page whose Next.js chunk fails to load offers a reload while the rest of the site works.
 test('a page that fails to load offers a reload', async ({page}) => {
-  await page.route(pageChunk('shop'), route => route.abort());
+  await page.route(pageChunks('shop'), route => route.abort());
   await openSite(page, 'home', 'en');
   await page.evaluate(() => window.__vfSite.navigate({view: 'shop'}));
   const alert = page.getByRole('alert').filter({hasText: 'This page didn’t load.'});
@@ -57,7 +57,7 @@ test('a page that fails to load offers a reload', async ({page}) => {
 });
 
 test('a standalone page that fails to load offers a reload', async ({page}) => {
-  await page.route(pageChunk('shop'), route => route.abort());
+  await page.route(pageChunks('shop'), route => route.abort());
   await page.goto('/fa/?page=shop');
   await expect(page.getByRole('alert').filter({hasText: 'این صفحه بارگذاری نشد.'})).toBeVisible();
   await expect(page).toHaveTitle('این صفحه بارگذاری نشد. · گل‌فروشی وندرا');
@@ -67,7 +67,7 @@ test('a standalone page that fails to load offers a reload', async ({page}) => {
 test('a page that fails to preload in the background never reloads the tab', async ({page}) => {
   let loads = 0;
   page.on('load', () => loads++);
-  await page.route(pageChunk('shop'), route => route.abort());
+  await page.route(pageChunks('shop'), route => route.abort());
   await openSite(page, 'checkout', 'en');
   await page.waitForTimeout(1500);
   expect(loads).toBe(1);

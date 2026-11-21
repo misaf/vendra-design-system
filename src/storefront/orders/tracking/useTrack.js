@@ -10,7 +10,7 @@ import {mobile as vfMobile} from '../../../design-system/utils/input.js';
 import {vfTotals} from '../../pricing/order-totals.js';
 import {vfZone} from '../../delivery/delivery-zones.js';
 import {VF_FA_DIGITS, vfLatin, vfSeparator} from '../../pricing/formatting.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {vfSummaryRows} from '../../pricing/promotions.js';
 import {vfPageRoute} from '../../shell/routing.js';
 import {vfDeliveryWhen} from '../../delivery/time.js';
@@ -218,7 +218,7 @@ function vals(page) {
       );
       if (!match) {
         page.setState({lookupFailed: true});
-        S.focus('vf-lookup-failed');
+        VF_NAV.focusById('vf-lookup-failed');
         return;
       }
       // The sender's mobile opens the whole order; the recipient's only its progress.
@@ -234,7 +234,7 @@ function vals(page) {
     },
     trackAnother: () => {
       page.setState({lookup: true, lookupFailed: false, lookupId: '', lookupPhone: ''});
-      S.focus('vf-lookup-id');
+      VF_NAV.focusById('vf-lookup-id');
     },
     reorder:
       order && buyer

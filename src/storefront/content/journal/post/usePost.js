@@ -4,7 +4,7 @@ import {vfJournalImage} from '../../journal-images.js';
 import {vfSeparator} from '../../../pricing/formatting.js';
 import {vfCopy, vfPostHead} from './copy.js';
 import {vfProduct, vfProductImage} from '../../../catalog/catalog.js';
-import {vfShell} from '../../../shell/navigation.js';
+import {vfShell} from '../../../shell/shell-props.js';
 import {vfPageRoute, vfRouteUrl} from '../../../shell/routing.js';
 import {useLifecycle, usePageLogic} from '../../../shell/page-state.js';
 import {useStorefrontPage} from '../../../shell/page-lifecycle.js';
