@@ -127,14 +127,24 @@ for (const lang of ['en', 'fa']) {
     expect(new URLSearchParams(requests[0].data).get('Amount')).toBe('24000000');
   });
 
-  test(`${lang}: result/waiting states pass axe and compact progress uses the supplied formatters`, async ({
-    page
-  }) => {
+  test(`${lang}: failed, cancelled and pending states pass axe`, async ({page}) => {
     await openStorefrontComponent(page, 'StorefrontCheckoutBank', lang);
     expect(await scanAxe(page)).toEqual([]);
     for (const [button, heading] of [
       [t.cancelled, t.cancelledTitle],
-      [t.pending, t.pendingTitle],
+      [t.pending, t.pendingTitle]
+    ]) {
+      await page.getByRole('button', {name: button, exact: true}).click();
+      await expect(page.getByRole('heading', {level: 1})).toHaveText(heading);
+      expect(await scanAxe(page)).toEqual([]);
+    }
+  });
+
+  test(`${lang}: verifying and paid states pass axe and compact progress uses the supplied formatters`, async ({
+    page
+  }) => {
+    await openStorefrontComponent(page, 'StorefrontCheckoutBank', lang);
+    for (const [button, heading] of [
       [t.verifying, t.verifyingTitle],
       [t.paid, t.paidTitle]
     ]) {
