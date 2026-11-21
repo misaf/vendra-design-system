@@ -2,13 +2,13 @@ import {test, expect} from '@playwright/test';
 import {chooseDeliveryTime, stubMapTiles} from '../helpers.mjs';
 
 const app = (process.env.VF_BASE_PATH || '') + '/';
+const origin = process.env.VF_ORIGIN || '';
 const product = 'VF-7K2M4Q';
 const orderNumber = 'VN-PILOT-1042';
 
 test('the static export serves the sitemap, robots file, and compressed copies', async ({
   request
 }) => {
-  const origin = process.env.VF_ORIGIN || '';
   const sitemapPath = app + 'sitemap.xml';
   const sitemap = await request.get(sitemapPath);
   await expect(sitemap).toBeOK();
@@ -74,7 +74,7 @@ for (const lang of ['en', 'fa']) {
       const html = await initial.text();
       expect(html).toContain('<html lang="' + lang + '" dir="' + (fa ? 'rtl' : 'ltr') + '"');
       expect(html).toMatch(/<h1[^>]*>[\s\S]*?VF-7K2M4Q/);
-      expect(html).toContain('rel="canonical"');
+      expect(html).toContain(`<link rel="canonical" href="${origin}${productPath}"`);
       expect(html).toContain('application/ld+json');
       const journal = await request.get(site + 'journal/');
       expect(journal.status()).toBe(200);
