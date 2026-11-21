@@ -3,6 +3,8 @@
 // The Next.js client entry installs the API client, analytics, asset base and tenant loader before
 // the first render. During static export the integrations stay null.
 
+/** @typedef {import('./integrations/saved-items.js').SavedRequestScope} SavedRequestScope */
+
 /**
  * @typedef {object} VfApi The Vendra API client (src/platform/browser/integrations/api.js).
  * @property {string} base
@@ -15,9 +17,9 @@
  * @property {(payload: any) => Promise<any>} inquiry
  * @property {(email: string, name?: string) => Promise<any>} newsletter
  * @property {() => Promise<any>} loadStock
- * @property {() => Promise<string[] | null>} loadSaved
- * @property {(id: string) => Promise<any>} saveItem
- * @property {(id: string) => Promise<any>} unsaveItem
+ * @property {(scope?: SavedRequestScope) => Promise<string[] | null>} loadSaved
+ * @property {(id: string, scope?: SavedRequestScope) => Promise<any>} saveItem
+ * @property {(id: string, scope?: SavedRequestScope) => Promise<any>} unsaveItem
  * @property {() => string} preferredLocale
  */
 

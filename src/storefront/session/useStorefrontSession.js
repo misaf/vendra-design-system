@@ -5,7 +5,7 @@ import {
   vfClearPrivateSession,
   vfCustomerId
 } from '../customer/account-data.js';
-import {vfProduct, vfProductIds} from '../catalog/catalog.js';
+import {vfProductIds} from '../catalog/catalog.js';
 import {
   vfLineItems,
   vfLineToken,
@@ -24,7 +24,12 @@ import {VF_DELIVERY} from '../delivery/delivery-draft.js';
 import {mobile as vfMobile} from '../../design-system/utils/input.js';
 import {VF_STORE, vfLanguage} from '../store/store-config.js';
 import {vfCheckoutBlocked, vfCheckoutFallback} from '../checkout/checkout-guard.js';
-import {vfCustomerState, vfEmptyCustomer, vfGuestCustomers} from '../customer/customer-draft.js';
+import {
+  vfCustomerState,
+  vfEmptyCustomer,
+  vfGuestCustomers,
+  vfRestoreCustomer
+} from '../customer/customer-draft.js';
 import {vfPageTenant} from '../../platform/tenant/tenant.js';
 import {
   VF_ROUTES,
@@ -34,12 +39,17 @@ import {
   vfReadRoute,
   vfRouteUrl
 } from '../shell/routing.js';
-import {vfOnServer, vfStoredValue} from '../../platform/browser/environment.js';
+import {vfOnServer} from '../../platform/browser/environment.js';
 import {useLifecycle, usePageLogic} from '../shell/page-state.js';
 import {vfRuntime} from '../../platform/browser/runtime.js';
+import {createSavedSync} from '../customer/saved/saved-sync.js';
+import {vfPersistSession, vfReadSession, vfSessionCustomer} from './session-storage.js';
+
 const VF_BAG0 = vfSampleBag();
 // One session for the whole site, whichever page it was opened on.
 const VF_SESSION = 'vendra-template:' + vfAppBase();
+
+const vfCheckoutSnapshot = ({bag, delivery}) => JSON.stringify({bag, delivery});
 // The account needs a signed-in phone; signed-out customers see sign-in instead.
 function vfGuardRoute(state, r) {
   // Back from the bank, checkout always opens: it says what happened to the payment, even in a tab
@@ -78,58 +88,10 @@ function vfSearchReturnRoute() {
   const route = vfReadRoute(value);
   return route.view === 'search' ? null : route;
 }
-// Orders this customer opened with the tracking lookup, keyed by order number: 'buyer' when the
-// mobile matched the sender's, 'recipient' when it matched only the recipient's.
-function vfTrackedOrders(value) {
-  return Object.fromEntries(
-    Object.entries(value && typeof value === 'object' ? value : {}).filter(
-      ([, viewer]) => viewer === 'buyer' || viewer === 'recipient'
-    )
-  );
-}
-// Persist after mount as well as updates: consumed handover links have already left the URL.
-function vfPersistSession(state) {
-  try {
-    const {bag, priceChanges, saved, delivery, order, lastOrder, orders, paymentDraft, tracked} =
-      state;
-    sessionStorage.setItem(
-      VF_SESSION,
-      JSON.stringify({
-        explicitDeliverySlots: true,
-        customerId: state.customerId,
-        customers: {
-          ...state.customers,
-          [state.customerId]: vfCustomerState(state)
-        },
-        bag,
-        priceChanges,
-        saved,
-        delivery,
-        order,
-        lastOrder,
-        orders,
-        paymentDraft,
-        tracked
-      })
-    );
-  } catch {}
-}
 function vfSiteInitial(props, address = props.initialUrl) {
-  let saved = {};
-  try {
-    saved = JSON.parse(vfStoredValue(VF_SESSION, true) || '{}') || {};
-    // Older drafts could save an automatic slot even when the customer had chosen a day.
-    if (!saved.explicitDeliverySlots) {
-      for (const draft of [saved, ...Object.values(saved.customers || {})]) {
-        if (draft?.delivery) draft.delivery.slot = null;
-      }
-    }
-  } catch {}
+  const saved = vfReadSession(VF_SESSION);
   const customerId = vfCustomerId();
-  // Unowned legacy private data may be restored only to the guest it originally belonged to.
-  const privateState =
-    saved.customers?.[customerId] ||
-    (saved.customerId === customerId || (!saved.customerId && customerId === 'guest') ? saved : {});
+  const privateState = vfRestoreCustomer(vfSessionCustomer(saved, customerId));
   let route = vfReadRoute(address);
   if (route.view === 'home' && props.start) route = {...route, view: props.start};
   const handedLines = route.lines ? vfLinesFromParam(route.lines) : [];
@@ -143,6 +105,7 @@ function vfSiteInitial(props, address = props.initialUrl) {
     )
   );
   const initial = {
+    ...privateState,
     customerId,
     customers: customerId === 'guest' ? vfGuestCustomers(saved.customers) : saved.customers || {},
     route: route.view,
@@ -160,42 +123,18 @@ function vfSiteInitial(props, address = props.initialUrl) {
     ),
     saved: [
       ...new Set([
-        ...(Array.isArray(saved.saved)
-          ? vfProductIds(saved.saved)
-          : handedIds.length
+        ...(Array.isArray(privateState.saved)
+          ? vfProductIds(privateState.saved)
+          : handedIds.length || Array.isArray(saved.saved)
             ? []
             : ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE']),
         ...handedIds
       ])
     ],
-    delivery: {
-      ...VF_DELIVERY,
-      ...privateState.delivery
-    },
-    paymentDraft: {
-      method: privateState.paymentDraft?.method || null,
-      last4: String(privateState.paymentDraft?.last4 || '')
-        .replace(/\D/g, '')
-        .slice(0, 4),
-      receiptAmount: Number.isFinite(privateState.paymentDraft?.receiptAmount)
-        ? privateState.paymentDraft.receiptAmount
-        : null,
-      ref: String(privateState.paymentDraft?.ref || '')
-    },
     cardAddition: null,
     checkoutPending: false,
     checkoutErrors: null,
     checkoutNotice: null,
-    order: privateState.order || null,
-    lastOrder: privateState.lastOrder || privateState.order || null,
-    orders: [
-      ...(Array.isArray(privateState.orders) ? privateState.orders : []),
-      privateState.lastOrder,
-      privateState.order
-    ].filter(
-      (order, index, orders) => order && orders.findIndex(item => item?.id === order.id) === index
-    ),
-    tracked: vfTrackedOrders(privateState.tracked),
     announcement: ''
   };
   // Checkout without a bag or delivery details opens the step the customer needs straight away, as
@@ -221,30 +160,7 @@ export function useStorefrontSession(props) {
     page.state = vfSiteInitial(page.props);
     // Customers who signed out while this page was open.
     page._signedOut = new Set();
-    page._savedEdits = new Map();
-    page._savedLoading = false;
-    // Load failures and individual product failures have independent recovery ownership.
-    page._savedSyncErrors = new Set();
-    page._savedWriteVersions = new Map();
-    page._savedWriteSettled = new Map();
-    page.savedSyncError = (key, failed, announce = false) => {
-      if (failed) page._savedSyncErrors.add(key);
-      else page._savedSyncErrors.delete(key);
-      const patch = {integrationError: page._savedSyncErrors.size > 0};
-      if (failed && announce) {
-        page._savedErrorAnnouncement =
-          page.state.lang === 'fa'
-            ? 'ذخیره در سرور انجام نشد؛ فهرست محلی حفظ شد.'
-            : 'Server sync failed; your local saved list is kept.';
-        patch.announcement = page._savedErrorAnnouncement;
-      } else if (
-        !patch.integrationError &&
-        page.state.announcement === page._savedErrorAnnouncement
-      ) {
-        patch.announcement = '';
-      }
-      page.setState(patch);
-    };
+    page.savedSync = createSavedSync(page);
 
     page.syncCustomer = ({continueCheckout = false} = {}) => {
       const customerId = vfCustomerId(),
@@ -258,7 +174,7 @@ export function useStorefrontSession(props) {
         customers = vfGuestCustomers(customers);
         vfClearPrivateSession();
       } else page._signedOut.delete(customerId);
-      let next = customers[customerId] || vfEmptyCustomer();
+      let next = vfRestoreCustomer(customers[customerId]);
       if (current.customerId === 'guest' && customerId !== 'guest') {
         const claimed = previous.orders.filter(
           order => vfMobile(order.delivery?.senderPhone) === customerId
@@ -291,10 +207,11 @@ export function useStorefrontSession(props) {
           };
         }
       }
+      page.savedSync.reset();
       page.setState({
         ...next,
-        // Older saved customers have no lookups; never keep the previous customer's.
-        tracked: vfTrackedOrders(next.tracked),
+        saved: Array.isArray(next.saved) ? vfProductIds(next.saved) : [],
+        integrationError: false,
         customerId,
         customers,
         cardAddition: null,
@@ -302,6 +219,7 @@ export function useStorefrontSession(props) {
         checkoutErrors: null,
         announcement: ''
       });
+      page.savedSync.load();
       const guarded = vfGuardRoute(page.state, {...page.state.routeInfo, view: page.state.route});
       if (guarded) page.navigate(guarded, true);
     };
@@ -366,9 +284,9 @@ export function useStorefrontSession(props) {
         };
       }
       if (route.ids)
-        handover = {
-          saved: [...new Set([...page.state.saved, ...vfProductIds(route.ids.split(','))])]
-        };
+        page.savedSync.setSaved([
+          ...new Set([...page.state.saved, ...vfProductIds(route.ids.split(','))])
+        ]);
       page.setState({
         ...handover,
         route: route.view,
@@ -378,29 +296,9 @@ export function useStorefrontSession(props) {
         preview: previewAt(address)
       });
       if (route.lines || route.ids) {
-        vfPersistSession(page.state);
+        vfPersistSession(VF_SESSION, page.state);
         page.navigate({...route, lines: undefined, ids: undefined}, true);
       }
-    };
-    page.loadSaved = () => {
-      if (!page._mounted || !page._restored || page._savedStarted || !vfRuntime.api?.live) return;
-      page._savedStarted = true;
-      page._savedLoading = true;
-      vfRuntime.api
-        .loadSaved()
-        .then(saved => {
-          if (saved) {
-            const merged = new Set(saved);
-            page._savedEdits.forEach((keep, id) => (keep ? merged.add(id) : merged.delete(id)));
-            page.setState({saved: [...merged]});
-            page.savedSyncError(null, false);
-          }
-        })
-        .catch(() => page.savedSyncError(null, true))
-        .finally(() => {
-          page._savedLoading = false;
-          page._savedEdits.clear();
-        });
     };
     page.restoreAddress = address => {
       if (page._restored) return;
@@ -409,8 +307,8 @@ export function useStorefrontSession(props) {
       const initial = vfSiteInitial(page.props, address);
       page.setState({...initial, ready: true, preview: previewAt(address)});
       if (initial.customerId === 'guest') vfClearPrivateSession();
-      vfPersistSession(initial);
-      page.loadSaved();
+      vfPersistSession(VF_SESSION, initial);
+      page.savedSync.load();
       const requested = vfReadRoute(address);
       const canonical = vfRouteUrl(initial.routeInfo);
       if (
@@ -427,7 +325,7 @@ export function useStorefrontSession(props) {
     didMount() {
       window.__vfSite = page;
       page._mounted = true;
-      page.loadSaved();
+      page.savedSync.load();
       page._customerChanged = event => {
         if (event.key === 'vf-account-phone' || event.key == null) page.syncCustomer();
       };
@@ -439,7 +337,7 @@ export function useStorefrontSession(props) {
       };
       document.addEventListener('click', page._click);
       if (page._restored) {
-        vfPersistSession(page.state);
+        vfPersistSession(VF_SESSION, page.state);
         vfReportPageView(page);
       }
     },
@@ -450,10 +348,11 @@ export function useStorefrontSession(props) {
         page.syncCustomer();
         return;
       }
-      vfPersistSession(page.state);
+      vfPersistSession(VF_SESSION, page.state);
     },
     willUnmount() {
       page._mounted = false;
+      page.savedSync.reset();
       window.removeEventListener('storage', page._customerChanged);
       document.removeEventListener('click', page._click);
       if (window.__vfSite === page) delete window.__vfSite;
@@ -535,7 +434,7 @@ function vals(page) {
         return true;
       },
       endCheckout: () => page.setState({checkoutPending: false}),
-      checkoutSnapshot: JSON.stringify({bag: s.bag, delivery: s.delivery}),
+      checkoutSnapshot: vfCheckoutSnapshot(s),
       orders: s.orders,
       paymentDraft: s.paymentDraft,
       setPaymentDraft: patch =>
@@ -587,17 +486,17 @@ function vals(page) {
         }),
       complete: order =>
         page.setState(current => {
-          if (order.customerId && order.customerId !== current.customerId) {
+          const ownerId = order.customerId;
+          if (ownerId && ownerId !== current.customerId) {
             // After sign-out nothing of that customer stays here, even once someone else signs
             // in; the order is the server's.
-            if (current.customerId === 'guest' || page._signedOut.has(order.customerId))
-              return null;
-            const owner = current.customers[order.customerId] || vfEmptyCustomer();
+            if (current.customerId === 'guest' || page._signedOut.has(ownerId)) return null;
+            const owner = current.customers[ownerId] || vfEmptyCustomer();
             if (owner.orders.some(previous => previous.id === order.id)) return null;
             return {
               customers: {
                 ...current.customers,
-                [order.customerId]: {
+                [ownerId]: {
                   ...owner,
                   order: null,
                   lastOrder: order,
@@ -609,9 +508,7 @@ function vals(page) {
           // A late response belongs to the submitted checkout, not a bag edited since then.
           if (current.orders.some(previous => previous.id === order.id)) return null;
           const unchanged =
-            !order.checkoutSnapshot ||
-            order.checkoutSnapshot ===
-              JSON.stringify({bag: current.bag, delivery: current.delivery});
+            !order.checkoutSnapshot || order.checkoutSnapshot === vfCheckoutSnapshot(current);
           return {
             lastOrder: order,
             orders: [order, ...current.orders],
@@ -743,39 +640,8 @@ function vals(page) {
           bag: [],
           priceChanges: {}
         }),
-      toggleSave: id => {
-        const removing = page.state.saved.includes(id);
-        if (page._savedLoading) page._savedEdits.set(id, !removing);
-        page.setState(p => ({
-          saved: removing ? p.saved.filter(x => x !== id) : [...p.saved, id]
-        }));
-        if (!removing)
-          vfRuntime.track.event('add_to_wishlist', {
-            items: [vfRuntime.track.item(vfProduct(id))]
-          });
-        const version = (page._savedWriteVersions.get(id) || 0) + 1;
-        page._savedWriteVersions.set(id, version);
-        const settle = failed => {
-          if (version < (page._savedWriteSettled.get(id) || 0)) return;
-          page._savedWriteSettled.set(id, version);
-          page.savedSyncError(id, failed, failed);
-        };
-        return (removing ? vfRuntime.api.unsaveItem(id) : vfRuntime.api.saveItem(id)).then(
-          result => {
-            // Demo mode, a missing server handle, or an empty response is not confirmed recovery.
-            if (result != null) settle(false);
-          },
-          () => settle(true)
-        );
-      },
-      setSaved: ids => {
-        if (page._savedLoading)
-          new Set([...page.state.saved, ...ids]).forEach(id => {
-            if (page.state.saved.includes(id) !== ids.includes(id))
-              page._savedEdits.set(id, ids.includes(id));
-          });
-        page.setState({saved: ids});
-      }
+      toggleSave: page.savedSync.toggle,
+      setSaved: page.savedSync.setSaved
     },
     // replace: refine the current page (e.g. shop filters) without adding a history entry.
     go: (r, replace) => page.navigate(r, !!replace),

@@ -12,6 +12,9 @@ for (const lang of ['en', 'fa']) {
     for (const view of ['home', 'shop', 'saved', 'notfound', 'post', 'product', 'account']) {
       await openSite(page, view, lang, {id: 'VF-7K2M4Q'});
       if (view === 'account') {
+        // Give the signed-in customer a saved item through the saved-list handover.
+        await openSite(page, 'saved', lang, {ids: 'VF-7K2M4Q'});
+        await openSite(page, 'account', lang);
         await page
           .getByRole('tab', {name: lang === 'fa' ? 'ذخیره‌ها' : 'Saved', exact: true})
           .click();
