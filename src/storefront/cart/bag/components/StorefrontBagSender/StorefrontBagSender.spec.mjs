@@ -6,6 +6,10 @@ for (const lang of ['en', 'fa']) {
   const nameLabel = lang === 'fa' ? 'نام کامل' : 'Full name';
   const phoneLabel = lang === 'fa' ? 'شماره همراه' : 'Mobile number';
   const error = lang === 'fa' ? 'این فیلد را بررسی کنید.' : 'Check this field.';
+  const phoneHint =
+    lang === 'fa'
+      ? 'از شماره شما برای اطلاع‌رسانی ارسال استفاده می‌کنیم.'
+      : 'We use your number for delivery updates.';
   test('sender labels, required fields and supplied values (' + lang + ')', async ({page}) => {
     await openStorefrontComponent(page, 'StorefrontBagSender', lang);
     const region = page.getByRole('region', {name: title, exact: true});
@@ -27,14 +31,9 @@ for (const lang of ['en', 'fa']) {
     await expect(phone).toHaveAttribute('inputmode', 'tel');
     await expect(phone).toHaveAttribute('dir', 'ltr');
     await expect(phone).toHaveAttribute('placeholder', '0912 000 0000');
-    await expect(
-      region.getByText(
-        lang === 'fa'
-          ? 'از شماره شما برای اطلاع‌رسانی ارسال استفاده می‌کنیم.'
-          : 'We use your number for delivery updates.',
-        {exact: true}
-      )
-    ).toBeVisible();
+    await expect(region.getByText(phoneHint, {exact: true})).toBeVisible();
+    await expect(phone).toHaveAccessibleDescription(phoneHint);
+    await expect(name).toHaveAccessibleDescription('');
     await page.getByRole('button', {name: 'Set supplied values'}).click();
     await expect(name).toHaveValue(lang === 'fa' ? 'مینا' : 'Mina');
     await expect(phone).toHaveValue('09120000000');
@@ -72,23 +71,23 @@ for (const lang of ['en', 'fa']) {
   test('sender supplied errors clear without changing values (' + lang + ')', async ({page}) => {
     await openStorefrontComponent(page, 'StorefrontBagSender', lang);
     await page.getByRole('button', {name: 'Set supplied values'}).click();
-    const fields = [
-      page.getByRole('textbox', {name: nameLabel, exact: true}),
-      page.getByRole('textbox', {name: phoneLabel, exact: true})
-    ];
+    const name = page.getByRole('textbox', {name: nameLabel, exact: true});
+    const phone = page.getByRole('textbox', {name: phoneLabel, exact: true});
     await page.getByRole('checkbox', {name: 'Show validation', exact: true}).check();
-    for (const field of fields) {
+    for (const field of [name, phone]) {
       await expect(field).toHaveAttribute('aria-invalid', 'true');
-      await expect(field).toHaveAccessibleDescription(error);
     }
+    await expect(name).toHaveAccessibleDescription(error);
+    await expect(phone).toHaveAccessibleDescription(`${error} ${phoneHint}`);
     expect(await scanAxe(page)).toEqual([]);
     await page.getByRole('checkbox', {name: 'Show validation', exact: true}).uncheck();
-    for (const field of fields) {
+    for (const field of [name, phone]) {
       await expect(field).not.toHaveAttribute('aria-invalid', 'true');
-      await expect(field).toHaveAccessibleDescription('');
     }
-    await expect(fields[0]).toHaveValue(lang === 'fa' ? 'مینا' : 'Mina');
-    await expect(fields[1]).toHaveValue('09120000000');
+    await expect(name).toHaveAccessibleDescription('');
+    await expect(phone).toHaveAccessibleDescription(phoneHint);
+    await expect(name).toHaveValue(lang === 'fa' ? 'مینا' : 'Mina');
+    await expect(phone).toHaveValue('09120000000');
     expect(await scanAxe(page)).toEqual([]);
   });
 
