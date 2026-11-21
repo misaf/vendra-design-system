@@ -320,6 +320,11 @@ check(
   {'src/design-system/components/types.ts': "export type M = import('next').Metadata;"},
   /forbidden reusable UI dependency next/
 );
+check('the Laravel adapter can use feature-owned resource decoders', {
+  'src/platform/server/laravel/index.mjs':
+    "export {decode} from '../../../storefront/orders/laravel/order-line.js';",
+  'src/storefront/orders/laravel/order-line.js': 'export const decode = value => value;'
+});
 check(
   'the Laravel adapter cannot reach into storefront routing',
   {

@@ -1,4 +1,10 @@
 // @ts-check
+
+import {
+  currentProductPrice,
+  productPriceReferenceId
+} from '../../../storefront/catalog/laravel/price.js';
+export {currentProductPrice};
 /** @param {string} base */
 function catalogLocation(base) {
   const url = new URL(base);
@@ -65,15 +71,8 @@ export async function loadLiveCategories(base) {
   return records.filter(record => record.active !== false);
 }
 
-/** @typedef {{amount: number, currency: string}} ProductPrice */
-/**
- * @typedef {object} CatalogProduct
- * @property {string} token
- * @property {Record<string, unknown>} [name]
- * @property {Record<string, unknown>} [description]
- * @property {boolean} [inStock]
- * @property {unknown} [latestProductPrice]
- */
+/** @typedef {import('../../../storefront/catalog/product.js').CatalogPrice} ProductPrice */
+/** @typedef {import('../../../storefront/catalog/product.js').LiveCatalogProduct} CatalogProduct */
 
 /**
  * @param {string} base
@@ -92,11 +91,8 @@ async function readProducts(base, query) {
  * @param {CatalogProduct[]} records
  */
 async function resolvePrices(base, records) {
-  /** @param {unknown} price */
-  const isPriceReference = price =>
-    typeof price === 'string' && /\/api\/catalog\/product-prices\/\d+$/.test(price);
   // Read prices from the configured backend and use the IRI only as a lookup key.
-  const prices = records.some(record => isPriceReference(record.latestProductPrice))
+  const prices = records.some(record => productPriceReferenceId(record.latestProductPrice) !== null)
     ? (await readCollection(base, 'product-prices', {itemsPerPage: '100'})).filter(record =>
         Number.isSafeInteger(record?.id)
       )
@@ -104,7 +100,7 @@ async function resolvePrices(base, records) {
   return records.map(record => {
     const price = record.latestProductPrice;
     if (typeof price !== 'string') return record;
-    const id = isPriceReference(price) ? Number(price.split('/').pop()) : null;
+    const id = productPriceReferenceId(price);
     return {...record, latestProductPrice: prices.find(price => price.id === id) ?? null};
   });
 }
@@ -115,22 +111,6 @@ async function resolvePrices(base, records) {
  */
 export async function loadLiveProducts(base, query) {
   return resolvePrices(base, await readProducts(base, query));
-}
-
-/** @param {unknown} price @returns {ProductPrice | null} */
-export function currentProductPrice(price) {
-  if (!price || typeof price !== 'object' || !('amount' in price) || !('currency' in price))
-    return null;
-  const {amount, currency} = price;
-  if (
-    typeof amount !== 'number' ||
-    !Number.isFinite(amount) ||
-    amount < 0 ||
-    typeof currency !== 'string' ||
-    !/^[A-Z]{3}$/.test(currency)
-  )
-    return null;
-  return {amount, currency};
 }
 
 /**

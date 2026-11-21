@@ -9,7 +9,7 @@ import {
 } from './payment-recovery.js';
 import {vfAccountLocale, vfAccountPhone, vfCustomerId} from '../../customer/account-data.js';
 import {vfProductImage} from '../../catalog/catalog.js';
-import {vfCardMessages, vfLineItems, vfLineToken, vfSampleBag} from '../../cart/cart-lines.js';
+import {vfCardMessages, vfLineItems, vfSampleBag} from '../../cart/cart-lines.js';
 import {vfLineAvailable, vfLineQuantityValid, vfRepriceLines} from '../../cart/cart-lines.js';
 import {paymentOptions, defaultPaymentMethod} from '../payment-options.js';
 import {VF_DELIVERY} from '../../delivery/delivery-draft.js';
@@ -25,6 +25,8 @@ import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {VF_STORE, vfLiveStore, vfPaymentMethods} from '../../store/store-config.js';
 import {vfDeliveryWhen} from '../../delivery/time.js';
 import {vfOrderMessage} from '../order-message.js';
+import {vfPurchasedHistoryLine} from '../../orders/order-records.js';
+import {orderLineDisplay, snapshotDemoOrderLine} from '../../orders/order-line-view.js';
 import {
   vfBalanceDiscountOn,
   vfWalletBalance,
@@ -467,9 +469,7 @@ function vals(page) {
         id: 'VN-' + Date.now(),
         status: 'received',
         createdAt: new Date().toISOString(),
-        lines: items.map(l => ({
-          ...l
-        })),
+        lines: items.map(snapshotDemoOrderLine),
         delivery: {
           ...delivery,
           date: delivery.date || vfDeliveryDate(delivery, new Date(), items)
@@ -501,6 +501,7 @@ function vals(page) {
               const placed = {
                 ...record,
                 id: result?.number || record.id,
+                lines: result?.lines?.map(line => vfPurchasedHistoryLine(line)) ?? record.lines,
                 // The server's totals replace the browser's whole: its discount already includes any
                 // balance discount, which would otherwise show twice.
                 totals: result?.totals || record.totals
@@ -516,7 +517,7 @@ function vals(page) {
                 apiFailure: {kind, recovery},
                 // The server may already have accepted the order. Preserve the method and receipt.
                 unconfirmed:
-                  ['timeout', 'network', 'conflict', 'server'].includes(kind) ||
+                  ['timeout', 'network', 'conflict', 'server', 'invalid-response'].includes(kind) ||
                   (methodLocked && kind === 'offline')
               });
               VF_NAV.focusById('vf-checkout-submit-error');
@@ -622,12 +623,15 @@ function vals(page) {
       else if (s.payment.record) vfVerifyPayment(page, number, 'paid');
       else leavePaymentUrl();
     },
-    lines: items.map(l => ({
-      image: vfProductImage(l, L),
-      name: vfLineToken(l),
-      meta: l[L][1] + ' · × ' + (fa ? VF_FA_DIGITS(l.qty) : l.qty),
-      total: m(l.unit * l.qty)
-    })),
+    lines: items.map(line => {
+      const {name, detail, quantity, amount} = orderLineDisplay(line, L);
+      return {
+        image: vfProductImage(line, L),
+        name,
+        meta: (detail ? detail + ' · ' : '') + '× ' + (fa ? VF_FA_DIGITS(quantity) : quantity),
+        total: m(amount)
+      };
+    }),
     sums: vfSummaryRows(
       totals,
       delivery.promo,

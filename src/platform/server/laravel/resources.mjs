@@ -1,5 +1,8 @@
 // @ts-check
 
+import {currentProductPrice} from '../../../storefront/catalog/laravel/price.js';
+import {decodeLineConfiguration} from '../../../storefront/cart/laravel/selection-metadata.js';
+import {decodePurchasedOrderLine} from '../../../storefront/orders/laravel/order-line.js';
 import {isRecord, VendraApiError} from './errors.mjs';
 
 /** @param {unknown} value */
@@ -48,8 +51,12 @@ export function collection(value) {
   return {members, total};
 }
 
-/** @param {unknown} value */
-export function productFromApi(value) {
+/**
+ * @param {unknown} value
+ * @param {unknown} [resolvedPrice]
+ * @returns {import('../../../storefront/catalog/product.js').CatalogProduct}
+ */
+export function productFromApi(value, resolvedPrice) {
   const data = record(value);
   /** @satisfies {import('./openapi.generated').ProductResource} */
   const product = {
@@ -65,31 +72,23 @@ export function productFromApi(value) {
     code: product.token,
     name: product.name,
     slug: product.slug,
-    inStock: product.inStock
+    inStock: product.inStock,
+    price: currentProductPrice(resolvedPrice ?? data.latestProductPrice)
   };
 }
 
-/** @param {unknown} value */
-function lineFromApi(value) {
+/**
+ * @param {unknown} value
+ * @returns {import('../../../storefront/cart/selection.js').CartSelection}
+ */
+function decodeCartSelection(value) {
   const data = record(value);
-  const metadata = isRecord(data.metadata) ? data.metadata : {};
-  /** @satisfies {import('./openapi.generated').CartLineResource} */
-  const line = {
+  return {
     id: integer(data.id),
     sellableType: string(data.sellableType),
     sellableId: integer(data.sellableId),
-    quantity: integer(data.quantity)
-  };
-  return {
-    ...line,
-    productCode: typeof metadata.token === 'string' ? metadata.token : null,
-    selectedAddOns:
-      typeof metadata.addons === 'string'
-        ? metadata.addons
-            .split(',')
-            .map(code => code.trim())
-            .filter(Boolean)
-        : []
+    quantity: integer(data.quantity),
+    ...decodeLineConfiguration(data.metadata)
   };
 }
 
@@ -102,7 +101,7 @@ export function cartFromApi(value) {
     token: string(data.token),
     expiresAt: data.expiresAt == null ? null : string(data.expiresAt)
   };
-  return {...cart, lines: list(data.lines).map(lineFromApi)};
+  return {...cart, lines: list(data.lines).map(decodeCartSelection)};
 }
 
 /** @param {unknown} value */
@@ -156,14 +155,9 @@ export function orderFromApi(value) {
   return {
     ...order,
     lines: list(data.lines).map(value => {
-      const data = record(value);
-      /** @satisfies {Pick<import('./openapi.generated').OrderLineResource, 'name' | 'unitAmount' | 'lineAmount'>} */
-      const amounts = {
-        name: string(data.name),
-        unitAmount: integer(data.unitAmount),
-        lineAmount: integer(data.lineAmount)
-      };
-      return {...lineFromApi(data), ...amounts};
+      const line = decodePurchasedOrderLine(value);
+      if (!line) throw new VendraApiError('invalid-response');
+      return line;
     })
   };
 }
