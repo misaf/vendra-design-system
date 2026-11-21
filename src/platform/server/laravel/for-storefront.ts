@@ -1,6 +1,5 @@
 import 'server-only';
 import {createVendraApi} from './index.mjs';
-import {createStorefrontFetch} from './storefront-fetch.mjs';
 
 interface TenantApi {
   apiOrigin: string;
@@ -16,6 +15,7 @@ interface RequestContext {
 export function createFloristApi(tenant: TenantApi, context: RequestContext) {
   return createVendraApi({
     apiOrigin: tenant.apiOrigin,
-    fetch: createStorefrontFetch({...context, storefrontOrigin: tenant.storefrontOrigin})
+    storefrontOrigin: tenant.storefrontOrigin,
+    ...context
   });
 }

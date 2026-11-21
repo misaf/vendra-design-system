@@ -4,6 +4,7 @@
     "target": "es2023",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
+    "allowImportingTsExtensions": true,
     "checkJs": false,
     "strict": true,
     "noEmit": true,

@@ -8,7 +8,8 @@ import {
   loadLiveCategories,
   loadLiveProducts,
   lookupLiveProduct
-} from '../../platform/server/laravel/catalog.mjs';
+} from '../../storefront/catalog/laravel/catalog.mjs';
+import {createLaravelHttp} from '../../platform/server/laravel-http';
 
 const copy = {
   en: {
@@ -84,16 +85,30 @@ function liveCatalogRequest(base: string, lang: Locale, segment: string) {
   );
   const retryPath = storePath + '/' + (segment ? segment + '/' : '');
   const unavailable = () => shell(strings.error, <a href={retryPath}>{strings.retry}</a>);
-  const catalog = {
+  const transport = {
     base,
     storefrontOrigin: process.env.VF_ORIGIN?.trim() || undefined,
     locale: lang
   };
-  return {strings, storePath, shell, unavailable, catalog};
+  return {strings, storePath, shell, unavailable, transport};
+}
+
+function liveCatalogHttp(transport: Parameters<typeof createLaravelHttp>[0]) {
+  try {
+    return createLaravelHttp(transport);
+  } catch {
+    return null;
+  }
 }
 
 export async function liveProductPage(base: string, lang: Locale, code: string) {
-  const {strings, shell, unavailable, catalog} = liveCatalogRequest(base, lang, 'product/' + code);
+  const {strings, shell, unavailable, transport} = liveCatalogRequest(
+    base,
+    lang,
+    'product/' + code
+  );
+  const catalog = liveCatalogHttp(transport);
+  if (!catalog) return unavailable();
   const result = await lookupLiveProduct(catalog, liveRouteKey(code));
   if (result.kind === 'missing') notFound();
   if (result.kind === 'unavailable') return unavailable();
@@ -121,11 +136,17 @@ export async function liveCatalogPage(
   fallback: boolean
 ) {
   if (fallback) notFound();
-  const {strings, storePath, shell, unavailable, catalog} = liveCatalogRequest(base, lang, segment);
+  const {strings, storePath, shell, unavailable, transport} = liveCatalogRequest(
+    base,
+    lang,
+    segment
+  );
   const [view, key = ''] = segment.split('/');
   if (view && view !== 'shop') return shell(strings.catalog, <p>{strings.restricted}</p>);
   const catalogPath = storePath + '/shop/';
 
+  const catalog = liveCatalogHttp(transport);
+  if (!catalog) return unavailable();
   const categories = await loadLiveCategories(catalog).catch(() => null);
   if (!categories) return unavailable();
   const slug = liveRouteKey(key);

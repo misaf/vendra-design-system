@@ -2,7 +2,8 @@
 
 import {productPriceReferenceId} from '../../../storefront/catalog/laravel/price.js';
 import {reviewCartSelection} from '../../../storefront/cart/review.js';
-import {isRecord, responseError, VendraApiError} from './errors.mjs';
+import {createLaravelHttp} from '../laravel-http.ts';
+import {isRecord, VendraApiError} from './errors.mjs';
 import {
   cartFromApi,
   collection,
@@ -24,10 +25,8 @@ function resourceId(value) {
   return value;
 }
 
-/**
- * @param {{apiOrigin: string, fetch?: typeof fetch}} options
- */
-export function createVendraApi({apiOrigin, fetch: fetchApi = fetch}) {
+/** @param {{apiOrigin: string} & Omit<Parameters<typeof createLaravelHttp>[0], 'base'>} options */
+export function createVendraApi({apiOrigin, ...context}) {
   const base = new URL(apiOrigin);
   if (
     !['https:', 'http:'].includes(base.protocol) ||
@@ -40,41 +39,7 @@ export function createVendraApi({apiOrigin, fetch: fetchApi = fetch}) {
     throw new TypeError('Expected the Laravel API origin');
   }
 
-  /**
-   * @param {string} path
-   * @param {RequestInit} [init]
-   */
-  async function request(path, init = {}) {
-    const headers = new Headers(init.headers);
-    headers.set('Accept', 'application/ld+json');
-    if (init.body !== undefined) headers.set('Content-Type', 'application/json');
-
-    const signal = AbortSignal.timeout(init.method === 'POST' ? 20_000 : 10_000);
-    let response;
-    let body;
-    try {
-      response = await fetchApi(new URL(path, base), {
-        ...init,
-        headers,
-        signal,
-        cache: 'no-store',
-        redirect: 'error'
-      });
-      body = await response.text();
-    } catch {
-      throw new VendraApiError(signal.aborted ? 'timeout' : 'network');
-    }
-
-    /** @type {unknown} */
-    let data;
-    try {
-      data = JSON.parse(body);
-    } catch {
-      if (response.ok) throw new VendraApiError('invalid-response', response.status);
-    }
-    if (!response.ok) throw responseError(response.status, data);
-    return data;
-  }
+  const {request} = createLaravelHttp({base: base.href, ...context});
 
   /** @param {unknown} data */
   async function readProduct(data) {

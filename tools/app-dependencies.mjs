@@ -46,6 +46,7 @@ function appDependencyViolation(source, target, local) {
     source.startsWith(laravel) &&
     local &&
     !target.startsWith(laravel) &&
+    target !== 'src/platform/server/laravel-http.ts' &&
     !isResourceDecoder(target) &&
     target !== storefront + 'cart/review.js' &&
     source !== laravel + 'for-storefront.ts'

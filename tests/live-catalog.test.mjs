@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
+import {createLaravelHttp} from '../src/platform/server/laravel-http.ts';
 import {
   loadLiveCategories,
   loadLiveProducts,
   lookupLiveProduct
-} from '../src/platform/server/laravel/catalog.mjs';
+} from '../src/storefront/catalog/laravel/catalog.mjs';
 
-const catalog = {
+const context = {
   base: 'https://florist-backend.example.test/store',
   storefrontOrigin: 'https://florist.example.test/',
   locale: 'en'
@@ -18,7 +19,7 @@ test('reads all Hydra pages through the configured API with the server filter', 
   const paths = [];
   t.mock.method(globalThis, 'fetch', async (url, options) => {
     paths.push(url.pathname + url.search);
-    assert.equal(url.origin, new URL(catalog.base).origin);
+    assert.equal(url.origin, new URL(context.base).origin);
     assert.equal(options.headers.get('Origin'), 'https://florist.example.test');
     assert.equal(options.headers.get('Accept-Language'), 'en');
     assert.equal(options.cache, 'no-store');
@@ -30,7 +31,7 @@ test('reads all Hydra pages through the configured API with the server filter', 
       });
     return Response.json({'hydra:member': [{...product, token: 'LIVE-2'}]});
   });
-  assert.deepEqual(await loadLiveProducts(catalog, {categoryId: '7'}), [
+  assert.deepEqual(await loadLiveProducts(createLaravelHttp(context), {categoryId: '7'}), [
     product,
     {...product, token: 'LIVE-2'}
   ]);
@@ -41,7 +42,6 @@ test('reads all Hydra pages through the configured API with the server filter', 
 });
 
 test('loads active category data and keeps an empty live catalog empty', async t => {
-  const tenantBackend = {base: catalog.base, locale: 'fa'};
   t.mock.method(globalThis, 'fetch', async (url, options) => {
     assert.equal(options.headers.get('Origin'), null);
     assert.equal(options.headers.get('Accept-Language'), 'fa');
@@ -51,6 +51,7 @@ test('loads active category data and keeps an empty live catalog empty', async t
         : [category, {...category, id: 8, active: false}]
     });
   });
+  const tenantBackend = createLaravelHttp({base: context.base, locale: 'fa'});
   assert.deepEqual(await loadLiveCategories(tenantBackend), [category]);
   assert.deepEqual(await loadLiveProducts(tenantBackend), []);
 });
@@ -73,7 +74,7 @@ test('reads each referenced price once from the configured backend', async t => 
   const invalid = {token: 'INVALID', latestProductPrice: '/api/catalog/product-prices/invalid'};
   const paths = [];
   t.mock.method(globalThis, 'fetch', async (url, options) => {
-    assert.equal(url.origin, new URL(catalog.base).origin);
+    assert.equal(url.origin, new URL(context.base).origin);
     assert.equal(options.headers.get('Origin'), 'https://florist.example.test');
     assert.equal(options.headers.get('Accept-Language'), 'en');
     assert.equal(options.headers.get('Accept'), 'application/ld+json');
@@ -87,7 +88,7 @@ test('reads each referenced price once from the configured backend', async t => 
     assert.fail('Unexpected catalog request: ' + url.href);
   });
 
-  assert.deepEqual(await loadLiveProducts(catalog), [
+  assert.deepEqual(await loadLiveProducts(createLaravelHttp(context)), [
     {...referenced, latestProductPrice: latest},
     {...repeated, latestProductPrice: latest},
     {...missing, latestProductPrice: null},
@@ -108,9 +109,9 @@ test('rejects upstream errors and malformed collections', async t => {
     'fetch',
     async () => new Response(null, {status: 503})
   );
-  await assert.rejects(loadLiveProducts(catalog), /catalog request failed/);
+  await assert.rejects(loadLiveProducts(createLaravelHttp(context)), {kind: 'http', status: 503});
   fetchMock.mock.mockImplementation(async () => Response.json({unexpected: []}));
-  await assert.rejects(loadLiveProducts(catalog), /catalog collection/);
+  await assert.rejects(loadLiveProducts(createLaravelHttp(context)), /catalog collection/);
 });
 
 test('rejects pagination that leaves the catalog endpoint or loops', async t => {
@@ -122,7 +123,7 @@ test('rejects pagination that leaves the catalog endpoint or loops', async t => 
     const fetchMock = t.mock.method(globalThis, 'fetch', async () =>
       Response.json({member: [product], view: {next}})
     );
-    await assert.rejects(loadLiveProducts(catalog), /catalog pagination/);
+    await assert.rejects(loadLiveProducts(createLaravelHttp(context)), /catalog pagination/);
     assert.equal(fetchMock.mock.callCount(), 1);
     fetchMock.mock.restore();
   }
@@ -149,7 +150,7 @@ test('looks up the exact product despite more than 50 pages of price history', a
     if (url.pathname.endsWith('/product-prices/201')) return Response.json(price);
     assert.fail('Unexpected catalog request: ' + url.href);
   });
-  assert.deepEqual(await lookupLiveProduct(catalog, product.token), {
+  assert.deepEqual(await lookupLiveProduct(createLaravelHttp(context), product.token), {
     kind: 'found',
     product: {...product, latestProductPrice: price},
     price: {amount: 0, currency: 'IRT'}
@@ -166,7 +167,9 @@ test('a successful lookup with no exact match skips unrelated price references',
       member: [{...product, latestProductPrice: '/api/catalog/product-prices/201'}]
     })
   );
-  assert.deepEqual(await lookupLiveProduct(catalog, 'MISSING'), {kind: 'missing'});
+  assert.deepEqual(await lookupLiveProduct(createLaravelHttp(context), 'MISSING'), {
+    kind: 'missing'
+  });
   assert.equal(fetchMock.mock.callCount(), 1);
 });
 
@@ -186,7 +189,7 @@ test('an existing product can have no usable current price', async t => {
       assert.equal(url.pathname, '/store/api/catalog/product-prices/999');
       return new Response(null, {status: 404});
     });
-    const result = await lookupLiveProduct(catalog, product.token);
+    const result = await lookupLiveProduct(createLaravelHttp(context), product.token);
     assert.equal(result.kind, 'found');
     assert.equal(result.product.token, product.token);
     assert.equal(result.price, null);
@@ -204,7 +207,9 @@ test('upstream failure, timeout and malformed data make the lookup unavailable',
     }
   ]) {
     fetchMock.mock.mockImplementation(fetch);
-    assert.deepEqual(await lookupLiveProduct(catalog, product.token), {kind: 'unavailable'});
+    assert.deepEqual(await lookupLiveProduct(createLaravelHttp(context), product.token), {
+      kind: 'unavailable'
+    });
   }
 
   fetchMock.mock.mockImplementation(async url =>
@@ -214,5 +219,54 @@ test('upstream failure, timeout and malformed data make the lookup unavailable',
         })
       : new Response(null, {status: 503})
   );
-  assert.deepEqual(await lookupLiveProduct(catalog, product.token), {kind: 'unavailable'});
+  assert.deepEqual(await lookupLiveProduct(createLaravelHttp(context), product.token), {
+    kind: 'unavailable'
+  });
+});
+
+test('isolates concurrent requests for the same product code across tenants and customers', async t => {
+  const tenants = {
+    'https://florist.example.test': {
+      base: 'https://first-backend.example.test/store',
+      locale: 'en',
+      customerAccessToken: 'customer-first',
+      amount: 1250
+    },
+    'https://gol.example.test': {
+      base: 'https://second-backend.example.test/store',
+      locale: 'fa',
+      customerAccessToken: 'customer-second',
+      amount: 2750
+    }
+  };
+  const observed = [];
+  t.mock.method(globalThis, 'fetch', async (url, {headers, credentials}) => {
+    const origin = headers.get('Origin');
+    const tenant = tenants[origin];
+    assert.ok(tenant);
+    assert.equal(url.origin, new URL(tenant.base).origin);
+    assert.equal(headers.get('Accept-Language'), tenant.locale);
+    assert.equal(headers.get('Authorization'), 'Bearer ' + tenant.customerAccessToken);
+    assert.equal(credentials, 'omit');
+    observed.push([origin, url.pathname]);
+    if (url.pathname === '/store/api/catalog/products') {
+      assert.equal(url.searchParams.get('token'), product.token);
+      return Response.json({
+        member: [{...product, latestProductPrice: '/api/catalog/product-prices/201'}]
+      });
+    }
+    assert.equal(url.pathname, '/store/api/catalog/product-prices/201');
+    return Response.json({id: 201, amount: tenant.amount, currency: 'IRT'});
+  });
+
+  const results = await Promise.all(
+    Object.entries(tenants).map(([storefrontOrigin, tenant]) =>
+      lookupLiveProduct(createLaravelHttp({...tenant, storefrontOrigin}), product.token)
+    )
+  );
+  assert.deepEqual(
+    results.map(result => result.price?.amount),
+    [1250, 2750]
+  );
+  assert.equal(observed.length, 4);
 });
