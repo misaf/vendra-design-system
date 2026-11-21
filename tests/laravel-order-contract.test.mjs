@@ -178,7 +178,7 @@ test('catalog and cart review use an edited bouquet offer while order history ke
   edited = true;
 
   const catalog = await api.getProductByCode(originalProduct.token);
-  const detail = await lookupLiveProduct(apiOrigin, originalProduct.token);
+  const detail = await lookupLiveProduct({base: apiOrigin, locale: 'en'}, originalProduct.token);
   assert.equal(detail.kind, 'found');
   assert.deepEqual(detail.product.name, catalog.name);
   assert.deepEqual(detail.price, catalog.price);

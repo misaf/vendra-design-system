@@ -4,7 +4,10 @@ import {
   currentProductPrice,
   productPriceReferenceId
 } from '../../../storefront/catalog/laravel/price.js';
+import {createStorefrontFetch} from './storefront-fetch.mjs';
 export {currentProductPrice};
+
+/** @typedef {{base: string, storefrontOrigin?: string, locale: 'en' | 'fa'}} CatalogContext */
 
 /**
  * @param {string} base
@@ -24,23 +27,27 @@ function catalogResourceUrl(base, resource) {
   return url;
 }
 
-/** @param {URL} url @param {AbortSignal} signal */
-function fetchCatalog(url, signal) {
-  return fetch(url, {
-    headers: {Accept: 'application/ld+json'},
-    cache: 'no-store',
-    redirect: 'error',
-    signal
-  });
+/** @param {CatalogContext} catalog */
+function createCatalogFetch(catalog) {
+  const fetchStorefront = createStorefrontFetch(catalog);
+  /** @param {URL} url @param {AbortSignal} signal */
+  return (url, signal) =>
+    fetchStorefront(url, {
+      headers: {Accept: 'application/ld+json'},
+      cache: 'no-store',
+      redirect: 'error',
+      signal
+    });
 }
 
 /**
- * @param {string} base
+ * @param {CatalogContext} catalog
  * @param {string} resource
  * @param {Record<string, string>} [query]
  */
-async function readCollection(base, resource, query = {}) {
-  const url = catalogResourceUrl(base, resource);
+async function readCollection(catalog, resource, query = {}) {
+  const url = catalogResourceUrl(catalog.base, resource);
+  const fetchPage = createCatalogFetch(catalog);
   url.search = new URLSearchParams(query).toString();
   const deadline = AbortSignal.timeout(10000);
   const seen = new Set();
@@ -56,7 +63,8 @@ async function readCollection(base, resource, query = {}) {
     )
       throw new Error('Invalid florist catalog pagination');
     seen.add(page.href);
-    const response = await fetchCatalog(page, deadline);
+    /** @type {Response} */
+    const response = await fetchPage(page, deadline);
     if (!response.ok) throw new Error('Florist catalog request failed');
     const data = await response.json();
     const members = data?.member ?? data?.['hydra:member'];
@@ -71,19 +79,24 @@ async function readCollection(base, resource, query = {}) {
   return records;
 }
 
-/** @param {string} base @param {number} id @param {AbortSignal} signal */
-async function readPrice(base, id, signal) {
+/**
+ * @param {ReturnType<typeof createCatalogFetch>} fetchPrice
+ * @param {string} base
+ * @param {number} id
+ * @param {AbortSignal} signal
+ */
+async function readPrice(fetchPrice, base, id, signal) {
   // The reference supplies only the ID; the storefront config supplies the backend.
-  const response = await fetchCatalog(catalogResourceUrl(base, 'product-prices/' + id), signal);
+  const response = await fetchPrice(catalogResourceUrl(base, 'product-prices/' + id), signal);
   if (response.status === 404) return null;
   if (!response.ok) throw new Error('Florist catalog request failed');
   const price = await response.json();
   return price?.id === id ? price : null;
 }
 
-/** @param {string} base */
-export async function loadLiveCategories(base) {
-  const records = await readCollection(base, 'product-categories');
+/** @param {CatalogContext} catalog */
+export async function loadLiveCategories(catalog) {
+  const records = await readCollection(catalog, 'product-categories');
   if (records.some(record => !Number.isSafeInteger(record?.id) || !record.slug || !record.name))
     throw new Error('Invalid florist category');
   return records.filter(record => record.active !== false);
@@ -93,32 +106,33 @@ export async function loadLiveCategories(base) {
 /** @typedef {import('../../../storefront/catalog/product.js').LiveCatalogProduct} CatalogProduct */
 
 /**
- * @param {string} base
+ * @param {CatalogContext} catalog
  * @param {Record<string, string>} [query]
  * @returns {Promise<CatalogProduct[]>}
  */
-async function readProducts(base, query) {
-  const records = await readCollection(base, 'products', query);
+async function readProducts(catalog, query) {
+  const records = await readCollection(catalog, 'products', query);
   if (records.some(record => typeof record?.token !== 'string' || !record.token.trim()))
     throw new Error('Invalid florist product');
   return records;
 }
 
 /**
- * @param {string} base
+ * @param {CatalogContext} catalog
  * @param {CatalogProduct[]} records
  */
-async function resolvePrices(base, records) {
+async function resolvePrices(catalog, records) {
   const priceIds = records.map(record => productPriceReferenceId(record.latestProductPrice));
   const uniqueIds = [...new Set(priceIds.filter(id => id !== null))];
   const prices = new Map();
+  const fetchPrice = createCatalogFetch(catalog);
   const deadline = AbortSignal.timeout(10000);
   const batchSize = 10;
   for (let start = 0; start < uniqueIds.length; start += batchSize) {
     const batch = uniqueIds.slice(start, start + batchSize);
     await Promise.all(
       batch.map(async id => {
-        prices.set(id, await readPrice(base, id, deadline));
+        prices.set(id, await readPrice(fetchPrice, catalog.base, id, deadline));
       })
     );
   }
@@ -129,11 +143,11 @@ async function resolvePrices(base, records) {
 }
 
 /**
- * @param {string} base
+ * @param {CatalogContext} catalog
  * @param {Record<string, string>} [query]
  */
-export async function loadLiveProducts(base, query) {
-  return resolvePrices(base, await readProducts(base, query));
+export async function loadLiveProducts(catalog, query) {
+  return resolvePrices(catalog, await readProducts(catalog, query));
 }
 
 /**
@@ -143,16 +157,16 @@ export async function loadLiveProducts(base, query) {
  */
 
 /**
- * @param {string} base
+ * @param {CatalogContext} catalog
  * @param {string} token
  * @returns {Promise<ProductLookup>}
  */
-export async function lookupLiveProduct(base, token) {
+export async function lookupLiveProduct(catalog, token) {
   try {
-    const records = await readProducts(base, {token});
+    const records = await readProducts(catalog, {token});
     const match = records.find(record => record.token === token);
     if (!match) return {kind: 'missing'};
-    const [product] = await resolvePrices(base, [match]);
+    const [product] = await resolvePrices(catalog, [match]);
     return {kind: 'found', product, price: currentProductPrice(product.latestProductPrice)};
   } catch {
     return {kind: 'unavailable'};

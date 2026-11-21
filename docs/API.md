@@ -10,6 +10,8 @@ Part A is the state of this repo. Part B lists what the backend doesn't provide 
 
 Start the Next.js server with `VF_API_BASE` set to the florist's backend origin, for example `VF_API_BASE=https://backend.example.test npm start` from the repository root after `npm run build`. If the API is deployed under a prefix, include that prefix without the trailing `/api`. One server deployment points to one storefront backend. Without an API base, the storefront runs the sample flow. The Pages export always uses the sample flow.
 
+For Laravel's shared API host, also set `VF_ORIGIN` to the public storefront origin, such as `https://florist.example.test`. Laravel uses that `Origin` header to select the tenant. Catalog requests send the route's `en` or `fa` locale as `Accept-Language`.
+
 In server catalog mode, home, shop, category and product URLs read the Laravel `GET /api/catalog/products` and `GET /api/catalog/product-categories` collections. The storefront displays the backend's current price in its reported currency and offers a retry when a catalog request fails. This mode is a read-only stage of [#250](https://github.com/misaf/vendra-design-system/issues/250). Opening live ordering requires API-backed store settings, delivery and the [checkout contract](https://github.com/misaf/vendra-design-system/issues/365). Until then the remaining storefront screens show an ordering-unavailable message.
 
 ## A. Sample data and adapters (this repo)

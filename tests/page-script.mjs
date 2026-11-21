@@ -130,7 +130,12 @@ function pageScript(name) {
       read('src/storefront/customer/saved/saved-sync.js'),
       read('src/storefront/session/session-storage.js')
     );
-  if (name === 'checkout') parts.push(read(folder + '/payment-recovery.js'));
+  if (name === 'checkout')
+    parts.push(
+      read(folder + '/payment-recovery.js'),
+      read(folder + '/submission-state.js'),
+      read(folder + '/submit-order.js')
+    );
   if (name === 'account')
     parts.push(read(folder + '/account-editor-actions.js'), read(folder + '/useAccountWallet.js'));
   if (name === 'counter')
