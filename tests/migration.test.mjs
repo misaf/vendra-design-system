@@ -296,7 +296,7 @@ function page(name, c, props = {}) {
     recipient: 'Demo'
   }))
     account.renderVals().set[key](value);
-  account._setLocation({lat: 35.83, lng: 50.96});
+  account.renderVals().map.change({lat: 35.83, lng: 50.96});
   assert.equal(account.state.errors.location, undefined);
   account.renderVals().saveForm();
   v = account.renderVals();
