@@ -6,4 +6,4 @@ View retains normalized records and descriptor mapping. Bag/shared logic retains
 
 `StorefrontBagRecipient.spec.mjs` covers English/Persian labels and IDs, required/autocomplete/phone semantics, controlled editing and supplied updates, phone callback metadata, error relationships and clearing, saved-address order/pressed state and pointer/keyboard callbacks, hidden/empty saved options, compact containment and axe in empty/filled/error states. The fixture owns its values and selection; chip callbacks do not invent address or pin mutations.
 
-Guest/signed-in eligibility, address/pin updates, validation rules, error-summary focus, persistence/reload and delivery round trips remain page-level coverage.
+The fixture uses `StorefrontBagDeliveryLayout` to exercise the actual section-to-heading association. Guest/signed-in eligibility, address/pin updates, validation rules, error-summary focus, persistence/reload and delivery round trips remain page-level coverage.

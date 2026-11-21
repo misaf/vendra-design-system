@@ -30,7 +30,7 @@ import {directionsLinks, distanceKm, zoneAt, zoneFromApi} from '../../storefront
 import {page} from '../../storefront/catalog/pagination.js';
 import {fillText} from '../../storefront/delivery/delivery-copy.js';
 import {apiRecord, stockStatus, imageFromApi, productFromApi} from '../../storefront/catalog/product-api.js';
-import {lineFromApi} from '../../storefront/cart/order-line-api.js';
+import {purchasedLineView} from '../../storefront/orders/order-line-view.js';
 import {ORDER_STATUS, orderFromApi} from '../../storefront/orders/order-api.js';
 import {STORE_FEATURES, storeFeatures} from '../../storefront/store/store-features.js';
 import {
@@ -78,7 +78,7 @@ export const commerce = {
   productFromApi,
   stockStatus,
   zoneFromApi,
-  lineFromApi,
+  purchasedLineView,
   ORDER_STATUS,
   orderFromApi,
   STORE_FEATURES,

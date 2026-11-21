@@ -10,6 +10,8 @@ const platformCore = new Set(['environment.js', 'runtime.js'].map(file => platfo
 const storefront = 'src/storefront/';
 const shell = storefront + 'shell/';
 const laravel = 'src/platform/server/laravel/';
+const isResourceDecoder = file =>
+  /^src\/storefront\/(catalog|cart|orders)\/laravel\/[^/]+\.js$/.test(file);
 const gallery = uiFolder + '/gallery/';
 const cardCompatibility = gallery + 'card-runtime.js';
 const isReusableUi = file => file.startsWith(uiFolder + '/') && !file.startsWith(gallery);
@@ -22,6 +24,7 @@ const isPresentational = file =>
 const isUiHelper = file => file.startsWith(shell + 'ui/');
 const isDomain = file =>
   file === shell + 'shell.js' ||
+  isResourceDecoder(file) ||
   (file.startsWith(storefront) &&
     !file.startsWith(shell) &&
     /^[^/]+\/(?!use[A-Z])[^/]+\.js$/.test(file.slice(storefront.length)));
@@ -43,6 +46,8 @@ function appDependencyViolation(source, target, local) {
     source.startsWith(laravel) &&
     local &&
     !target.startsWith(laravel) &&
+    !isResourceDecoder(target) &&
+    target !== storefront + 'cart/review.js' &&
     source !== laravel + 'for-storefront.ts'
   )
     return `${source}: Laravel adapter imports outside ${laravel.slice(0, -1)}: ${target}`;

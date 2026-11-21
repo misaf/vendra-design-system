@@ -15,7 +15,7 @@ export function StorefrontBagSender({labels, name, phone}) {
         >
           <>{labels.title}</>
         </h2>
-        <p className="ag-field__hint tw:m-0">
+        <p id="vf-sender-phone-purpose" className="ag-field__hint tw:m-0">
           <>{labels.hint}</>
         </p>
       </div>
@@ -36,6 +36,7 @@ export function StorefrontBagSender({labels, name, phone}) {
           error={phone.error}
           required={true}
           label={phone.label}
+          aria-describedby="vf-sender-phone-purpose"
           placeholder="0912 000 0000"
         />
       </div>

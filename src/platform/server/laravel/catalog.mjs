@@ -1,4 +1,11 @@
 // @ts-check
+
+import {
+  currentProductPrice,
+  productPriceReferenceId
+} from '../../../storefront/catalog/laravel/price.js';
+export {currentProductPrice};
+
 /**
  * @param {string} base
  * @param {string} resource
@@ -64,14 +71,6 @@ async function readCollection(base, resource, query = {}) {
   return records;
 }
 
-/** @param {unknown} price */
-function referencedPriceId(price) {
-  if (typeof price !== 'string') return null;
-  const match = /\/api\/catalog\/product-prices\/(\d+)$/.exec(price);
-  const id = match ? Number(match[1]) : NaN;
-  return Number.isSafeInteger(id) ? id : null;
-}
-
 /** @param {string} base @param {number} id @param {AbortSignal} signal */
 async function readPrice(base, id, signal) {
   // The reference supplies only the ID; the storefront config supplies the backend.
@@ -90,15 +89,8 @@ export async function loadLiveCategories(base) {
   return records.filter(record => record.active !== false);
 }
 
-/** @typedef {{amount: number, currency: string}} ProductPrice */
-/**
- * @typedef {object} CatalogProduct
- * @property {string} token
- * @property {Record<string, unknown>} [name]
- * @property {Record<string, unknown>} [description]
- * @property {boolean} [inStock]
- * @property {unknown} [latestProductPrice]
- */
+/** @typedef {import('../../../storefront/catalog/product.js').CatalogPrice} ProductPrice */
+/** @typedef {import('../../../storefront/catalog/product.js').LiveCatalogProduct} CatalogProduct */
 
 /**
  * @param {string} base
@@ -117,7 +109,7 @@ async function readProducts(base, query) {
  * @param {CatalogProduct[]} records
  */
 async function resolvePrices(base, records) {
-  const priceIds = records.map(record => referencedPriceId(record.latestProductPrice));
+  const priceIds = records.map(record => productPriceReferenceId(record.latestProductPrice));
   const uniqueIds = [...new Set(priceIds.filter(id => id !== null))];
   const prices = new Map();
   const deadline = AbortSignal.timeout(10000);
@@ -142,22 +134,6 @@ async function resolvePrices(base, records) {
  */
 export async function loadLiveProducts(base, query) {
   return resolvePrices(base, await readProducts(base, query));
-}
-
-/** @param {unknown} price @returns {ProductPrice | null} */
-export function currentProductPrice(price) {
-  if (!price || typeof price !== 'object' || !('amount' in price) || !('currency' in price))
-    return null;
-  const {amount, currency} = price;
-  if (
-    typeof amount !== 'number' ||
-    !Number.isFinite(amount) ||
-    amount < 0 ||
-    typeof currency !== 'string' ||
-    !/^[A-Z]{3}$/.test(currency)
-  )
-    return null;
-  return {amount, currency};
 }
 
 /**
