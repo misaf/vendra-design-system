@@ -1,7 +1,12 @@
 import 'server-only';
 import {notFound} from 'next/navigation';
 import type {ReactNode} from 'react';
-import {loadLiveCategories, loadLiveProducts} from '../../platform/server/laravel/catalog.mjs';
+import {
+  currentProductPrice,
+  loadLiveCategories,
+  loadLiveProducts,
+  lookupLiveProduct
+} from '../../platform/server/laravel/catalog.mjs';
 
 const copy = {
   en: {
@@ -47,19 +52,9 @@ function liveRouteKey(segment: string) {
   }
 }
 
-function productPrice(
-  price: {amount?: number; currency?: string} | null | undefined,
-  lang: Locale
-) {
-  const {amount, currency} = price ?? {};
-  if (
-    typeof amount !== 'number' ||
-    !Number.isFinite(amount) ||
-    amount < 0 ||
-    !currency ||
-    !/^[A-Z]{3}$/.test(currency)
-  )
-    return copy[lang].priceUnavailable;
+function productPrice(price: ReturnType<typeof currentProductPrice>, lang: Locale) {
+  if (!price) return copy[lang].priceUnavailable;
+  const {amount, currency} = price;
   if (currency === 'IRT') {
     const value = new Intl.NumberFormat(lang).format(amount);
     return value + (lang === 'fa' ? ' تومان' : ' Toman');
@@ -105,18 +100,17 @@ export async function liveCatalogPage(
   const retryPath = storePath + '/' + (segment ? segment + '/' : '');
   const unavailable = () => shell(strings.error, <a href={retryPath}>{strings.retry}</a>);
   if (view === 'product') {
-    const token = liveRouteKey(key);
-    const products = await loadLiveProducts(base, {token}).catch(() => null);
-    if (!products) return unavailable();
-    const product = products.find(record => record.token === token);
-    if (!product) notFound();
+    const result = await lookupLiveProduct(base, liveRouteKey(key));
+    if (result.kind === 'missing') notFound();
+    if (result.kind === 'unavailable') return unavailable();
+    const {product, price} = result;
     return shell(
       localized(product.name, lang) || product.token,
       <>
         <p>
           <bdi>{product.token}</bdi>
         </p>
-        <p>{productPrice(product.latestProductPrice, lang)}</p>
+        <p>{productPrice(price, lang)}</p>
         <p>{product.inStock ? strings.stock : strings.soldOut}</p>
         <p>{localized(product.description, lang)}</p>
         <p>{strings.restricted}</p>
@@ -166,7 +160,7 @@ export async function liveCatalogPage(
                 {localized(product.name, lang) || product.token}
               </a>
               {' · '}
-              {productPrice(product.latestProductPrice, lang)}
+              {productPrice(currentProductPrice(product.latestProductPrice), lang)}
             </li>
           ))}
         </ul>

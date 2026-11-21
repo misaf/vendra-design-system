@@ -21,7 +21,8 @@
     "lint:css": "stylelint \"src/design-system/components/**/*.css\" \"src/storefront/**/*.css\" \"src/app/**/*.css\"",
     "new:component": "node tools/new-component.mjs",
     "test:smoke:demo": "playwright test -c e2e/smoke/playwright.config.mjs",
-    "test:smoke:app": "VF_TEST_LIVE=1 playwright test -c e2e/smoke/playwright.config.mjs"
+    "test:smoke:app": "VF_TEST_LIVE=1 playwright test -c e2e/smoke/playwright.config.mjs",
+    "test:smoke:catalog": "VF_TEST_LIVE=catalog playwright test -c e2e/smoke/playwright.config.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",

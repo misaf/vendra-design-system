@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {loadLiveCategories, loadLiveProducts} from '../src/platform/server/laravel/catalog.mjs';
+import {
+  loadLiveCategories,
+  loadLiveProducts,
+  lookupLiveProduct
+} from '../src/platform/server/laravel/catalog.mjs';
 
 const base = 'https://florist-backend.example.test/store';
 const product = {token: 'LIVE-1', latestProductPrice: {amount: 240000, currency: 'IRT'}};
@@ -102,4 +106,76 @@ test('rejects pagination that leaves the catalog endpoint or loops', async t => 
     assert.equal(fetchMock.mock.callCount(), 1);
     fetchMock.mock.restore();
   }
+});
+
+test('looks up the exact product and resolves only its price', async t => {
+  const price = {id: 201, amount: 0, currency: 'IRT'};
+  const referenced = {...product, latestProductPrice: '/api/catalog/product-prices/201'};
+  t.mock.method(globalThis, 'fetch', async url => {
+    if (url.pathname.endsWith('/products')) {
+      assert.equal(url.searchParams.get('token'), product.token);
+      return Response.json({member: [referenced]});
+    }
+    return Response.json({member: [price]});
+  });
+  assert.deepEqual(await lookupLiveProduct(base, product.token), {
+    kind: 'found',
+    product: {...product, latestProductPrice: price},
+    price: {amount: 0, currency: 'IRT'}
+  });
+});
+
+test('a successful lookup with no exact match skips unrelated price references', async t => {
+  const fetchMock = t.mock.method(globalThis, 'fetch', async () =>
+    Response.json({
+      member: [{...product, latestProductPrice: '/api/catalog/product-prices/201'}]
+    })
+  );
+  assert.deepEqual(await lookupLiveProduct(base, 'MISSING'), {kind: 'missing'});
+  assert.equal(fetchMock.mock.callCount(), 1);
+});
+
+test('an existing product can have no usable current price', async t => {
+  const fetchMock = t.mock.method(globalThis, 'fetch');
+  for (const latestProductPrice of [
+    undefined,
+    null,
+    {amount: '240000', currency: 'IRT'},
+    {amount: -1, currency: 'IRT'},
+    {amount: 240000, currency: ''},
+    '/api/catalog/product-prices/999'
+  ]) {
+    const unpriced = {...product, latestProductPrice};
+    fetchMock.mock.mockImplementation(async url =>
+      Response.json({member: url.pathname.endsWith('/products') ? [unpriced] : []})
+    );
+    const result = await lookupLiveProduct(base, product.token);
+    assert.equal(result.kind, 'found');
+    assert.equal(result.product.token, product.token);
+    assert.equal(result.price, null);
+  }
+});
+
+test('upstream failure, timeout and malformed data make the lookup unavailable', async t => {
+  const fetchMock = t.mock.method(globalThis, 'fetch');
+  for (const fetch of [
+    async () => new Response(null, {status: 503}),
+    async () => new Response(null, {status: 404}),
+    async () => Response.json({unexpected: []}),
+    async () => {
+      throw new DOMException('Catalog deadline expired', 'TimeoutError');
+    }
+  ]) {
+    fetchMock.mock.mockImplementation(fetch);
+    assert.deepEqual(await lookupLiveProduct(base, product.token), {kind: 'unavailable'});
+  }
+
+  fetchMock.mock.mockImplementation(async url =>
+    url.pathname.endsWith('/products')
+      ? Response.json({
+          member: [{...product, latestProductPrice: '/api/catalog/product-prices/201'}]
+        })
+      : new Response(null, {status: 503})
+  );
+  assert.deepEqual(await lookupLiveProduct(base, product.token), {kind: 'unavailable'});
 });
