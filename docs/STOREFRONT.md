@@ -99,7 +99,7 @@ See [API integration](API.md) for the backend URL format.
 
 The localized route at `src/app/[locale]/product/[code]/page.tsx` selects the Laravel-backed
 product page or the fixture-backed demo screen. For a Laravel product payload change, follow the
-lookup in `src/platform/server/laravel/catalog.mjs`,
+lookup in `src/storefront/catalog/laravel/catalog.mjs`,
 the localized name and description mapping in `src/storefront/catalog/laravel/product-details.ts`,
 and the shared `ProductDetails` view in the product heading component folder. The demo heading
 passes the fixture's product code, configured unit price, and localized description to the same

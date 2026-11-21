@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {test} from 'node:test';
-import {lookupLiveProduct} from '../src/platform/server/laravel/catalog.mjs';
+import {lookupLiveProduct} from '../src/storefront/catalog/laravel/catalog.mjs';
+import {createLaravelHttp} from '../src/platform/server/laravel-http.ts';
 import {createVendraApi, VendraApiError} from '../src/platform/server/laravel/index.mjs';
 
 const wire = JSON.parse(
@@ -178,7 +179,10 @@ test('catalog and cart review use an edited bouquet offer while order history ke
   edited = true;
 
   const catalog = await api.getProductByCode(originalProduct.token);
-  const detail = await lookupLiveProduct({base: apiOrigin, locale: 'en'}, originalProduct.token);
+  const detail = await lookupLiveProduct(
+    createLaravelHttp({base: apiOrigin, locale: 'en'}),
+    originalProduct.token
+  );
   assert.equal(detail.kind, 'found');
   assert.deepEqual(detail.product.name, catalog.name);
   assert.deepEqual(detail.price, catalog.price);
