@@ -28,3 +28,63 @@ node tools/build/generate-vendra-api-types.mjs /path/to/laravel-openapi.json 650
 The export describes the POST inputs as their responses. Local HTTP traces establish that delivery returns `QuotedDelivery` and checkout returns `Order`. The quote adapter checks its observed fields at runtime. The checkout adapter decodes the same order shape as authenticated order detail. See [#162](https://github.com/misaf/vendra-design-system/issues/162) for published schema provenance and drift checking.
 
 The [contract tests](../tests/laravel-order-contract.test.mjs) use trimmed, anonymized responses from the local order trace. They exercise the adapter's requests, server amounts, selected metadata, validation errors, replay behavior and customer access. The 42 existing Laravel catalog, cart, delivery and order tests also passed at the pinned revision. Pilot acceptance still requires a Laravel-backed trace with server-issued carts, quote expiry, successful checkout replay, and payment confirmation for the selected method.
+
+## Lost-response checkout replay
+
+[#439](https://github.com/misaf/vendra-design-system/issues/439) repeated the checkout probe against
+[Laravel `c1fb736`](https://github.com/misaf/vendra/tree/c1fb73611c196dcf0e814e0616e74e7e958a1515)
+with PHP 8.4, Laravel 13.43.0, and an isolated in-memory SQLite database. The test used the Laravel
+HTTP kernel and discarded the first response after the endpoint committed a `201` order.
+
+The same tenant and customer retried with the original payload and `Idempotency-Key`. Laravel
+returned `422` on `cartToken` without an order number. The database still held one order for the
+cart, and stock stayed at eight after the first checkout removed two units. The consumed-cart
+check prevented the retry from reaching a successful response.
+[Backend replay fix](https://github.com/misaf/vendra/issues/90)
+
+### Repeat the acceptance test
+
+In a disposable Laravel checkout at the revision above, append this case to
+`packages/vendra-order-api/tests/Feature/CustomerOrderApiTest.php`. It uses that file's existing
+tenant setup and product factory helper.
+
+```php
+it('probes checkout replay after a discarded response', function (): void {
+    expect(DB::connection()->getDatabaseName())->toBe(':memory:');
+
+    $user = createTestUser();
+    $product = orderApiProduct(price: 4800, quantity: 10);
+    $cart = CartFactory::new()->forOwner($user)->createOne();
+    CartItemFactory::new()->forCart($cart)->forSellable($product)->createOne(['quantity' => 2]);
+    $payload = ['cartToken' => $cart->token, 'currencyCode' => 'USD'];
+    $headers = ['Idempotency-Key' => 'f47e2fdf-0171-404e-a34a-0899d85d3e3f'];
+
+    // Release RefreshDatabase's transaction so checkout commits on its own.
+    DB::commit();
+    $this->actingAs($user)->postJson('/api/sales/checkout', $payload, $headers)->assertCreated();
+
+    expect(DB::transactionLevel())->toBe(0);
+    $orders = Order::query()->where('cart_id', $cart->getKey());
+    $order = $orders->sole();
+
+    $retry = $this->postJson('/api/sales/checkout', $payload, $headers);
+
+    expect($orders->count())->toBe(1);
+    expect($orders->sole()->number)->toBe($order->number);
+    expect($product->refresh()->quantity)->toBe(8);
+    $retry->assertSuccessful()->assertJsonPath('number', $order->number);
+});
+```
+
+Run from the Laravel repository root with its locked Composer dependencies installed.
+
+```sh
+APP_ENV=testing DB_CONNECTION=sqlite DB_DATABASE=:memory: DB_URL= \
+  APP_KEY="base64:$(php -r 'echo base64_encode(random_bytes(32));')" \
+  php artisan test --compact packages/vendra-order-api/tests/Feature/CustomerOrderApiTest.php \
+  --filter='probes checkout replay'
+```
+
+The test currently fails at the successful replay assertion with `422`. Rerun it when the backend
+fix lands, then use the verified response in the storefront recovery tests before shipping
+[#435](https://github.com/misaf/vendra-design-system/issues/435).
