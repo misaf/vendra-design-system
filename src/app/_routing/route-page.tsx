@@ -20,23 +20,32 @@ export function storefrontPage<Segments extends object = Record<never, never>>(
     const segment = typeof path === 'function' ? path(values) : path;
     const apiBase = await liveCatalogBase();
     if (apiBase) return liveCatalogPage(apiBase, lang, segment, fallback);
-    const address = [lang, segment].filter(Boolean).join('/') + '/';
-    const {tags, route} = routeHead(address, {
-      lang,
-      base: process.env.NEXT_PUBLIC_VF_BASE_PATH + '/',
-      origin: process.env.VF_ORIGIN || ''
-    });
-    // The export host serves its own 404 document, which also restores runtime tracking URLs.
-    if (route.view === 'notfound' && process.env.NEXT_PUBLIC_VF_NEXT_EXPORT !== 'true') notFound();
-    return (
-      <StorefrontScreen
-        initialTags={tags}
-        address={address}
-        view={fallback ? 'notfound' : route.view}
-        fallbackLang={fallback ? lang : null}
-      >
-        {route.view === 'notfound' && !fallback ? null : <Screen />}
-      </StorefrontScreen>
-    );
+    return renderDemoScreen(lang, segment, Screen, fallback);
   };
+}
+
+export function renderDemoScreen(
+  lang: ReturnType<typeof requireLocale>,
+  segment: string,
+  Screen: ComponentType,
+  fallback = false
+) {
+  const address = [lang, segment].filter(Boolean).join('/') + '/';
+  const {tags, route} = routeHead(address, {
+    lang,
+    base: process.env.NEXT_PUBLIC_VF_BASE_PATH + '/',
+    origin: process.env.VF_ORIGIN || ''
+  });
+  // The export host serves its own 404 document, which also restores runtime tracking URLs.
+  if (route.view === 'notfound' && process.env.NEXT_PUBLIC_VF_NEXT_EXPORT !== 'true') notFound();
+  return (
+    <StorefrontScreen
+      initialTags={tags}
+      address={address}
+      view={fallback ? 'notfound' : route.view}
+      fallbackLang={fallback ? lang : null}
+    >
+      {route.view === 'notfound' && !fallback ? null : <Screen />}
+    </StorefrontScreen>
+  );
 }
