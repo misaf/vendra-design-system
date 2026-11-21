@@ -32,7 +32,7 @@ for (const [locale, strings] of Object.entries(localized)) {
   const productPath = code => base + '/' + locale + '/product/' + code + '/';
 
   test('shows the current price on the product page in ' + locale, async ({page}) => {
-    const response = await page.goto(productPath('PRICED'));
+    const response = await page.goto(productPath('PRICED-' + locale));
     expect(response.status()).toBe(200);
     await expect(page.locator('html')).toHaveAttribute('lang', locale);
     await expect(page.locator('html')).toHaveAttribute('dir', strings.direction);
@@ -42,7 +42,7 @@ for (const [locale, strings] of Object.entries(localized)) {
   });
 
   test('shows an existing product with no current price in ' + locale, async ({page}) => {
-    const response = await page.goto(productPath('UNPRICED'));
+    const response = await page.goto(productPath('UNPRICED-' + locale));
     expect(response.status()).toBe(200);
     await expect(page.getByRole('heading', {level: 1})).toHaveText(strings.name);
     await expect(page.getByText(strings.priceUnavailable, {exact: true})).toBeVisible();
@@ -51,7 +51,7 @@ for (const [locale, strings] of Object.entries(localized)) {
   });
 
   test('shows localized description paragraphs in ' + locale, async ({page}) => {
-    const response = await page.goto(productPath('RICH'));
+    const response = await page.goto(productPath('RICH-' + locale));
     expect(response.status()).toBe(200);
     const paragraphs = page.getByRole('paragraph');
     for (const text of strings.richDescription) {
@@ -63,7 +63,7 @@ for (const [locale, strings] of Object.entries(localized)) {
 
   if (locale === 'fa') {
     test('shows the English document when the Persian description is absent', async ({page}) => {
-      const response = await page.goto(productPath('ENGLISH-ONLY'));
+      const response = await page.goto(productPath('ENGLISH-ONLY-' + locale));
       expect(response.status()).toBe(200);
       await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
       for (const text of localized.en.richDescription) {
@@ -75,7 +75,7 @@ for (const [locale, strings] of Object.entries(localized)) {
   }
 
   test('returns HTTP 404 for a missing product in ' + locale, async ({page}) => {
-    const response = await page.goto(productPath('MISSING'));
+    const response = await page.goto(productPath('MISSING-' + locale));
     expect(response.status()).toBe(404);
     await expect(page.getByRole('heading', {level: 1})).toHaveText(strings.missing);
   });

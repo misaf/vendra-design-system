@@ -138,8 +138,13 @@ export async function liveCatalogPage(
 
   const retryPath = storePath + '/' + (segment ? segment + '/' : '');
   const unavailable = () => shell(strings.error, <a href={retryPath}>{strings.retry}</a>);
+  const catalog = {
+    base,
+    storefrontOrigin: process.env.VF_ORIGIN?.trim() || undefined,
+    locale: lang
+  };
   if (view === 'product') {
-    const result = await lookupLiveProduct(base, liveRouteKey(key));
+    const result = await lookupLiveProduct(catalog, liveRouteKey(key));
     if (result.kind === 'missing') notFound();
     if (result.kind === 'unavailable') return unavailable();
     const {product, price} = result;
@@ -157,14 +162,14 @@ export async function liveCatalogPage(
     );
   }
 
-  const categories = await loadLiveCategories(base).catch(() => null);
+  const categories = await loadLiveCategories(catalog).catch(() => null);
   if (!categories) return unavailable();
   const slug = liveRouteKey(key);
   const category =
     slug && categories.find(record => [record.slug.en, record.slug.fa].includes(slug));
   if (key && !category) notFound();
   const products = await loadLiveProducts(
-    base,
+    catalog,
     category ? {categoryId: String(category.id)} : {}
   ).catch(() => null);
   if (!products) return unavailable();

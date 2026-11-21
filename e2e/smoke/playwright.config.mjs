@@ -29,8 +29,10 @@ export default defineConfig({
     {
       cwd,
       command: `npm ${live || catalog ? 'start' : 'run preview:demo'} -- --port 3034 --hostname 127.0.0.1`,
-      url: url + base + (catalog ? '/en/product/PRICED/' : '/'),
-      ...(catalog ? {env: {VF_API_BASE: fixtureUrl}} : {}),
+      url: url + base + (catalog ? '/en/product/PRICED-en/' : '/'),
+      ...(catalog
+        ? {env: {VF_API_BASE: fixtureUrl + '/store', VF_ORIGIN: 'https://florist.example.test/'}}
+        : {}),
       reuseExistingServer: false
     }
   ]
