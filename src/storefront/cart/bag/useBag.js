@@ -184,6 +184,65 @@ export function useBag(props) {
   return vals(page);
 }
 
+function deliverySelectionChanged(delivery, day, slot) {
+  return (
+    !day || (!!delivery.date && (delivery.date !== day || (delivery.slot != null && slot == null)))
+  );
+}
+
+function continueToPayment(
+  page,
+  {live, quantitiesValid, delivery, store, total, serverErrors, problems, stepTo}
+) {
+  if (live.some(l => !vfLineAvailable(l)) || !quantitiesValid) return;
+
+  // A price that changed while the form was open goes back to the bag, beside its line.
+  if (page._reprice().length) {
+    stepTo('bag');
+    return;
+  }
+
+  // Recheck at click time too: the customer may have left this form open past the cutoff.
+  const clickTime = vfNow();
+  const currentDate = vfDeliveryDate(delivery, clickTime, live);
+  const currentSlot = vfDeliverySlot(delivery, clickTime, live);
+  page.setState({submitted: true});
+  if (deliverySelectionChanged(delivery, currentDate, currentSlot)) {
+    VF_NAV.focusById('vf-delivery-changed');
+    return;
+  }
+  if (Object.keys(serverErrors).length) {
+    VF_NAV.focusById('vf-errors');
+    return;
+  }
+  if (problems.length || currentSlot == null) {
+    // One problem goes straight to its field; several go to the summary that lists them.
+    // The map can't carry aria-invalid, so it is focused directly.
+    if (problems.length > 1 || currentSlot == null) VF_NAV.focusById('vf-errors');
+    else if (problems[0].target === 'vf-map') VF_NAV.focusById('vf-map');
+    else VF_NAV.focusFirstInvalid();
+    return;
+  }
+
+  if (store)
+    store.setDelivery({
+      ...delivery,
+      date: currentDate,
+      slot: currentSlot,
+      phone: vfMobile(delivery.phone),
+      senderPhone: vfMobile(delivery.senderPhone)
+    });
+
+  const items = vfLineItems(live.filter(vfLineAvailable));
+  vfRuntime.track.event('add_shipping_info', {
+    items,
+    value: total,
+    shipping_tier: delivery.zone
+  });
+  vfRuntime.track.event('begin_checkout', {items, value: total});
+  if (page.props.go) page.props.go('checkout');
+}
+
 function vals(page) {
   const fa = page.props.lang === 'fa';
   const L = fa ? 'fa' : 'en';
@@ -204,8 +263,6 @@ function vals(page) {
   const now = vfNow();
   const date = vfDeliveryDate(delivery, now, live);
   const slot = vfDeliverySlot(delivery, now, live);
-  const deliveryChanged = (day, time) =>
-    !day || (!!delivery.date && (delivery.date !== day || (delivery.slot != null && time == null)));
   const quoted = vfDeliveryQuoted(delivery);
   const deliveryHint = vfBagSameDay(live) ? vfDeliveryHint(z, fa) : '';
   const displayedTotal = quoted ? total : total - totals.fee;
@@ -384,7 +441,11 @@ function vals(page) {
         : [])
     ],
     checkoutBagError: st?.checkoutErrors?.bag,
-    deliveryReview: !date ? C.noDelivery : deliveryChanged(date, slot) ? C.deliveryChanged : '',
+    deliveryReview: !date
+      ? C.noDelivery
+      : deliverySelectionChanged(delivery, date, slot)
+        ? C.deliveryChanged
+        : '',
     preparationNotice: !vfBagSameDay(live) ? C.preparationNotice : '',
     dateError: serverErrors.date,
     slotError: fieldError('slot'),
@@ -402,52 +463,17 @@ function vals(page) {
     },
     bagHref: vfRouteUrl({lang: L, view: 'bag'}),
     stepClick: i => i === 0 && stepTo('bag'),
-    next: () => {
-      if (live.some(l => !vfLineAvailable(l)) || !quantitiesValid) return;
-      // A price that changed while the form was open goes back to the bag, beside its line.
-      if (page._reprice().length) {
-        stepTo('bag');
-        return;
-      }
-      // Recheck at click time too: the customer may have left this form open past the cutoff.
-      const clickTime = vfNow();
-      const currentDate = vfDeliveryDate(delivery, clickTime, live);
-      const currentSlot = vfDeliverySlot(delivery, clickTime, live);
-      page.setState({submitted: true});
-      if (deliveryChanged(currentDate, currentSlot)) {
-        VF_NAV.focusById('vf-delivery-changed');
-        return;
-      }
-      if (Object.keys(serverErrors).length) {
-        VF_NAV.focusById('vf-errors');
-        return;
-      }
-      if (problems.length || currentSlot == null) {
-        // One problem goes straight to its field; several go to the summary that lists them.
-        // The map can't carry aria-invalid, so it is focused directly.
-        if (problems.length > 1 || currentSlot == null) VF_NAV.focusById('vf-errors');
-        else if (problems[0].target === 'vf-map') VF_NAV.focusById('vf-map');
-        else VF_NAV.focusFirstInvalid();
-        return;
-      }
-      if (st)
-        st.setDelivery({
-          ...delivery,
-          date: currentDate,
-          slot: currentSlot,
-          phone: vfMobile(delivery.phone),
-          senderPhone: vfMobile(delivery.senderPhone)
-        });
-      // The delivery step is done (zone and slot chosen); the bag moves on to payment.
-      const items = vfLineItems(live.filter(vfLineAvailable));
-      vfRuntime.track.event('add_shipping_info', {
-        items,
-        value: total,
-        shipping_tier: delivery.zone
-      });
-      vfRuntime.track.event('begin_checkout', {items, value: total});
-      if (page.props.go) page.props.go('checkout');
-    },
+    next: () =>
+      continueToPayment(page, {
+        live,
+        quantitiesValid,
+        delivery,
+        store: st,
+        total,
+        serverErrors,
+        problems,
+        stepTo
+      }),
     hasItems: live.length > 0,
     noItems: live.length === 0,
     removedMessage: s.removed
