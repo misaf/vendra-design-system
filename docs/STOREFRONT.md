@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 9615)
-Total output lines: 323
-
 # Florist storefront
 
 Start at the feature you want to change. Next.js route files in `src/app/` select the screen and handle route parameters and metadata. Screens, state, bilingual copy, styles, and browser component specs live with the owning capability.
@@ -169,7 +166,12 @@ Storefront components may have the same pair beside them under their route or in
 
 - **Host:** `e2e/fixtures/storefront-component.html?component=<Name>&lang=en|fa` loads the storefront's Tailwind, design-system and page styles and renders the fixture inside `VendraProvider`. Specs open it with `openStorefrontComponent` from `e2e/component-test.mjs`.
 - **Running:** `npm run test:e2e:dev -- --project=storefront-components` (dev server, desktop width; CI runs it with the development suite).
-- **Covered:** StorefrontCheckoutMethods, StorefrontCheckoutReceipt, StorefrontCheckoutSubmission, StorefrontBagSchedule, StorefrontBagLocation, StorefrontBagCards,…115 tokens truncated…/` is generated; never edit it.
+- **Covered:** StorefrontCheckoutMethods, StorefrontCheckoutReceipt, StorefrontCheckoutSubmission, StorefrontBagSchedule, StorefrontBagLocation, StorefrontBagCards, StorefrontAccountEditorDialog and StorefrontPresentationOrder. Remaining coverage is tracked in [#323](https://github.com/misaf/vendra-design-system/issues/323).
+- **Guard:** `tests/component-scaffolding.test.mjs` fails when a spec lacks its fixture (or the reverse), and tracks the existing storefront components awaiting coverage in `tests/storefront-components-without-specs.json`. Remove a name when you add its spec.
+
+## Runtime and export
+
+`.generated/` is generated; never edit it.
 
 - **`src/app/[locale]/`** owns localized pages and layouts. Its folders follow the customer-facing URLs. `presentation/` serves the counter display. `src/app/_document/` owns the storefront document, session, screen wrapper, and page metadata markup. `src/app/_routing/` builds the initial route and metadata. `src/app/_live-catalog/` renders the request-scoped Laravel catalog.
 - **Public URLs** use `/<locale>/` in links, canonical and alternate tags, and the sitemap.
