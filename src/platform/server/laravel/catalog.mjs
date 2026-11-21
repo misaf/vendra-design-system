@@ -65,15 +65,33 @@ export async function loadLiveCategories(base) {
   return records.filter(record => record.active !== false);
 }
 
+/** @typedef {{amount: number, currency: string}} ProductPrice */
+/**
+ * @typedef {object} CatalogProduct
+ * @property {string} token
+ * @property {Record<string, unknown>} [name]
+ * @property {Record<string, unknown>} [description]
+ * @property {boolean} [inStock]
+ * @property {unknown} [latestProductPrice]
+ */
+
 /**
  * @param {string} base
  * @param {Record<string, string>} [query]
+ * @returns {Promise<CatalogProduct[]>}
  */
-export async function loadLiveProducts(base, query) {
+async function readProducts(base, query) {
   const records = await readCollection(base, 'products', query);
   if (records.some(record => typeof record?.token !== 'string' || !record.token.trim()))
     throw new Error('Invalid florist product');
+  return records;
+}
 
+/**
+ * @param {string} base
+ * @param {CatalogProduct[]} records
+ */
+async function resolvePrices(base, records) {
   /** @param {unknown} price */
   const isPriceReference = price =>
     typeof price === 'string' && /\/api\/catalog\/product-prices\/\d+$/.test(price);
@@ -89,4 +107,51 @@ export async function loadLiveProducts(base, query) {
     const id = isPriceReference(price) ? Number(price.split('/').pop()) : null;
     return {...record, latestProductPrice: prices.find(price => price.id === id) ?? null};
   });
+}
+
+/**
+ * @param {string} base
+ * @param {Record<string, string>} [query]
+ */
+export async function loadLiveProducts(base, query) {
+  return resolvePrices(base, await readProducts(base, query));
+}
+
+/** @param {unknown} price @returns {ProductPrice | null} */
+export function currentProductPrice(price) {
+  if (!price || typeof price !== 'object' || !('amount' in price) || !('currency' in price))
+    return null;
+  const {amount, currency} = price;
+  if (
+    typeof amount !== 'number' ||
+    !Number.isFinite(amount) ||
+    amount < 0 ||
+    typeof currency !== 'string' ||
+    !/^[A-Z]{3}$/.test(currency)
+  )
+    return null;
+  return {amount, currency};
+}
+
+/**
+ * @typedef {{kind: 'found', product: CatalogProduct, price: ProductPrice | null}
+ * | {kind: 'missing'}
+ * | {kind: 'unavailable'}} ProductLookup
+ */
+
+/**
+ * @param {string} base
+ * @param {string} token
+ * @returns {Promise<ProductLookup>}
+ */
+export async function lookupLiveProduct(base, token) {
+  try {
+    const records = await readProducts(base, {token});
+    const match = records.find(record => record.token === token);
+    if (!match) return {kind: 'missing'};
+    const [product] = await resolvePrices(base, [match]);
+    return {kind: 'found', product, price: currentProductPrice(product.latestProductPrice)};
+  } catch {
+    return {kind: 'unavailable'};
+  }
 }
