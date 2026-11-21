@@ -59,20 +59,14 @@ function productPrice(price: ReturnType<typeof currentProductPrice>, lang: Local
   return new Intl.NumberFormat(lang, {style: 'currency', currency}).format(amount);
 }
 
-export async function liveCatalogPage(
-  base: string,
-  lang: Locale,
-  segment: string,
-  fallback: boolean
-) {
+function liveCatalogRequest(base: string, lang: Locale, segment: string) {
   const strings = copy[lang];
   const storePath = (process.env.NEXT_PUBLIC_VF_BASE_PATH || '') + '/' + lang;
-  const catalogPath = storePath + '/shop/';
   const shell = (title: string, body: ReactNode, heading: ReactNode = <h1>{title}</h1>) => (
     <main className="vf-live-catalog">
       <title>{title}</title>
       <nav aria-label={strings.catalog}>
-        <a href={catalogPath}>{strings.catalog}</a>
+        <a href={storePath + '/shop/'}>{strings.catalog}</a>
         {' · '}
         <a
           href={
@@ -88,12 +82,6 @@ export async function liveCatalogPage(
       {body}
     </main>
   );
-  if (fallback) notFound();
-
-  const [view, key = ''] = segment.split('/');
-  if (view && view !== 'shop' && view !== 'product')
-    return shell(strings.catalog, <p>{strings.restricted}</p>);
-
   const retryPath = storePath + '/' + (segment ? segment + '/' : '');
   const unavailable = () => shell(strings.error, <a href={retryPath}>{strings.retry}</a>);
   const catalog = {
@@ -101,26 +89,42 @@ export async function liveCatalogPage(
     storefrontOrigin: process.env.VF_ORIGIN?.trim() || undefined,
     locale: lang
   };
-  if (view === 'product') {
-    const result = await lookupLiveProduct(catalog, liveRouteKey(key));
-    if (result.kind === 'missing') notFound();
-    if (result.kind === 'unavailable') return unavailable();
-    const {product, price} = result;
-    const details = liveProductDetails(product, productPrice(price, lang), lang);
-    return shell(
-      details.name,
-      <>
-        <p>
-          <bdi>{product.token}</bdi>
-        </p>
-        <p>{strings.restricted}</p>
-      </>,
-      <ProductDetails
-        product={details}
-        stock={<span>{product.inStock ? strings.stock : strings.soldOut}</span>}
-      />
-    );
-  }
+  return {strings, storePath, shell, unavailable, catalog};
+}
+
+export async function liveProductPage(base: string, lang: Locale, code: string) {
+  const {strings, shell, unavailable, catalog} = liveCatalogRequest(base, lang, 'product/' + code);
+  const result = await lookupLiveProduct(catalog, liveRouteKey(code));
+  if (result.kind === 'missing') notFound();
+  if (result.kind === 'unavailable') return unavailable();
+  const {product, price} = result;
+  const details = liveProductDetails(product, productPrice(price, lang), lang);
+  return shell(
+    details.name,
+    <>
+      <p>
+        <bdi>{product.token}</bdi>
+      </p>
+      <p>{strings.restricted}</p>
+    </>,
+    <ProductDetails
+      product={details}
+      stock={<span>{product.inStock ? strings.stock : strings.soldOut}</span>}
+    />
+  );
+}
+
+export async function liveCatalogPage(
+  base: string,
+  lang: Locale,
+  segment: string,
+  fallback: boolean
+) {
+  if (fallback) notFound();
+  const {strings, storePath, shell, unavailable, catalog} = liveCatalogRequest(base, lang, segment);
+  const [view, key = ''] = segment.split('/');
+  if (view && view !== 'shop') return shell(strings.catalog, <p>{strings.restricted}</p>);
+  const catalogPath = storePath + '/shop/';
 
   const categories = await loadLiveCategories(catalog).catch(() => null);
   if (!categories) return unavailable();

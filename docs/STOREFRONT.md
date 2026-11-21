@@ -97,8 +97,9 @@ deployment owns the Docker images, routing, and runtime configuration for the st
 Laravel backend. Set `VF_API_BASE` to the backend origin when starting the storefront server with `npm start`.
 See [API integration](API.md) for the backend URL format.
 
-The localized product route serves either the Laravel catalog or the demo storefront. For a
-Laravel product payload change, follow the lookup in `src/platform/server/laravel/catalog.mjs`,
+The localized route at `src/app/[locale]/product/[code]/page.tsx` selects the Laravel-backed
+product page or the fixture-backed demo screen. For a Laravel product payload change, follow the
+lookup in `src/platform/server/laravel/catalog.mjs`,
 the localized name and description mapping in `src/storefront/catalog/laravel/product-details.ts`,
 and the shared `ProductDetails` view in the product heading component folder. The demo heading
 passes the fixture's product code, configured unit price, and localized description to the same
