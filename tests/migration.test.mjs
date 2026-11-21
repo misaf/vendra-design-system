@@ -598,6 +598,9 @@ function page(name, c, props = {}) {
     assert.equal(only.method, 'card');
     assert.equal(only.isCard, true);
     assert.equal(only.payment.cardNumber, '6221061072645437');
+    const persianCard = page('checkout', store, {lang: 'fa'}).renderVals().payment;
+    assert.equal(persianCard.holder, card.holder.fa);
+    assert.equal(persianCard.bank, card.bank.fa);
     assert.match(
       page('cart', store).renderVals().t.payNote,
       /^You pay on the next step: card-to-card\./
@@ -621,6 +624,7 @@ function page(name, c, props = {}) {
     only = page('checkout', store, {store: delivery('central')}).renderVals();
     assert.equal(only.method, 'cod');
     assert.equal(only.noMethod, false);
+    assert.equal(only.payment, null);
     const outside = page('checkout', store, {store: delivery('tehran')}).renderVals();
     assert.equal(outside.method, null);
     assert.equal(outside.noMethod, true);

@@ -1,7 +1,8 @@
 // Page behavior. Edit here, then run npm run build.
+import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {vfProductImage, vfProductSub, vfSearchProducts} from '../catalog.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {useLifecycle, usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
@@ -83,7 +84,7 @@ function vals(page) {
     },
     clearSearch: () => {
       change('');
-      S.focus('vf-q');
+      VF_NAV.focusById('vf-q');
     },
     closeHref: vfRouteUrl({
       ...page.props.store?.searchReturn,

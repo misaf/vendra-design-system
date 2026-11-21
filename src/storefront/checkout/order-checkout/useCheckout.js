@@ -1,4 +1,5 @@
 // Page behavior. Edit here, then run npm run build.
+import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {
   vfKeepPayment,
@@ -18,7 +19,7 @@ import {vfDeliveryChanged} from '../../delivery/delivery-validation.js';
 import {vfTotals} from '../../pricing/order-totals.js';
 import {vfZone} from '../../delivery/delivery-zones.js';
 import {VF_FA_DIGITS, vfSeparator} from '../../pricing/formatting.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {vfSummaryRows} from '../../pricing/promotions.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {VF_STORE, vfLiveStore, vfPaymentMethods} from '../../store/store-config.js';
@@ -133,11 +134,14 @@ function vals(page) {
   const balanceTotals = vfTotals(items, delivery, balance);
   const canUseBalance = balance != null && balance >= balanceTotals.total;
   // The methods this store offers (VF_STORE.paymentMethods), each usable for this order or not.
-  const options = paymentOptions(vfPaymentMethods(), {
+  const methods = vfPaymentMethods();
+  const options = paymentOptions(methods, {
     zone: delivery.zone,
     balance,
     total: balanceTotals.total
   });
+  const card = methods.find(method => method.id === 'card');
+  const payment = card ? {...card, holder: card.holder[L], bank: card.bank[L]} : null;
   const offers = id => options.some(option => option.id === id);
   const usable = id => options.some(option => option.id === id && option.available);
   // After a failed payment or order: the first usable method that isn't the one that failed.
@@ -159,7 +163,7 @@ function vals(page) {
           onClick: () => {
             st.setCheckoutErrors(recovery);
             page.props.go({view: 'bag', step: reviewStep});
-            S.focus(reviewStep === 'bag' ? 'vf-checkout-bag-error' : 'vf-errors');
+            VF_NAV.focusById(reviewStep === 'bag' ? 'vf-checkout-bag-error' : 'vf-errors');
           }
         }
       : null;
@@ -351,7 +355,7 @@ function vals(page) {
     },
     retry: () => {
       page.setState({failed: false, apiFailure: recovery?.payment ? apiFailure : null});
-      if (apiFailure?.recovery.payment && method === 'card') S.focus('vf-ref');
+      if (apiFailure?.recovery.payment && method === 'card') VF_NAV.focusById('vf-ref');
     },
     otherMethod: () =>
       page._draft({
@@ -388,7 +392,8 @@ function vals(page) {
     ],
     caption: C.caption,
     payLabels: C.payLabels,
-    copySheba: () => navigator.clipboard.writeText((S.payment && S.payment.sheba) || ''),
+    payment,
+    copySheba: () => navigator.clipboard.writeText(payment?.sheba || ''),
     paymentSaveError: s.paymentSaveError ? C.paymentSaveError : '',
     retryReview: s.retryReview,
     reviewRetry: () => {
@@ -437,7 +442,7 @@ function vals(page) {
       if (busy || s.failed || done || !orderReady()) return;
       if (!usable(method)) return;
       if (receiptChanged) {
-        S.focus('vf-receipt-changed');
+        VF_NAV.focusById('vf-receipt-changed');
         return;
       }
       if (method === 'card' && s.last4.length !== 4) {
@@ -514,7 +519,7 @@ function vals(page) {
                   ['timeout', 'network', 'conflict', 'server'].includes(kind) ||
                   (methodLocked && kind === 'offline')
               });
-              S.focus('vf-checkout-submit-error');
+              VF_NAV.focusById('vf-checkout-submit-error');
             }
           )
           .finally(() => st?.endCheckout?.());
@@ -584,7 +589,7 @@ function vals(page) {
         )
       ) {
         page.setState({retryReview: true});
-        S.focus('vf-payment-review');
+        VF_NAV.focusById('vf-payment-review');
         return;
       }
       page.setState({retryReview: false});

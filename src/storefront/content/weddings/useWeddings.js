@@ -1,8 +1,9 @@
 // Page behavior. Edit here, then run npm run build.
+import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {VF_PRODUCT_PLACEHOLDER} from '../../catalog/catalog.js';
 import {mobile as vfMobile} from '../../../design-system/utils/input.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {usePageLogic} from '../../shell/page-state.js';
 import {vfAssetBase, vfNow} from '../../../platform/browser/environment.js';
 import {vfLiveStore} from '../../store/store-config.js';
@@ -102,7 +103,7 @@ function vals(page) {
       page.setState({
         sent: false
       });
-      S.focus('vf-wname');
+      VF_NAV.focusById('vf-wname');
     },
     name: s.name,
     setName: field('name', 'name', {e1: false}),
@@ -131,7 +132,7 @@ function vals(page) {
           e2
         });
         // One problem goes straight to its field; both go to the summary that lists them.
-        S.focus(e1 && e2 ? 'vf-wedding-errors' : e1 ? 'vf-wname' : 'vf-wphone');
+        VF_NAV.focusById(e1 && e2 ? 'vf-wedding-errors' : e1 ? 'vf-wname' : 'vf-wphone');
         return;
       }
       const success = () => {
@@ -141,7 +142,7 @@ function vals(page) {
           apiFields: {},
           apiError: ''
         });
-        S.focus('vf-weddings-success');
+        VF_NAV.focusById('vf-weddings-success');
       };
       if (!vfRuntime.api.live) {
         success();
@@ -168,7 +169,9 @@ function vals(page) {
           const {fields, apiError} = vfInquiryFailure(error, S.lang);
           const wrong = FIELDS.filter(([key]) => fields[key]);
           page.setState({busy: false, apiFields: fields, apiError});
-          S.focus(wrong.length > 1 ? 'vf-wedding-errors' : wrong[0]?.[1] || 'vf-wedding-api-error');
+          VF_NAV.focusById(
+            wrong.length > 1 ? 'vf-wedding-errors' : wrong[0]?.[1] || 'vf-wedding-api-error'
+          );
         });
     }
   };

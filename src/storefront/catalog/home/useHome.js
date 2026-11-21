@@ -1,9 +1,11 @@
 // Page behavior. Edit here, then run npm run build.
+import {vfSavedItems} from '../../customer/saved-items.js';
+import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../catalog.js';
 import {VF_MONEY, vfSeparator} from '../../pricing/formatting.js';
 import {vfAccountLoad, vfAccountPhone} from '../../customer/account-data.js';
-import {vfShell, vfStored} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {vfRouteUrl} from '../../shell/routing.js';
 import {VF_CATEGORY_COPY, VF_SHOP_OCCASIONS, VF_SHOP_OCCASION_COPY} from '../categories.js';
 import {VF_CATEGORY_SLUGS} from '../product-categories.js';
@@ -15,6 +17,7 @@ import {usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 import {vfFloristData} from '../../shell/structured-data.js';
 import {vfSelectItem, vfShowList} from '../../../platform/browser/list-tracking.js';
+import {vfStoredValue} from '../../../platform/browser/environment.js';
 import {vfRuntime} from '../../../platform/browser/runtime.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
@@ -27,6 +30,7 @@ export function useHome(props) {
 function vals(page) {
   const fa = page.props.lang === 'fa';
   const L = fa ? 'fa' : 'en';
+  const savedItems = vfSavedItems(page);
   const S = vfShell(page, 'home');
   // Search engines read the studio's address, hours and phone as a Florist (structured-data.js).
   page.head = {structuredData: [vfFloristData(L)]};
@@ -41,8 +45,8 @@ function vals(page) {
   vfShowList(page, 'home_studio', studio);
   const card = list => (p, index) => ({
     select: vfSelectItem(list, p, index),
-    fav: S.isFav(p.id, []),
-    toggleFav: S.toggleFav(p.id, []),
+    fav: savedItems.ids.includes(p.id),
+    toggleFav: () => savedItems.toggle(p.id),
     ...S.productLink(p.id),
     images: [vfProductImage(p, L)],
     name: p.id,
@@ -99,7 +103,7 @@ function vals(page) {
 // The newsletter band: the draft lives in page state; a finished sign-up is remembered on this device.
 function newsletter(page, S, C, L) {
   const news = page.state.vfNews || {};
-  const signedUp = news.done || vfStored('vf-newsletter');
+  const signedUp = news.done || vfStoredValue('vf-newsletter') || '';
   const accountPhone = vfAccountPhone();
   const profile = accountPhone ? vfAccountLoad(accountPhone, L).profile : {};
   const draft = news.draft ?? profile.email ?? '';
@@ -120,7 +124,7 @@ function newsletter(page, S, C, L) {
       const email = draft.trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         page.setState({vfNews: {...news, draft, error: C.newsError}});
-        S.focus('vf-news-email');
+        VF_NAV.focusById('vf-news-email');
         return;
       }
       page.setState({vfNews: {...news, draft, error: '', sending: true}});
@@ -131,11 +135,11 @@ function newsletter(page, S, C, L) {
           } catch {}
           vfRuntime.track.event('generate_lead', {lead_source: 'newsletter'});
           page.setState({vfNews: {done: email}});
-          S.focus('vf-news-done');
+          VF_NAV.focusById('vf-news-done');
         },
         () => {
           page.setState({vfNews: {...news, draft, sending: false, error: C.newsFailed}});
-          S.focus('vf-news-email');
+          VF_NAV.focusById('vf-news-email');
         }
       );
     }

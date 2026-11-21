@@ -1,4 +1,5 @@
 // Page behavior. Edit here, then run npm run build.
+import {vfSavedItems} from '../../customer/saved-items.js';
 import {ToastQueue} from '../../../design-system/components/ToastRegion/ToastRegion.jsx';
 import {vfCopy, vfProductHead} from './copy.js';
 import {
@@ -18,7 +19,7 @@ import {vfBagLine, vfLineDetail} from '../../cart/cart-lines.js';
 import {vfTokenText} from '../catalog.js';
 import {vfLineQuantityMax} from '../../cart/cart-lines.js';
 import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../pricing/formatting.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {vfFeatures} from '../../store/store-config.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../categories.js';
@@ -132,6 +133,7 @@ export function useProduct(props) {
 function vals(page) {
   const fa = page.props.lang === 'fa';
   const L = fa ? 'fa' : 'en';
+  const savedItems = vfSavedItems(page);
   const S = vfShell(page, 'product');
   const s = page.state;
   const m = v => VF_MONEY(v, fa);
@@ -212,11 +214,11 @@ function vals(page) {
       }
     },
     // Saved products are shared with the Saved page and the account's Saved tab.
-    fav: S.isFav(product.id, []),
+    fav: savedItems.ids.includes(product.id),
     // Saving confirms with a toast that links to the saved list.
     toggleSave: () => {
-      const saving = !S.isFav(product.id, []);
-      S.toggleFav(product.id, [])();
+      const saving = !savedItems.ids.includes(product.id);
+      savedItems.toggle(product.id);
       page._showToast({
         title: saving ? C.savedTitle : C.unsavedTitle,
         action: saving ? {label: C.viewSaved, href: S.href.saved} : undefined
@@ -352,8 +354,8 @@ function vals(page) {
       sub: vfProductSub(p, L),
       price: m(p.price),
       stock: p.stock,
-      fav: S.isFav(p.id, []),
-      toggleFav: S.toggleFav(p.id, []),
+      fav: savedItems.ids.includes(p.id),
+      toggleFav: () => savedItems.toggle(p.id),
       select: vfSelectItem('recent', p, index)
     })),
     faq: [

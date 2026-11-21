@@ -1,4 +1,6 @@
 // Account preview with local, per-phone persistence. Copy and layout live beside this file.
+import {vfSavedItems} from '../saved-items.js';
+import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {
   VF_OCCASIONS,
@@ -12,7 +14,7 @@ import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../../c
 import {VF_ZONES} from '../../delivery/delivery-zones.js';
 import {vfLoadLeaflet} from '../../../platform/browser/integrations/leaflet.js';
 import {vfLocationText, vfValidLocation} from '../../delivery/location.js';
-import {vfShell} from '../../shell/navigation.js';
+import {vfShell} from '../../shell/shell-props.js';
 import {VF_ACCOUNT_TABS} from '../account-tabs.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {VF_STORE, vfFeatures} from '../../store/store-config.js';
@@ -49,6 +51,7 @@ export function useAccount(props) {
   });
   useStorefrontPage(page);
 
+  const savedItems = vfSavedItems(page, VF_ACCOUNT_SAVED);
   const S = vfShell(page, 'account'),
     C = vfCopy(S),
     E = C.editor,
@@ -87,7 +90,7 @@ export function useAccount(props) {
     translate: tx,
     setState: page.setState,
     setLang: page.props.setLang,
-    focus: S.focus
+    focus: VF_NAV.focusById
   });
   const reminders = account.reminders
     .slice()
@@ -138,7 +141,7 @@ export function useAccount(props) {
     zoom: VF_STORE.map.zoom,
     fail: () => page.setState({placesFailed: true})
   };
-  const saved = VF_PRODUCTS.filter(p => S.isFav(p.id, VF_ACCOUNT_SAVED));
+  const saved = VF_PRODUCTS.filter(p => savedItems.ids.includes(p.id));
   // Balance: top-ups and order payments, with the balance discount rule from VF_STORE.wallet.
   const W = C.balance,
     rules = VF_STORE.wallet,
@@ -150,7 +153,7 @@ export function useAccount(props) {
     topUpBusy: s.topUpBusy,
     doneMessage: amount => W.done.replace('{amount}', S.m(amount)),
     setState: page.setState,
-    focus: S.focus
+    focus: VF_NAV.focusById
   });
   const eligible = vfBalanceDiscountOn(wallet.balance);
   const fill = text =>
@@ -264,8 +267,8 @@ export function useAccount(props) {
       price: S.m(p.price),
       stock: p.stock,
       remove: () => {
-        S.toggleFav(p.id, VF_ACCOUNT_SAVED)();
-        S.focusAfterRemoval('.ag-product__fav', i);
+        savedItems.toggle(p.id);
+        VF_NAV.focusAfterRemoval('.ag-product__fav', i);
       }
     })),
     addAddress: () => editorActions.openAddress(null),
