@@ -46,7 +46,7 @@ export function QuantityInput({
         onChange={next => {
           if (Number.isNaN(next)) return;
           if (value === undefined) setUncontrolledValue(next);
-          onChange && onChange(next);
+          if (onChange) onChange(next);
         }}
         className={cx('ag-qty-root', className)}
       >

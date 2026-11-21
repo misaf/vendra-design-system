@@ -38,7 +38,7 @@ export function vfCreateCamera(page, findProduct) {
       video.srcObject = stream;
       // Reading starts at once, even if the video has yet to produce its first frame.
       video.play().catch(() => {});
-      // @ts-ignore BarcodeDetector is not in the DOM types yet.
+      // @ts-expect-error BarcodeDetector is not in the DOM types yet.
       const detector = new window.BarcodeDetector({formats: ['qr_code']});
 
       const look = async () => {

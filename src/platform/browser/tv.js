@@ -42,6 +42,7 @@ export function vfApplyTvMode() {
 export function useVfDensity() {
   const [density, setDensity] = React.useState(undefined);
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Read the pre-applied DOM density after hydration.
     setDensity(document.documentElement.dataset.density === 'tv' ? 'tv' : undefined);
   }, []);
   return density;
