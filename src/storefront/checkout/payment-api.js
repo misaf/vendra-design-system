@@ -1,3 +1,5 @@
+import {decodePurchasedOrderLine} from '../orders/laravel/order-line.js';
+
 // Convert the API's online payment records for checkout (docs/API.md B3, B30).
 // Where a payment gateway expects the browser, as the backend gives it: {url, method, fields}, with
 // `method` GET or POST (Shaparak gateways take a POSTed form). null unless `url` is an http(s) address.
@@ -26,8 +28,15 @@ export const vfGatewayRedirect = value => {
 // order may be the result itself or its `order`; parts the result doesn't carry are null.
 export const vfCheckoutResultFromApi = result => {
   const order = (result && typeof result === 'object' && (result.order || result)) || {};
+  const lines = Array.isArray(order.lines) ? order.lines.map(decodePurchasedOrderLine) : null;
+  if (order.lines !== undefined && (!lines || lines.some(line => !line))) {
+    throw Object.assign(new Error('Invalid order lines in checkout response'), {
+      kind: 'invalid-response'
+    });
+  }
   const amounts = [order.itemsAmount, order.deliveryAmount, order.totalAmount];
   return {
+    lines: lines?.filter(line => line !== null) ?? null,
     number: typeof order.number === 'string' && order.number ? order.number : null,
     totals: amounts.every(Number.isFinite)
       ? {

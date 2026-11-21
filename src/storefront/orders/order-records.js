@@ -2,7 +2,8 @@ import {VF_ADDONS, VF_PRODUCTS, VF_PRODUCT_PLACEHOLDER, VF_SIZES} from '../catal
 import {vfLineDetail} from '../cart/cart-lines.js';
 import {vfCustomerId} from '../customer/account-data.js';
 import {VF_DELIVERY} from '../delivery/delivery-draft.js';
-import {lineFromApi} from '../cart/order-line-api.js';
+import {decodePurchasedOrderLine} from './laravel/order-line.js';
+import {purchasedLineView} from './order-line-view.js';
 import {orderFromApi} from './order-api.js';
 
 // GET /api/sales/orders — sample orders shaped like the Vendra API (Order, OrderLine). Each line's
@@ -71,10 +72,13 @@ export const VF_SAMPLE_ORDER_EXTRAS = {
   }
 };
 
-// The storefront's bag line from an API OrderLine.
-export function vfLineFromApi(line) {
-  return lineFromApi(line, {
-    products: VF_PRODUCTS,
+/**
+ * @param {import('./purchase.js').PurchasedOrderLine} line
+ * @param {typeof VF_PRODUCTS} [sampleProducts]
+ */
+export function vfPurchasedHistoryLine(line, sampleProducts = []) {
+  return purchasedLineView(line, {
+    products: sampleProducts,
     sizes: VF_SIZES,
     addons: VF_ADDONS,
     placeholder: VF_PRODUCT_PLACEHOLDER,
@@ -85,7 +89,11 @@ export function vfLineFromApi(line) {
 // The storefront's order object from an API Order plus its extras.
 export function vfOrderFromApi(order, extras = VF_SAMPLE_ORDER_EXTRAS) {
   return orderFromApi(order, {
-    line: vfLineFromApi,
+    line: value => {
+      const line = decodePurchasedOrderLine(value);
+      if (!line) throw new TypeError('Invalid sample order line');
+      return vfPurchasedHistoryLine(line, VF_PRODUCTS);
+    },
     delivery: {...VF_DELIVERY, ...extras.delivery},
     method: extras.method,
     preferredLocale: extras.preferredLocale === 'fa' ? 'fa' : 'en'

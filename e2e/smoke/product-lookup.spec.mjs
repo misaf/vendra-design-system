@@ -6,6 +6,7 @@ const localized = {
     direction: 'ltr',
     name: 'Garden roses',
     description: 'A bouquet of fresh roses.',
+    richDescription: ['Cut fresh each morning.', 'Arrange in a clean vase.'],
     price: '240,000 Toman',
     priceUnavailable: 'Price unavailable',
     orderingUnavailable: 'Online ordering is unavailable.',
@@ -17,6 +18,7 @@ const localized = {
     direction: 'rtl',
     name: 'رزهای باغی',
     description: 'دسته‌گلی از رزهای تازه.',
+    richDescription: ['هر صبح تازه چیده می‌شوند.', 'در گلدان تمیز بچینید.'],
     price: '۲۴۰٬۰۰۰ تومان',
     priceUnavailable: 'قیمت در دسترس نیست',
     orderingUnavailable: 'ثبت سفارش آنلاین در دسترس نیست.',
@@ -47,6 +49,30 @@ for (const [locale, strings] of Object.entries(localized)) {
     await expect(page.getByText(strings.orderingUnavailable, {exact: true})).toBeVisible();
     await expect(page.getByRole('button')).toHaveCount(0);
   });
+
+  test('shows localized description paragraphs in ' + locale, async ({page}) => {
+    const response = await page.goto(productPath('RICH-' + locale));
+    expect(response.status()).toBe(200);
+    const paragraphs = page.getByRole('paragraph');
+    for (const text of strings.richDescription) {
+      await expect(paragraphs.and(page.getByText(text, {exact: true}))).toBeVisible();
+    }
+    const otherLocale = locale === 'en' ? 'fa' : 'en';
+    await expect(page.getByText(localized[otherLocale].richDescription[0])).toHaveCount(0);
+  });
+
+  if (locale === 'fa') {
+    test('shows the English document when the Persian description is absent', async ({page}) => {
+      const response = await page.goto(productPath('ENGLISH-ONLY-' + locale));
+      expect(response.status()).toBe(200);
+      await expect(page.locator('html')).toHaveAttribute('lang', 'fa');
+      for (const text of localized.en.richDescription) {
+        const paragraph = page.getByRole('paragraph').and(page.getByText(text, {exact: true}));
+        await expect(paragraph).toBeVisible();
+        await expect(paragraph).toHaveAttribute('lang', 'en');
+      }
+    });
+  }
 
   test('returns HTTP 404 for a missing product in ' + locale, async ({page}) => {
     const response = await page.goto(productPath('MISSING-' + locale));

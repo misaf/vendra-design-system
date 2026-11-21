@@ -7,6 +7,19 @@ const product = {
   inStock: true
 };
 
+const document = (...paragraphs) => ({
+  type: 'doc',
+  content: paragraphs.map(parts => ({
+    type: 'paragraph',
+    content: parts.map(text => ({type: 'text', text}))
+  }))
+});
+
+const richDescription = {
+  en: document(['Cut fresh ', 'each morning.'], ['Arrange in a clean vase.']),
+  fa: document(['هر صبح ', 'تازه چیده می‌شوند.'], ['در گلدان تمیز بچینید.'])
+};
+
 createServer((request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
   if (url.pathname === '/') return response.end('Catalog fixture ready');
@@ -36,6 +49,8 @@ createServer((request, response) => {
 
   const priced = token === `PRICED-${locale}`;
   const unpriced = token === `UNPRICED-${locale}`;
+  const rich = token === `RICH-${locale}`;
+  const englishOnly = token === `ENGLISH-ONLY-${locale}`;
   response.writeHead(200, {'Content-Type': 'application/ld+json'});
   if (priced && !url.searchParams.has('page')) {
     const next = '?' + new URLSearchParams({token, page: '2'});
@@ -43,10 +58,12 @@ createServer((request, response) => {
   }
 
   const member =
-    priced || unpriced || failure
+    priced || unpriced || rich || englishOnly || failure
       ? [
           {
             ...product,
+            ...(rich && {description: richDescription}),
+            ...(englishOnly && {description: {en: richDescription.en}}),
             token,
             latestProductPrice: unpriced ? null : {amount: 240000, currency: 'IRT'}
           }

@@ -82,6 +82,13 @@ export function vfSampleBag() {
 
 // A bag line for a product in a size (an id from VF_SIZES, or null) with extras (VF_ADDONS ids),
 // as the product page adds it. Sizes and extras the product doesn't offer are left out.
+/**
+ * @param {ReturnType<typeof vfProduct>} product
+ * @param {string | null} sizeId
+ * @param {string[]} addonIds
+ * @param {number} qty
+ * @returns {import('./selection.js').BagLine}
+ */
 export function vfBagLine(product, sizeId = null, addonIds = [], qty = 1) {
   const size = product.sizes ? VF_SIZES.find(item => item.id === sizeId) || VF_SIZES[0] : null;
   const addons = VF_ADDONS.filter(
@@ -236,8 +243,9 @@ export function vfLineUnit(line) {
 export function vfReorderLines(lines) {
   return lines.flatMap(line => {
     const product = vfFindProduct(vfLineProductId(line));
-    if (!product || product.inStock === false) return [];
-    return [{...line, unit: vfLineUnit(line)}];
+    if (!product || product.inStock === false || !Number.isFinite(product.price)) return [];
+    const selection = vfBagLine(product, vfLineSize(line), vfLineAddons(line), line.qty);
+    return [line.card && vfLineHasCard(selection) ? {...selection, card: line.card} : selection];
   });
 }
 

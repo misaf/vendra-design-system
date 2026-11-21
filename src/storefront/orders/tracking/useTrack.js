@@ -2,6 +2,7 @@
 import React from 'react';
 import {vfCopy} from './copy.js';
 import {vfCustomerId} from '../../customer/account-data.js';
+import {orderLineDisplay} from '../order-line-view.js';
 import {vfKnownOrders} from '../order-records.js';
 import {vfProductImage} from '../../catalog/catalog.js';
 import {vfCardMessages, vfLineToken, vfSampleBag} from '../../cart/cart-lines.js';
@@ -107,10 +108,13 @@ function vals(page) {
       }[rawStatus] || rawStatus;
   const C = vfCopy(S);
   const currentBag = page.props.store?.bag || [];
-  const reorderLines = order ? vfReorderLines(order.lines) : [];
   const reorderBag = vfReorderBag(order?.lines || [], currentBag, ls.reorderMode);
-  const reorderChanges = (order?.lines || []).flatMap(line => {
-    const updated = reorderLines.find(item => item.id === line.id);
+  const reorderCandidates = (order?.lines || []).map(line => ({
+    line,
+    updated: vfReorderLines([line])[0]
+  }));
+  const canReorder = reorderCandidates.some(({updated}) => Boolean(updated));
+  const reorderChanges = reorderCandidates.flatMap(({line, updated}) => {
     const name = vfLineToken(line);
     if (!updated) return [C.reorderUnavailable.replace('{name}', name)];
     const messages = [];
@@ -122,8 +126,11 @@ function vals(page) {
           .replace('{new}', m(updated.unit))
       );
     const previous =
-      ls.reorderMode === 'add' ? currentBag.find(item => item.id === line.id)?.qty || 0 : 0;
-    const added = Math.max(0, (reorderBag.find(item => item.id === line.id)?.qty || 0) - previous);
+      ls.reorderMode === 'add' ? currentBag.find(item => item.id === updated.id)?.qty || 0 : 0;
+    const added = Math.max(
+      0,
+      (reorderBag.find(item => item.id === updated.id)?.qty || 0) - previous
+    );
     if (added !== line.qty)
       messages.push(C.reorderQuantity.replace('{name}', name).replace('{qty}', S.n(added)));
     return messages;
@@ -246,10 +253,10 @@ function vals(page) {
     setReorderMode: reorderMode => page.setState({reorderMode}),
     closeReorder: () => page.setState({reorderOpen: false}),
     reorderChanges,
-    reorderEmpty: !reorderLines.length,
+    reorderEmpty: !canReorder,
     hasBag: currentBag.length > 0,
     confirmReorder: () => {
-      if (!order || !buyer || !reorderLines.length) return;
+      if (!order || !buyer || !canReorder) return;
       vfRuntime.track.event('order_again', {transaction_id: order.id});
       page.props.store.reorder(order, ls.reorderMode);
       page.props.go('bag');
@@ -276,13 +283,16 @@ function vals(page) {
       label: r[1],
       value: r[2]
     })),
-    lines: sampleLines.map(line => ({
-      image: vfProductImage(line, L),
-      name: vfLineToken(line),
-      meta: line[L][1] + ' · × ' + S.n(line.qty),
-      note: vfCardMessages([line], {}, L) || undefined,
-      total: m(line.unit * line.qty)
-    })),
+    lines: sampleLines.map(line => {
+      const {name, detail, quantity, amount} = orderLineDisplay(line, L);
+      return {
+        image: vfProductImage(line, L),
+        name,
+        meta: (detail ? detail + ' · ' : '') + '× ' + S.n(quantity),
+        note: vfCardMessages([line], {}, L) || undefined,
+        total: m(amount)
+      };
+    }),
     sums: vfSummaryRows(
       sampleTotals,
       order && order.delivery.promo,

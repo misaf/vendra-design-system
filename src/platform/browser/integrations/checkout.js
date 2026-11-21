@@ -12,12 +12,15 @@ import {
  */
 export function createCheckoutMethods(client, request, submit) {
   // POST /api/sales/checkout {cartToken, currencyCode, gateway, paymentReference, …} (vfCheckoutRequest)
-  // -> the created order: {number, totals, redirect} (vfCheckoutResultFromApi; API.md B3, B30).
+  // -> the created order with accepted lines, totals and optional redirect (API.md B3, B30).
   // Retries reuse the same Idempotency-Key for the same customer and order content.
   const checkout = async body => {
     if (!client.live) return null;
-    return vfCheckoutResultFromApi(
-      await submit('checkout:' + vfCustomerId(), '/api/sales/checkout', body)
+    return submit(
+      'checkout:' + vfCustomerId(),
+      '/api/sales/checkout',
+      body,
+      vfCheckoutResultFromApi
     );
   };
   // GET /api/sales/orders?number=… -> the order's online payment {status, reference, amount}, asked
