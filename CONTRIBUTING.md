@@ -12,6 +12,12 @@ npm run dev:gallery                     # storefront and previews under /guideli
 
 Use Node.js 22 (22.22.2 or later). Local browser tests use Google Chrome, and CI uses Playwright's Linux image.
 
+### Verify a development dependency advisory
+
+Run `npm ci` with the proposed lockfile, then use `npm explain <package>` to see which versions the dependency tree uses and which packages bring them in. Run `npm audit --include=dev` so the report covers tools such as ESLint. Compare the report before and after the update by advisory ID. npm can list both an affected transitive dependency and the package that depends on it for a single advisory.
+
+For an ESLint dependency update, run `npm run check` to verify ESLint, CSS lint, formatting, and generated files with the installed versions. See [#428](https://github.com/misaf/vendra-design-system/issues/428) and [#398](https://github.com/misaf/vendra-design-system/pull/398) for the ESLint and `minimatch` audit and fix.
+
 ## Every change
 
 1. Edit the sources: `src/design-system/components/`, `src/design-system/tokens/`, `src/app/`, `src/design-system/gallery/`. Never edit `src/design-system/tokens/design/`, `.generated/` or a tenant's generated `.css`: the build writes them.
