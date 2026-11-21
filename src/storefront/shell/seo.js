@@ -1,31 +1,8 @@
-// Routing and <head> helpers for the storefront (VF_SEO).
-// URL scheme: <app base><lang>/<screen>/<id>/, such as /en/product/VF-7K2M4Q/ or /fa/shop/boxes/.
-// Every path ends in a slash,
-// so a static host serves each one from its own index.html. The path says which page it is; the
-// query only carries state on that page (filters, sorting, steps), added by routing.js.
-import {vfAbsoluteUrl, vfAssetBase, vfLocation} from '../../platform/browser/environment.js';
+// Storefront metadata tags and their HTML and DOM renderers.
+import {vfAbsoluteUrl} from '../../platform/browser/environment.js';
 import {LOCALES} from '../../design-system/utils/locales.js';
 
 export const VF_SEO = (() => {
-  const SCREENS = new Set([
-    'home',
-    'shop',
-    'product',
-    'bag',
-    'checkout',
-    'contact',
-    'search',
-    'gifts',
-    'moment',
-    'saved',
-    'track',
-    'custom',
-    'account',
-    'journal',
-    'post',
-    'care',
-    'faq'
-  ]);
   const NOINDEX = new Set([
     'bag',
     'checkout',
@@ -38,103 +15,8 @@ export const VF_SEO = (() => {
     'error',
     'presentation'
   ]);
-  // Every language with a path segment (the package's LOCALES): /en/, /fa/, …
-  const LANGUAGES = Object.keys(LOCALES);
-  // The screen's one path segment after its name, and the route key it fills.
-  const SEGMENT = {
-    product: 'id',
-    post: 'post',
-    moment: 'm',
-    track: 'id',
-    shop: 'cat',
-    policy: 'id'
-  };
-  // Screens whose path name differs from the screen: a journal post sits under the journal.
-  const PATH_NAME = {post: 'journal'};
-  const NUMERIC = new Set(['m']); // keys whose ids are numeric → digits only
-  const REQUIRED = {product: 'id', post: 'post', moment: 'm'}; // screen → key it can't render without
-  const SAFE = /^[\w:-]{1,40}$/,
-    DIGITS = /^\d{1,40}$/;
-  const register = (...names) => names.forEach(n => SAFE.test(n) && SCREENS.add(n));
-  const setNumeric = keys => {
-    NUMERIC.clear();
-    keys.forEach(k => NUMERIC.add(k));
-  };
-  const valid = (k, v) => SAFE.test(v) && (!NUMERIC.has(k) || DIGITS.test(v));
-  const appBase = () => {
-    const base = vfAssetBase();
-    return /^(\/|\w+:)/.test(base) ? new URL(base, vfLocation()).pathname : '/';
-  };
-  const routeSuffix = pathname => {
-    const root = appBase();
-    if (pathname === root || pathname === root + 'index.html') return '';
-    if (!pathname.startsWith(root)) return null;
-    const suffix = pathname.slice(root.length);
-    return LANGUAGES.includes(suffix.split('/')[0]) ? suffix : null;
-  };
-  // Whether a URL is a page of the storefront app (not a file next to it, or another site).
-  const inApp = url => {
-    try {
-      const here = vfLocation();
-      const target = new URL(url, here);
-      return (
-        target.origin === here.origin &&
-        routeSuffix(target.pathname) != null &&
-        !/\.\w+$/.test(target.pathname)
-      );
-    } catch {
-      return false;
-    }
-  };
-
-  // Parse a URL's path (default: this page's). Invalid or extra segments, an unknown screen, or a
-  // screen missing its required id make the route "notfound"; the language is kept either way.
-  const readRoute = (url = vfLocation().pathname + vfLocation().search) => {
-    const r = {view: 'notfound'};
-    let path;
-    try {
-      path = routeSuffix(new URL(url, vfLocation()).pathname);
-    } catch {
-      return r;
-    }
-    if (path == null) return r;
-    let parts;
-    try {
-      parts = path.split('/').filter(Boolean).map(decodeURIComponent);
-    } catch {
-      return r;
-    }
-    if (parts[0] === 'index.html') parts.shift();
-    if (LANGUAGES.includes(parts[0])) r.lang = parts.shift();
-    const name = parts.shift();
-    if (name == null) r.view = 'home';
-    else if (name === 'journal' && parts.length) r.view = 'post';
-    else if (SAFE.test(name) && SCREENS.has(name) && !PATH_NAME[name]) r.view = name;
-    else return r;
-    const key = SEGMENT[r.view];
-    if (parts.length) {
-      const value = parts.shift();
-      if (!key || !valid(key, value) || parts.length) return {...r, view: 'notfound'};
-      r[key] = value;
-    }
-    if (REQUIRED[r.view] && !r[REQUIRED[r.view]]) r.view = 'notfound';
-    return r;
-  };
-  // State → "<app base><lang>/<screen>/<id>/". Home has no screen segment; invalid values are left out.
-  const routePath = (state = {}) => {
-    const parts = [];
-    if (LANGUAGES.includes(state.lang)) parts.push(state.lang);
-    if (state.view && state.view !== 'home' && SAFE.test(state.view)) {
-      parts.push(PATH_NAME[state.view] || state.view);
-      const key = SEGMENT[state.view],
-        value = key == null ? null : state[key];
-      if (value != null && value !== '' && valid(key, String(value))) parts.push(String(value));
-    }
-    return appBase() + parts.map(part => encodeURIComponent(part) + '/').join('');
-  };
-  const hrefFor = (state = {}, screen = 'home', extra = {}) =>
-    routePath({lang: state.lang, view: screen, ...extra});
   const isNoindex = view => NOINDEX.has(view);
+  const LANGUAGES = Object.keys(LOCALES);
 
   // Open Graph locales from the language tags: en-US → en_US.
   const LOCALE = Object.fromEntries(
@@ -283,21 +165,5 @@ export const VF_SEO = (() => {
       if (script.textContent !== tags.jsonLd) script.textContent = tags.jsonLd;
     } else drop(jsonLd);
   };
-  const S = {
-    SCREENS,
-    NOINDEX,
-    REQUIRED,
-    register,
-    setNumeric,
-    appBase,
-    inApp,
-    readRoute,
-    routePath,
-    hrefFor,
-    isNoindex,
-    headTags,
-    headHtml,
-    syncHead
-  };
-  return S;
+  return {isNoindex, headTags, headHtml, syncHead};
 })();

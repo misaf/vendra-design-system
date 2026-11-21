@@ -4,7 +4,12 @@
 // `lang` is the route's language, `page` names the same page in every language (shop/boxes/), and
 // `lastmod` is the date its content last changed (YYYY-MM-DD) when the data says so.
 import {VF_POLICIES} from '../../src/storefront/content/policy-documents.js';
-import {VF_ROUTES, vfAppBase, vfRouteUrl} from '../../src/storefront/shell/routing.js';
+import {
+  VF_ROUTES,
+  vfAppBase,
+  vfRouteOffered,
+  vfRoutePath
+} from '../../src/storefront/shell/routing.js';
 import {VF_PRODUCTS} from '../../src/storefront/catalog/catalog.js';
 import {VF_POSTS} from '../../src/storefront/content/journal-content.js';
 import {VF_CATEGORY_SLUGS} from '../../src/storefront/catalog/product-categories.js';
@@ -17,19 +22,16 @@ const DYNAMIC = new Set(['product', 'post', 'notfound', 'error']);
 
 export function storefrontRoutes() {
   const features = vfFeatures();
-  const offered = view =>
-    (view !== 'weddings' || features.weddings) &&
-    (!['journal', 'post'].includes(view) || features.journal);
   const routes = [];
   for (const lang of VF_STORE.languages) {
     const add = (route, lastmod) => {
-      if (!offered(route.view)) return;
+      if (!vfRouteOffered(route.view, features)) return;
       // The first policy also has its own address (policy/shipping/); list that one.
       const indexed =
         !VF_SEO.isNoindex(route.view) &&
         route.view !== 'signin' &&
         !(route.view === 'policy' && !route.id);
-      const path = vfRouteUrl({lang, ...route}).slice(vfAppBase().length);
+      const path = vfRoutePath({lang, ...route}).slice(vfAppBase().length);
       routes.push({
         path,
         lang,
