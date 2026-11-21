@@ -101,10 +101,19 @@ for (const card of cards().filter(card => card.file.startsWith('guidelines/compo
         .map(icon => icon.parentElement.className || icon.parentElement.tagName);
     });
     expect(invisible, 'icons drawn in the colour behind them').toEqual([]);
+
+    // Chromium 158 drops forced colours when capturing beyond the viewport.
+    // Fit the whole card in the viewport before capturing it.
+    // https://github.com/microsoft/playwright/issues/44041
+    const height = await page.evaluate(() => document.documentElement.scrollHeight);
+    await page.setViewportSize({width: card.width, height});
+    expect(
+      await page.evaluate(() => document.documentElement.scrollHeight),
+      'the full card fits in the screenshot viewport'
+    ).toBeLessThanOrEqual(height);
     await expect(page).toHaveScreenshot(
       'forced-colors__' + card.file.replace(/\.html$/, '').replaceAll('/', '__') + '.png',
       {
-        fullPage: true,
         ...(PLACEHOLDER_SLACK[card.file] && {maxDiffPixels: PLACEHOLDER_SLACK[card.file]})
       }
     );
