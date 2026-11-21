@@ -1,6 +1,9 @@
 // @ts-check
 
-import {currentProductPrice, productPriceReferenceId} from '../../../storefront/catalog/laravel/price.js';
+import {
+  currentProductPrice,
+  productPriceReferenceId
+} from '../../../storefront/catalog/laravel/price.js';
 export {currentProductPrice};
 /** @param {string} base */
 function catalogLocation(base) {
