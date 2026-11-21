@@ -162,6 +162,8 @@ jobs:
           name: ${{ steps.pages-artifact.outputs.name }}
           path: .generated/export
           include-hidden-files: true
+          # A deploy-only retry reuses this artifact from the successful browser job.
+          retention-days: 7
       - name: Keep the report
         if: failure()
         uses: actions/upload-artifact@v7
