@@ -71,24 +71,14 @@ for (const lang of ['en', 'fa']) {
         // Full navigations can show prerendered content before the site's state has mounted.
         await page.waitForFunction(() => window.__vfSite?.state);
         return page.evaluate(() => {
-          const {
-            bag,
-            saved,
-            delivery,
-            paymentDraft,
-            customerId,
-            customers,
-            order,
-            lastOrder,
-            orders
-          } = window.__vfSite.state;
+          const {bag, saved, delivery, paymentDraft, customerId, order, lastOrder, orders} =
+            window.__vfSite.state;
           return {
             bag,
             saved,
             delivery,
             paymentDraft,
             customerId,
-            customers,
             order,
             lastOrder,
             orders
@@ -112,6 +102,7 @@ for (const lang of ['en', 'fa']) {
       expect(persisted.saved).toEqual(initial.saved);
       expect(persisted.bag).toEqual(initial.bag);
       expect(persisted.customers.guest.delivery).toEqual(initial.delivery);
+      expect(persisted.customers.guest.saved).toEqual(initial.saved);
       // Signed out, the session keeps nothing of another customer's private drafts.
       expect(Object.keys(persisted.customers)).toEqual(['guest']);
       expect(errors).toEqual([]);

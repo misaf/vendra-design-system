@@ -147,7 +147,9 @@ for (const lang of ['en', 'fa']) {
             await expect(feedback).toBeVisible();
             release();
             await expect.poll(() => requests[0].status).toBe(200);
-            await expect.poll(() => page.evaluate(() => window.__vfSite._savedLoading)).toBe(false);
+            await expect
+              .poll(() => page.evaluate(() => window.__vfSite.savedSync.loading))
+              .toBe(false);
           } else await expect.poll(mapping).toEqual({[A]: 701, [C]: 703});
           await expect(card(B)).toHaveCount(0);
           await expect(card(A)).toHaveCount(1);
@@ -168,7 +170,7 @@ for (const lang of ['en', 'fa']) {
         await page.reload();
         await expect(card(C)).toHaveCount(1);
         await expect.poll(() => reads).toBe(2);
-        await expect.poll(() => page.evaluate(() => window.__vfSite._savedLoading)).toBe(false);
+        await expect.poll(() => page.evaluate(() => window.__vfSite.savedSync.loading)).toBe(false);
         await expect(feedback).toHaveCount(0);
         expect(await saved()).toEqual(scenario === 'failed load' ? [A, C] : [A, B, C]);
         expect(await mapping()).toEqual(

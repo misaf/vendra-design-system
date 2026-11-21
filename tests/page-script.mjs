@@ -126,7 +126,9 @@ function pageScript(name) {
   if (name === 'site')
     parts.push(
       read('src/storefront/checkout/checkout-guard.js'),
-      read('src/storefront/customer/customer-draft.js')
+      read('src/storefront/customer/customer-draft.js'),
+      read('src/storefront/customer/saved/saved-sync.js'),
+      read('src/storefront/session/session-storage.js')
     );
   if (name === 'checkout') parts.push(read(folder + '/payment-recovery.js'));
   if (name === 'account')

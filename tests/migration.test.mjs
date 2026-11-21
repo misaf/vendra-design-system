@@ -57,7 +57,7 @@ function environment() {
   vm.createContext(c);
   c.React = {forwardRef: f => f};
   vm.runInContext(sharedLogic, c);
-  return {c, storage, timers};
+  return {c, storage, session, timers};
 }
 function page(name, c, props = {}) {
   const logic = pageScript(name);
@@ -110,6 +110,78 @@ function page(name, c, props = {}) {
     await assert.rejects(failed, /Temporary failure/);
     await retry;
     assert.equal(JSON.parse(storage.get('vendra-saved-map'))['VF-8RD5WN'], 803);
+  }
+  // The real wishlist adapter and session must both drop responses for an earlier customer.
+  {
+    const {c, storage, session} = environment();
+    const first = '09120000000';
+    const second = '09121111111';
+    const a = 'VF-7K2M4Q';
+    const b = 'VF-3HX9TP';
+    const key = 'vendra-template:/';
+    const flush = () => new Promise(resolve => setImmediate(resolve));
+    const wishlist = (slug, id) => ({member: [{items: [{id, metadata: {slug}}]}]});
+    const requests = [];
+    c.fetch = (url, {method}) =>
+      new Promise(resolve => {
+        requests.push({
+          method,
+          respond: (data, status = 200) =>
+            resolve({status, ok: status < 400, json: async () => data})
+        });
+      });
+    c.addEventListener = c.document.addEventListener = () => {};
+    c.vfRuntime.api.setBase('https://example.test');
+    storage.set('vf-account-phone', first);
+    session.set(key, JSON.stringify({customerId: first, saved: [a], bag: []}));
+    const site = page('site', c);
+    site.lifecycle.didMount();
+    assert.deepEqual([...site.state.saved], [a], 'legacy data is restored for its owner');
+
+    const {toggleSave} = site.renderVals().store;
+    const saving = toggleSave(b);
+    await flush();
+    const removing = toggleSave(b);
+    const failing = toggleSave('VF-8RD5WN');
+    await flush();
+    assert.deepEqual(
+      requests.map(r => r.method),
+      ['GET', 'POST', 'POST']
+    );
+
+    storage.set('vf-account-phone', second);
+    site.syncCustomer();
+    assert.deepEqual([...site.state.saved], [], 'the previous list stays with its owner');
+    requests[3].respond(wishlist(b, 902));
+    await flush();
+    assert.deepEqual([...site.state.saved], [b]);
+
+    requests[0].respond(wishlist(a, 701));
+    requests[1].respond({id: 702});
+    requests[2].respond({}, 503);
+    await Promise.all([saving, removing, failing]);
+    await flush();
+    assert.deepEqual(
+      requests.map(r => r.method),
+      ['GET', 'POST', 'POST', 'GET']
+    );
+    assert.deepEqual([...site.state.saved], [b], 'late hydration cannot replace the list');
+    assert.equal(site.renderVals().integrationError, false, 'late failures cannot set feedback');
+    assert.equal(site.state.announcement, '');
+    assert.deepEqual(JSON.parse(storage.get('vendra-saved-map')), {[b]: 902});
+
+    site.lifecycle.didUpdate();
+    const persisted = JSON.parse(session.get(key));
+    assert.deepEqual(persisted.saved, [b], 'the top-level list remains readable');
+    assert.deepEqual(persisted.customers[first].saved, [a, 'VF-8RD5WN']);
+    assert.deepEqual(persisted.customers[second].saved, [b]);
+    c.vfAccountSignOut();
+    site.syncCustomer();
+    assert.equal(storage.has('vendra-saved-map'), false);
+    site.lifecycle.didUpdate();
+    assert.deepEqual(Object.keys(JSON.parse(session.get(key)).customers), ['guest']);
+    requests.at(-1).respond(wishlist(a, 901));
+    await flush();
   }
   // A stalled request gives up with a distinct timeout, and resending the same order reuses its
   // Idempotency-Key until the server confirms it, so a lost answer never places it twice.

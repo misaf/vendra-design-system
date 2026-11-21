@@ -167,7 +167,12 @@ function vfStorageKeys(storage) {
 // nothing of the customer or their recipients: every stored account (profile, addresses with
 // recipients' names and mobiles, reminders, wallet), the signed-in customers' payment recovery
 // records, the saved-items id cache and the newsletter email. A guest's own records stay.
-export const VF_PRIVATE_LOCAL_KEYS = ['vf-account-phone', 'vf-newsletter', 'vendra-saved-map'];
+export const VF_PRIVATE_LOCAL_KEYS = [
+  'vf-account-phone',
+  'vf-newsletter',
+  'vendra-saved-map',
+  'vendra-saved-map-owner'
+];
 export function vfPrivateLocalKey(key) {
   return VF_PRIVATE_LOCAL_KEYS.includes(key) || key.startsWith('vf-account:');
 }
