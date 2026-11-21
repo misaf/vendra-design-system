@@ -39,8 +39,8 @@ for (const [locale, strings] of Object.entries(localized)) {
     await expect(page.locator('html')).toHaveAttribute('lang', locale);
     await expect(page.locator('html')).toHaveAttribute('dir', strings.direction);
     await expect(page.getByRole('heading', {level: 1})).toHaveText(strings.name);
-    await expect(page.getByText(strings.description, {exact: true})).toBeVisible();
-    await expect(page.getByText(strings.price, {exact: true})).toBeVisible();
+    await expect(page.locator('.vf-product-description')).toHaveText(strings.description);
+    await expect(page.locator('.vf-product-price')).toHaveText(strings.price);
   });
 
   test('shows an existing product with no current price in ' + locale, async ({page}) => {

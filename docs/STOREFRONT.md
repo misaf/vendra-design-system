@@ -97,6 +97,14 @@ deployment owns the Docker images, routing, and runtime configuration for the st
 Laravel backend. Set `VF_API_BASE` to the backend origin when starting the storefront server with `npm start`.
 See [API integration](API.md) for the backend URL format.
 
+The localized product route serves either the Laravel catalog or the demo storefront. For a
+Laravel product payload change, follow the lookup in `src/platform/server/laravel/catalog.mjs`,
+the localized name and description mapping in `src/storefront/catalog/laravel/product-details.ts`,
+and the shared `ProductDetails` view in the product heading component folder. The demo heading
+passes the fixture's product code, configured unit price, and localized description to the same
+view. `e2e/smoke/product-lookup.spec.mjs` exercises the Laravel path, and
+`e2e/smoke/export.spec.mjs` exercises the exported demo in both languages.
+
 The server build and the demo export share Next.js's `.next/` build directory. If you run both
 locally, test the server before building the demo, or run `npm run build` again before starting it.
 

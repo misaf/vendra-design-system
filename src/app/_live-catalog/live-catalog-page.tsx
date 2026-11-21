@@ -1,6 +1,8 @@
 import 'server-only';
 import {notFound} from 'next/navigation';
 import type {ReactNode} from 'react';
+import {localized, liveProductDetails} from '../../storefront/catalog/laravel/product-details';
+import {ProductDetails} from '../../storefront/catalog/product/components/StorefrontProductHeading/ProductDetails';
 import {
   currentProductPrice,
   loadLiveCategories,
@@ -37,50 +39,6 @@ const copy = {
 
 type Locale = keyof typeof copy;
 
-function localized(values: Record<string, unknown> | undefined, lang: Locale) {
-  const value = values?.[lang] ?? values?.en ?? values?.fa;
-  return typeof value === 'string' ? value : '';
-}
-
-type DescriptionNode = {type: string; content?: unknown; text?: unknown};
-
-function isDescriptionNode(value: unknown): value is DescriptionNode {
-  return !!value && typeof value === 'object' && 'type' in value && typeof value.type === 'string';
-}
-
-function descriptionText(value: unknown): string {
-  if (!isDescriptionNode(value)) return '';
-  if (value.type === 'text' && typeof value.text === 'string') return value.text;
-  if (value.type === 'hardBreak') return ' ';
-  return Array.isArray(value.content) ? value.content.map(descriptionText).join('') : '';
-}
-
-function descriptionParagraphs(value: unknown): string[] {
-  if (!isDescriptionNode(value)) return [];
-  if (['paragraph', 'heading', 'text'].includes(value.type)) return [descriptionText(value)];
-  return Array.isArray(value.content) ? value.content.flatMap(descriptionParagraphs) : [];
-}
-
-function productDescription(values: Record<string, unknown> | undefined, lang: Locale) {
-  const locales: Locale[] = [lang, 'en', 'fa'];
-  const language = locales.find(locale => values?.[locale] != null);
-  if (!language) return null;
-  const value = values?.[language];
-  const paragraphs =
-    typeof value === 'string'
-      ? [value]
-      : isDescriptionNode(value) && value.type === 'doc'
-        ? descriptionParagraphs(value)
-        : [];
-  return paragraphs
-    .filter(text => text.trim())
-    .map((text, index) => (
-      <p key={index} lang={language} dir={language === 'fa' ? 'rtl' : 'ltr'}>
-        {text}
-      </p>
-    ));
-}
-
 function liveRouteKey(segment: string) {
   const key = decodeURIComponent(segment);
   // Next may supply an already percent-encoded param for a dynamic localized URL.
@@ -110,7 +68,7 @@ export async function liveCatalogPage(
   const strings = copy[lang];
   const storePath = (process.env.NEXT_PUBLIC_VF_BASE_PATH || '') + '/' + lang;
   const catalogPath = storePath + '/shop/';
-  const shell = (title: string, body: ReactNode) => (
+  const shell = (title: string, body: ReactNode, heading: ReactNode = <h1>{title}</h1>) => (
     <main className="vf-live-catalog">
       <title>{title}</title>
       <nav aria-label={strings.catalog}>
@@ -126,7 +84,7 @@ export async function liveCatalogPage(
           {lang === 'fa' ? 'English' : 'فارسی'}
         </a>
       </nav>
-      <h1>{title}</h1>
+      {heading}
       {body}
     </main>
   );
@@ -148,17 +106,19 @@ export async function liveCatalogPage(
     if (result.kind === 'missing') notFound();
     if (result.kind === 'unavailable') return unavailable();
     const {product, price} = result;
+    const details = liveProductDetails(product, productPrice(price, lang), lang);
     return shell(
-      localized(product.name, lang) || product.token,
+      details.name,
       <>
         <p>
           <bdi>{product.token}</bdi>
         </p>
-        <p>{productPrice(price, lang)}</p>
-        <p>{product.inStock ? strings.stock : strings.soldOut}</p>
-        {productDescription(product.description, lang)}
         <p>{strings.restricted}</p>
-      </>
+      </>,
+      <ProductDetails
+        product={details}
+        stock={<span>{product.inStock ? strings.stock : strings.soldOut}</span>}
+      />
     );
   }
 
