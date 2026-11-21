@@ -129,6 +129,15 @@ function pageScript(name) {
       read('src/storefront/customer/customer-draft.js')
     );
   if (name === 'checkout') parts.push(read(folder + '/payment-recovery.js'));
+  if (name === 'counter')
+    parts.push(
+      ...[
+        'presentation-settings.js',
+        'display-rotation.js',
+        'browsing-viewer.js',
+        'camera-scanner.js'
+      ].map(file => read(folder + '/' + file))
+    );
   const files = featureFiles(name);
   const logic = read(folder + '/' + files.logic);
   // Pages that queue toasts get a minimal queue (the component's is React Aria's).
