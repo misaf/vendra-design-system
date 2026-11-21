@@ -24,7 +24,14 @@ export default defineConfig({
   },
   webServer: [
     ...(catalog
-      ? [{cwd, command: 'node e2e/smoke/catalog-fixture.mjs ' + fixturePort, url: fixtureUrl}]
+      ? [
+          {
+            cwd,
+            command: 'node e2e/smoke/catalog-fixture.mjs ' + fixturePort,
+            url: fixtureUrl,
+            stderr: 'pipe'
+          }
+        ]
       : []),
     {
       cwd,
@@ -32,7 +39,9 @@ export default defineConfig({
       url: url + base + (catalog ? '/en/product/PRICED-en/' : '/'),
       ...(catalog
         ? {env: {VF_API_BASE: fixtureUrl + '/store', VF_ORIGIN: 'https://florist.example.test/'}}
-        : {}),
+        : live
+          ? {env: {VF_API_BASE: ''}}
+          : {}),
       reuseExistingServer: false
     }
   ]

@@ -4,6 +4,7 @@ const base = process.env.VF_BASE_PATH || '';
 const localized = {
   en: {
     direction: 'ltr',
+    catalog: 'Flower catalog',
     name: 'Garden roses',
     description: 'A bouquet of fresh roses.',
     richDescription: ['Cut fresh each morning.', 'Arrange in a clean vase.'],
@@ -16,6 +17,7 @@ const localized = {
   },
   fa: {
     direction: 'rtl',
+    catalog: 'فهرست گل‌ها',
     name: 'رزهای باغی',
     description: 'دسته‌گلی از رزهای تازه.',
     richDescription: ['هر صبح تازه چیده می‌شوند.', 'در گلدان تمیز بچینید.'],
@@ -50,16 +52,26 @@ for (const [locale, strings] of Object.entries(localized)) {
     await expect(page.getByRole('button')).toHaveCount(0);
   });
 
-  test('shows localized description paragraphs in ' + locale, async ({page}) => {
-    const response = await page.goto(productPath('RICH-' + locale));
-    expect(response.status()).toBe(200);
-    const paragraphs = page.getByRole('paragraph');
-    for (const text of strings.richDescription) {
-      await expect(paragraphs.and(page.getByText(text, {exact: true}))).toBeVisible();
+  test(
+    'opens a product with localized description paragraphs from the catalog in ' + locale,
+    async ({page}) => {
+      const response = await page.goto(`${base}/${locale}/shop/`);
+      expect(response.status()).toBe(200);
+      const heading = page.getByRole('heading', {level: 1});
+      await expect(heading).toHaveText(strings.catalog);
+      const product = page.getByRole('link', {name: strings.name});
+      await expect(product).toHaveAttribute('href', productPath('RICH-' + locale));
+      await expect(page.getByText(strings.price, {exact: false})).toBeVisible();
+      await product.click();
+      await expect(heading).toHaveText(strings.name);
+      const paragraphs = page.getByRole('paragraph');
+      for (const text of strings.richDescription) {
+        await expect(paragraphs.and(page.getByText(text, {exact: true}))).toBeVisible();
+      }
+      const otherLocale = locale === 'en' ? 'fa' : 'en';
+      await expect(page.getByText(localized[otherLocale].richDescription[0])).toHaveCount(0);
     }
-    const otherLocale = locale === 'en' ? 'fa' : 'en';
-    await expect(page.getByText(localized[otherLocale].richDescription[0])).toHaveCount(0);
-  });
+  );
 
   if (locale === 'fa') {
     test('shows the English document when the Persian description is absent', async ({page}) => {

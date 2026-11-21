@@ -141,11 +141,12 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - name: Build and smoke-test the Next.js storefront
-        run: |
-          npm run build
-          npm run test:smoke:app
-          npm run test:smoke:catalog
+      - name: Build the Next.js production server
+        run: npm run build
+      - name: Smoke-test the production storefront in sample mode
+        run: npm run test:smoke:app
+      - name: Smoke-test the production catalog against the loopback Laravel fixture
+        run: npm run test:smoke:catalog
       - run: npm run test:e2e:demo
       - name: Test the Next.js export under the Pages base path
         env:
