@@ -1,4 +1,5 @@
 import React from 'react';
+import {StorefrontBagDeliveryLayout} from '../StorefrontBagDeliveryLayout/StorefrontBagDeliveryLayout.jsx';
 import {StorefrontBagRecipient} from './StorefrontBagRecipient.jsx';
 
 const copy = {
@@ -68,45 +69,48 @@ export function Fixture({lang}) {
       >
         Set supplied values
       </button>
-      <section aria-labelledby="vf-recipient-title">
-        <StorefrontBagRecipient
-          title={t.title}
-          saved={{
-            visible,
-            label: t.saved,
-            options: empty
-              ? []
-              : ['home', 'work'].map(id => ({
-                  label: t[id],
-                  on: selected === id,
-                  pick: () => {
-                    setSelected(id);
-                    setPicked(id);
-                    setPickCalls(count => count + 1);
-                  }
-                }))
-          }}
-          name={{
-            label: t.name,
-            value: name,
-            error: invalid ? t.error : '',
-            onChange: value => {
-              setName(value);
-              setNameCalls(count => count + 1);
-            }
-          }}
-          phone={{
-            label: t.phone,
-            value: phone,
-            error: invalid ? t.error : '',
-            onChange: (value, metadata) => {
-              setPhone(value);
-              setChanged(JSON.stringify({value, ...metadata}));
-              setPhoneCalls(count => count + 1);
-            }
-          }}
-        />
-      </section>
+      <StorefrontBagDeliveryLayout
+        location={null}
+        recipient={
+          <StorefrontBagRecipient
+            title={t.title}
+            saved={{
+              visible,
+              label: t.saved,
+              options: empty
+                ? []
+                : ['home', 'work'].map(id => ({
+                    label: t[id],
+                    on: selected === id,
+                    pick: () => {
+                      setSelected(id);
+                      setPicked(id);
+                      setPickCalls(count => count + 1);
+                    }
+                  }))
+            }}
+            name={{
+              label: t.name,
+              value: name,
+              error: invalid ? t.error : '',
+              onChange: value => {
+                setName(value);
+                setNameCalls(count => count + 1);
+              }
+            }}
+            phone={{
+              label: t.phone,
+              value: phone,
+              error: invalid ? t.error : '',
+              onChange: (value, metadata) => {
+                setPhone(value);
+                setChanged(JSON.stringify({value, ...metadata}));
+                setPhoneCalls(count => count + 1);
+              }
+            }}
+          />
+        }
+      />
       <span data-test="name">{name}</span>
       <span data-test="phone">{phone}</span>
       <span data-test="changed">{changed}</span>
