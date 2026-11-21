@@ -11,8 +11,10 @@ const ROOT = new URL(sw.registration.scope).pathname;
 const CACHE_PREFIX = 'vf-' + encodeURIComponent(ROOT);
 const PAGES = CACHE_PREFIX + '-pages-next-v1';
 const FILES = CACHE_PREFIX + '-files-next-v1';
+const DISPLAY = CACHE_PREFIX + '-display-next-v1';
+const DISPLAY_MANIFEST = new URL('offline-manifest.json', sw.registration.scope).href;
 const FILES_MAX = 400;
-let protectedFiles = new Set();
+let fileWrites = Promise.resolve();
 const API_PUBLIC = /^\/api\/catalog\//;
 const isApi = pathname => pathname.startsWith('/api/') || pathname.startsWith(ROOT + 'api/');
 const FILE = /\.(js|css|svg|png|jpe?g|webp|avif|woff2?)$/i;
@@ -33,7 +35,7 @@ sw.addEventListener('activate', (/** @type {any} */ event) =>
           names
             // Match through the last encoded slash, which terminates the cache's scope.
             .filter(name => name.match(/^vf-.*%2F-/)?.[0] === CACHE_PREFIX + '-')
-            .filter(name => name !== PAGES && name !== FILES)
+            .filter(name => name !== PAGES && name !== FILES && name !== DISPLAY)
             .map(name => caches.delete(name))
         )
       )
@@ -53,12 +55,21 @@ const fromNetwork = async (request, key) => {
     throw error;
   }
 };
+// Keep runtime cache writes and display preparation from trimming each other's files.
+const writeFiles = write => {
+  const result = fileWrites.then(write);
+  fileWrites = result.catch(() => {});
+  return result;
+};
 const trim = async cache => {
   const keys = await cache.keys();
+  if (keys.length <= FILES_MAX) return;
+  const manifest = await (await caches.open(DISPLAY)).match(DISPLAY_MANIFEST);
+  const protectedFiles = new Set(manifest ? await manifest.json() : []);
   await Promise.all(
     keys
       .filter(key => !protectedFiles.has(key.url))
-      .slice(0, Math.max(0, keys.length - FILES_MAX))
+      .slice(0, keys.length - FILES_MAX)
       .map(key => cache.delete(key))
   );
 };
@@ -78,17 +89,19 @@ const fromFiles = (event, request, url) => {
   );
   event.waitUntil(
     update
-      .then(async response => {
+      .then(response => {
         if (!response) return;
-        if (noStore(response)) {
-          await (await cache).delete(key);
-          return;
-        }
-        if (!response.ok || response.status === 206) return;
-        const copy = response.clone();
-        const store = await cache;
-        await store.put(key, copy);
-        await trim(store);
+        const discard = noStore(response);
+        if (!discard && (!response.ok || response.status === 206)) return;
+        // Clone before respondWith can consume the network response.
+        const copy = discard ? null : response.clone();
+        return writeFiles(async () => {
+          const store = await cache;
+          if (copy) {
+            await store.put(key, copy);
+            await trim(store);
+          } else await store.delete(key);
+        });
       })
       .catch(() => {})
   );
@@ -119,11 +132,11 @@ sw.addEventListener('message', event => {
   if (event.data?.type !== 'PREPARE_DISPLAY' || !event.ports[0]) return;
   const port = event.ports[0];
   event.waitUntil(
-    (async () => {
+    writeFiles(async () => {
       let completed = 0;
       let total = 0;
       try {
-        const manifest = await fetch(new URL('offline-manifest.json', sw.location.href), {
+        const manifest = await fetch(DISPLAY_MANIFEST, {
           cache: 'no-store'
         }).then(response => {
           if (!response.ok) throw new Error('manifest');
@@ -148,29 +161,37 @@ sw.addEventListener('message', event => {
           );
         total = urls.length;
         if (total > FILES_MAX) throw new Error('collection-too-large');
-        protectedFiles = new Set(urls.map(url => url.href));
-        for (const url of urls) {
-          const document = displayDocument(url.pathname);
-          const cache = await caches.open(document ? PAGES : FILES);
-          const key = document ? url.origin + url.pathname : url.href;
-          let response = immutable(url) ? await cache.match(key, {ignoreVary: true}) : null;
-          if (!response) response = await fetch(url.href, {cache: 'no-cache'});
-          if (noStore(response)) {
-            await cache.delete(key);
-            throw new Error('not-cacheable');
+        const files = await caches.open(FILES);
+        const pages = await caches.open(PAGES);
+        const preparedFiles = [];
+        try {
+          for (const url of urls) {
+            const document = displayDocument(url.pathname);
+            const cache = document ? pages : files;
+            const key = document ? url.origin + url.pathname : url.href;
+            let response = immutable(url) ? await cache.match(key, {ignoreVary: true}) : null;
+            if (!response) response = await fetch(url.href, {cache: 'no-cache'});
+            if (noStore(response)) {
+              await cache.delete(key);
+              throw new Error('not-cacheable');
+            }
+            if (!response.ok) throw new Error('asset');
+            await cache.put(key, response.clone());
+            if (!document) preparedFiles.push(key);
+            completed++;
+            port.postMessage({status: 'preparing', completed, total});
           }
-          if (!response.ok) throw new Error('asset');
-          await cache.put(key, response.clone());
-          completed++;
-          port.postMessage({status: 'preparing', completed, total});
+          // One cache entry records the last successful preparation across worker restarts.
+          await (await caches.open(DISPLAY)).put(DISPLAY_MANIFEST, Response.json(preparedFiles));
+        } finally {
+          await trim(files);
         }
-        await trim(await caches.open(FILES));
         port.postMessage({status: 'ready', completed, total});
       } catch {
         port.postMessage({status: 'failed', completed, total});
       } finally {
         port.close();
       }
-    })()
+    })
   );
 });
