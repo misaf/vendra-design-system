@@ -57,7 +57,7 @@ npm ci                                   # install from the root lockfile
 npm run dev                             # Next.js at http://localhost:3000/ → /en/
 npm run dev:gallery                     # storefront and design-system previews
 npm run generate                        # tenant themes, design tokens and brand assets
-npm run lint    # Next.js, React and TypeScript lint rules for src/app/
+npm run lint    # ESLint for Next.js routes and the source groups listed below
 npm run check   # generated output, formatting, ESLint and CSS lint
 npm test        # typecheck, storefront logic, generation, copy parity, design system
 npm run test:e2e  # Playwright: axe, screenshots, cards, tenants
@@ -67,6 +67,17 @@ npm run build:demo                      # export to .generated/export/
 npm run preview:demo                    # serve the static export at http://127.0.0.1:3000/
 npm run test:e2e:demo  # storefront specs and performance budgets against the static demo
 ```
+
+`npm run check` runs `npm run lint` in CI. The lint command covers `src/app/`, JavaScript under
+`src/platform/browser/` (including the integrations), `src/storefront/customer/account/`, the
+presentation browsing viewer, camera scanner, display rotation and settings modules, the storefront
+shell's consent, navigation and shell-props modules, and the design system's Button, Dialog, Input,
+QuantityInput and Select directories. The `lint` script in `package.json` records the exact paths for
+this incremental rollout.
+
+The ESLint preset checks React JSX and Hooks, including hook order and effect dependencies, plus
+unused variables and expressions. JavaScript in the expanded areas also checks for undeclared names
+and unreachable code. Type checks and import-boundary checks run through `npm test`.
 
 - **One page on its own:** `/en/?page=checkout` renders that page with its default props.
 - **Tenant list only:** `node tools/build/generate.mjs` from the repository root rewrites `.generated/tenant-slugs.js` from `src/design-system/tokens/tenants/`.

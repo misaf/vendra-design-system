@@ -39,6 +39,8 @@ export function Select({
   style,
   'aria-describedby': describedBy,
   'aria-invalid': ariaInvalid,
+  // The field announces its message through aria-describedby on the trigger.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Omit aria-errormessage from the forwarded props.
   'aria-errormessage': _errorMessage,
   ref,
   ...rest

@@ -296,7 +296,7 @@ export function useAccount(props) {
           view: 'home',
           lang: L
         });
-      else location.href = S.href.home;
+      else location.assign(S.href.home);
     },
     langOptions: C.langOptions,
     formOpen: !!s.form,
