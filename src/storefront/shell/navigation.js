@@ -9,12 +9,11 @@ import {VF_FA_DIGITS, VF_MONEY} from '../pricing/formatting.js';
 import {vfDirections} from '../delivery/location.js';
 import {vfPageTenant} from '../../platform/tenant/tenant.js';
 import {VF_POLICIES} from '../content/policy-documents.js';
-import {VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRouteUrl} from './routing.js';
+import {VF_ROUTES, VF_ROUTE_EXTRA, vfPageRoute, vfRoutePath, vfRouteUrl} from './routing.js';
 import {VF_STORE, vfFeatures, vfLocale} from '../store/store-config.js';
 import {VF_CATEGORY_COPY} from '../catalog/categories.js';
 import {VF_SHELL} from './shell.js';
 import {vfDayMonth, vfDayName} from '../delivery/time.js';
-import {VF_SEO} from './seo.js';
 import {VF_NAV} from '../../platform/browser/page-focus.js';
 import {vfNow, vfStoredValue} from '../../platform/browser/environment.js';
 
@@ -61,7 +60,6 @@ export function vfShellNavigation(self, page) {
     st = self.state || {},
     store = props.store;
   self._vfPage = page;
-  VF_SEO.register(...VF_ROUTES);
   const fa = props.lang === 'fa';
   const features = vfFeatures();
   // Pages a store can turn off, and their links with them.
@@ -80,13 +78,7 @@ export function vfShellNavigation(self, page) {
   /** @type {Record<string, string>} */
   const href = {};
   VF_ROUTES.forEach(r => {
-    href[r] = VF_SEO.hrefFor(
-      {
-        lang: L
-      },
-      r,
-      VF_ROUTE_EXTRA[r]
-    );
+    href[r] = vfRoutePath({lang: L, view: r, ...VF_ROUTE_EXTRA[r]});
   });
   const close = () =>
     self.setState({

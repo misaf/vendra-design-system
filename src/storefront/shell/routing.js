@@ -1,4 +1,4 @@
-// Storefront route registration, validation and links. Uses the core VF_SEO router.
+// Storefront path and query rules shared by navigation, metadata, and static export.
 import {VF_PRODUCTS, VF_SAVED_IDS_PATTERN, vfFindProduct} from '../catalog/catalog.js';
 import {VF_LINES_PATTERN, vfBagLine} from '../cart/cart-lines.js';
 import {VF_SHOP_OCCASIONS} from '../catalog/categories.js';
@@ -7,10 +7,10 @@ import {VF_SHOP_FILTERS} from '../catalog/shop-filters.js';
 import {VF_POLICIES} from '../content/policy-documents.js';
 import {VF_ACCOUNT_TABS} from '../customer/account-tabs.js';
 import {VF_PAYMENT_RESULTS} from '../checkout/payments.js';
-import {VF_SEO} from './seo.js';
 import {vfFeatures, vfLanguage} from '../store/store-config.js';
 import {VF_CATEGORY_SLUGS} from '../catalog/product-categories.js';
-import {vfLocation} from '../../platform/browser/environment.js';
+import {vfAssetBase, vfLocation} from '../../platform/browser/environment.js';
+import {LOCALES} from '../../design-system/utils/locales.js';
 
 export const VF_ROUTES = [
   'account',
@@ -42,167 +42,287 @@ export const VF_ROUTE_EXTRA = {
     post: 'morning-at-the-studio'
   }
 };
-// The path the storefront app is served at, and whether a URL is one of its pages.
-export const vfAppBase = () => VF_SEO.appBase();
-export const vfInApp = url => VF_SEO.inApp(url);
-// This page's address as routes are written: path and query.
-export const vfCurrentUrl = () => vfLocation().pathname + vfLocation().search;
-// Keep template-only shopping parameters out of the core design-system router. `url` is any URL
-// (absolute, or a path), read against this page's address; the default is this page.
-export function vfReadRoute(url = vfCurrentUrl()) {
-  VF_SEO.register(...VF_ROUTES);
-  const route = VF_SEO.readRoute(url),
-    query = new URL(url, vfLocation()).searchParams,
-    features = vfFeatures();
-  // A language the store doesn't offer opens in its default one.
-  if (route.lang) route.lang = vfLanguage(route.lang);
-  // Pages the store has turned off don't exist.
-  if (
-    (route.view === 'weddings' && !features.weddings) ||
-    (['journal', 'post'].includes(route.view) && !features.journal)
-  )
-    route.view = 'notfound';
-  route.demo = ['loading', 'error'].includes(query.get('demo')) ? query.get('demo') : undefined;
-  // Preserve the exact typed query, including trailing spaces while the customer is typing.
-  if (route.view === 'search') route.q = query.get('q') || '';
-  // The bag is two checkout steps: the bag itself, then delivery details (bag/?step=delivery).
-  if (route.view === 'bag') route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
-  // A bag or a shortlist handed over from the shop counter (the presentation's QR code): the site adds
-  // it to this visitor's bag or saved list once, then drops it from the address.
-  if (route.view === 'bag' && VF_LINES_PATTERN.test(query.get('lines') || ''))
-    route.lines = query.get('lines');
-  if (route.view === 'saved' && VF_SAVED_IDS_PATTERN.test(query.get('ids') || ''))
-    route.ids = query.get('ids');
-  // Back from the bank's payment page (checkout/?payment=return&order=<number>, API.md B30). The
-  // order is the server's number (letters, digits and dashes). The sample store's simulated bank adds
-  // its answer as `result`; a live store ignores it and asks the API for the payment instead.
-  if (route.view === 'checkout' && query.get('payment') === 'return') {
-    route.paymentOrder = /^[A-Za-z0-9][A-Za-z0-9-]{0,39}$/.test(query.get('order') || '')
-      ? query.get('order')
-      : '';
-    route.paymentResult = VF_PAYMENT_RESULTS.includes(query.get('result'))
-      ? query.get('result')
-      : 'pending';
+// These legacy screen names still parse, without adding pages to navigation or static export.
+const SCREENS = new Set([...VF_ROUTES, 'gifts', 'moment', 'custom', 'care']);
+const ROUTE_LANGUAGES = Object.keys(LOCALES);
+const SEGMENT = {product: 'id', post: 'post', moment: 'm', track: 'id', shop: 'cat', policy: 'id'};
+const PATH_NAME = {post: 'journal'};
+const REQUIRED = {product: 'id', post: 'post', moment: 'm'};
+const SAFE = /^[\w:-]{1,40}$/;
+const DIGITS = /^\d{1,40}$/;
+const validSegment = (key, value) => SAFE.test(value) && (key !== 'm' || DIGITS.test(value));
+
+export function vfAppBase() {
+  const base = vfAssetBase();
+  return /^(\/|\w+:)/.test(base) ? new URL(base, vfLocation()).pathname : '/';
+}
+
+function routeSuffix(pathname) {
+  const root = vfAppBase();
+  if (pathname === root || pathname === root + 'index.html') return '';
+  if (!pathname.startsWith(root)) return null;
+  const suffix = pathname.slice(root.length);
+  return ROUTE_LANGUAGES.includes(suffix.split('/')[0]) ? suffix : null;
+}
+
+// Whether a URL is a local storefront page.
+export function vfInApp(url) {
+  try {
+    const here = vfLocation();
+    const target = new URL(url, here);
+    return (
+      target.origin === here.origin &&
+      routeSuffix(target.pathname) != null &&
+      !/\.\w+$/.test(target.pathname)
+    );
+  } catch {
+    return false;
   }
-  // An account tab can be linked to (account/?tab=balance).
-  if (
-    route.view === 'account' &&
-    VF_ACCOUNT_TABS.includes(query.get('tab')) &&
-    (query.get('tab') !== 'reminders' || features.reminders)
-  )
-    route.tab = query.get('tab');
-  if (route.view === 'account' && route.tab === 'balance' && query.get('next') === 'checkout')
-    route.next = 'checkout';
-  // Sign-in started from checkout returns there (signin/?next=delivery).
-  if (route.view === 'signin' && query.get('next') === 'delivery') route.next = 'delivery';
-  // A product is addressed by its code (product/VF-7K2M4Q/); an old slug (product/ivory/) or a code
-  // typed in another case still opens it, and the link is written back with the code.
-  if (route.view === 'product') {
-    const product = vfFindProduct(route.id);
-    if (product) {
+}
+
+function readPath(pathname) {
+  const route = {view: 'notfound'};
+  const suffix = routeSuffix(pathname);
+  if (suffix == null) return route;
+  let parts;
+  try {
+    parts = suffix.split('/').filter(Boolean).map(decodeURIComponent);
+  } catch {
+    return route;
+  }
+  if (parts[0] === 'index.html') parts.shift();
+  if (ROUTE_LANGUAGES.includes(parts[0])) route.lang = parts.shift();
+  const name = parts.shift();
+  if (name == null) route.view = 'home';
+  else if (name === 'journal' && parts.length) route.view = 'post';
+  else if (SAFE.test(name) && SCREENS.has(name) && !PATH_NAME[name]) route.view = name;
+  else return route;
+  const key = SEGMENT[route.view];
+  if (parts.length) {
+    const value = parts.shift();
+    if (!key || !validSegment(key, value) || parts.length) return {...route, view: 'notfound'};
+    route[key] = value;
+  }
+  if (REQUIRED[route.view] && !route[REQUIRED[route.view]]) route.view = 'notfound';
+  return route;
+}
+
+// Each path ends in a slash so the static host can serve its index.html.
+export function vfRoutePath(route = {}) {
+  const parts = [];
+  if (ROUTE_LANGUAGES.includes(route.lang)) parts.push(route.lang);
+  if (route.view && route.view !== 'home' && SAFE.test(route.view)) {
+    parts.push(PATH_NAME[route.view] || route.view);
+    const key = SEGMENT[route.view];
+    const value = key == null || (key === 'cat' && route.cat === 'all') ? undefined : route[key];
+    if (value != null && value !== '' && validSegment(key, String(value)))
+      parts.push(String(value));
+  }
+  return vfAppBase() + parts.map(part => encodeURIComponent(part) + '/').join('');
+}
+
+export const vfCurrentUrl = () => vfLocation().pathname + vfLocation().search;
+
+export function vfRouteOffered(view, features = vfFeatures()) {
+  return (
+    (view !== 'weddings' || features.weddings) &&
+    (!['journal', 'post'].includes(view) || features.journal)
+  );
+}
+
+// Read delivery days on both shop and product links.
+function readRouteDate(query) {
+  const value = query.get('date') || '';
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(value) ? new Date(value + 'T12:00:00') : null;
+  const [year, month, day] = value.split('-').map(Number);
+  return date &&
+    date.getFullYear() === year &&
+    date.getMonth() + 1 === month &&
+    date.getDate() === day
+    ? value
+    : '';
+}
+
+function readRoutePage(query) {
+  const value = query.get('page') || '';
+  return /^[1-9]\d{0,2}$/.test(value) ? +value : 1;
+}
+
+function writeRoutePage(route, query) {
+  if (route.page > 1) query.set('page', route.page);
+}
+
+// Each entry describes the query state accepted and emitted by one screen.
+const ROUTE_QUERY = {
+  search: {
+    read(route, query) {
+      // Preserve trailing spaces while the customer is typing.
+      route.q = query.get('q') || '';
+    },
+    write(route, query) {
+      if (route.q) query.set('q', route.q);
+    }
+  },
+  bag: {
+    read(route, query) {
+      route.step = query.get('step') === 'delivery' ? 'delivery' : 'bag';
+      // Counter hand-over links import lines once.
+      const lines = query.get('lines') || '';
+      if (VF_LINES_PATTERN.test(lines)) route.lines = lines;
+    },
+    write(route, query) {
+      if (route.step === 'delivery') query.set('step', 'delivery');
+      if (route.lines) query.set('lines', route.lines);
+    }
+  },
+  saved: {
+    read(route, query) {
+      const ids = query.get('ids') || '';
+      if (VF_SAVED_IDS_PATTERN.test(ids)) route.ids = ids;
+    },
+    write(route, query) {
+      if (route.ids) query.set('ids', route.ids);
+    }
+  },
+  checkout: {
+    read(route, query) {
+      if (query.get('payment') !== 'return') return;
+      const order = query.get('order') || '';
+      const result = query.get('result');
+      route.paymentOrder = /^[A-Za-z0-9][A-Za-z0-9-]{0,39}$/.test(order) ? order : '';
+      // Live stores look up the order at the API. The result is for the simulated bank.
+      route.paymentResult = VF_PAYMENT_RESULTS.includes(result) ? result : 'pending';
+    },
+    write(route, query) {
+      if (!route.paymentOrder) return;
+      query.set('payment', 'return');
+      query.set('order', route.paymentOrder);
+      query.set('result', route.paymentResult);
+    }
+  },
+  account: {
+    read(route, query, features) {
+      const tab = query.get('tab');
+      if (VF_ACCOUNT_TABS.includes(tab) && (tab !== 'reminders' || features.reminders))
+        route.tab = tab;
+      if (route.tab === 'balance' && query.get('next') === 'checkout') route.next = 'checkout';
+    },
+    write(route, query) {
+      if (route.tab && route.tab !== 'orders') query.set('tab', route.tab);
+      if (route.tab === 'balance' && route.next === 'checkout') query.set('next', 'checkout');
+    }
+  },
+  signin: {
+    read(route, query) {
+      if (query.get('next') === 'delivery') route.next = 'delivery';
+    },
+    write(route, query) {
+      if (route.next === 'delivery') query.set('next', 'delivery');
+    }
+  },
+  product: {
+    read(route, query) {
+      // Resolve old slugs and differently cased codes to the catalog's product code.
+      const product = vfFindProduct(route.id);
+      if (!product) {
+        route.view = 'notfound';
+        return;
+      }
       route.id = product.id;
       route.cat = product.cat;
-      route.qty = /^[1-9]\d?$/.test(query.get('qty') || '') ? +query.get('qty') : 1;
-      // A counter quote opens with the same size and extras; catalog rules discard invalid choices.
+      const qty = query.get('qty') || '';
+      route.qty = /^[1-9]\d?$/.test(qty) ? +qty : 1;
+      // Counter quotes carry the selected size and extras, validated against the catalog.
       if (query.has('size') || query.has('addons')) {
         const line = vfBagLine(product, query.get('size'), (query.get('addons') || '').split(','));
         route.size = line.size;
         route.addons = line.addons;
       }
-    } else route.view = 'notfound';
+      route.date = readRouteDate(query);
+    },
+    write(route, query) {
+      if (route.date) query.set('date', route.date);
+      if (route.qty > 1) query.set('qty', route.qty);
+      if (route.size) query.set('size', route.size);
+      if (route.addons?.length) query.set('addons', route.addons.join(','));
+    }
+  },
+  shop: {
+    read(route, query, features) {
+      route.date = readRouteDate(query);
+      if (route.cat && !VF_CATEGORY_SLUGS.includes(route.cat)) {
+        route.view = 'notfound';
+        return;
+      }
+      route.cat = route.cat || 'all';
+      const sort = query.get('sort');
+      route.sort = ['low', 'high'].includes(sort) ? sort : 'featured';
+      const max = vfShopPriceMax();
+      const price = (key, fallback) => {
+        const value = query.get(key);
+        return value !== null && Number.isFinite(+value)
+          ? Math.max(0, Math.min(max, +value))
+          : fallback;
+      };
+      route.min = price('min', 0);
+      route.max = Math.max(route.min, price('max', max));
+      route.stock = query.get('stock') === '1';
+      route.filters = [
+        ...new Set(
+          (query.get('filters') || '')
+            .split(',')
+            .filter(id => VF_SHOP_FILTERS.includes(id))
+            .filter(id => id !== 'same' || features.sameDay)
+        )
+      ].sort();
+      const occasion = query.get('occasion');
+      route.occasion = VF_SHOP_OCCASIONS.includes(occasion) ? occasion : 'all';
+      route.page = readRoutePage(query);
+    },
+    write(route, query) {
+      if (route.min > 0) query.set('min', route.min);
+      if (route.max != null && route.max < vfShopPriceMax()) query.set('max', route.max);
+      if (route.stock) query.set('stock', '1');
+      if (['low', 'high'].includes(route.sort)) query.set('sort', route.sort);
+      const filters = (route.filters || []).filter(id => VF_SHOP_FILTERS.includes(id));
+      if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
+      if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
+      if (route.date) query.set('date', route.date);
+      writeRoutePage(route, query);
+    }
+  },
+  journal: {
+    read(route, query) {
+      route.page = readRoutePage(query);
+    },
+    write: writeRoutePage
   }
+};
+
+export function vfReadRoute(url = vfCurrentUrl()) {
+  const {pathname, searchParams} = new URL(url, vfLocation());
+  const route = readPath(pathname);
+  const features = vfFeatures();
+  if (route.lang) route.lang = vfLanguage(route.lang);
+  if (!vfRouteOffered(route.view, features)) route.view = 'notfound';
+
+  const demo = searchParams.get('demo');
+  route.demo = ['loading', 'error'].includes(demo) ? demo : undefined;
+  ROUTE_QUERY[route.view]?.read(route, searchParams, features);
+
   if (route.view === 'policy' && route.id && !VF_POLICIES.includes(route.id))
     route.view = 'notfound';
-  // Keep the shopper's intended date on product links, including reloads and language changes.
-  if (['shop', 'product'].includes(route.view)) {
-    const value = query.get('date') || '';
-    const date = /^\d{4}-\d{2}-\d{2}$/.test(value) ? new Date(value + 'T12:00:00') : null;
-    const parts = value.split('-').map(Number);
-    route.date =
-      date &&
-      date.getFullYear() === parts[0] &&
-      date.getMonth() + 1 === parts[1] &&
-      date.getDate() === parts[2]
-        ? value
-        : '';
-  }
-  // A category is part of the shop's path (shop/boxes/); one the shop doesn't have doesn't exist.
-  if (route.view === 'shop' && route.cat && !VF_CATEGORY_SLUGS.includes(route.cat))
-    route.view = 'notfound';
-  if (route.view === 'shop') {
-    route.cat = route.cat || 'all';
-    route.sort = ['low', 'high'].includes(query.get('sort')) ? query.get('sort') : 'featured';
-    const max = vfShopPriceMax();
-    const number = (key, fallback) => {
-      const v = query.get(key);
-      return v !== null && Number.isFinite(+v) ? Math.max(0, Math.min(max, +v)) : fallback;
-    };
-    route.min = number('min', 0);
-    route.max = Math.max(route.min, number('max', max));
-    route.stock = query.get('stock') === '1';
-    route.filters = [
-      ...new Set(
-        (query.get('filters') || '')
-          .split(',')
-          .filter(id => VF_SHOP_FILTERS.includes(id))
-          .filter(id => id !== 'same' || features.sameDay)
-      )
-    ].sort();
-    route.occasion = VF_SHOP_OCCASIONS.includes(query.get('occasion'))
-      ? query.get('occasion')
-      : 'all';
-    // An ISO delivery day (?date=2026-10-09); the shop ignores days that are not open.
-    // How many "Show more" pages are open (?page=2 shows the first two pages).
-    route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;
-  }
-  // A retired article opens the newer post that replaced it, and the link is written back with it.
+  // A retired article links back to its replacement.
   if (route.view === 'post' && Object.hasOwn(VF_POST_MOVED, route.post))
     route.post = VF_POST_MOVED[route.post];
-  // A journal page (journal/?page=2).
-  if (route.view === 'journal')
-    route.page = /^[1-9]\d{0,2}$/.test(query.get('page') || '') ? +query.get('page') : 1;
   return route;
 }
-// Route → "<app base><lang>/<screen>/<id>/?<state>", the page's address. The query is left out when
-// the page has no state to carry.
+
 export function vfRouteUrl(route) {
-  const path = VF_SEO.routePath({
-    ...route,
-    cat: route.view === 'shop' && route.cat !== 'all' ? route.cat : undefined
-  });
+  const path = vfRoutePath(route);
   const query = new URLSearchParams();
   if (route.demo) query.set('demo', route.demo);
-  if (route.view === 'search' && route.q) query.set('q', route.q);
-  if (route.view === 'bag' && route.step === 'delivery') query.set('step', 'delivery');
-  if (route.view === 'bag' && route.lines) query.set('lines', route.lines);
-  if (route.view === 'saved' && route.ids) query.set('ids', route.ids);
-  if (route.view === 'product') {
-    if (route.date) query.set('date', route.date);
-    if (route.qty > 1) query.set('qty', route.qty);
-    if (route.size) query.set('size', route.size);
-    if (route.addons?.length) query.set('addons', route.addons.join(','));
-  }
-  if (route.view === 'signin' && route.next === 'delivery') query.set('next', 'delivery');
-  if (route.view === 'checkout' && route.paymentOrder) {
-    query.set('payment', 'return');
-    query.set('order', route.paymentOrder);
-    query.set('result', route.paymentResult);
-  }
-  if (route.view === 'account' && route.tab && route.tab !== 'orders') query.set('tab', route.tab);
-  if (route.view === 'account' && route.tab === 'balance' && route.next === 'checkout')
-    query.set('next', 'checkout');
-  if (route.view === 'shop') {
-    if (route.min > 0) query.set('min', route.min);
-    if (route.max != null && route.max < vfShopPriceMax()) query.set('max', route.max);
-    if (route.stock) query.set('stock', '1');
-    if (['low', 'high'].includes(route.sort)) query.set('sort', route.sort);
-    const filters = (route.filters || []).filter(id => VF_SHOP_FILTERS.includes(id));
-    if (filters.length) query.set('filters', [...new Set(filters)].sort().join(','));
-    if (VF_SHOP_OCCASIONS.includes(route.occasion)) query.set('occasion', route.occasion);
-    if (route.date) query.set('date', route.date);
-    if (route.page > 1) query.set('page', route.page);
-  }
-  if (route.view === 'journal' && route.page > 1) query.set('page', route.page);
+  ROUTE_QUERY[route.view]?.write?.(route, query);
   const search = query.toString();
   return search ? path + '?' + search : path;
 }

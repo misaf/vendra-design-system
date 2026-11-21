@@ -127,31 +127,21 @@ for (const lang of ['en', 'fa']) {
     expect(new URLSearchParams(requests[0].data).get('Amount')).toBe('24000000');
   });
 
-  test(`${lang}: failed, cancelled and pending states pass axe`, async ({page}) => {
-    await openStorefrontComponent(page, 'StorefrontCheckoutBank', lang);
-    expect(await scanAxe(page)).toEqual([]);
-    for (const [button, heading] of [
-      [t.cancelled, t.cancelledTitle],
-      [t.pending, t.pendingTitle]
-    ]) {
-      await page.getByRole('button', {name: button, exact: true}).click();
-      await expect(page.getByRole('heading', {level: 1})).toHaveText(heading);
+  for (const state of ['failed', 'cancelled', 'pending', 'verifying', 'paid']) {
+    test(`${lang}: ${state} payment state passes axe`, async ({page}) => {
+      await openStorefrontComponent(page, 'StorefrontCheckoutBank', lang);
+      if (state !== 'failed') await page.getByRole('button', {name: t[state], exact: true}).click();
+      await expect(page.getByRole('heading', {level: 1})).toHaveText(t[state + 'Title']);
       expect(await scanAxe(page)).toEqual([]);
-    }
-  });
+    });
+  }
 
-  test(`${lang}: verifying and paid states pass axe and compact progress uses the supplied formatters`, async ({
+  test(`${lang}: paid payment passes axe at the compact viewport and progress uses the supplied formatters`, async ({
     page
   }) => {
     await openStorefrontComponent(page, 'StorefrontCheckoutBank', lang);
-    for (const [button, heading] of [
-      [t.verifying, t.verifyingTitle],
-      [t.paid, t.paidTitle]
-    ]) {
-      await page.getByRole('button', {name: button, exact: true}).click();
-      await expect(page.getByRole('heading', {level: 1})).toHaveText(heading);
-      expect(await scanAxe(page)).toEqual([]);
-    }
+    await page.getByRole('button', {name: t.paid, exact: true}).click();
+    await expect(page.getByRole('heading', {level: 1})).toHaveText(t.paidTitle);
     await page.setViewportSize({width: 390, height: 844});
     await expect(page.getByRole('list', {name: t.progress, exact: true})).toHaveCount(1);
     await expect(page.getByText(t.compact, {exact: true})).toBeVisible();

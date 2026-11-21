@@ -1,6 +1,7 @@
 import {test, expect} from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
+import theme from '../../src/design-system/tokens/tenant-theme.js';
 import {ROOT, TENANTS, contrast, expectNoBrowserError} from '../helpers.mjs';
 
 // The seven Theme builder checks (guidelines/theme-builder.html), run against
@@ -90,7 +91,9 @@ for (const tenant of ['default', ...TENANTS]) {
 
 // Every "Start from" choice in the builder (Vendra plus each tenant) must pass.
 for (const start of ['vendra', ...TENANTS]) {
-  test(`theme builder: starting from ${start} passes all seven checks`, async ({page}) => {
+  test(`theme builder: starting from ${start} previews its tokens and passes all seven checks`, async ({
+    page
+  }) => {
     await page.goto('/guidelines/theme-builder.html');
     await expectNoBrowserError(page);
     await page.locator('.tb-row select').first().selectOption(start);
@@ -98,6 +101,25 @@ for (const start of ['vendra', ...TENANTS]) {
     await expect(verdicts).toHaveCount(7);
     await expect(verdicts).toHaveText(Array(7).fill('Pass'));
     await expect(page.locator('.tb-inv')).toHaveText('All contrast checks pass.');
+    const spec =
+      start === 'vendra'
+        ? theme.VENDRA
+        : JSON.parse(
+            fs.readFileSync(
+              path.join(ROOT, 'src/design-system/tokens/tenants', start + '.json'),
+              'utf8'
+            )
+          );
+    const preview = page.locator('.tb-p');
+    await expect
+      .poll(() =>
+        preview.evaluate(element =>
+          Object.fromEntries(
+            Array.from(element.style, name => [name, element.style.getPropertyValue(name)])
+          )
+        )
+      )
+      .toEqual(theme.tokens(spec).all);
   });
 }
 

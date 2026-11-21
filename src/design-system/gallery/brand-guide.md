@@ -92,12 +92,12 @@ Bouquets · Flower boxes · Arrangements · Roses · Luxury · Orchids · Housep
 
 ## Routing & URLs
 
-`src/storefront/shell/seo.js` → `VF_SEO`, an ES module the storefront imports (not part of the package).
+The storefront owns path and query rules in `src/storefront/shell/routing.js`. The `VF_SEO` module in `src/storefront/shell/seo.js` renders metadata tags.
 
 - Scheme: paths under the app's path, `<lang>/<screen>/<id>/` — `en/`, `fa/shop/boxes/`, `en/product/VF-7K2M4Q/`, `en/journal/<postId>/`, `fa/policy/shipping/`, `en/track/<order>/`, `en/moment/<momentId>/`. Home has no screen segment; every path ends in `/`, so a static host serves each from its own `index.html`. The path says which page it is; the query only carries state on it (`?sort=low`, `?step=delivery`, `?q=…`), and pages with query state are noindex or canonicalize to the bare path.
-- Screens: home, shop, product, bag, checkout, contact, search, gifts, moment, saved, track, custom, account, journal, post, care, faq. A storefront adds its own with `seo.register(...)` (the templates register weddings and policy).
-- Every segment read from the URL must match `/^[\w:-]{1,40}$/`; numeric ids (`m` by default, see `seo.setNumeric`) must be digits only. An unknown screen, an invalid or extra segment, or a product/post/moment with no valid id becomes `notfound` (the language is kept).
-- `routePath(state)`, `readRoute(url)`, `hrefFor(state, screen, extra)`, `appBase()`, `inApp(url)`, `linkHandler(go)`. linkHandler lets modified clicks, middle clicks and `target=_blank` through, and otherwise calls `preventDefault` and moves within the site.
+- `VF_ROUTES` lists the storefront screens. The router also recognizes legacy screen names such as `moment`.
+- Every screen name and identifier must match `/^[\w:-]{1,40}$/`. Moment ids must be digits only. An unknown screen, an invalid or extra segment, or a product, post, or moment with no valid id becomes `notfound` and keeps the language.
+- `vfReadRoute(url)` parses a URL, `vfRouteUrl(route)` writes its path and query, and `vfRoutePath(route)` writes just the path. `vfAppBase()` gives the storefront base path and `vfInApp(url)` checks whether a link belongs to the storefront.
 - History: `pushState` when the screen changes, `replaceState` when only the language (or an in-page filter) changes, and handle `popstate` for back/forward.
 - `headTags({title, description, image, url, locale, type, alternates:{en,fa}, noindex})` returns `<title>`, the meta description, `og:*`, `twitter:*`, the canonical link, hreflang en/fa/x-default and robots as data; `syncHead(…)` applies them to the document and `headHtml(…)` writes them as HTML, which the build puts in every prerendered page.
 - **noindex** (`noindex, follow`, no hreflang): bag, checkout, confirm, account, track, saved, search, notfound, error.
