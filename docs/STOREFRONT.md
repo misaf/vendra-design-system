@@ -156,7 +156,7 @@ Screenshot comparison specs use software rasterization (`--disable-gpu`) so deco
 
 1. **Check and unit tests:** `npm ci`, `check` and `test` on Node 22. `test` includes the design system's bundle-size budget (`tests/size.test.mjs`): every export bundled alone and all of them together, with the peers left out, minified and gzipped. Small components must bundle without the rest; raise a budget only on purpose.
 2. **Development fixtures and components:** Four parallel jobs run `test:e2e:dev` inside Playwright's Linux image (`mcr.microsoft.com/playwright:v1.65.0-noble`) against the `-linux.png` baselines. One job runs the `mobile` and `desktop` fixture projects, one runs `components`, and two shard `storefront-components` (see below). Each job starts a fresh dev server with two Playwright workers. Playwright stops after 65 minutes so the job has time to upload its report within the 75-minute runner timeout. Pages requires all four jobs and the production browser job to pass.
-3. **Storefront smoke, visuals and performance:** `test:smoke:app` checks the production Next.js server. `test:e2e:demo` runs storefront flows, screenshots, accessibility checks, device tests and performance budgets against the Next.js export. `test:smoke:demo` exercises the actual Pages artifact under the repository base path and checks bilingual checkout, tracking and offline display.
+3. **Storefront smoke, visuals and performance:** `test:smoke:app` checks the production Next.js server in sample mode. `test:smoke:catalog` starts that build with `VF_API_BASE` pointing to a loopback Laravel fixture that checks the storefront origin and locale headers. It exercises English and Persian catalog listings and product details, including rich-text descriptions and referenced prices. `test:e2e:demo` runs storefront flows, screenshots, accessibility checks, device tests and performance budgets against the Next.js export. `test:smoke:demo` exercises the actual Pages artifact under the repository base path and checks bilingual checkout, tracking and offline display.
 
 Dependabot (`.github/dependabot.yml`) opens weekly, grouped pull requests for the pinned npm tools and GitHub Actions, two weeks after each release; CI tests them like any change (an Actions-only bump runs the check jobs, not the browser tests). React's majors are left out: the storefront supports React 19 only, and a new major is a deliberate upgrade. The root manifest pins React and React Aria. `tests/dependencies.test.mjs` checks the lockfile for duplicate installations. A Playwright bump must also move the image tag in the workflows, which `assets.test.mjs` checks.
 
@@ -323,12 +323,13 @@ Run the smoke suites from the repo root after their corresponding builds.
 ```sh
 npm run build
 npm run test:smoke:app
+npm run test:smoke:catalog
 VF_BASE_PATH=/vendra-design-system VF_ORIGIN=https://misaf.github.io npm run build:demo
 VF_BASE_PATH=/vendra-design-system VF_ORIGIN=https://misaf.github.io npm run test:smoke:demo
 ```
 
-Both smoke commands write test results to `e2e/test-results/next/`. For a subpath deployment, use
+Each smoke command writes test results to `e2e/test-results/next/`. For a subpath deployment, use
 the same `VF_BASE_PATH` when building, previewing and testing.
-Use the same `VF_ORIGIN` for the build and smoke test so the sitemap check expects the public URLs.
+For the demo, use the same `VF_ORIGIN` for the build and smoke test so the sitemap check expects the public URLs.
 The export also ships a service worker and manifest that cache each localized presentation document, its
 Next.js assets and selected product photos for offline counter use.
