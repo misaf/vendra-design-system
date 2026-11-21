@@ -27,6 +27,14 @@ Keep English and Persian keys and list shapes in sync in `copy.js`. Unit tests c
 
 Keep route composition beside the screen and hook, outside `components/`. For example, `CheckoutView.jsx` composes `shell/components/Shell.jsx` with checkout-owned components and `pricing/components/StorefrontOrderSummaryCard/`. Those components receive the data and callbacks assembled by the checkout hook through props.
 
+### Page state and lifecycle
+
+Hooks that use [`usePageLogic`](../src/storefront/shell/page-state.js) share a mutable page object. `page.setState(patch, done)` shallow-merges the patch into `page.state` synchronously and schedules a React render. A function patch receives the current state, including earlier updates from the same event. Code can read the merged state immediately. If the work needs the updated DOM, such as focusing a newly rendered button, pass a completion callback. React drains the queued callbacks in order from a passive effect after a render commits. React can batch multiple updates into one commit.
+
+The [VM page harness](../tests/page-script.mjs) concatenates source files from its own lists after stripping imports and exports. Its React stand-in skips effects and drains completion callbacks inside `setState`. Tests can invoke lifecycle handlers and rerender the hook explicitly. Those tests cover stateful scenarios with controlled globals. Use a mounted React component or a storefront browser flow to verify commit timing, DOM work, and lifecycle behavior.
+
+When migrating a consumer away from the page lifecycle, extract the pure state transitions first and test them with direct imports from their owning modules. For example, [the delivery rules suite](../tests/storefront-delivery.test.mjs) imports the same validation, scheduling, and cart modules as the app. Check both immediate state reads and post-commit callbacks in a browser before changing hook timing.
+
 ### Import boundaries
 
 The checker in [`tools/app-dependencies.mjs`](../tools/app-dependencies.mjs) classifies UI by **directory**, not by a `View.jsx` suffix:
