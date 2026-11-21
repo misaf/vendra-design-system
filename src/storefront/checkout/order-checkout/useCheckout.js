@@ -7,13 +7,17 @@ import {
   vfSimulatedBank,
   vfVerifyPayment
 } from './payment-recovery.js';
-import {vfAccountLocale, vfAccountPhone, vfCustomerId} from '../../customer/account-data.js';
+import {vfAccountPhone, vfCustomerId} from '../../customer/account-data.js';
 import {vfProductImage} from '../../catalog/catalog.js';
-import {vfCardMessages, vfLineItems, vfLineToken, vfSampleBag} from '../../cart/cart-lines.js';
-import {vfLineAvailable, vfLineQuantityValid, vfRepriceLines} from '../../cart/cart-lines.js';
+import {
+  vfCardMessages,
+  vfLineAvailable,
+  vfLineQuantityValid,
+  vfLineToken,
+  vfSampleBag
+} from '../../cart/cart-lines.js';
 import {paymentOptions, defaultPaymentMethod} from '../payment-options.js';
 import {VF_DELIVERY} from '../../delivery/delivery-draft.js';
-import {vfCheckoutRequest} from '../checkout-request.js';
 import {vfDeliveryDate} from '../../delivery/delivery-schedule.js';
 import {vfDeliveryChanged} from '../../delivery/delivery-validation.js';
 import {vfTotals} from '../../pricing/order-totals.js';
@@ -35,28 +39,8 @@ import {useLifecycle, usePageLogic} from '../../shell/page-state.js';
 import {vfNow} from '../../../platform/browser/environment.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 import {vfRuntime} from '../../../platform/browser/runtime.js';
-// The page: its state (applied at once, as the logic reads it back), effects and the values
-// its View renders.
-const DELIVERY_FIELDS = new Map([
-  ['recipientName', 'name'],
-  ['recipientPhone', 'phone'],
-  ['addressId', 'address'],
-  ['latitude', 'location'],
-  ['longitude', 'location'],
-  ['deliveryDate', 'date'],
-  ['deliverySlotId', 'slot']
-]);
-
-function checkoutValidation(fields) {
-  const recovery = {delivery: {}, bag: '', payment: ''};
-  for (const [path, message] of Object.entries(fields || {})) {
-    if (DELIVERY_FIELDS.has(path)) recovery.delivery[DELIVERY_FIELDS.get(path)] = message;
-    if (/^(?:cartToken$|(?:cart\.)?(?:lines|items)(?:$|[.\[]))/.test(path))
-      recovery.bag ||= message;
-    if (path === 'paymentReference') recovery.payment = message;
-  }
-  return recovery;
-}
+import {checkoutOrderReady, orderParams, submitOrder} from './submit-order.js';
+import {dismissCheckoutFailure} from './submission-state.js';
 
 export function useCheckout(props) {
   const page = usePageLogic(props, page => {
@@ -70,7 +54,7 @@ export function useCheckout(props) {
       method: null,
       busy: false,
       failed: false,
-      unconfirmed: false,
+      unconfirmedAttempt: null,
       apiFailure: null,
       payment: null,
       paymentSaveError: false,
@@ -99,10 +83,10 @@ export function useCheckout(props) {
       page._paymentCheck = null;
     }
   });
-  return vals(page);
+  return checkoutViewProps(page);
 }
 
-function vals(page) {
+function checkoutViewProps(page) {
   const S = vfShell(page, 'checkout');
   const fa = S.fa;
   const L = S.lang;
@@ -112,21 +96,17 @@ function vals(page) {
   const st = page.props.store;
   const order = st ? st.order : s.order;
   const busy = s.busy || !!st?.checkoutPending;
-  // Once an attempt got no answer the order may exist, so the method stays as sent until an attempt
-  // is answered: another method would be a different request under a new idempotency key, and so
-  // a second order. Retrying keeps this lock; only the warning is dismissed.
-  const methodLocked = !!s.unconfirmed;
-  const unconfirmed = s.failed && methodLocked;
-  const delivery = order
-    ? order.delivery
+  const attempt = s.unconfirmedAttempt;
+  const methodLocked = !!attempt;
+  const canEditPayment = () =>
+    !page.props.store?.checkoutPending && !page.state.busy && !page.state.unconfirmedAttempt;
+  const displayedOrder = order || attempt?.record;
+  const delivery = displayedOrder
+    ? displayedOrder.delivery
     : st
       ? st.delivery
-      : {
-          ...VF_DELIVERY,
-          name: 'Mina',
-          address: '12 Golha St, Azimiyeh'
-        };
-  const items = order ? order.lines : st ? st.bag : vfSampleBag();
+      : {...VF_DELIVERY, name: 'Mina', address: '12 Golha St, Azimiyeh'};
+  const items = displayedOrder ? displayedOrder.lines : st ? st.bag : vfSampleBag();
   // Signed-in customers can pay from their account balance when it covers the order; a large enough
   // balance takes the balance discount off the products (VF_STORE.wallet).
   const phone = vfAccountPhone(),
@@ -143,12 +123,13 @@ function vals(page) {
   const card = methods.find(method => method.id === 'card');
   const payment = card ? {...card, holder: card.holder[L], bank: card.bank[L]} : null;
   const offers = id => options.some(option => option.id === id);
-  const usable = id => options.some(option => option.id === id && option.available);
   // After a failed payment or order: the first usable method that isn't the one that failed.
   const otherThan = id => (options.find(option => option.available && option.id !== id) || {id}).id;
-  const method = order ? order.method || 'card' : defaultPaymentMethod(options, s.method),
-    P = C.migration,
-    PW = P.wallet;
+  const method = displayedOrder
+    ? displayedOrder.method || 'card'
+    : defaultPaymentMethod(options, s.method);
+  const P = C.migration;
+  const PW = P.wallet;
   const apiFailure = s.apiFailure;
   const recovery = apiFailure?.recovery;
   const reviewStep = recovery?.bag
@@ -168,13 +149,13 @@ function vals(page) {
         }
       : null;
   const codZones = (options.find(option => option.id === 'cod') || {}).zones || [];
-  const totals = order
-    ? order.totals
+  const totals = displayedOrder
+    ? displayedOrder.totals
     : method === 'wallet'
       ? balanceTotals
       : vfTotals(items, delivery);
   const receiptChanged =
-    method === 'card' && !!(s.last4 || s.ref) && s.receiptAmount !== totals.total;
+    !methodLocked && method === 'card' && !!(s.last4 || s.ref) && s.receiptAmount !== totals.total;
   const slotLabel = vfDeliveryWhen(
     {...delivery, date: delivery.date || vfDeliveryDate(delivery, vfNow(), items)},
     fa
@@ -191,22 +172,6 @@ function vals(page) {
         ? fillWallet(PW.short, balance)
         : fillWallet(vfBalanceDiscountOn(balance) ? PW.discount : PW.balance, balance);
   const done = !!order || s.placed || page.props.step === 'done';
-  const orderReady = event => {
-    const changed = vfDeliveryChanged(delivery, new Date(), items);
-    const stockChanged = items.some(
-      line => !vfLineAvailable(line) || !vfLineQuantityValid(line, items)
-    );
-    // A price changed since the bag was checked: the bag shows the new price beside its line.
-    // Prices already updated but not yet seen in the bag (a reload or a direct visit) count too.
-    const priceChanged =
-      vfRepriceLines(items).changes.length > 0 ||
-      Object.keys(page.props.store?.priceChanges || {}).length > 0;
-    if (!changed && !stockChanged && !priceChanged) return true;
-    event?.preventDefault();
-    if (priceChanged) page.props.store?.reprice?.();
-    page.props.go?.({view: 'bag', step: stockChanged || priceChanged ? 'bag' : 'delivery'});
-    return false;
-  };
   // Below the discount line, say what topping up would save on this order: enough to reach the line
   // and to cover the discounted total.
   const rules = VF_STORE.wallet,
@@ -225,13 +190,6 @@ function vals(page) {
     if (vfPageRoute(page.props).paymentOrder)
       history.replaceState(history.state, '', vfRouteUrl({lang: L, view: 'checkout'}));
   };
-  // An order's analytics parameters (amounts in Toman; vfRuntime.track reports them in an ISO currency).
-  const orderParams = record => ({
-    transaction_id: record.id,
-    value: record.totals.total,
-    payment_type: record.method,
-    items: vfLineItems(record.lines)
-  });
   const completeOrder = record => {
     // Paying from the balance takes the total out of it now; a failed deduction stops the order.
     if (record.method === 'wallet') {
@@ -320,7 +278,7 @@ function vals(page) {
     receiptLocked: busy || methodLocked,
     // No answer came back (a timeout or a lost connection): the order may exist, so say so, and keep
     // the request unchanged so a retry reuses its idempotency key.
-    unconfirmed,
+    unconfirmed: s.failed && methodLocked,
     paymentNotice: P.demo,
     method,
     // With one method there is nothing to choose: its own heading and steps show.
@@ -337,30 +295,28 @@ function vals(page) {
       disabled: busy || methodLocked || !option.available
     })),
     setMethod: value =>
-      !busy &&
-      !methodLocked &&
+      canEditPayment() &&
       page._draft({
         method: value,
         paymentSaveError: false,
         retryReview: false,
         err: false,
         failed: false,
-        unconfirmed: false,
         apiFailure: null
       }),
     migration: P,
     waOrder: S.waWith(vfOrderMessage(items, delivery, totals.total, L)),
     openWhatsapp: event => {
-      orderReady(event);
+      checkoutOrderReady(page, items, delivery, event);
     },
     retry: () => {
-      page.setState({failed: false, apiFailure: recovery?.payment ? apiFailure : null});
+      page.setState(dismissCheckoutFailure);
       if (apiFailure?.recovery.payment && method === 'card') VF_NAV.focusById('vf-ref');
     },
     otherMethod: () =>
+      canEditPayment() &&
       page._draft({
         failed: false,
-        unconfirmed: false,
         method: otherThan(method)
       }),
     paymentStatus: P.statuses[method],
@@ -409,14 +365,13 @@ function vals(page) {
     },
     receiptChanged,
     receiptChangeText: C.receiptChanged.replace('{amount}', m(totals.total)),
-    confirmReceipt: () => page._draft({receiptAmount: totals.total}),
-    last4: s.last4,
+    confirmReceipt: () => canEditPayment() && page._draft({receiptAmount: totals.total}),
+    last4: attempt?.record.last4 ?? s.last4,
     last4Err: s.err ? C.last4Err : undefined,
-    ref: s.ref,
+    ref: attempt?.record.ref ?? s.ref,
     refError: recovery?.payment,
     setRef: value =>
-      !busy &&
-      !methodLocked &&
+      canEditPayment() &&
       page._draft({
         method,
         ref: value,
@@ -425,8 +380,7 @@ function vals(page) {
         failed: false
       }),
     setLast4: value =>
-      !busy &&
-      !methodLocked &&
+      canEditPayment() &&
       page._draft({
         method,
         last4: value
@@ -438,110 +392,18 @@ function vals(page) {
         apiFailure: null,
         failed: false
       }),
-    place: () => {
-      if (busy || s.failed || done || !orderReady()) return;
-      if (!usable(method)) return;
-      if (receiptChanged) {
-        VF_NAV.focusById('vf-receipt-changed');
-        return;
-      }
-      if (method === 'card' && s.last4.length !== 4) {
-        page.setState({
-          err: true
-        });
-        setTimeout(() => {
-          const lastFourField = document.getElementById('vf-last4');
-          lastFourField && lastFourField.focus();
-        }, 0);
-        return;
-      }
-      vfRuntime.track.event('add_payment_info', {
-        payment_type: method
-      });
-      const record = {
-        customerId: st?.customerId || vfCustomerId(),
-        checkoutSnapshot: st?.checkoutSnapshot,
+    submitOrder: () =>
+      submitOrder(page, {
+        items,
+        delivery,
+        totals,
         method,
+        usable: options.some(option => option.id === method && option.available),
+        receiptChanged,
         paymentStatus: P.statuses[method],
-        preferredLocale: vfAccountLocale() || L,
-        id: 'VN-' + Date.now(),
-        status: 'received',
-        createdAt: new Date().toISOString(),
-        lines: items.map(l => ({
-          ...l
-        })),
-        delivery: {
-          ...delivery,
-          date: delivery.date || vfDeliveryDate(delivery, new Date(), items)
-        },
-        totals: {
-          ...totals
-        },
-        last4: s.last4,
-        ref: s.ref
-      };
-      // Persist the recovery record before any submission or redirect can leave this page.
-      if (method === 'online' && !vfKeepPayment(record)) {
-        page.setState({paymentSaveError: true});
-        return;
-      }
-      page.setState({paymentSaveError: false});
-      // With an API base, the order is sent as a Checkout request first, and the order the server
-      // created replaces the browser's: its number and totals (API.md B3). The demo goes on at once.
-      const send = then => {
-        if (!vfLiveStore()) return then(record, null);
-        if (st?.beginCheckout && !st.beginCheckout()) return;
-        const request = vfCheckoutRequest(items, delivery, {method, last4: s.last4, ref: s.ref});
-        page.setState({busy: true});
-        vfRuntime.api
-          .checkout(request)
-          .then(
-            result => {
-              page.setState({busy: false, unconfirmed: false});
-              const placed = {
-                ...record,
-                id: result?.number || record.id,
-                // The server's totals replace the browser's whole: its discount already includes any
-                // balance discount, which would otherwise show twice.
-                totals: result?.totals || record.totals
-              };
-              then(placed, result?.redirect || null);
-            },
-            error => {
-              const kind = error?.kind || 'http';
-              const recovery = checkoutValidation(error?.fields);
-              page.setState({
-                busy: false,
-                failed: true,
-                apiFailure: {kind, recovery},
-                // The server may already have accepted the order. Preserve the method and receipt.
-                unconfirmed:
-                  ['timeout', 'network', 'conflict', 'server'].includes(kind) ||
-                  (methodLocked && kind === 'offline')
-              });
-              VF_NAV.focusById('vf-checkout-submit-error');
-            }
-          )
-          .finally(() => st?.endCheckout?.());
-      };
-      // Online, the customer pays on the bank's page and comes back to this page. A live store goes
-      // where the API's checkout result says; without that, the order exists but can't be paid
-      // here, so the customer is told not to pay twice and to call (never the simulated bank).
-      if (method === 'online')
-        send((placed, redirect) => {
-          // Placed now, paid only once the bank confirms: a cancelled, failed or abandoned payment
-          // still counts as a placed order, never as a purchase.
-          vfRuntime.track.event('order_placed', {
-            ...orderParams(placed),
-            payment_status: 'pending'
-          });
-          if (placed !== record) vfKeepPayment(placed);
-          if (vfLiveStore() && !redirect)
-            page.setState({payment: {status: 'pending', record: placed, number: placed.id}});
-          else page.setState({payment: {status: 'redirecting', record: placed, redirect}});
-        });
-      else send(placed => completeOrder(placed));
-    },
+        lang: L,
+        completeOrder
+      }),
     bankTrip: s.payment && {
       status: s.payment.status,
       amount: s.payment.record

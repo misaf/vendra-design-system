@@ -102,7 +102,7 @@ for (const lang of ['en', 'fa']) {
     }
   });
   unseen.setState({last4: '1234'});
-  unseen.renderVals().place();
+  unseen.renderVals().submitOrder();
   assert.equal(unseenRoute.step, 'bag', 'checkout shows unseen price changes in the bag first');
   let route;
   const {logic: bag, ctx: bc} = loadPage('bag', {
@@ -162,7 +162,7 @@ for (const lang of ['en', 'fa']) {
   });
   vm.runInContext("vfProduct('" + current[0].productId + "').price += 1000", cc);
   checkout.setState({last4: '1234'});
-  checkout.renderVals().place();
+  checkout.renderVals().submitOrder();
   assert.equal(checkoutRoute.view, 'bag');
   assert.equal(checkoutRoute.step, 'bag', 'a changed price sends checkout back to the bag');
   setTimeout(
@@ -286,7 +286,7 @@ for (const lang of ['en', 'fa']) {
     store: {bag: [low], delivery: {...bag.state.delivery, date: '2000-01-01'}}
   }).logic;
   stale.setState({last4: '1234'});
-  stale.renderVals().place();
+  stale.renderVals().submitOrder();
   assert.equal(blockedRoute.view, 'bag');
   assert.equal(
     blockedRoute.step,

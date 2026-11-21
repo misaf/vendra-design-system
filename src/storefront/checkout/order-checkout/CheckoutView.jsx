@@ -160,7 +160,7 @@ export function View({v}) {
                   }}
                   safe={v.t?.safe}
                   place={{
-                    onClick: v.place,
+                    onClick: v.submitOrder,
                     loading: v.busy,
                     disabled: v.placeDisabled,
                     label: v.t?.place
@@ -237,7 +237,7 @@ export function View({v}) {
           <StorefrontCheckoutSticky
             summary={{label: v.t?.total, value: v.totalLabel}}
             place={{
-              onClick: v.place,
+              onClick: v.submitOrder,
               loading: v.busy,
               disabled: v.placeDisabled,
               label: v.t?.place

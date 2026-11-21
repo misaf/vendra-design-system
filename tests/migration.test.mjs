@@ -429,7 +429,7 @@ function page(name, c, props = {}) {
   };
   const checkout = checkoutWithDelivery({view: 'checkout', demo: 'error'});
   checkout.renderVals().setMethod('online');
-  checkout.renderVals().place();
+  checkout.renderVals().submitOrder();
   let payment = checkout.renderVals().bankTrip;
   assert.equal(payment.status, 'redirecting');
   assert.equal(payment.redirect.method, 'GET');
@@ -482,7 +482,7 @@ function page(name, c, props = {}) {
   assert.equal(checkout.renderVals().method, 'wallet');
   checkout.renderVals().setMethod('card');
   checkout.renderVals().setLast4('۱۲۳۴');
-  checkout.renderVals().place();
+  checkout.renderVals().submitOrder();
   assert.equal(checkout.state.order.method, 'card');
   assert.equal(checkout.state.order.preferredLocale, 'fa');
   assert.equal(vm.runInContext('vfPayment', c).bankOf('۶۰۳۷۹۹۰۰۰۰۰۰۰۰۰۰').en, 'Bank Melli');
@@ -502,7 +502,7 @@ function page(name, c, props = {}) {
   // With an API base, an order goes out as a Checkout request; a failed request places nothing.
   const live = checkoutWithDelivery({view: 'checkout'});
   live.renderVals().setLast4('1234');
-  live.renderVals().place();
+  live.renderVals().submitOrder();
   assert.equal(live.state.busy, true);
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(live.state.failed, true);
