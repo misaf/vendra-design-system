@@ -4,33 +4,25 @@ import {
   VF_OCCASIONS,
   vfAccountLoad,
   vfAccountPhone,
-  vfAccountUpdate,
   vfAccountSignOut,
   vfReminderNext
 } from '../account-data.js';
 import {vfKnownOrders} from '../../orders/order-records.js';
 import {VF_PRODUCTS, vfProductBadge, vfProductImage, vfProductSub} from '../../catalog/catalog.js';
 import {VF_ZONES} from '../../delivery/delivery-zones.js';
-import {mobile as vfMobile} from '../../../design-system/utils/input.js';
 import {vfLoadLeaflet} from '../../../platform/browser/integrations/leaflet.js';
 import {vfLocationText, vfValidLocation} from '../../delivery/location.js';
 import {vfShell} from '../../shell/navigation.js';
 import {VF_ACCOUNT_TABS} from '../account-tabs.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
-import {VF_STORE, vfFeatures, vfLiveStore} from '../../store/store-config.js';
-import {
-  vfBalanceDiscountOn,
-  vfTopUpAmount,
-  vfTopUpError,
-  vfWalletChange,
-  vfWalletOf
-} from '../wallet.js';
-import {VF_NAV} from '../../../platform/browser/page-focus.js';
-import {vfAmountInputMode, vfAmountToInput} from '../../pricing/formatting.js';
+import {VF_STORE, vfFeatures} from '../../store/store-config.js';
+import {vfBalanceDiscountOn, vfWalletOf} from '../wallet.js';
+import {vfAmountInputMode} from '../../pricing/formatting.js';
 import {dates} from '../../../design-system/utils/dates.js';
-import {useLifecycle, usePageLogic} from '../../shell/page-state.js';
+import {usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
-import {vfRuntime} from '../../../platform/browser/runtime.js';
+import {createAccountEditorActions} from './account-editor-actions.js';
+import {useAccountWallet} from './useAccountWallet.js';
 const VF_ACCOUNT_SAVED = ['VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE'];
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
@@ -49,35 +41,14 @@ export function useAccount(props) {
       placesFailed: false,
       locateFailed: false,
       topUp: '',
-      // The preset last picked, in Toman: kept exact, since its display in a currency with
-      // decimals is rounded and would not read back as the same amount.
       topUpPreset: null,
       topUpError: '',
       topUpBusy: false,
       topUpDone: ''
     };
-    page._setLocation = location => {
-      page.setState(prev =>
-        prev.form
-          ? {
-              form: {...prev.form, location},
-              errors: {...prev.errors, location: undefined},
-              locateFailed: false
-            }
-          : null
-      );
-    };
   });
   useStorefrontPage(page);
-  useLifecycle(page, {
-    willUnmount() {
-      clearTimeout(page._topUpTimer);
-    }
-  });
-  return vals(page);
-}
 
-function vals(page) {
   const S = vfShell(page, 'account'),
     C = vfCopy(S),
     E = C.editor,
@@ -94,77 +65,30 @@ function vals(page) {
       ? VF_STORE.paymentMethods.some(method => method.id === 'wallet')
       : id !== 'reminders' || vfFeatures().reminders
   );
-  const asked = s.tab || vfPageRoute(page.props).tab || page.props.tab;
+  const route = vfPageRoute(page.props);
+  const asked = s.tab || route.tab || page.props.tab;
   const tab = tabs.includes(asked) ? asked : 'orders',
     tx = v => (typeof v === 'string' ? v : v[L] || v.en);
-  const commit = change => {
-    const data = vfAccountUpdate(phone, change, L);
-    if (!data) {
-      page.setState({saveError: E.saveError, notice: ''});
-      return false;
-    }
-    page.setState({
-      account: data,
-      form: null,
-      profile: null,
-      profileChanges: {},
-      errors: {},
-      notice: E.saved,
-      saveError: ''
-    });
-    return data;
-  };
-  // Editor dialogs render in a portal outside main; scope validation focus to the open dialog.
-  const focusError = () =>
-    setTimeout(() => VF_NAV.focusFirstInvalid(document.querySelector('[role="dialog"]')), 0);
-  const openAddress = a =>
-    page.setState({
-      errors: {},
-      locateFailed: false,
-      saveError: '',
-      form: {
-        kind: 'address',
-        id: a && a.id,
-        label: a ? tx(a.label) : '',
-        line: a ? tx(a.line) : '',
-        recipient: a ? tx(a.recipient) : profile.name || C.nameV,
-        phone: a ? a.phone : '',
-        zone: a ? a.zone : 'central',
-        location: a && vfValidLocation(a.location) ? a.location : null
-      }
-    });
-  const openReminder = r =>
-    page.setState({
-      errors: {},
-      saveError: '',
-      form: {
-        kind: 'reminder',
-        id: null,
-        name: '',
-        occ: 'birthday',
-        cal: L === 'fa' ? 'j' : 'g',
-        m: 1,
-        d: 1,
-        before: 3,
-        channel: 'sms',
-        on: true,
-        ...r,
-        ...(r
-          ? {
-              name: tx(r.name)
-            }
-          : {})
-      }
-    });
-  const removeAddress = a => {
-    commit(current => {
-      let addresses = current.addresses.filter(item => item.id !== a.id);
-      if (current.addresses.find(item => item.id === a.id)?.isDefault && addresses.length)
-        addresses = addresses.map((item, index) => ({...item, isDefault: index === 0}));
-      return {...current, addresses};
-    });
-    S.focus('vf-add-address');
-  };
+  const f = s.form || {},
+    isAddress = f.kind === 'address',
+    isReminder = f.kind === 'reminder',
+    occasion = VF_OCCASIONS.find(o => o.id === f.occ);
+  const editorActions = createAccountEditorActions({
+    phone,
+    lang: L,
+    form: f,
+    errors: s.errors,
+    mapFailed: s.mapFailed,
+    profile,
+    profileChanges: s.profileChanges,
+    editor: E,
+    defaultName: C.nameV,
+    defaultAddressLabel: C.addAddr,
+    translate: tx,
+    setState: page.setState,
+    setLang: page.props.setLang,
+    focus: S.focus
+  });
   const reminders = account.reminders
     .slice()
     .sort((a, b) => Number(b.on) - Number(a.on) || vfReminderNext(a).days - vfReminderNext(b).days)
@@ -184,126 +108,20 @@ function vals(page) {
         soon: r.on && next.days <= 14,
         when: S.n(next.days) + ' ' + E.inDays,
         altDate: dates.dayMonth(next.date, dates.locale(L, r.cal === 'j' ? 'g' : 'j')),
-        toggle: v =>
-          commit(current => ({
-            ...current,
-            reminders: current.reminders.map(x =>
-              x.id === r.id
-                ? {
-                    ...x,
-                    on: v
-                  }
-                : x
-            )
-          })),
-        edit: () => openReminder(r),
-        remove: () => {
-          commit(current => ({
-            ...current,
-            reminders: current.reminders.filter(x => x.id !== r.id)
-          }));
-          S.focus('vf-add-reminder');
-        }
+        toggle: on => editorActions.toggleReminder(r.id, on),
+        edit: () => editorActions.openReminder(r),
+        remove: () => editorActions.removeReminder(r.id)
       };
     });
-  const f = s.form || {},
-    isAddress = f.kind === 'address',
-    isReminder = f.kind === 'reminder',
-    occasion = VF_OCCASIONS.find(o => o.id === f.occ);
-  // Templates can't call functions, so each field gets its own handler.
-  const setField = k => value =>
-    page.setState({
-      form: {
-        ...f,
-        [k]: value
-      },
-      errors: {
-        ...s.errors,
-        [k]: undefined
-      }
-    });
-  const saveForm = () => {
-    const errors = {};
-    if (isAddress) {
-      if (!s.mapFailed && !vfValidLocation(f.location)) errors.location = E.pinError;
-      if (f.line.trim().length < 6) errors.line = E.addressError;
-      if (!vfMobile(f.phone)) errors.phone = E.phoneError;
-    } else {
-      if (!f.name.trim()) errors.name = E.required;
-      if (!(
-        f.m >= 1 &&
-        f.m <= 12 &&
-        f.d >= 1 &&
-        f.d <= dates.daysInMonth(f.cal, f.cal === 'j' ? 1403 : 2024, f.m)
-      ))
-        errors.name = E.required;
-    }
-    if (Object.keys(errors).length) {
-      page.setState({
-        errors
-      });
-      // Several problems go to the summary that lists them; one goes to its field. The map can't
-      // carry aria-invalid, so it takes focus itself.
-      if (Object.keys(errors).length > 1) S.focus('vf-editor-errors');
-      else if (errors.location) S.focus('vf-address-map');
-      else focusError();
-      return;
-    }
-    const row = {
-      ...f,
-      id: f.id || f.kind + '-' + Date.now()
-    };
-    delete row.kind;
-    if (isAddress) {
-      if (!row.location) delete row.location;
-
-      row.label = row.label.trim() || C.addAddr;
-      commit(current => {
-        const updated = {
-          ...row,
-          isDefault: f.id
-            ? !!current.addresses.find(a => a.id === f.id)?.isDefault
-            : !current.addresses.length
-        };
-        return {
-          ...current,
-          addresses: f.id
-            ? current.addresses.map(a => (a.id === f.id ? updated : a))
-            : [...current.addresses, updated]
-        };
-      });
-    } else {
-      if (!f.id)
-        vfRuntime.track.event('reminder_created', {
-          occasion: f.occ,
-          calendar: f.cal,
-          days_before: f.before,
-          channel: f.channel
-        });
-      commit(current => ({
-        ...current,
-        reminders: f.id
-          ? current.reminders.map(r => (r.id === f.id ? row : r))
-          : [...current.reminders, row]
-      }));
-    }
-  };
   const addresses = account.addresses.map(a => ({
     ...a,
     label: tx(a.label),
     line: tx(a.line),
     recipient: tx(a.recipient),
     zone: (VF_ZONES.find(z => z.id === a.zone) || VF_ZONES[0])[L],
-    edit: () => openAddress(a),
-    remove: () => removeAddress(a),
-    makeDefault: () =>
-      commit(current => ({
-        ...current,
-        addresses: current.addresses.map(x => ({
-          ...x,
-          isDefault: x.id === a.id
-        }))
-      }))
+    edit: () => editorActions.openAddress(a),
+    remove: () => editorActions.removeAddress(a.id),
+    makeDefault: () => editorActions.makeDefaultAddress(a.id)
   }));
   // The saved addresses on a read-only map (PlacesMap); each marker opens its address.
   const placesView = {
@@ -325,10 +143,16 @@ function vals(page) {
   const W = C.balance,
     rules = VF_STORE.wallet,
     wallet = vfWalletOf(account);
-  const amount =
-    s.topUpPreset != null && s.topUp === vfAmountToInput(s.topUpPreset)
-      ? s.topUpPreset
-      : vfTopUpAmount(s.topUp);
+  const topUp = useAccountWallet({
+    phone,
+    topUp: s.topUp,
+    topUpPreset: s.topUpPreset,
+    topUpBusy: s.topUpBusy,
+    doneMessage: amount => W.done.replace('{amount}', S.m(amount)),
+    setState: page.setState,
+    focus: S.focus
+  });
+  const eligible = vfBalanceDiscountOn(wallet.balance);
   const fill = text =>
     text
       .replace('{percent}', S.n(rules.discountPercent))
@@ -351,7 +175,7 @@ function vals(page) {
     editor: E,
     notice: s.notice,
     saveError: s.saveError,
-    checkoutReturn: vfPageRoute(page.props).next === 'checkout' && !!page.props.store?.bag.length,
+    checkoutReturn: route.next === 'checkout' && !!page.props.store?.bag.length,
     checkoutHref: vfRouteUrl({lang: L, view: 'checkout'}),
     tab,
     setTab: id =>
@@ -367,57 +191,24 @@ function vals(page) {
     isBalance: tab === 'balance',
     balance: {
       amount: S.m(wallet.balance),
-      eligible: vfBalanceDiscountOn(wallet.balance),
-      status: fill(vfBalanceDiscountOn(wallet.balance) ? W.eligible : W.progress),
-      // The balance is kept in this browser (wallet.js), so a live store can't take top-ups until
-      // its server keeps the balance and confirms each top-up with the gateway (docs/API.md B30).
-      canTopUp: !vfLiveStore(),
+      eligible,
+      status: fill(eligible ? W.eligible : W.progress),
+      canTopUp: topUp.canTopUp,
       presets: rules.topUps.map(value => ({
         label: S.m(value),
-        pressed: amount === value,
-        pick: () =>
-          page.setState({
-            topUp: vfAmountToInput(value),
-            topUpPreset: value,
-            topUpError: '',
-            topUpDone: ''
-          })
+        pressed: topUp.amount === value,
+        pick: () => topUp.pick(value)
       })),
       value: s.topUp,
       inputMode: vfAmountInputMode(),
-      set: value => page.setState({topUp: value, topUpError: '', topUpDone: ''}),
+      set: topUp.setAmount,
       hint: fill(W.amountHint),
       error: s.topUpError ? fill(W.errors[s.topUpError]) : undefined,
       busy: s.topUpBusy,
-      payLabel: amount && !vfTopUpError(amount) ? W.pay.replace('{amount}', S.m(amount)) : W.topUp,
+      payLabel:
+        topUp.amount && !topUp.error ? W.pay.replace('{amount}', S.m(topUp.amount)) : W.topUp,
       done: s.topUpDone,
-      submit: () => {
-        if (s.topUpBusy || vfLiveStore()) return;
-        const error = vfTopUpError(amount);
-        if (error) {
-          page.setState({topUpError: error, topUpDone: ''});
-          S.focus('vf-topup-amount');
-          return;
-        }
-        // Demo payment: a real store confirms the top-up with its payment provider before adding it.
-        page.setState({topUpBusy: true, topUpDone: ''});
-        page._topUpTimer = setTimeout(() => {
-          const next = vfWalletChange(phone, amount, {kind: 'topup'});
-          if (!next) {
-            page.setState({topUpBusy: false, topUpError: 'storage'});
-            return;
-          }
-          vfRuntime.track.event('top_up', {value: amount});
-          page.setState({
-            account: next,
-            topUp: '',
-            topUpPreset: null,
-            topUpBusy: false,
-            topUpDone: W.done.replace('{amount}', S.m(amount))
-          });
-          S.focus('vf-topup-done');
-        }, 600);
-      },
+      submit: topUp.submit,
       hasHistory: wallet.history.length > 0,
       noHistory: !wallet.history.length,
       history: wallet.history.map(h => ({
@@ -477,50 +268,24 @@ function vals(page) {
         S.focusAfterRemoval('.ag-product__fav', i);
       }
     })),
-    addAddress: () => openAddress(null),
+    addAddress: () => editorActions.openAddress(null),
     reminders,
     remLabels: C.remLabels,
     hasReminders: reminders.length > 0,
     noReminders: !reminders.length,
     coming: reminders.find(r => r.soon),
-    addReminder: () => openReminder(null),
+    addReminder: () => editorActions.openReminder(null),
     profile: {
       ...profile,
       name: profile.name || C.nameV,
       phone
     },
     setProfile: Object.fromEntries(
-      ['name', 'email', 'locale', 'sms'].map(k => [
-        k,
-        value =>
-          page.setState({
-            profile: {
-              ...profile,
-              [k]: value
-            },
-            profileChanges: {...s.profileChanges, [k]: value},
-            errors: {}
-          })
-      ])
+      ['name', 'email', 'locale', 'sms'].map(key => [key, editorActions.setProfileField(key)])
     ),
     emailError: s.errors.email,
     profileProblems: s.errors.email ? [{text: s.errors.email, target: 'vf-pemail'}] : [],
-    saveProfile: () => {
-      if (profile.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(profile.email.trim())) {
-        page.setState({
-          errors: {
-            email: E.emailError
-          }
-        });
-        focusError();
-        return;
-      }
-      const saved = commit(current => ({
-        ...current,
-        profile: {...current.profile, ...s.profileChanges}
-      }));
-      if (saved && page.props.setLang) page.props.setLang(saved.profile.locale);
-    },
+    saveProfile: editorActions.saveProfile,
     signOut: () => {
       vfAccountSignOut();
       if (page.props.go)
@@ -542,7 +307,7 @@ function vals(page) {
     pinError: s.errors.location || (s.locateFailed ? E.locateFailed : ''),
     // The address pin (LocationPicker) uses the store's map settings.
     map: {
-      change: location => page._setLocation(location),
+      change: editorActions.setLocation,
       load: vfLoadLeaflet,
       tiles: {url: VF_STORE.map.tiles, attribution: VF_STORE.map.attribution},
       center: VF_STORE.map.center,
@@ -569,15 +334,13 @@ function vals(page) {
       .filter(([key]) => s.errors[key])
       .map(([key, target]) => ({text: s.errors[key], target})),
     set: Object.fromEntries(
-      ['label', 'zone', 'line', 'recipient', 'phone', 'name', 'channel'].map(k => [k, setField(k)])
+      ['label', 'zone', 'line', 'recipient', 'phone', 'name', 'channel'].map(k => [
+        k,
+        editorActions.setField(k)
+      ])
     ),
-    saveForm,
-    closeForm: () =>
-      page.setState({
-        form: null,
-        saveError: '',
-        errors: {}
-      }),
+    saveForm: editorActions.saveForm,
+    closeForm: editorActions.closeForm,
     zoneOptions: VF_ZONES.map(z => ({
       value: z.id,
       label: z[L]
@@ -614,41 +377,8 @@ function vals(page) {
       month: E.month,
       day: E.day
     },
-    setDate: value =>
-      page.setState({
-        form: {
-          ...f,
-          ...value
-        }
-      }),
-    setBefore: value =>
-      page.setState({
-        form: {
-          ...f,
-          before: +value
-        }
-      }),
-    setOccasion: value => {
-      const o = VF_OCCASIONS.find(o => o.id === value);
-      let date = o.fixed || {};
-      if (o.hijri) {
-        const n = vfReminderNext({
-            occ: o.id
-          }),
-          p = dates.parts(f.cal, n.date);
-        date = {
-          cal: f.cal,
-          m: p[1],
-          d: p[2]
-        };
-      }
-      page.setState({
-        form: {
-          ...f,
-          occ: o.id,
-          ...date
-        }
-      });
-    }
+    setDate: editorActions.setDate,
+    setBefore: editorActions.setBefore,
+    setOccasion: editorActions.setOccasion
   };
 }
