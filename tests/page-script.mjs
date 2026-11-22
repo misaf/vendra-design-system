@@ -139,6 +139,7 @@ function pageScript(name) {
     );
   if (name === 'account')
     parts.push(read(folder + '/account-editor-actions.js'), read(folder + '/useAccountWallet.js'));
+  if (name === 'product') parts.push(read(folder + '/quote.js'));
   if (name === 'counter')
     parts.push(
       ...[
