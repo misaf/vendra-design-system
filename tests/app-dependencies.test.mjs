@@ -339,6 +339,49 @@ check('route pages import shared UI directly', {
   'src/design-system/components/Button.tsx': ''
 });
 
+const clientRoute = 'src/app/Client.tsx';
+const laravelHttp = 'src/platform/server/laravel-http.ts';
+const catalogEntry = 'src/storefront/catalog/laravel/catalog.mjs';
+check(
+  'client code cannot reach Laravel through a feature re-export',
+  {
+    [clientRoute]: "'use client'; import '@storefront/src/storefront/catalog/laravel/catalog.mjs';",
+    [catalogEntry]: "export * from '../../../platform/server/laravel-http';",
+    [laravelHttp]: 'export const request = () => {};'
+  },
+  /Browser code reaches a server-only module: .*Client.tsx -> .*catalog.mjs -> .*laravel-http.ts/
+);
+check(
+  'literal dynamic imports cannot load a server-only module',
+  {
+    [clientRoute]: "'use client'; export const load = () => import('./backend');",
+    'src/app/backend.ts': "import 'server-only';"
+  },
+  /Browser code reaches a server-only module: .*Client.tsx -> .*backend.ts/
+);
+check('client code may share erased types through a re-export', {
+  [clientRoute]: `'use client'; import {type Product, empty} from './types';
+    import {type Product as ServerProduct} from './backend';
+    export const display = (product: Product | ServerProduct) => product.code || empty;`,
+  'src/app/types.ts': "export {type Product} from './backend'; export const empty = '';",
+  'src/app/backend.ts': "import 'server-only'; export interface Product {code: string}"
+});
+check('a server route can compose live and demo implementations', {
+  'src/app/page.tsx': "import './live'; import '@storefront/src/demo/catalog';",
+  'src/app/live.ts': "import 'server-only'; import '@storefront/src/platform/server/laravel-http';",
+  [laravelHttp]: '',
+  'src/demo/catalog.ts': ''
+});
+check(
+  'a storefront feature cannot reach demo fixtures through another feature module',
+  {
+    'src/storefront/catalog/service.ts': "import './data';",
+    'src/storefront/catalog/data.ts': "export * from '@storefront/src/demo/catalog';",
+    'src/demo/catalog.ts': ''
+  },
+  /Storefront feature reaches a demo module: .*service.ts -> .*data.ts -> .*demo\/catalog.ts/
+);
+
 // Shared dependencies are imported: no module reads or sets window.VF_* / window.AG_* (or the cards'
 // window.VendraDesignSystem), only src/design-system/gallery/card-runtime.js, the cards' compatibility layer.
 for (const [name, file, code] of [

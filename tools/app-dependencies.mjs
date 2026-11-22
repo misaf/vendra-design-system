@@ -142,9 +142,37 @@ function visit(node, callback) {
   }
 }
 
+function isRuntimeImport(node) {
+  if (node.type === 'TSImportType' || node.importKind === 'type' || node.exportKind === 'type')
+    return false;
+  return (
+    !node.specifiers?.length ||
+    node.specifiers.some(
+      specifier => specifier.importKind !== 'type' && specifier.exportKind !== 'type'
+    )
+  );
+}
+
+function pathToRestrictedModule(graph, source, restricted) {
+  const paths = [[source]];
+  const seen = new Set([source]);
+  for (const chain of paths) {
+    const file = chain.at(-1);
+    if (restricted(file)) return chain.join(' -> ');
+    for (const dependency of graph.get(file)) {
+      if (seen.has(dependency)) continue;
+      seen.add(dependency);
+      paths.push([...chain, dependency]);
+    }
+  }
+  return null;
+}
+
 function checkDependencies(root) {
   const files = runtimeSources(root);
   const graph = new Map(files.map(file => [file, new Set()]));
+  const browserEntries = new Set();
+  const serverOnlyModules = new Set();
   const violations = [];
   for (const [source] of graph) {
     if (/^src\/storefront\/[^/]+\.[^.]+$/.test(source))
@@ -154,6 +182,9 @@ function checkDependencies(root) {
       violations.push(...errors.map(error => `${source}: parse error: ${error.message}`));
       continue;
     }
+    if (source.startsWith(platform) || program.body.some(node => node.directive === 'use client'))
+      browserEntries.add(source);
+    if (source.startsWith('src/platform/server/')) serverOnlyModules.add(source);
     visit(program, node => {
       const global = source !== cardCompatibility && globalAccess(node);
       if (global)
@@ -175,6 +206,8 @@ function checkDependencies(root) {
                 : null;
       if (!reference) return;
       const specifier = reference.value;
+      const runtimeImport = isRuntimeImport(node);
+      if (specifier === 'server-only' && runtimeImport) serverOnlyModules.add(source);
       if (typeof specifier !== 'string') {
         if (
           isReusableUi(source) ||
@@ -213,14 +246,20 @@ function checkDependencies(root) {
             graph.set(target, new Set());
             files.push(target);
           }
-          if (!node.importKind || node.importKind !== 'type') {
-            if (node.type !== 'TSImportType') graph.get(source).add(target);
-          }
+          if (runtimeImport) graph.get(source).add(target);
         }
       }
       const violation = appDependencyViolation(source, target, base !== null);
       if (violation) violations.push(violation);
     });
+  }
+  for (const source of browserEntries) {
+    const chain = pathToRestrictedModule(graph, source, file => serverOnlyModules.has(file));
+    if (chain) violations.push(`Browser code reaches a server-only module: ${chain}`);
+  }
+  for (const source of files.filter(file => file.startsWith(storefront))) {
+    const chain = pathToRestrictedModule(graph, source, file => file.startsWith('src/demo/'));
+    if (chain) violations.push(`Storefront feature reaches a demo module: ${chain}`);
   }
   // A gray vertex is still on the current path; a black one is already fully checked.
   const colors = new Map();
