@@ -3,10 +3,10 @@ import {liveCatalogBase} from '@storefront/src/app/_live-catalog/catalog-mode';
 import {liveProductPage} from '@storefront/src/app/_live-catalog/live-catalog-page';
 import {requireLocale} from '@storefront/src/platform/locale/route-locale';
 import ProductScreen from '../../../../storefront/catalog/product/ProductScreen.jsx';
-import {VF_PRODUCTS} from '@storefront/src/storefront/catalog/catalog.js';
+import {demoProductCodes, readDemoProduct} from '@storefront/src/demo/catalog.mjs';
 
 export function generateStaticParams() {
-  return VF_PRODUCTS.map(({id}) => ({code: id}));
+  return demoProductCodes().map(code => ({code}));
 }
 
 export default async function Page({params}: {params: Promise<{locale: string; code: string}>}) {
@@ -15,5 +15,6 @@ export default async function Page({params}: {params: Promise<{locale: string; c
   const segment = encodeURIComponent(code);
   const apiBase = await liveCatalogBase();
   if (apiBase) return liveProductPage(apiBase, lang, segment);
-  return renderDemoScreen(lang, 'product/' + segment, ProductScreen);
+  const fixture = readDemoProduct(code, lang);
+  return renderDemoScreen(lang, 'product/' + segment, fixture && <ProductScreen {...fixture} />);
 }

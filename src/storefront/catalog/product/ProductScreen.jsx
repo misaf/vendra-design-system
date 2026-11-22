@@ -5,10 +5,7 @@ import {useStorefrontPageProps} from '../../session/page-context';
 import {useProduct} from './useProduct.js';
 import {View} from './ProductView.jsx';
 
-// Props a standalone preview starts with.
-export const defaults = {lang: 'en', tenant: 'default', mobile: false};
-
-export default function StorefrontProduct(props) {
-  props = useStorefrontPageProps(props);
-  return <View v={{...props, ...useProduct(props)}} />;
+export default function StorefrontProduct({product, details, ...previewProps}) {
+  const pageProps = {...useStorefrontPageProps(previewProps), product, details};
+  return <View v={{...pageProps, ...useProduct(pageProps)}} />;
 }

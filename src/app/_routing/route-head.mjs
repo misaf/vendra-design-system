@@ -1,5 +1,5 @@
 // Metadata comes from the same localized copy and catalog as the route's React view.
-import {vfFindProduct} from '../../storefront/catalog/catalog.js';
+import {readDemoProduct} from '../../demo/catalog.mjs';
 import {VF_FA_DIGITS, VF_MONEY} from '../../storefront/pricing/formatting.js';
 import {vfServerRender} from '../../platform/browser/environment.js';
 import {vfPageHead} from '../../storefront/shell/page-metadata.js';
@@ -82,7 +82,15 @@ export function routeHead(path, {base = '/', origin = '', lang: fallbackLang} = 
     const title =
       post?.[lang][0] || descriptions[route.view]?.(copy, route) || descriptions.notfound(copy);
     let details;
-    if (route.view === 'product') details = vfProductHead(vfFindProduct(route.id), lang);
+    if (route.view === 'product') {
+      const fixture = readDemoProduct(route.id, lang);
+      if (fixture)
+        details = vfProductHead(
+          fixture.product,
+          lang,
+          fixture.details.description?.paragraphs[0] ?? ''
+        );
+    }
     if (post) details = vfPostHead(post, lang);
     if (route.view === 'home' || route.view === 'contact')
       details = {structuredData: [vfFloristData(lang)]};

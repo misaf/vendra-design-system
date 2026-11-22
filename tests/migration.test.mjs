@@ -7,6 +7,7 @@ import vm from 'node:vm';
 import {VF_EMAIL} from '../src/communications/templates/email/email-templates.js';
 import {VF_NOTIFY} from '../src/communications/templates/notifications.js';
 import {VF_POSTS} from '../src/storefront/content/journal-content.js';
+import {readDemoProduct} from '../src/demo/catalog.mjs';
 import {pageScript, sharedLogic} from './page-script.mjs';
 const root = path.resolve(import.meta.dirname, '..'),
   read = p => fs.readFileSync(path.join(root, p), 'utf8');
@@ -836,7 +837,8 @@ function page(name, c, props = {}) {
     assert.ok(!/ارسال همان روز برای سفارش تا/.test(shipping));
     // No add-ons: the product page has no extras and the bag can't add a card.
     vm.runInContext('VF_ADDONS.splice(0)', store);
-    assert.equal(page('product', store, {lang: 'fa'}).renderVals().addons.length, 0);
+    const fixture = readDemoProduct('VF-7K2M4Q', 'fa');
+    assert.equal(page('product', store, {lang: 'fa', ...fixture}).renderVals().addons.length, 0);
     const bag = page('cart', store, {lang: 'fa'}).renderVals();
     assert.ok(bag.cardLines.every(line => !line.noCard));
     assert.equal(bag.cardsShown, false);

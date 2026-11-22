@@ -4,19 +4,17 @@ import {VF_ZONES} from '../../delivery/delivery-zones.js';
 import {vfDeliveryCutoff, vfDeliveryHint} from '../../delivery/delivery-copy.js';
 import {vfPlural} from '../../store/store-config.js';
 import {vfProductImage, vfProductImages} from '../catalog.js';
-import {VF_PRODUCT_DETAILS} from '../sample-catalog.js';
 import {VF_CATEGORY_COPY} from '../categories.js';
 import {VF_SHELL} from '../../shell/shell.js';
 import {vfRouteUrl} from '../../shell/routing.js';
 import {vfBreadcrumbData, vfOfferPrice, vfProductData} from '../../shell/structured-data.js';
 
-export function vfProductHead(product, L) {
+export function vfProductHead(product, L, description) {
   const url = vfRouteUrl({lang: L, view: 'product', id: product.id});
   const photo = vfProductImage(product, L);
-  const description = VF_PRODUCT_DETAILS[product.id][L === 'fa' ? 1 : 0];
   return {
     image: {src: photo.src, alt: photo.alt, width: photo.width, height: photo.height},
-    description: description,
+    description,
     type: 'product',
     price: vfOfferPrice(product.price),
     structuredData: [
@@ -25,7 +23,7 @@ export function vfProductHead(product, L) {
         lang: L,
         url,
         images: vfProductImages(product, L).map(image => image.src),
-        description: description,
+        description,
         category: VF_CATEGORY_COPY[L][product.cat]
       }),
       vfBreadcrumbData([

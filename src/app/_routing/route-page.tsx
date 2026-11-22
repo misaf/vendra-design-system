@@ -1,6 +1,6 @@
 import 'server-only';
 import {notFound} from 'next/navigation';
-import type {ComponentType} from 'react';
+import type {ComponentType, ReactNode} from 'react';
 import {StorefrontScreen} from '../_document/StorefrontScreen';
 import {routeHead} from './route-head.mjs';
 import {requireLocale} from '@storefront/src/platform/locale/route-locale';
@@ -20,14 +20,14 @@ export function storefrontPage<Segments extends object = Record<never, never>>(
     const segment = typeof path === 'function' ? path(values) : path;
     const apiBase = await liveCatalogBase();
     if (apiBase) return liveCatalogPage(apiBase, lang, segment, fallback);
-    return renderDemoScreen(lang, segment, Screen, fallback);
+    return renderDemoScreen(lang, segment, <Screen />, fallback);
   };
 }
 
 export function renderDemoScreen(
   lang: ReturnType<typeof requireLocale>,
   segment: string,
-  Screen: ComponentType,
+  screen: ReactNode,
   fallback = false
 ) {
   const address = [lang, segment].filter(Boolean).join('/') + '/';
@@ -45,7 +45,7 @@ export function renderDemoScreen(
       view={fallback ? 'notfound' : route.view}
       fallbackLang={fallback ? lang : null}
     >
-      {route.view === 'notfound' && !fallback ? null : <Screen />}
+      {route.view === 'notfound' && !fallback ? null : screen}
     </StorefrontScreen>
   );
 }
