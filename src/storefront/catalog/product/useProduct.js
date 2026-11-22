@@ -12,9 +12,9 @@ import {
   vfProductSub
 } from '../catalog.js';
 import {vfRecentlyViewed, vfRememberViewed} from '../recently-viewed.js';
-import {vfBagLine, vfLineDetail} from '../../cart/cart-lines.js';
+import {vfBagLine} from '../../cart/cart-lines.js';
 import {vfTokenText} from '../catalog.js';
-import {vfLineQuantityMax} from '../../cart/cart-lines.js';
+import {vfProductQuote} from './quote.js';
 import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../pricing/formatting.js';
 import {vfShell} from '../../shell/shell-props.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
@@ -49,11 +49,8 @@ export function useProduct(props) {
       const selected = {...page.state, ...patch};
       const route = vfPageRoute(page.props);
       const {product} = page.props;
-      const line = vfBagLine(product, selected.size, selected.addons);
-      const bag = page.props.store?.bag || [];
-      const remaining =
-        vfLineQuantityMax(line, bag) - (bag.find(item => item.id === line.id)?.qty || 0);
-      const qty = Math.max(1, Math.min(selected.qty, Math.max(1, remaining)));
+      const {line} = vfProductQuote(product, selected, page.props.store?.bag || []);
+      const {qty} = line;
       const next = {
         ...route,
         lang: page.props.lang === 'fa' ? 'fa' : 'en',
@@ -135,18 +132,9 @@ function vals(page) {
   const base = product.price;
   const availableAddons = VF_ADDONS.filter(addon => !(product.noAddons || []).includes(addon.id));
   const hasSizes = !!product.sizes;
-  const size = VF_SIZES.find(item => item.id === s.size);
-  const chosenAddons = availableAddons.filter(addon => s.addons.includes(addon.id));
-  const extra = chosenAddons.reduce((sum, addon) => sum + addon.price, 0);
-  const unit = base + (hasSizes ? size.price : 0) + extra;
-  const line = vfBagLine(product, hasSizes ? s.size : null, s.addons);
-  const bag = page.props.store?.bag || [];
-  const remaining = Math.max(
-    0,
-    vfLineQuantityMax(line, bag) - (bag.find(item => item.id === line.id)?.qty || 0)
-  );
-  const quantity = Math.min(s.qty, Math.max(1, remaining));
-  const total = unit * quantity;
+  const {line, remaining, total} = vfProductQuote(product, s, page.props.store?.bag || []);
+  const {qty: quantity} = line;
+  const size = VF_SIZES.find(item => item.id === line.size);
   const care = product.care?.[L] || C.careT;
   const recent = vfRecentlyViewed()
     .filter(x => x !== product.id)
@@ -226,10 +214,10 @@ function vals(page) {
     unavailable: product.inStock === false || remaining === 0,
     category: S.shopLink(product.cat),
     productImages: vfProductImages(product, L),
-    details: hasSizes && size.price ? {...details, price: m(base + size.price)} : details,
+    details: size?.price ? {...details, price: m(base + size.price)} : details,
     unitPriceLabel: availableAddons.length ? C.priceBeforeExtras : C.priceEach,
     selectionTotalLabel: C.selectionTotal(quantity),
-    totalHint: chosenAddons.length ? C.totalWithExtras : C.totalDelivery,
+    totalHint: line.addons.length ? C.totalWithExtras : C.totalDelivery,
     sizes: VF_SIZES.map(item => ({
       label: item.name[L],
       desc: item.detail[L] + vfSeparator(L) + (item.price ? '+' + m(item.price) : C.labels.base),
@@ -271,15 +259,7 @@ function vals(page) {
       if (product.inStock === false || remaining === 0) return;
       const st = page.props.store;
       if (st) {
-        st.add(
-          vfBagLine(
-            product,
-            hasSizes ? s.size : null,
-            chosenAddons.map(addon => addon.id),
-            quantity
-          ),
-          vfPageRoute(page.props).date
-        );
+        st.add(line, vfPageRoute(page.props).date);
       }
       // A small bag panel confirms what was added and offers the next step.
       page.toasts.clear();
@@ -288,10 +268,7 @@ function vals(page) {
           line: {
             image: vfProductImage(product, L),
             name: product.id,
-            meta:
-              vfLineDetail(product, hasSizes ? size : null, chosenAddons, L) +
-              ' · × ' +
-              (fa ? VF_FA_DIGITS(quantity) : quantity),
+            meta: line[L][1] + ' · × ' + (fa ? VF_FA_DIGITS(quantity) : quantity),
             total: m(total)
           }
         }
