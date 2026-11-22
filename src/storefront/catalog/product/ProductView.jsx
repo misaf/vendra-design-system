@@ -34,15 +34,9 @@ export function View({v}) {
           }
           gallery={
             <StorefrontProductGallery
-              productCode={v.t?.name}
+              key={v.productId}
               images={v.productImages}
-              items={v.photoItems}
-              index={v.photo}
               labels={{photos: v.t?.photos, slide: v.t?.slide, fullScreen: v.t?.fullScreen}}
-              onGalleryIndexChange={v.setGalleryPhoto}
-              onOpen={v.openPhotos}
-              onIndexChange={v.setPhoto}
-              onClose={v.closePhotos}
             />
           }
           details={
