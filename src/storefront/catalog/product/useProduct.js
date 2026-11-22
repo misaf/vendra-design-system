@@ -13,7 +13,6 @@ import {
   vfProductSub
 } from '../catalog.js';
 import {vfRecentlyViewed, vfRememberViewed} from '../recently-viewed.js';
-import {vfBagLine} from '../../cart/cart-lines.js';
 import {vfTokenText} from '../catalog.js';
 import {vfProductQuote} from './quote.js';
 import {VF_FA_DIGITS, VF_MONEY, vfSeparator} from '../../pricing/formatting.js';
@@ -27,55 +26,52 @@ import {vfSelectItem, vfShowList} from '../../../platform/browser/list-tracking.
 import {vfRuntime} from '../../../platform/browser/runtime.js';
 
 // A shared counter quote supplies validated choices through the product route.
-function vfProductSelection(props) {
-  const route = vfPageRoute(props);
-  const product = props.product;
-  const line = vfBagLine(product, route.size, route.addons || []);
-  return {size: line.size || VF_SIZES[0].id, addons: line.addons, qty: route.qty || 1};
+function useProductSelection({product, lang, store, go}, route) {
+  const [, refreshPreview] = React.useReducer(version => version + 1, 0);
+  const selection = {size: route.size, addons: route.addons || [], qty: route.qty || 1};
+
+  function select(patch) {
+    const {line} = vfProductQuote(product, {...selection, ...patch}, store?.bag || []);
+    const {size, addons, qty} = line;
+    const next = {
+      ...route,
+      lang: lang === 'fa' ? 'fa' : 'en',
+      view: 'product',
+      id: product.id,
+      cat: product.cat,
+      size,
+      addons,
+      qty
+    };
+    if (go) {
+      go(next, true);
+      return;
+    }
+
+    // A standalone preview preserves its other parameters (?page=product, ?tenant=…).
+    const query = new URLSearchParams(location.search);
+    const canonical = new URL(vfRouteUrl(next), location.href);
+    for (const key of ['size', 'addons', 'qty']) {
+      if (canonical.searchParams.has(key)) query.set(key, canonical.searchParams.get(key));
+      else query.delete(key);
+    }
+    const search = query.toString();
+    history.replaceState(history.state, '', canonical.pathname + (search ? '?' + search : ''));
+    refreshPreview();
+  }
+
+  return {selection, select};
 }
-function vfProductRouteKey(props) {
-  const route = vfPageRoute(props);
-  return JSON.stringify([props.product.id, route.size, route.addons, route.qty]);
-}
-// The page: its state (applied at once, as the logic reads it back), effects and the values
-// its View renders.
+
 export function useProduct(props) {
+  const route = vfPageRoute(props);
+  const routeKey = JSON.stringify([props.product.id, route.size, route.addons, route.qty]);
+  const {selection, select} = useProductSelection(props, route);
   const [added, setAdded] = React.useState(null);
   const [toasts] = React.useState(() => new ToastQueue({maxVisibleToasts: 1}));
   React.useEffect(() => () => toasts.clear(), [toasts]);
 
   const page = usePageLogic(props, page => {
-    page.state = vfProductSelection(props);
-    page._select = patch => {
-      const selected = {...page.state, ...patch};
-      const route = vfPageRoute(page.props);
-      const {product} = page.props;
-      const {line} = vfProductQuote(product, selected, page.props.store?.bag || []);
-      const {qty} = line;
-      const next = {
-        ...route,
-        lang: page.props.lang === 'fa' ? 'fa' : 'en',
-        view: 'product',
-        id: product.id,
-        cat: product.cat,
-        size: line.size,
-        addons: line.addons,
-        qty
-      };
-      page.setState({size: line.size || VF_SIZES[0].id, addons: line.addons, qty});
-      if (page.props.go) page.props.go(next, true);
-      else {
-        // A page on its own keeps its other parameters (?page=product, ?tenant=…).
-        const query = new URLSearchParams(location.search),
-          canonical = new URL(vfRouteUrl(next), location.href);
-        for (const key of ['size', 'addons', 'qty']) {
-          if (canonical.searchParams.has(key)) query.set(key, canonical.searchParams.get(key));
-          else query.delete(key);
-        }
-        const search = query.toString();
-        history.replaceState(history.state, '', canonical.pathname + (search ? '?' + search : ''));
-      }
-    };
     page._rememberProduct = () => {
       const {product} = page.props;
       vfRememberViewed(product.id);
@@ -89,7 +85,7 @@ export function useProduct(props) {
   useLifecycle(page, {
     didMount() {
       page._productId = page.props.product.id;
-      page._productRouteKey = vfProductRouteKey(page.props);
+      page._productRouteKey = routeKey;
       page._rememberProduct();
     },
     didUpdate() {
@@ -98,31 +94,28 @@ export function useProduct(props) {
         page._productId = id;
         page._rememberProduct();
       }
-      const key = vfProductRouteKey(page.props);
-      if (page._productRouteKey !== key) {
-        page._productRouteKey = key;
-        page.setState(vfProductSelection(page.props));
+      if (page._productRouteKey !== routeKey) {
+        page._productRouteKey = routeKey;
         setAdded(null);
         toasts.clear();
       }
     }
   });
-  return vals(page, {added, setAdded, toasts});
+  return vals(page, {selection, select, added, setAdded, toasts});
 }
 
-function vals(page, {added, setAdded, toasts}) {
+function vals(page, {selection, select, added, setAdded, toasts}) {
   const fa = page.props.lang === 'fa';
   const L = fa ? 'fa' : 'en';
   const savedItems = vfSavedItems(page);
   const S = vfShell(page, 'product');
-  const s = page.state;
   const m = v => VF_MONEY(v, fa);
   const C = vfCopy(S);
   const {product, details} = page.props;
   const base = product.price;
   const availableAddons = VF_ADDONS.filter(addon => !(product.noAddons || []).includes(addon.id));
   const hasSizes = !!product.sizes;
-  const {line, remaining, total} = vfProductQuote(product, s, page.props.store?.bag || []);
+  const {line, remaining, total} = vfProductQuote(product, selection, page.props.store?.bag || []);
   const {qty: quantity} = line;
   const size = VF_SIZES.find(item => item.id === line.size);
   const care = product.care?.[L] || C.careT;
@@ -217,22 +210,22 @@ function vals(page, {added, setAdded, toasts}) {
       desc: item.detail[L] + vfSeparator(L) + (item.price ? '+' + m(item.price) : C.labels.base),
       value: item.id
     })),
-    size: s.size,
-    setSize: id => page._select({size: id}),
+    size: line.size || VF_SIZES[0].id,
+    setSize: id => select({size: id}),
     addons: availableAddons.map(addon => {
-      const on = s.addons.includes(addon.id);
+      const on = line.addons.includes(addon.id);
       return {
         label: addon.name[L] + ' · +' + m(addon.price),
         on,
         toggle: () =>
-          page._select({
-            addons: on ? s.addons.filter(x => x !== addon.id) : [...s.addons, addon.id]
+          select({
+            addons: on ? line.addons.filter(x => x !== addon.id) : [...line.addons, addon.id]
           })
       };
     }),
     qty: quantity,
     setQty: q =>
-      page._select({
+      select({
         qty: q
       }),
     qtyLabels: {

@@ -182,22 +182,22 @@ for (const lang of ['en', 'fa']) {
   assert.equal(badSize.size, 'petite');
   assert.deepEqual(Array.from(badSize.addons), []);
   const {logic} = loadPage('product', {routeInfo: route});
-  assert.equal(logic.state.size, 'classic');
-  assert.deepEqual(Array.from(logic.state.addons), ['card', 'vase']);
+  assert.equal(logic.renderVals().size, 'classic');
+  assert.equal(logic.renderVals().addons.filter(addon => addon.on).length, 2);
   logic.lifecycle.didMount();
   logic.renderVals().add();
   assert.equal(logic.renderVals().addedOpen, true);
   logic.props = {...logic.props, routeInfo: {...route, size: 'generous', addons: []}};
   logic.renderVals();
   logic.lifecycle.didUpdate();
-  assert.equal(logic.state.size, 'generous');
+  assert.equal(logic.renderVals().size, 'generous');
   assert.equal(logic.renderVals().addedOpen, false);
-  assert.deepEqual(Array.from(logic.state.addons), []);
+  assert.ok(logic.renderVals().addons.every(addon => !addon.on));
   logic.props = {...logic.props, routeInfo: {view: 'product', id: route.id}};
   logic.renderVals();
   logic.lifecycle.didUpdate();
-  assert.equal(logic.state.size, 'petite');
-  assert.deepEqual(Array.from(logic.state.addons), []);
+  assert.equal(logic.renderVals().size, 'petite');
+  assert.ok(logic.renderVals().addons.every(addon => !addon.on));
 }
 for (const lang of ['en', 'fa']) {
   for (const id of ['VF-7K2M4Q', 'VF-3HX9TP', 'VF-8RD5WN', 'VF-4CJ6ZB', 'VF-9FA2KE', 'VF-6MT3VY']) {
@@ -205,7 +205,10 @@ for (const lang of ['en', 'fa']) {
     const {logic} = loadPage('product', {
       lang,
       routeInfo: {view: 'product', id},
-      store: {saved: [], add: line => (added = line)}
+      store: {saved: [], add: line => (added = line)},
+      go: routeInfo => {
+        logic.props = {...logic.props, routeInfo};
+      }
     });
     const v = logic.renderVals();
     const care = v.faq.find(item => item.id === 'care').content;
@@ -260,12 +263,19 @@ for (const lang of ['en', 'fa']) {
       logic.renderVals().setSize(logic.renderVals().sizes[2].value);
       logic.renderVals().add();
       assert.equal(added.unit, 6000000, 'Generous surcharge remains selectable');
-      logic._productId = 'VF-8RD5WN';
-      logic.lifecycle.didUpdate();
+      logic.props = {
+        ...logic.props,
+        ...readDemoProduct('VF-8RD5WN', lang),
+        routeInfo: {view: 'product', id: 'VF-8RD5WN'}
+      };
+      const changed = logic.renderVals();
       assert.equal(
-        logic.renderVals().details.price,
-        listing.price,
-        'Changing products resets to the starting price'
+        changed.details.price,
+        loadPage('product', {
+          lang,
+          routeInfo: {view: 'product', id: 'VF-8RD5WN'}
+        }).logic.renderVals().details.price,
+        'Changing products restores the new product’s base price'
       );
     }
   }
@@ -349,6 +359,9 @@ for (const lang of ['en', 'fa']) {
     go: (next, replace) => {
       route = next;
       assert.equal(replace, true);
+      const read = vm.runInContext('vfReadRoute', c);
+      const write = vm.runInContext('vfRouteUrl', c);
+      product.props = {...product.props, routeInfo: read(write(next))};
     }
   });
   product.renderVals().setSize('generous');

@@ -33,6 +33,20 @@ for (const lang of ['en', 'fa']) {
     await expectAmounts(4900000, 5700000);
     await page.getByRole('button', {name: fa ? 'بیشتر' : 'More', exact: true}).click();
     await expectAmounts(4900000, 11400000);
+    const params = await page.evaluate(() =>
+      Object.fromEntries(new URLSearchParams(location.search))
+    );
+    expect(params).toMatchObject({size: 'classic', addons: 'card,vase', qty: '2'});
+    await page.reload();
+    await expectAmounts(4900000, 11400000);
+    await page.evaluate(() => {
+      const url = new URL(location.href);
+      url.searchParams.set('size', 'generous');
+      history.pushState(null, '', url);
+    });
+    await expectAmounts(6000000, 13600000);
+    await page.goBack();
+    await expectAmounts(4900000, 11400000);
     await expect(total).toContainText(fa ? 'جمع ۲ عدد' : 'Total · 2 items');
     await expect(page.locator('.vf-product-total-hint')).toHaveText(
       fa
@@ -100,3 +114,17 @@ for (const lang of ['en', 'fa']) {
     );
   });
 }
+
+test('the standalone product preview keeps its URL parameters and choices', async ({page}) => {
+  await page.goto('/?page=product&lang=en');
+  const unit = page.locator('.vf-product-price .ag-price__now');
+  await expect.poll(async () => amount(await unit.textContent())).toBe(4100000);
+
+  await choiceTile(page.locator('.vf-product-sizes'), /^Classic/).click();
+  await expect.poll(async () => amount(await unit.textContent())).toBe(4900000);
+  const params = new URL(page.url()).searchParams;
+  expect(params.get('page')).toBe('product');
+  expect(params.get('size')).toBe('classic');
+  await page.reload();
+  await expect.poll(async () => amount(await unit.textContent())).toBe(4900000);
+});
