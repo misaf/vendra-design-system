@@ -33,7 +33,7 @@ Hooks that use [`usePageLogic`](../src/storefront/shell/page-state.js) share a m
 
 The [VM page harness](../tests/page-script.mjs) concatenates source files from its own lists after stripping imports and exports. Its React stand-in skips effects and drains completion callbacks inside `setState`. Tests can invoke lifecycle handlers and rerender the hook explicitly. Those tests cover stateful scenarios with controlled globals. Use a mounted React component or a storefront browser flow to verify commit timing, DOM work, and lifecycle behavior.
 
-When migrating a consumer away from the page lifecycle, extract the pure state transitions first and test them with direct imports from their owning modules. For example, [the delivery rules suite](../tests/storefront-delivery.test.mjs) imports the same validation, scheduling, and cart modules as the app. Check both immediate state reads and post-commit callbacks in a browser before changing hook timing.
+When migrating a consumer away from the page lifecycle, extract the pure state transitions first and test them with direct imports from their owning modules. For example, [the delivery rules suite](../src/storefront/delivery/delivery-rules.test.mjs) imports the same validation and scheduling modules as the app. Check both immediate state reads and post-commit callbacks in a browser before changing hook timing.
 
 ### Import boundaries
 
@@ -86,8 +86,9 @@ npm run test:e2e:demo  # storefront specs and performance budgets against the st
 `src/platform/browser/` (including the integrations), `src/storefront/customer/account/`, the
 presentation browsing viewer, camera scanner, display rotation and settings modules, the storefront
 shell's consent, navigation and shell-props modules, and the design system's Button, Dialog, Input,
-QuantityInput and Select directories. The `lint` script in `package.json` records the exact paths for
-this incremental rollout.
+QuantityInput and Select directories. It also covers the server Laravel transport, catalog resource
+adapters, shared product heading and screen, and checkout submission modules. The `lint` script in
+`package.json` records the exact paths for this incremental rollout.
 
 The ESLint preset checks React JSX and Hooks, including hook order and effect dependencies, plus
 unused variables and expressions. JavaScript in the expanded areas also checks for undeclared names
