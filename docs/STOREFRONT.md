@@ -118,7 +118,8 @@ and the localized name and description mapping in `src/storefront/catalog/larave
 The demo product screen uses `src/storefront/catalog/product/quote.js` for the displayed total and
 the line added to the bag. The quote uses the cart's line and stock rules. Its colocated tests
 cover option normalization, shared stock across configurations, and the quantity shown when no
-stock can be added.
+stock can be added. The product hook owns the bag confirmation and toast queue in React state.
+Selection changes from the route clear both, and leaving the page clears the queue.
 
 The server build and the demo export share Next.js's `.next/` build directory. If you run both
 locally, test the server before building the demo, or run `npm run build` again before starting it.

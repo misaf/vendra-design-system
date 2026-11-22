@@ -1,4 +1,5 @@
 // Page behavior. Edit here, then run npm run build.
+import React from 'react';
 import {vfSavedItems} from '../../customer/saved-items.js';
 import {ToastQueue} from '../../../design-system/components/ToastRegion/ToastRegion.jsx';
 import {vfCopy, vfProductHead} from './copy.js';
@@ -39,12 +40,12 @@ function vfProductRouteKey(props) {
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function useProduct(props) {
+  const [added, setAdded] = React.useState(null);
+  const [toasts] = React.useState(() => new ToastQueue({maxVisibleToasts: 1}));
+  React.useEffect(() => () => toasts.clear(), [toasts]);
+
   const page = usePageLogic(props, page => {
-    page.toasts = new ToastQueue({maxVisibleToasts: 1});
-    page.state = {
-      ...vfProductSelection(props),
-      added: null
-    };
+    page.state = vfProductSelection(props);
     page._select = patch => {
       const selected = {...page.state, ...patch};
       const route = vfPageRoute(page.props);
@@ -75,12 +76,6 @@ export function useProduct(props) {
         history.replaceState(history.state, '', canonical.pathname + (search ? '?' + search : ''));
       }
     };
-    // One confirmation at a time, for 10 s (longer while the pointer or focus is on it). One with an
-    // action (View saved) stays until it is used or dismissed: ToastQueue ignores its timeout.
-    page._showToast = content => {
-      page.toasts.clear();
-      page.toasts.add(content, {timeout: 10_000});
-    };
     page._rememberProduct = () => {
       const {product} = page.props;
       vfRememberViewed(product.id);
@@ -106,21 +101,16 @@ export function useProduct(props) {
       const key = vfProductRouteKey(page.props);
       if (page._productRouteKey !== key) {
         page._productRouteKey = key;
-        page.setState({
-          ...vfProductSelection(page.props),
-          added: null
-        });
-        page.toasts.clear();
+        page.setState(vfProductSelection(page.props));
+        setAdded(null);
+        toasts.clear();
       }
-    },
-    willUnmount() {
-      page.toasts.clear();
     }
   });
-  return vals(page);
+  return vals(page, {added, setAdded, toasts});
 }
 
-function vals(page) {
+function vals(page, {added, setAdded, toasts}) {
   const fa = page.props.lang === 'fa';
   const L = fa ? 'fa' : 'en';
   const savedItems = vfSavedItems(page);
@@ -142,6 +132,10 @@ function vals(page) {
     .map(vfProduct);
   vfShowList(page, 'recent', recent);
   page.head = vfProductHead(product, L, details.description?.paragraphs[0] ?? '');
+  const showToast = content => {
+    toasts.clear();
+    toasts.add(content, {timeout: 10_000});
+  };
   return {
     ...S,
     t: {
@@ -168,7 +162,7 @@ function vals(page) {
     ),
     copyCode: () => {
       const done = ok =>
-        page._showToast({
+        showToast({
           title: ok ? C.codeCopied.replace('{code}', vfTokenText(product.id)) : C.copyFailed
         });
       // Without clipboard access, select the code and try the older copy command; the code stays selected either way.
@@ -199,7 +193,7 @@ function vals(page) {
     toggleSave: () => {
       const saving = !savedItems.ids.includes(product.id);
       savedItems.toggle(product.id);
-      page._showToast({
+      showToast({
         title: saving ? C.savedTitle : C.unsavedTitle,
         action: saving ? {label: C.viewSaved, href: S.href.saved} : undefined
       });
@@ -262,23 +256,19 @@ function vals(page) {
         st.add(line, vfPageRoute(page.props).date);
       }
       // A small bag panel confirms what was added and offers the next step.
-      page.toasts.clear();
-      page.setState({
-        added: {
-          line: {
-            image: vfProductImage(product, L),
-            name: product.id,
-            meta: line[L][1] + ' · × ' + (fa ? VF_FA_DIGITS(quantity) : quantity),
-            total: m(total)
-          }
-        }
+      toasts.clear();
+      setAdded({
+        image: vfProductImage(product, L),
+        name: product.id,
+        meta: line[L][1] + ' · × ' + (fa ? VF_FA_DIGITS(quantity) : quantity),
+        total: m(total)
       });
     },
-    addedOpen: !!s.added,
-    addedLines: s.added ? [s.added.line] : [],
+    addedOpen: !!added,
+    addedLines: added ? [added] : [],
     addedSums: (() => {
       const st = page.props.store;
-      if (!st || !st.bag || !s.added) return [];
+      if (!st || !st.bag || !added) return [];
       const count = st.bag.reduce((n, l) => n + l.qty, 0);
       const sub = st.bag.reduce((n, l) => n + l.unit * l.qty, 0);
       return [
@@ -289,10 +279,7 @@ function vals(page) {
         }
       ];
     })(),
-    closeAdded: () =>
-      page.setState({
-        added: null
-      }),
+    closeAdded: () => setAdded(null),
     // Navigate before dismissing the dialog, which unmounts the link's press handler.
     checkout: event => {
       if (
@@ -306,9 +293,9 @@ function vals(page) {
         event.preventDefault();
         page.props.go({view: 'bag', lang: L});
       }
-      page.setState({added: null});
+      setAdded(null);
     },
-    toasts: page.toasts,
+    toasts,
     recent: recent.map((p, index) => ({
       ...S.productLink(p.id),
       images: [vfProductImage(p, L)],
