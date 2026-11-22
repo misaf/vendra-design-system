@@ -26,6 +26,7 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "src/platform/server/laravel/**/*.mjs",
+    "src/storefront/catalog/laravel/**/*.mjs",
     "tests/fixtures/component-types.tsx",
     "tests/fixtures/theme-types.mts"
   ],

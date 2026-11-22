@@ -17,7 +17,7 @@
     "test:e2e": "node e2e/run.mjs",
     "test:e2e:update": "node e2e/run.mjs --update-snapshots",
     "format": "prettier --write tools src e2e tests *.mjs *.json",
-    "lint": "eslint src/app \"src/platform/browser/**/*.js\" src/storefront/customer/account \"src/storefront/presentation/{browsing-viewer,camera-scanner,display-rotation,presentation-settings}.js\" \"src/storefront/shell/{consent,navigation,shell-props}.js\" \"src/design-system/components/{Button,Dialog,Input,QuantityInput,Select}/**/*.{js,jsx,mjs,ts,tsx}\"",
+    "lint": "eslint src/app \"src/platform/server/**/*.{mjs,ts}\" \"src/storefront/catalog/laravel/*.{js,mjs,ts}\" \"src/storefront/catalog/product/components/StorefrontProductHeading/*.{jsx,tsx}\" src/storefront/catalog/product/ProductScreen.jsx \"src/storefront/checkout/order-checkout/{submission-state,submit-order}.js\" \"src/platform/browser/**/*.js\" src/storefront/customer/account \"src/storefront/presentation/{browsing-viewer,camera-scanner,display-rotation,presentation-settings}.js\" \"src/storefront/shell/{consent,navigation,shell-props}.js\" \"src/design-system/components/{Button,Dialog,Input,QuantityInput,Select}/**/*.{js,jsx,mjs,ts,tsx}\"",
     "lint:css": "stylelint \"src/design-system/components/**/*.css\" \"src/storefront/**/*.css\" \"src/app/**/*.css\"",
     "new:component": "node tools/new-component.mjs",
     "test:smoke:demo": "playwright test -c e2e/smoke/playwright.config.mjs",
