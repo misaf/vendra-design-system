@@ -96,7 +96,13 @@ for (const lang of ['en', 'fa']) {
         .first()
         .click();
       await expect(page).toHaveURL(new RegExp(productPath + '$'));
-      await expect(page.locator('.vf-product-description')).toHaveText(/\S/);
+      const description = page.locator('.vf-product-description');
+      await expect(description).toHaveAttribute('lang', lang);
+      await expect(description).toHaveText(
+        fa
+          ? 'رز باغی عاجی و لیسیانتوس در باکسی با روکش کتان و روبان ساتن.'
+          : 'Ivory garden roses and lisianthus in a linen-wrapped box, tied with satin.'
+      );
       await expect(page.locator('.vf-product-price')).toHaveText(/\d|[۰-۹]/);
       await page
         .getByRole('button', {name: fa ? 'افزودن به سبد' : 'Add to bag', exact: true})

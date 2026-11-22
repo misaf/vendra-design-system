@@ -248,8 +248,3 @@ export const VF_PRODUCT_EXTRAS = {
   },
   'VF-6MT3VY': {legacy: 'bridal', occasions: []}
 };
-
-// Each product's [English, Persian] detail text, from Product.description, keyed by product code.
-export const VF_PRODUCT_DETAILS = Object.fromEntries(
-  VF_API_PRODUCTS.map(product => [product.token, [product.description.en, product.description.fa]])
-);

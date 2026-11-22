@@ -4,16 +4,13 @@ import {ToastQueue} from '../../../design-system/components/ToastRegion/ToastReg
 import {vfCopy, vfProductHead} from './copy.js';
 import {
   VF_ADDONS,
-  VF_PRODUCTS,
   VF_SIZES,
-  vfFindProduct,
   vfProduct,
   vfProductBadge,
   vfProductImage,
   vfProductImages,
   vfProductSub
 } from '../catalog.js';
-import {VF_PRODUCT_DETAILS} from '../sample-catalog.js';
 import {vfRecentlyViewed, vfRememberViewed} from '../recently-viewed.js';
 import {vfBagLine, vfLineDetail} from '../../cart/cart-lines.js';
 import {vfTokenText} from '../catalog.js';
@@ -31,13 +28,13 @@ import {vfRuntime} from '../../../platform/browser/runtime.js';
 // A shared counter quote supplies validated choices through the product route.
 function vfProductSelection(props) {
   const route = vfPageRoute(props);
-  const product = vfFindProduct(route.id) || VF_PRODUCTS[0];
+  const product = props.product;
   const line = vfBagLine(product, route.size, route.addons || []);
   return {size: line.size || VF_SIZES[0].id, addons: line.addons, qty: route.qty || 1};
 }
 function vfProductRouteKey(props) {
   const route = vfPageRoute(props);
-  return JSON.stringify([route.id, route.size, route.addons, route.qty]);
+  return JSON.stringify([props.product.id, route.size, route.addons, route.qty]);
 }
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
@@ -53,7 +50,7 @@ export function useProduct(props) {
     page._select = patch => {
       const selected = {...page.state, ...patch};
       const route = vfPageRoute(page.props);
-      const product = vfFindProduct(route.id) || VF_PRODUCTS[0];
+      const {product} = page.props;
       const line = vfBagLine(product, selected.size, selected.addons);
       const bag = page.props.store?.bag || [];
       const remaining =
@@ -90,9 +87,8 @@ export function useProduct(props) {
       page.toasts.add(content, {timeout: 10_000});
     };
     page._rememberProduct = () => {
-      const id = vfPageRoute(page.props).id || VF_PRODUCTS[0].id;
-      vfRememberViewed(id);
-      const product = vfProduct(id);
+      const {product} = page.props;
+      vfRememberViewed(product.id);
       vfRuntime.track.event('view_item', {
         items: [vfRuntime.track.item(product)],
         value: product.price
@@ -102,12 +98,12 @@ export function useProduct(props) {
   useStorefrontPage(page);
   useLifecycle(page, {
     didMount() {
-      page._productId = vfPageRoute(page.props).id;
+      page._productId = page.props.product.id;
       page._productRouteKey = vfProductRouteKey(page.props);
       page._rememberProduct();
     },
     didUpdate() {
-      const id = vfPageRoute(page.props).id;
+      const id = page.props.product.id;
       if (page._productId !== id) {
         page._productId = id;
         page.setState({galleryPhoto: 0, photo: null});
@@ -138,7 +134,7 @@ function vals(page) {
   const s = page.state;
   const m = v => VF_MONEY(v, fa);
   const C = vfCopy(S);
-  const product = vfFindProduct(vfPageRoute(page.props).id) || VF_PRODUCTS[0];
+  const {product, details} = page.props;
   const base = product.price;
   const availableAddons = VF_ADDONS.filter(addon => !(product.noAddons || []).includes(addon.id));
   const hasSizes = !!product.sizes;
@@ -160,7 +156,7 @@ function vals(page) {
     .slice(0, 4)
     .map(vfProduct);
   vfShowList(page, 'recent', recent);
-  page.head = vfProductHead(product, L);
+  page.head = vfProductHead(product, L, details.description?.paragraphs[0] ?? '');
   return {
     ...S,
     t: {
@@ -170,7 +166,6 @@ function vals(page) {
       name: product.id,
       sub: vfProductSub(product, L),
       badge: vfProductBadge(product, L) || C.labels.vendraFlowers,
-      desc: VF_PRODUCT_DETAILS[product.id][fa ? 1 : 0],
       cat: VF_CATEGORY_COPY[L][product.cat],
       careT: care,
       ship:
@@ -241,7 +236,7 @@ function vals(page) {
     setGalleryPhoto: index => page.setState({galleryPhoto: index}),
     openPhotos: () => page.setState({photo: page.state.galleryPhoto || 0}),
     closePhotos: () => page.setState({photo: null}),
-    unitPrice: m(base + (hasSizes ? size.price : 0)),
+    details: hasSizes && size.price ? {...details, price: m(base + size.price)} : details,
     unitPriceLabel: availableAddons.length ? C.priceBeforeExtras : C.priceEach,
     selectionTotalLabel: C.selectionTotal(quantity),
     totalHint: chosenAddons.length ? C.totalWithExtras : C.totalDelivery,

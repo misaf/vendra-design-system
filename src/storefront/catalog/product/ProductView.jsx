@@ -48,13 +48,11 @@ export function View({v}) {
           details={
             <>
               <StorefrontProductHeading
-                productCode={v.t?.name}
+                product={v.details}
                 subtitle={v.t?.sub}
                 badge={v.t?.badge}
                 unitPriceLabel={v.unitPriceLabel}
-                unitPrice={v.unitPrice}
                 stock={v.stock}
-                description={v.t?.desc}
                 copyLabel={v.t?.copyCode}
                 onCopyCode={v.copyCode}
               />

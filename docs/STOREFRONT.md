@@ -105,13 +105,15 @@ Laravel backend. Set `VF_API_BASE` to the backend origin when starting the store
 See [API integration](API.md) for the backend URL format.
 
 The localized route at `src/app/[locale]/product/[code]/page.tsx` selects the Laravel-backed
-product page or the fixture-backed demo screen. For a Laravel product payload change, follow the
-lookup in `src/storefront/catalog/laravel/catalog.mjs`,
-the localized name and description mapping in `src/storefront/catalog/laravel/product-details.ts`,
-and the shared `ProductDetails` view in the product heading component folder. The demo heading
-passes the fixture's product code, configured unit price, and localized description to the same
-view. `e2e/smoke/product-lookup.spec.mjs` exercises the Laravel path, and
-`e2e/smoke/export.spec.mjs` exercises the exported demo in both languages.
+product page or calls the fixture reader in `src/demo/catalog.mjs`. The route passes the selected
+demo product and localized details to the product screen. Both paths render the catalog's
+`ProductDetailsData` model with the shared `ProductDetails` view. In the demo, changing size updates
+the displayed unit price. The legacy product preview also uses the demo reader.
+
+For a Laravel product payload change, follow the lookup in `src/storefront/catalog/laravel/catalog.mjs`
+and the localized name and description mapping in `src/storefront/catalog/laravel/product-details.ts`.
+`e2e/smoke/product-lookup.spec.mjs` covers live product lookup and retries with the Laravel fixture.
+`e2e/smoke/export.spec.mjs` exercises the static demo in both languages.
 
 The server build and the demo export share Next.js's `.next/` build directory. If you run both
 locally, test the server before building the demo, or run `npm run build` again before starting it.

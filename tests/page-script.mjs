@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+import {demoProductCodes, readDemoProduct} from '../src/demo/catalog.mjs';
 import {tenantSlugs, tenantSpecs} from '../tools/build/tenants.mjs';
 
 const templates = path.resolve(import.meta.dirname, '..');
@@ -333,7 +334,14 @@ function loadPage(name, props = {}, search = '') {
   vm.runInContext(sharedLogic, c);
   const feature = {bag: 'cart', shop: 'catalog', presentation: 'counter', track: 'tracking'}[name];
   vm.runInContext(pageScript(feature || name) + '\nthis.Logic=Component;', c);
-  return {logic: new c.Logic({lang: 'en', ...props}), ctx: c, history};
+  let pageProps = {lang: 'en', ...props};
+  if (name === 'product') {
+    const {id} = vm.runInContext('vfPageRoute', c)(pageProps);
+    const {lang} = pageProps;
+    const fixture = readDemoProduct(id, lang) ?? readDemoProduct(demoProductCodes()[0], lang);
+    pageProps = {...pageProps, ...fixture};
+  }
+  return {logic: new c.Logic(pageProps), ctx: c, history};
 }
 
 export {

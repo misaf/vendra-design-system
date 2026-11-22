@@ -5,19 +5,17 @@ import {ProductDetails} from './ProductDetails';
 import {StockStatus} from '../../../../../design-system/components/StockStatus/StockStatus.jsx';
 
 export function StorefrontProductHeading({
-  productCode,
+  product,
   subtitle,
   badge,
   unitPriceLabel,
-  unitPrice,
   stock,
-  description,
   copyLabel,
   onCopyCode
 }) {
   return (
     <ProductDetails
-      product={{name: productCode, price: unitPrice, description: {paragraphs: [description]}}}
+      product={product}
       titleId="vf-product-code"
       titleAction={
         <Button iconStart="copy" variant="ghost" onClick={onCopyCode}>

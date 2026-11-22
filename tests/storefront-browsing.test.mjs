@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
+import {readDemoProduct} from '../src/demo/catalog.mjs';
 import {context, loadPage, openDeliveryWindow, setAddress, sharedLogic} from './page-script.mjs';
 
 // Search queries round-trip independently of page state; their Close destination belongs to the
@@ -206,7 +207,11 @@ for (const lang of ['en', 'fa']) {
     const v = logic.renderVals();
     const care = v.faq.find(item => item.id === 'care').content;
     assert.ok(care.trim(), 'Every product retains care instructions');
-    assert.notEqual(care, v.t.desc, 'Care must not repeat the product description');
+    assert.notEqual(
+      care,
+      v.details.description.paragraphs[0],
+      'Care must not repeat the product description'
+    );
     assert.equal(v.t.careT, care, 'Product copy and the care accordion use the same advice');
     if (id === 'VF-8RD5WN') {
       assert.equal(
@@ -215,7 +220,10 @@ for (const lang of ['en', 'fa']) {
           ? 'وقتی ریشه‌ها نقره‌ای شدند آبیاری کنید و در نور غیرمستقیم نگه دارید.'
           : 'Water when the roots turn silver and keep in indirect light.'
       );
-      assert.ok(!v.t.desc.includes(care), 'Orchid care is shown only in the care section');
+      assert.ok(
+        !v.details.description.paragraphs[0].includes(care),
+        'Orchid care is shown only in the care section'
+      );
     }
     v.add();
     if (id === 'VF-6MT3VY') {
@@ -241,7 +249,7 @@ for (const lang of ['en', 'fa']) {
     const listing = loadPage('shop', {lang, routeInfo: {view: 'shop', lang, page: 2}})
       .logic.renderVals()
       .items.find(item => item.name === v.t.name);
-    assert.equal(v.unitPrice, listing.price, 'Default product price must match the listing');
+    assert.equal(v.details.price, listing.price, 'Default product price must match the listing');
     if (id === 'VF-7K2M4Q') {
       v.setSize(v.sizes[1].value);
       logic.renderVals().add();
@@ -252,7 +260,7 @@ for (const lang of ['en', 'fa']) {
       logic._productId = 'VF-8RD5WN';
       logic.lifecycle.didUpdate();
       assert.equal(
-        logic.renderVals().unitPrice,
+        logic.renderVals().details.price,
         listing.price,
         'Changing products resets to the starting price'
       );
@@ -368,7 +376,7 @@ console.log('Passed product size, extras, quantity and delivery-date URL recover
   product.renderVals().setSize('generous');
   product.renderVals().setQty(2);
   assert.equal(new URLSearchParams(c.location.search).get('page'), 'product');
-  const reloaded = new c.Logic({lang: 'en'}).renderVals();
+  const reloaded = new c.Logic({lang: 'en', ...readDemoProduct('VF-7K2M4Q', 'en')}).renderVals();
   assert.equal(reloaded.size, 'generous');
   assert.equal(reloaded.qty, 2, 'standalone template reloads preserve the same choices');
 }

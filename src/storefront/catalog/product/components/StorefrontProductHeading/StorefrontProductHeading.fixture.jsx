@@ -40,11 +40,16 @@ export function Fixture({lang}) {
       <span data-test="copies">{copies}</span>
       <main>
         <StorefrontProductHeading
-          {...t}
-          productCode={updated ? 'VF-8P3N5R' : 'VF-7K2M4Q'}
-          unitPrice={updated ? '3,000,000' : '2,000,000'}
+          subtitle={t.subtitle}
+          badge={t.badge}
+          unitPriceLabel={t.unitPriceLabel}
+          copyLabel={t.copyLabel}
+          product={{
+            name: updated ? 'VF-8P3N5R' : 'VF-7K2M4Q',
+            price: updated ? '3,000,000' : '2,000,000',
+            description: {locale: lang, paragraphs: [updated ? t.updated : t.description]}
+          }}
           stock={{status, count: 2, date: '2026-10-12'}}
-          description={updated ? t.updated : t.description}
           onCopyCode={() => setCopies(value => value + 1)}
         />
       </main>

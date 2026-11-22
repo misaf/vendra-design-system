@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import {generate} from '../tools/build/generate.mjs';
+import {readDemoProduct} from '../src/demo/catalog.mjs';
 import {
   context,
   featureFiles,
@@ -57,7 +58,8 @@ for (const [name, folder] of Object.entries({
   const {ctx: c, history} = context();
   vm.runInContext(sharedLogic, c);
   vm.runInContext(script + '\nthis.Logic=Component;', c);
-  const logic = new c.Logic({lang: 'en', tenant: 'default'});
+  const fixture = name === 'product' ? readDemoProduct('VF-7K2M4Q', 'en') : null;
+  const logic = new c.Logic({lang: 'en', tenant: 'default', ...fixture});
   const values = logic.renderVals();
   assert.ok(values);
   parsed++;
