@@ -274,11 +274,19 @@ test('products say when few are left or when they come back', async ({page}) => 
 
 test('the product page shows its photos full screen', async ({page}) => {
   await openSite(page, 'product', 'en');
-  await page.getByRole('button', {name: 'View full screen'}).click();
+  const gallery = page.getByRole('region', {name: 'Product photos'});
+  const second = gallery.getByRole('button', {name: 'Photo 2 of 3'});
+  await second.click();
+  await expect(second).toHaveAttribute('aria-current', 'true');
+  const trigger = page.getByRole('button', {name: 'View full screen'});
+  await trigger.click();
   const viewer = page.getByRole('dialog', {name: 'Product photos'});
-  await expect(viewer.getByText('1 of 3')).toBeVisible();
-  await page.keyboard.press('ArrowRight');
   await expect(viewer.getByText('2 of 3')).toBeVisible();
+  await page.keyboard.press('ArrowRight');
+  await expect(viewer.getByText('3 of 3')).toBeVisible();
   await page.keyboard.press('Escape');
-  await expect(page.getByRole('button', {name: 'View full screen'})).toBeFocused();
+  await expect(trigger).toBeFocused();
+  await expect(second).toHaveAttribute('aria-current', 'true');
+  await trigger.click();
+  await expect(viewer.getByText('2 of 3')).toBeVisible();
 });

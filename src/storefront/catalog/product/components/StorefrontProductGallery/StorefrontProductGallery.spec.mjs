@@ -47,7 +47,7 @@ for (const lang of ['en', 'fa']) {
     await expect(gallery.locator('.ag-gallery__track')).toHaveCSS('aspect-ratio', '4 / 5');
     await expect(page.getByRole('dialog')).toHaveCount(0);
   });
-  test(`${lang}: gallery selection reports its index and fullscreen delegates current-photo entry and reopening`, async ({
+  test(`${lang}: fullscreen opens the selected gallery photo and restores the trigger focus`, async ({
     page
   }) => {
     const gallery = await open(page);
@@ -57,11 +57,9 @@ for (const lang of ['en', 'fa']) {
       'aria-current',
       'true'
     );
-    await expect(page.locator('[data-test="gallery-index"]')).toHaveText('1');
     await page.getByRole('button', {name: t.fullScreen, exact: true}).click();
     const dialog = page.getByRole('dialog', {name: t.photos});
     await expect(dialog.getByRole('img')).toHaveAttribute('alt', 'VF-7K2M4Q 2');
-    await expect(page.locator('[data-test="events"]')).toHaveText('["gallery:1","open"]');
     await page.keyboard.press('Escape');
     await expect(dialog).toHaveCount(0);
     await expect(page.getByRole('button', {name: t.fullScreen, exact: true})).toBeFocused();
@@ -69,11 +67,8 @@ for (const lang of ['en', 'fa']) {
     await expect(dialog.getByRole('img')).toHaveAttribute('alt', 'VF-7K2M4Q 2');
     await dialog.getByRole('button', {name: t.close, exact: true}).click();
     await expect(dialog).toHaveCount(0);
-    await expect(page.locator('[data-test="events"]')).toHaveText(
-      '["gallery:1","open","close","open","close"]'
-    );
   });
-  test(`${lang}: controlled lightbox changes call its own callback with RTL-aware keys and bounded actions`, async ({
+  test(`${lang}: fullscreen navigation respects RTL and keeps its position separate from the gallery`, async ({
     page
   }) => {
     await open(page);
@@ -84,18 +79,17 @@ for (const lang of ['en', 'fa']) {
     await expect(dialog.getByRole('img')).toHaveAttribute('alt', 'VF-7K2M4Q 2');
     await expect(dialog.getByRole('button', {name: t.next, exact: true})).toBeDisabled();
     await page.keyboard.press(lang === 'fa' ? 'ArrowLeft' : 'ArrowRight');
-    await expect(page.locator('[data-test="events"]')).toHaveText('["open","viewer:1"]');
-    await dialog.getByRole('button', {name: t.previous, exact: true}).click();
+    await expect(dialog.getByRole('img')).toHaveAttribute('alt', 'VF-7K2M4Q 2');
+    await page.keyboard.press('Escape');
+    await page.getByRole('button', {name: t.fullScreen, exact: true}).click();
     await expect(dialog.getByRole('img')).toHaveAttribute('alt', 'VF-7K2M4Q 1');
-    await expect(page.locator('[data-test="events"]')).toHaveText('["open","viewer:1","viewer:0"]');
-    await expect(page.locator('[data-test="gallery-index"]')).toHaveText('0');
+    await expect(dialog.getByRole('button', {name: t.previous, exact: true})).toBeDisabled();
   });
-  test(`${lang}: product identity resets the keyed gallery; one supplied photo omits dots`, async ({
-    page
-  }) => {
+  test(`${lang}: changing the product resets the gallery and fullscreen entry`, async ({page}) => {
     const gallery = await open(page);
-    await gallery.getByRole('button', {name: t.second, exact: true}).click();
-    await expect(page.locator('[data-test="gallery-index"]')).toHaveText('1');
+    const secondDot = gallery.getByRole('button', {name: t.second, exact: true});
+    await secondDot.click();
+    await expect(secondDot).toHaveAttribute('aria-current', 'true');
     await page.getByRole('button', {name: 'Change product', exact: true}).click();
     await expect(gallery.getByRole('button', {name: t.first, exact: true})).toHaveAttribute(
       'aria-current',
@@ -107,6 +101,10 @@ for (const lang of ['en', 'fa']) {
       )
       .toBeLessThan(1);
     await expect(gallery.getByRole('img').first()).toHaveAttribute('alt', 'VF-8P3N5R 1');
+    await page.getByRole('button', {name: t.fullScreen, exact: true}).click();
+    const dialog = page.getByRole('dialog', {name: t.photos});
+    await expect(dialog.getByRole('img')).toHaveAttribute('alt', 'VF-8P3N5R 1');
+    await page.keyboard.press('Escape');
     await page.getByLabel('Single photo', {exact: true}).check();
     await expect(gallery.getByRole('img')).toHaveCount(1);
     await expect(gallery.getByRole('button')).toHaveCount(0);

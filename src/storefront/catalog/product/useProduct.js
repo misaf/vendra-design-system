@@ -43,9 +43,7 @@ export function useProduct(props) {
     page.toasts = new ToastQueue({maxVisibleToasts: 1});
     page.state = {
       ...vfProductSelection(props),
-      added: null,
-      galleryPhoto: 0,
-      photo: null
+      added: null
     };
     page._select = patch => {
       const selected = {...page.state, ...patch};
@@ -106,7 +104,6 @@ export function useProduct(props) {
       const id = page.props.product.id;
       if (page._productId !== id) {
         page._productId = id;
-        page.setState({galleryPhoto: 0, photo: null});
         page._rememberProduct();
       }
       const key = vfProductRouteKey(page.props);
@@ -229,13 +226,6 @@ function vals(page) {
     unavailable: product.inStock === false || remaining === 0,
     category: S.shopLink(product.cat),
     productImages: vfProductImages(product, L),
-    // Each photo full screen, one after another (Lightbox).
-    photoItems: vfProductImages(product, L).map((image, index) => ({id: index, images: [image]})),
-    photo: page.state.photo,
-    setPhoto: index => page.setState({photo: index}),
-    setGalleryPhoto: index => page.setState({galleryPhoto: index}),
-    openPhotos: () => page.setState({photo: page.state.galleryPhoto || 0}),
-    closePhotos: () => page.setState({photo: null}),
     details: hasSizes && size.price ? {...details, price: m(base + size.price)} : details,
     unitPriceLabel: availableAddons.length ? C.priceBeforeExtras : C.priceEach,
     selectionTotalLabel: C.selectionTotal(quantity),

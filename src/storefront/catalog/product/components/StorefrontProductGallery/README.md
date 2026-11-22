@@ -1,7 +1,11 @@
 # StorefrontProductGallery
 
-Product gallery organism receiving explicit product code, gallery images, lightbox items/index, localized labels and gallery/open/viewer/close callbacks. Composes Gallery, fullscreen action and controlled Lightbox. View maps props; product logic retains photo mapping, gallery/viewer selection, opening the current gallery photo, closing and route-change reset. The Gallery key remains the displayed product code. Layout retains gallery wrapper/grid.
+The product view passes localized images and labels and keys the gallery by product code. The gallery
+remembers the visible slide and opens the fullscreen viewer at that photo. The viewer keeps its own
+position, so browsing fullscreen leaves the inline gallery on the photo the shopper selected. A
+different product resets both positions and closes the viewer.
 
-Preserve fragment order, gallery aspect/sizes, product key, localized slide formatter and fullscreen button styling/icon. Shared Gallery/Lightbox retain scrolling, keyboard/pointer navigation, dialog and focus behavior. No page model, state, effects or page-logic imports live here. Verify selected-photo entry/reopen, dots, directional/RTL navigation and boundaries, both close paths/focus restoration, product-change reset, bilingual accessibility, touch/TV activation and rotation.
-
-The colocated fixture/spec isolates supplied photos/slide labels, responsive sizes/priority, gallery-index reporting, fullscreen callback wiring with a minimal controlled owner, lightbox-index callbacks, product-key gallery reset, one-photo composition, keyboard entry/dismissal, compact containment and bilingual axe. The fixture explicitly owns current-photo entry and viewer state. Photo mapping, route-change selection reset and native touch/TV integration remain page responsibilities; detailed widget mechanics remain package tests.
+The design-system Gallery and Lightbox handle scrolling, keyboard and pointer navigation, the dialog,
+and focus restoration. The colocated browser tests cover selected-photo entry and reopening, RTL
+navigation and boundaries, closing and focus restoration, product changes, responsive images, and
+bilingual accessibility.
