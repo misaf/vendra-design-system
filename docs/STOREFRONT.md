@@ -46,6 +46,12 @@ The checker in [`tools/app-dependencies.mjs`](../tools/app-dependencies.mjs) cla
 
 An adjacent route-level file such as `CheckoutView.jsx` is not subject to the presentational import restriction. That is where the route composes the shell and feature components, not a reason to move business logic into a reusable component. Missing local imports, import cycles, and forbidden storefront globals are still checked across runtime modules.
 
+Modules under `src/platform/browser/` and modules with a `'use client'` directive cannot reach
+`src/platform/server/` or any module marked with `server-only` through runtime imports.
+Storefront features cannot reach demo implementations under `src/demo/`. The route can select
+an implementation and pass the result into the feature. The checker follows static re-exports and
+literal dynamic imports, and reports the import chain. Type-only imports are erased before runtime.
+
 Run `node --test tests/app-dependencies.test.mjs` to check the runtime graph and the allowed/rejected import scenarios. Reusable design-system UI has its own stricter dependency policy; see [UI ownership](UI.md).
 
 ## Business capabilities
