@@ -1,5 +1,5 @@
 import {test, expect} from '@playwright/test';
-import {openSite, scanAxe} from '../helpers.mjs';
+import {choiceTile, openSite, scanAxe} from '../helpers.mjs';
 
 // Behaviour of the components the storefront picked up last: AnnouncementBar,
 // Gallery, Toast, Dialog, Carousel, Radio and Tooltip.
@@ -77,6 +77,12 @@ test('saving a design shows a toast that stays until dismissed; unsaving closes 
   await expect(removed).toBeVisible();
   await page.clock.runFor(1500);
   await expect(removed).toHaveCount(0);
+
+  await save.click();
+  await expect(toast).toBeVisible();
+  await choiceTile(page.locator('.vf-product-sizes'), /^Classic/).click();
+  await expect(page).toHaveURL(/size=classic/);
+  await expect(toast).toHaveCount(0);
 });
 
 test('home arrivals scroll with the snap scroller', async ({page}, info) => {

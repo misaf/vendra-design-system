@@ -185,10 +185,13 @@ for (const lang of ['en', 'fa']) {
   assert.equal(logic.state.size, 'classic');
   assert.deepEqual(Array.from(logic.state.addons), ['card', 'vase']);
   logic.lifecycle.didMount();
+  logic.renderVals().add();
+  assert.equal(logic.renderVals().addedOpen, true);
   logic.props = {...logic.props, routeInfo: {...route, size: 'generous', addons: []}};
   logic.renderVals();
   logic.lifecycle.didUpdate();
   assert.equal(logic.state.size, 'generous');
+  assert.equal(logic.renderVals().addedOpen, false);
   assert.deepEqual(Array.from(logic.state.addons), []);
   logic.props = {...logic.props, routeInfo: {view: 'product', id: route.id}};
   logic.renderVals();
