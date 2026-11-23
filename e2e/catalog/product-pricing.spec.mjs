@@ -103,6 +103,17 @@ for (const lang of ['en', 'fa']) {
       await page.setViewportSize(originalViewport);
     }
 
+    await page.evaluate(() => {
+      const url = new URL(location.href);
+      url.searchParams.set('size', 'generous');
+      history.pushState(null, '', url);
+    });
+    await expectAmounts(6000000, 12300000);
+    await expect(confirmation).toHaveCount(0);
+    await page.goBack();
+    await expectAmounts(4900000, 10100000);
+    await expect(confirmation).toHaveCount(0);
+
     await openSite(page, 'product', lang, {id: 'VF-8RD5WN'});
     await expect(page.locator('.vf-product-unit-label')).toHaveText(
       fa ? 'هر عدد، بدون اقلام اضافه' : 'Per item, before extras'

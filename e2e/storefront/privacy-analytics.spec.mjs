@@ -1,5 +1,28 @@
 import {test, expect} from '@playwright/test';
-import {NO_CONSENT, openSite, openFooterGroup, scanAxe} from '../helpers.mjs';
+import {NO_CONSENT, choiceTile, openSite, openFooterGroup, scanAxe} from '../helpers.mjs';
+
+test('product views follow the product and keep recent history across configuration changes', async ({
+  page
+}) => {
+  await openSite(page, 'product', 'en');
+  const views = () =>
+    page.evaluate(() => window.__vfRuntime.track.log.filter(event => event.event === 'view_item'));
+  await expect
+    .poll(views)
+    .toMatchObject([{items: [{item_id: 'VF-7K2M4Q'}], value: 41000000, currency: 'IRR'}]);
+
+  await choiceTile(page.locator('.vf-product-sizes'), /^Classic/).click();
+  await expect(page).toHaveURL(/size=classic/);
+  await page.evaluate(() => window.__vfSite.navigate({view: 'product', id: 'VF-8RD5WN'}));
+  await expect(page.getByRole('heading', {level: 1})).toHaveText('VF-8RD5WN');
+  await expect.poll(views).toMatchObject([
+    {items: [{item_id: 'VF-7K2M4Q'}], value: 41000000, currency: 'IRR'},
+    {items: [{item_id: 'VF-8RD5WN'}], value: 34000000, currency: 'IRR'}
+  ]);
+  expect(
+    await page.evaluate(() => JSON.parse(localStorage.getItem('vendra-recently-viewed')))
+  ).toEqual(['VF-8RD5WN', 'VF-7K2M4Q']);
+});
 
 test('the storefront reports the contract’s events, and nothing personal', async ({page}, info) => {
   // On phones the shop's filters are in a dialog; the events are the same.
