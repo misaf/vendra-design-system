@@ -445,7 +445,7 @@ function page(name, c, props = {}) {
     const returned = page('checkout', c, {
       routeInfo: {view: 'checkout', paymentOrder: id, paymentResult: result}
     });
-    returned.lifecycle.didMount();
+    returned.runEffect('startPaymentReturn');
     timers.pop()(); // Start the payment check once the route has mounted.
     return returned;
   };

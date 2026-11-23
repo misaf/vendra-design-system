@@ -15,15 +15,15 @@ const strip = code =>
     .replace(/^export (?=(?:async |const |function|class |let |var ))/gm, '');
 
 // Runs a page's usePage(props) hook outside React: a stand-in for React's hooks keeps each hook's
-// value between renders (effects don't run, as the logic tests never mounted pages), and
+// value between renders (tests run individual effects explicitly), and
 // Component(props) returns the page object (state, setState, props and its helpers) with
 // renderVals() rendering the hook again. setState callbacks run at once, as the old test stub did.
 const hooksHarness = `
 const React = (() => {
-  let slots = [], index = 0;
+  let slots = [], effects, index = 0;
   const slot = make => (index in slots ? slots[index++] : (slots[index++] = make()));
   return {
-    begin(next) { slots = next; index = 0; },
+    begin(next, nextEffects) { slots = next; effects = nextEffects; index = 0; },
     useRef: initial => slot(() => ({current: initial})),
     useReducer: (reducer, initial) => slot(() => [initial, () => globalThis.__vfFlush()]),
     useState: initial => slot(() => {
@@ -31,7 +31,10 @@ const React = (() => {
       box[1] = value => { box[0] = typeof value === 'function' ? value(box[0]) : value; };
       return box;
     }),
-    useEffect: () => { index++; },
+    useEffect: effect => {
+      index++;
+      if (effect.name) effects.set(effect.name, effect);
+    },
     useLayoutEffect: () => { index++; },
     useSyncExternalStore: (_subscribe, _getSnapshot, getServerSnapshot) => {
       index++;
@@ -48,9 +51,12 @@ usePageLogic = (props, init) => (globalThis.__vfPage = __vfUsePageLogic(props, i
 class Component {
   constructor(props) {
     const slots = [];
+    const effects = new Map();
+    const runEffect = name => effects.get(name)();
     let page = null;
     const render = () => {
-      React.begin(slots);
+      effects.clear();
+      React.begin(slots, effects);
       return ${hook}(page ? page.props : props);
     };
     if (typeof vfSiteInitial === 'function') {
@@ -68,7 +74,13 @@ class Component {
     if (typeof vfSiteInitial === 'function') {
       page.restoreAddress(location.pathname + location.search);
     }
-    return new Proxy(page, {get: (target, key) => (key === 'renderVals' ? render : target[key])});
+    return new Proxy(page, {
+      get(target, key) {
+        if (key === 'renderVals') return render;
+        if (key === 'runEffect') return runEffect;
+        return target[key];
+      }
+    });
   }
 }
 `;
