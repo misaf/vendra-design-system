@@ -15,7 +15,6 @@ export function useStorefrontPage(page, pageHead) {
   React.useEffect(() => {
     vfRuntime.restoreSession?.();
     vfRuntime.rendered = 'hydrated';
-    if (page._vfPage === 'checkout') vfRuntime.track.event('begin_checkout', {});
   }, [page]);
 
   // Report lists after they commit. Metadata and focus wait for the latest committed DOM.
