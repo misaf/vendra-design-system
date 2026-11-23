@@ -29,6 +29,17 @@ export function vfSelectItem(id, product, index) {
     vfRuntime.track.event('select_item', {...listParams(id), items: listItems([product], index)});
 }
 
+// Report changes to a committed list. If the previous items are still a prefix, report only the
+// additional items. Keep the returned IDs for the next commit.
+export function vfReportList(id, products, before = []) {
+  const ids = products.map(product => product.id);
+  const samePrefix = before.every((value, index) => value === ids[index]);
+  if (samePrefix && ids.length === before.length) return before;
+  const start = samePrefix && before.length < ids.length ? before.length : 0;
+  vfViewList(id, products.slice(start), start);
+  return ids;
+}
+
 // A page records the lists it renders (in its vals) and useStorefrontPage reports them after the
 // render commits, so rendering (and the build's prerender) sends nothing. A list is reported when
 // its products change; when it only grew ("Show more"), just the added products; a list that
@@ -44,13 +55,6 @@ export function vfReportLists(page) {
     if (!shown[id]) delete reported[id];
   });
   Object.keys(shown).forEach(id => {
-    const ids = shown[id].map(product => product.id);
-    const before = reported[id] || [];
-    const same = (count, list) => before.slice(0, count).every((value, i) => value === list[i]);
-    if (ids.length === before.length && same(ids.length, ids)) return;
-    const start =
-      before.length && before.length < ids.length && same(before.length, ids) ? before.length : 0;
-    reported[id] = ids;
-    vfViewList(id, shown[id].slice(start), start);
+    reported[id] = vfReportList(id, shown[id], reported[id]);
   });
 }
