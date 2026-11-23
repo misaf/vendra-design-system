@@ -126,16 +126,27 @@ for (const lang of ['en', 'fa']) {
   });
 }
 
-test('the standalone product preview keeps its URL parameters and choices', async ({page}) => {
+test('the standalone product preview keeps its URL choices and saves locally', async ({page}) => {
   await page.goto('/?page=product&lang=en');
   const unit = page.locator('.vf-product-price .ag-price__now');
   await expect.poll(async () => amount(await unit.textContent())).toBe(4100000);
 
+  const save = page.getByRole('button', {name: 'Save this design'});
+  await expect(save).toHaveAttribute('aria-pressed', 'false');
+  await save.click();
+  await expect(save).toHaveAttribute('aria-pressed', 'true');
+
   await choiceTile(page.locator('.vf-product-sizes'), /^Classic/).click();
   await expect.poll(async () => amount(await unit.textContent())).toBe(4900000);
+  await expect(save).toHaveAttribute('aria-pressed', 'true');
+  await save.click();
+  await expect(save).toHaveAttribute('aria-pressed', 'false');
+  await save.click();
+  await expect(save).toHaveAttribute('aria-pressed', 'true');
   const params = new URL(page.url()).searchParams;
   expect(params.get('page')).toBe('product');
   expect(params.get('size')).toBe('classic');
   await page.reload();
   await expect.poll(async () => amount(await unit.textContent())).toBe(4900000);
+  await expect(save).toHaveAttribute('aria-pressed', 'false');
 });

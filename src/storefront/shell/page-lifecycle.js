@@ -12,7 +12,7 @@ import {vfTenant} from '../../platform/tenant/tenant.js';
 // What every storefront page does around its own logic: send the page's analytics events (its own
 // view event and the product lists it rendered: list-tracking.js), and once each render settles set the document language and
 // direction, move focus to a new heading and announce it, and update <head> (title, alternates).
-export function useStorefrontPage(page) {
+export function useStorefrontPage(page, pageHead) {
   useLifecycle(page, {
     didMount() {
       vfRuntime.restoreSession?.();
@@ -20,18 +20,18 @@ export function useStorefrontPage(page) {
       const event = {bag: 'view_cart', checkout: 'begin_checkout'}[page._vfPage];
       if (event) vfRuntime.track.event(event, {});
       vfReportLists(page);
-      vfAnnounce(page);
+      vfAnnounce(page, pageHead);
     },
     didUpdate() {
       vfReportLists(page);
-      vfAnnounce(page);
+      vfAnnounce(page, pageHead);
     },
     willUnmount() {
       clearTimeout(page._vfTimer);
     }
   });
 }
-function vfAnnounce(page) {
+function vfAnnounce(page, pageHead) {
   clearTimeout(page._vfTimer);
   page._vfTimer = setTimeout(() => {
     // Language and direction never wait for a heading (loading states have none).
@@ -48,7 +48,7 @@ function vfAnnounce(page) {
     const identity = title + lang + tenant;
     // The head follows the route, not only the heading: a shop whose filters change keeps its h1
     // but gains or loses noindex, its canonical and its alternates. syncHead only writes changes.
-    const head = vfPageHead(page, title);
+    const head = vfPageHead(page, title, pageHead);
     if (page.props.updateHead) page.props.updateHead(head);
     else VF_SEO.syncHead(head);
     if (identity === page._vfTitle) return;

@@ -1,6 +1,6 @@
 // Page behavior. Edit here, then run npm run build.
 import React from 'react';
-import {vfSavedItems} from '../../customer/saved-items.js';
+import {useSavedItems} from '../../customer/saved-items.js';
 import {ToastQueue} from '../../../design-system/components/ToastRegion/ToastRegion.jsx';
 import {vfCopy, vfProductHead} from './copy.js';
 import {
@@ -64,10 +64,11 @@ function useProductSelection({product, lang, store, go}, route) {
 }
 
 export function useProduct(props) {
-  const {product} = props;
+  const {product, details, store} = props;
   const route = vfPageRoute(props);
   const routeKey = JSON.stringify([product.id, route.size, route.addons, route.qty]);
   const {selection, select} = useProductSelection(props, route);
+  const savedItems = useSavedItems(store);
   const [confirmation, setConfirmation] = React.useState(null);
   if (confirmation && confirmation.routeKey !== routeKey) setConfirmation(null);
 
@@ -75,7 +76,9 @@ export function useProduct(props) {
   React.useEffect(() => () => toasts.clear(), [routeKey, toasts]);
 
   const page = usePageLogic(props);
-  useStorefrontPage(page);
+  const shell = vfShell(page, 'product');
+  const head = vfProductHead(product, shell.lang, details.description?.paragraphs[0] ?? '');
+  useStorefrontPage(page, head);
 
   const viewedId = React.useRef(null);
   React.useEffect(() => {
@@ -97,7 +100,10 @@ export function useProduct(props) {
     reportedRecent.current = vfReportList('recent', recent, reportedRecent.current);
   }, [recent]);
 
-  return vals(page, {
+  return vals(props, {
+    shell,
+    date: route.date,
+    savedItems,
     selection,
     select,
     recent,
@@ -107,22 +113,21 @@ export function useProduct(props) {
   });
 }
 
-function vals(page, {selection, select, recent, added, setAdded, toasts}) {
-  const fa = page.props.lang === 'fa';
+function vals(
+  {lang, product, details, store, go},
+  {shell: S, date, savedItems, selection, select, recent, added, setAdded, toasts}
+) {
+  const fa = lang === 'fa';
   const L = fa ? 'fa' : 'en';
-  const savedItems = vfSavedItems(page);
-  const S = vfShell(page, 'product');
   const m = v => VF_MONEY(v, fa);
   const C = vfCopy(S);
-  const {product, details} = page.props;
   const base = product.price;
   const availableAddons = VF_ADDONS.filter(addon => !(product.noAddons || []).includes(addon.id));
   const hasSizes = !!product.sizes;
-  const {line, remaining, total} = vfProductQuote(product, selection, page.props.store?.bag || []);
+  const {line, remaining, total} = vfProductQuote(product, selection, store?.bag || []);
   const {qty: quantity} = line;
   const size = VF_SIZES.find(item => item.id === line.size);
   const care = product.care?.[L] || C.careT;
-  page.head = vfProductHead(product, L, details.description?.paragraphs[0] ?? '');
   const showToast = content => {
     toasts.clear();
     toasts.add(content, {timeout: 10_000});
@@ -242,10 +247,7 @@ function vals(page, {selection, select, recent, added, setAdded, toasts}) {
     totalLabel: m(total),
     add: () => {
       if (product.inStock === false || remaining === 0) return;
-      const st = page.props.store;
-      if (st) {
-        st.add(line, vfPageRoute(page.props).date);
-      }
+      store?.add(line, date);
       // A small bag panel confirms what was added and offers the next step.
       toasts.clear();
       setAdded({
@@ -258,10 +260,9 @@ function vals(page, {selection, select, recent, added, setAdded, toasts}) {
     addedOpen: !!added,
     addedLines: added ? [added] : [],
     addedSums: (() => {
-      const st = page.props.store;
-      if (!st || !st.bag || !added) return [];
-      const count = st.bag.reduce((n, l) => n + l.qty, 0);
-      const sub = st.bag.reduce((n, l) => n + l.unit * l.qty, 0);
+      if (!store?.bag || !added) return [];
+      const count = store.bag.reduce((n, l) => n + l.qty, 0);
+      const sub = store.bag.reduce((n, l) => n + l.unit * l.qty, 0);
       return [
         {
           label: C.bagSubtotal.replace('{count}', fa ? VF_FA_DIGITS(count) : count),
@@ -273,16 +274,9 @@ function vals(page, {selection, select, recent, added, setAdded, toasts}) {
     closeAdded: () => setAdded(null),
     // Navigate before dismissing the dialog, which unmounts the link's press handler.
     checkout: event => {
-      if (
-        page.props.go &&
-        event &&
-        !event.metaKey &&
-        !event.ctrlKey &&
-        !event.shiftKey &&
-        !event.altKey
-      ) {
+      if (go && event && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) {
         event.preventDefault();
-        page.props.go({view: 'bag', lang: L});
+        go({view: 'bag', lang: L});
       }
       setAdded(null);
     },
