@@ -3,6 +3,7 @@
 // one by its code, a flower, a kind or the QR code on its tag, opens it full screen, builds a
 // shortlist to compare and an order to hand over, and passes either to the customer's phone as a
 // QR code. Unattended, it can play the designs as a slideshow.
+import React from 'react';
 import {VF_NAV} from '../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {vfCreateCamera} from './camera-scanner.js';
@@ -50,7 +51,7 @@ import {vfShellNavigation} from '../shell/navigation.js';
 import {vfSeparator} from '../pricing/formatting.js';
 import {vfReadRoute, vfRouteUrl} from '../shell/routing.js';
 import {VF_CATEGORY_COPY} from '../catalog/categories.js';
-import {useLifecycle, usePageLogic} from '../shell/page-state.js';
+import {usePageLogic} from '../shell/page-state.js';
 import {vfLocation, vfOnServer, vfStoredValue} from '../../platform/browser/environment.js';
 import {useStorefrontPage} from '../shell/page-lifecycle.js';
 import {vfRuntime} from '../../platform/browser/runtime.js';
@@ -202,6 +203,9 @@ export function usePresentation(props) {
       fullscreen: false,
       stockAt: 0
     };
+    page.setUnmounted = unmounted => {
+      page._unmounted = unmounted;
+    };
     page.display = vfCreateDisplay(page);
     page.camera = vfCreateCamera(page, vfScannedProduct);
     page.browsingViewer = vfCreateBrowsingViewer(page);
@@ -220,9 +224,9 @@ export function usePresentation(props) {
     };
   });
   useStorefrontPage(page);
-  useLifecycle(page, {
-    didMount() {
-      page._unmounted = false;
+  React.useEffect(
+    function mountPresentation() {
+      page.setUnmounted(false);
       // What this browser can do (wake lock, clipboard, QR scanning) and its own address are read
       // from here on: the build's prerender knows neither, and hydration renders as it did.
       page.setState({
@@ -233,20 +237,20 @@ export function usePresentation(props) {
         online: navigator.onLine !== false
       });
       page.display.mount();
-      page._onConnection = () => {
+      const onConnection = () => {
         const online = navigator.onLine !== false;
         page.setState({online, ...(online ? {preloadVersion: page.state.preloadVersion + 1} : {})});
         if (online && vfRuntime.api.live) vfRefreshStock(page);
       };
-      window.addEventListener('online', page._onConnection);
-      window.addEventListener('offline', page._onConnection);
-      page._onVisibility = () => {
+      window.addEventListener('online', onConnection);
+      window.addEventListener('offline', onConnection);
+      const onVisibility = () => {
         vfSyncWakeLock(page);
         page.display.sync();
       };
-      page._onFullscreen = () => page.setState({fullscreen: !!document.fullscreenElement});
+      const onFullscreen = () => page.setState({fullscreen: !!document.fullscreenElement});
       // "/" jumps to the search, unless the seller is typing or a dialog is open.
-      page._onKey = event => {
+      const onKey = event => {
         const target = /** @type {HTMLElement} */ (event.target);
         if (event.defaultPrevented) return;
         if (page.state.settings.displayMode === 'tv' && page.state.panel) {
@@ -327,38 +331,40 @@ export function usePresentation(props) {
           document.getElementById('vf-presentation-q')?.focus()
         );
       };
-      document.addEventListener('visibilitychange', page._onVisibility);
-      document.addEventListener('fullscreenchange', page._onFullscreen);
-      document.addEventListener('keydown', page._onKey);
+      document.addEventListener('visibilitychange', onVisibility);
+      document.addEventListener('fullscreenchange', onFullscreen);
+      document.addEventListener('keydown', onKey);
       vfSyncWakeLock(page);
       page.browsingViewer.mount();
       page.display.sync();
+      let stockTimer;
       if (vfRuntime.api.live) {
         vfRefreshStock(page);
-        page._stockTimer = setInterval(() => vfRefreshStock(page), VF_STOCK_MS);
+        stockTimer = setInterval(() => vfRefreshStock(page), VF_STOCK_MS);
       }
+      return () => {
+        page.setUnmounted(true);
+        window.removeEventListener('online', onConnection);
+        window.removeEventListener('offline', onConnection);
+        clearTimeout(page._searchTimer);
+        clearTimeout(page._copiedTimer);
+        clearTimeout(page._addedTimer);
+        page.browsingViewer.dispose();
+        clearInterval(stockTimer);
+        page.display.dispose();
+        page.camera.stop();
+        document.removeEventListener('visibilitychange', onVisibility);
+        document.removeEventListener('fullscreenchange', onFullscreen);
+        document.removeEventListener('keydown', onKey);
+        page.toasts.clear();
+        if (page._wakeLock) page._wakeLock.release().catch(() => {});
+      };
     },
-    didUpdate() {
-      if (page.state.panel !== 'scan') page.camera.stop();
-      page.display.sync();
-    },
-    willUnmount() {
-      page._unmounted = true;
-      window.removeEventListener('online', page._onConnection);
-      window.removeEventListener('offline', page._onConnection);
-      clearTimeout(page._searchTimer);
-      clearTimeout(page._copiedTimer);
-      clearTimeout(page._addedTimer);
-      page.browsingViewer.dispose();
-      clearInterval(page._stockTimer);
-      page.display.dispose();
-      page.camera.stop();
-      document.removeEventListener('visibilitychange', page._onVisibility);
-      document.removeEventListener('fullscreenchange', page._onFullscreen);
-      document.removeEventListener('keydown', page._onKey);
-      page.toasts.clear();
-      if (page._wakeLock) page._wakeLock.release().catch(() => {});
-    }
+    [page]
+  );
+  React.useEffect(function syncPresentation() {
+    if (page.state.panel !== 'scan') page.camera.stop();
+    page.display.sync();
   });
   return vals(page);
 }
