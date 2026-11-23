@@ -33,6 +33,10 @@ const React = (() => {
     }),
     useEffect: () => { index++; },
     useLayoutEffect: () => { index++; },
+    useSyncExternalStore: (_subscribe, _getSnapshot, getServerSnapshot) => {
+      index++;
+      return getServerSnapshot();
+    },
     useMemo: make => { index++; return make(); },
     useCallback: fn => { index++; return fn; }
   };

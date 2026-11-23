@@ -31,6 +31,7 @@ export function vfCopy(S) {
       shopIt: 'Shop all flowers',
       copy: 'Copy link',
       copied: 'Link copied',
+      copyFailed: 'Couldn’t copy link',
       moreA: 'More from',
       moreB: 'the journal.'
     },
@@ -39,6 +40,7 @@ export function vfCopy(S) {
       shopIt: 'خرید همه گل‌ها',
       copy: 'کپی پیوند',
       copied: 'پیوند کپی شد',
+      copyFailed: 'پیوند کپی نشد',
       moreA: 'بیشتر از',
       moreB: 'دفترچه.'
     }

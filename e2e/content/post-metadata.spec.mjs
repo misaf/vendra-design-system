@@ -20,6 +20,48 @@ const articles = [
 ];
 
 for (const lang of ['en', 'fa']) {
+  test(`article sharing uses the live URL and reports clipboard outcomes (${lang})`, async ({
+    page
+  }) => {
+    const labels = {
+      en: {copy: 'Copy link', copied: 'Link copied', failed: 'Couldn’t copy link'},
+      fa: {copy: 'کپی پیوند', copied: 'پیوند کپی شد', failed: 'پیوند کپی نشد'}
+    }[lang];
+    const start = new Date('2026-10-05T09:00:00+03:30');
+    await page.clock.install({time: start});
+    await page.addInitScript(() => {
+      window.articleClipboard = {writes: [], reject: false};
+      Object.defineProperty(navigator, 'clipboard', {
+        value: {
+          async writeText(url) {
+            if (window.articleClipboard.reject) throw new Error('Clipboard unavailable');
+            window.articleClipboard.writes.push(url);
+          }
+        }
+      });
+    });
+    await openSite(page, 'post', lang, {post: 'autumn'});
+    await page.clock.pauseAt(new Date(start.getTime() + 60_000));
+    const articleUrl = page.url();
+    await expect(page.locator('main').getByRole('link', {name: 'WhatsApp'})).toHaveAttribute(
+      'href',
+      'https://wa.me/?text=' + encodeURIComponent(articleUrl)
+    );
+
+    const button = name => page.getByRole('button', {name, exact: true});
+    await button(labels.copy).click();
+    await expect(button(labels.copied)).toBeVisible();
+    expect(await page.evaluate(() => window.articleClipboard.writes)).toEqual([articleUrl]);
+    await page.clock.runFor(1600);
+    await expect(button(labels.copy)).toBeVisible();
+
+    await page.evaluate(() => (window.articleClipboard.reject = true));
+    await button(labels.copy).click();
+    await expect(button(labels.failed)).toBeVisible();
+    await page.clock.runFor(1600);
+    await expect(button(labels.copy)).toBeVisible();
+  });
+
   for (const article of articles) {
     test(`localized post metadata: ${article.id} (${lang})`, async ({page}) => {
       await openSite(page, 'post', lang, {post: article.id});
