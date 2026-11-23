@@ -80,3 +80,21 @@ test('a guest gets an empty contact form', async ({page}) => {
   await expect(page.locator('#vf-cname')).toHaveValue('');
   await expect(page.locator('#vf-cphone')).toHaveValue('');
 });
+
+for (const lang of ['en', 'fa']) {
+  test(`contact hours refresh at studio closing time (${lang})`, async ({page}) => {
+    // 18:28 UTC is 21:58 at the studio, which closes at 22:00.
+    const start = new Date('2027-03-10T18:28:00Z');
+    await page.clock.install({time: start});
+    await openSite(page, 'contact', lang);
+    await page.clock.pauseAt(new Date(start.getTime() + 60_000));
+
+    const status = page.locator('.vf-contact-status');
+    await expect(status).toHaveAttribute('data-open', 'true');
+    await expect(status).toContainText(lang === 'fa' ? 'اکنون باز است' : 'Open now');
+
+    await page.clock.runFor(90_000);
+    await expect(status).toHaveAttribute('data-open', 'false');
+    await expect(status).toContainText(lang === 'fa' ? 'اکنون بسته است' : 'Closed');
+  });
+}
