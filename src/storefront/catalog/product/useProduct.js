@@ -20,7 +20,7 @@ import {vfShell} from '../../shell/shell-props.js';
 import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {vfFeatures} from '../../store/store-config.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../categories.js';
-import {useLifecycle, usePageLogic} from '../../shell/page-state.js';
+import {usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 import {vfSelectItem, vfShowList} from '../../../platform/browser/list-tracking.js';
 import {vfRuntime} from '../../../platform/browser/runtime.js';
@@ -64,44 +64,37 @@ function useProductSelection({product, lang, store, go}, route) {
 }
 
 export function useProduct(props) {
+  const {product} = props;
   const route = vfPageRoute(props);
-  const routeKey = JSON.stringify([props.product.id, route.size, route.addons, route.qty]);
+  const routeKey = JSON.stringify([product.id, route.size, route.addons, route.qty]);
   const {selection, select} = useProductSelection(props, route);
-  const [added, setAdded] = React.useState(null);
-  const [toasts] = React.useState(() => new ToastQueue({maxVisibleToasts: 1}));
-  React.useEffect(() => () => toasts.clear(), [toasts]);
+  const [confirmation, setConfirmation] = React.useState(null);
+  if (confirmation && confirmation.routeKey !== routeKey) setConfirmation(null);
 
-  const page = usePageLogic(props, page => {
-    page._rememberProduct = () => {
-      const {product} = page.props;
-      vfRememberViewed(product.id);
-      vfRuntime.track.event('view_item', {
-        items: [vfRuntime.track.item(product)],
-        value: product.price
-      });
-    };
-  });
+  const [toasts] = React.useState(() => new ToastQueue({maxVisibleToasts: 1}));
+  React.useEffect(() => () => toasts.clear(), [routeKey, toasts]);
+
+  const page = usePageLogic(props);
   useStorefrontPage(page);
-  useLifecycle(page, {
-    didMount() {
-      page._productId = page.props.product.id;
-      page._productRouteKey = routeKey;
-      page._rememberProduct();
-    },
-    didUpdate() {
-      const id = page.props.product.id;
-      if (page._productId !== id) {
-        page._productId = id;
-        page._rememberProduct();
-      }
-      if (page._productRouteKey !== routeKey) {
-        page._productRouteKey = routeKey;
-        setAdded(null);
-        toasts.clear();
-      }
-    }
+
+  const viewedId = React.useRef(null);
+  React.useEffect(() => {
+    if (viewedId.current === product.id) return;
+    viewedId.current = product.id;
+    vfRememberViewed(product.id);
+    vfRuntime.track.event('view_item', {
+      items: [vfRuntime.track.item(product)],
+      value: product.price
+    });
+  }, [product]);
+
+  return vals(page, {
+    selection,
+    select,
+    added: confirmation?.routeKey === routeKey ? confirmation.line : null,
+    setAdded: line => setConfirmation(line ? {routeKey, line} : null),
+    toasts
   });
-  return vals(page, {selection, select, added, setAdded, toasts});
 }
 
 function vals(page, {selection, select, added, setAdded, toasts}) {

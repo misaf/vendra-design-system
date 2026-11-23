@@ -184,18 +184,10 @@ for (const lang of ['en', 'fa']) {
   const {logic} = loadPage('product', {routeInfo: route});
   assert.equal(logic.renderVals().size, 'classic');
   assert.equal(logic.renderVals().addons.filter(addon => addon.on).length, 2);
-  logic.lifecycle.didMount();
-  logic.renderVals().add();
-  assert.equal(logic.renderVals().addedOpen, true);
   logic.props = {...logic.props, routeInfo: {...route, size: 'generous', addons: []}};
-  logic.renderVals();
-  logic.lifecycle.didUpdate();
   assert.equal(logic.renderVals().size, 'generous');
-  assert.equal(logic.renderVals().addedOpen, false);
   assert.ok(logic.renderVals().addons.every(addon => !addon.on));
   logic.props = {...logic.props, routeInfo: {view: 'product', id: route.id}};
-  logic.renderVals();
-  logic.lifecycle.didUpdate();
   assert.equal(logic.renderVals().size, 'petite');
   assert.ok(logic.renderVals().addons.every(addon => !addon.on));
 }

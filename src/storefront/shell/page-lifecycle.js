@@ -1,13 +1,11 @@
 // Browser lifecycle for storefront pages: analytics, document updates, focus and announcements.
 import {vfBrandHead} from '../store/brand.js';
-import {VF_PRODUCTS, vfFindProduct} from '../catalog/catalog.js';
 import {vfLocale} from '../store/store-config.js';
 import {vfRuntime} from '../../platform/browser/runtime.js';
 import {vfReportLists} from '../../platform/browser/list-tracking.js';
 import {VF_NAV} from '../../platform/browser/page-focus.js';
 import {vfPageHead} from './page-metadata.js';
 import {useLifecycle} from './page-state.js';
-import {vfPageRoute} from './routing.js';
 import {VF_SEO} from './seo.js';
 import {vfTenant} from '../../platform/tenant/tenant.js';
 
@@ -19,17 +17,8 @@ export function useStorefrontPage(page) {
     didMount() {
       vfRuntime.restoreSession?.();
       vfRuntime.rendered = 'hydrated';
-      const route = vfPageRoute(page.props);
-      const event = {product: 'view_item', bag: 'view_cart', checkout: 'begin_checkout'}[
-        page._vfPage
-      ];
-      if (event)
-        vfRuntime.track.event(
-          event,
-          page._vfPage === 'product'
-            ? {items: [vfRuntime.track.item(vfFindProduct(route.id) || VF_PRODUCTS[0])]}
-            : {}
-        );
+      const event = {bag: 'view_cart', checkout: 'begin_checkout'}[page._vfPage];
+      if (event) vfRuntime.track.event(event, {});
       vfReportLists(page);
       vfAnnounce(page);
     },
