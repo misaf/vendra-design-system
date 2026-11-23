@@ -1,6 +1,6 @@
 // Page behavior. Edit here, then run npm run build.
 import React from 'react';
-import {useSavedItems} from '../../customer/saved-items.js';
+import {vfToggleSavedId} from '../../customer/saved-items.js';
 import {ToastQueue} from '../../../design-system/components/ToastRegion/ToastRegion.jsx';
 import {vfCopy, vfProductHead} from './copy.js';
 import {
@@ -63,12 +63,23 @@ function useProductSelection({product, lang, store, go}, route) {
   return {selection, select};
 }
 
+function useProductSavedItems(store) {
+  const [localIds, setLocalIds] = React.useState([]);
+  return {
+    ids: store ? store.saved : localIds,
+    toggle(id) {
+      if (store) store.toggleSave(id);
+      else setLocalIds(ids => vfToggleSavedId(ids, id));
+    }
+  };
+}
+
 export function useProduct(props) {
   const {product, details, store} = props;
   const route = vfPageRoute(props);
   const routeKey = JSON.stringify([product.id, route.size, route.addons, route.qty]);
   const {selection, select} = useProductSelection(props, route);
-  const savedItems = useSavedItems(store);
+  const savedItems = useProductSavedItems(store);
   const [confirmation, setConfirmation] = React.useState(null);
   if (confirmation && confirmation.routeKey !== routeKey) setConfirmation(null);
 

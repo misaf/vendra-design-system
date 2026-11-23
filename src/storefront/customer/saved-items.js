@@ -1,22 +1,8 @@
-import React from 'react';
-
-function toggleSavedId(ids, id) {
+export function vfToggleSavedId(ids, id) {
   return ids.includes(id) ? ids.filter(saved => saved !== id) : [...ids, id];
 }
 
-// Routed pages share the session's saved list. A standalone preview owns its sample list.
-export function useSavedItems(store) {
-  const [localIds, setLocalIds] = React.useState([]);
-  return {
-    ids: store ? store.saved : localIds,
-    toggle(id) {
-      if (store) store.toggleSave(id);
-      else setLocalIds(ids => toggleSavedId(ids, id));
-    }
-  };
-}
-
-// The pages that still use the legacy page object keep their preview state there.
+// Routed pages share the session's saved list. Standalone previews use their own sample list.
 export function vfSavedItems(page, previewIds = []) {
   const store = page.props.store;
   return {
@@ -26,7 +12,7 @@ export function vfSavedItems(page, previewIds = []) {
         store.toggleSave(id);
         return;
       }
-      page.setState(state => ({vfFavs: toggleSavedId(state.vfFavs ?? previewIds, id)}));
+      page.setState(state => ({vfFavs: vfToggleSavedId(state.vfFavs ?? previewIds, id)}));
     }
   };
 }
