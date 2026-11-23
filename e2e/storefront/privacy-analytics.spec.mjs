@@ -1,27 +1,52 @@
 import {test, expect} from '@playwright/test';
 import {NO_CONSENT, choiceTile, openSite, openFooterGroup, scanAxe} from '../helpers.mjs';
 
-test('product views follow the product and keep recent history across configuration changes', async ({
+test('product and recent-list analytics follow navigation across configuration changes', async ({
   page
 }) => {
+  await page.addInitScript(() =>
+    localStorage.setItem('vendra-recently-viewed', JSON.stringify(['VF-8RD5WN', 'VF-3HX9TP']))
+  );
   await openSite(page, 'product', 'en');
-  const views = () =>
-    page.evaluate(() => window.__vfRuntime.track.log.filter(event => event.event === 'view_item'));
+  const events = name =>
+    page.evaluate(name => window.__vfRuntime.track.log.filter(event => event.event === name), name);
+  const views = () => events('view_item');
+  const recentLists = async () =>
+    (await events('view_item_list')).filter(event => event.item_list_id === 'recent');
   await expect
     .poll(views)
     .toMatchObject([{items: [{item_id: 'VF-7K2M4Q'}], value: 41000000, currency: 'IRR'}]);
+  const initialList = {
+    items: [
+      {item_id: 'VF-8RD5WN', index: 0},
+      {item_id: 'VF-3HX9TP', index: 1}
+    ]
+  };
+  await expect.poll(recentLists).toMatchObject([initialList]);
 
   await choiceTile(page.locator('.vf-product-sizes'), /^Classic/).click();
   await expect(page).toHaveURL(/size=classic/);
-  await page.evaluate(() => window.__vfSite.navigate({view: 'product', id: 'VF-8RD5WN'}));
+  await page.locator('.vf-product-recent').getByRole('link', {name: 'VF-8RD5WN'}).click();
   await expect(page.getByRole('heading', {level: 1})).toHaveText('VF-8RD5WN');
   await expect.poll(views).toMatchObject([
     {items: [{item_id: 'VF-7K2M4Q'}], value: 41000000, currency: 'IRR'},
     {items: [{item_id: 'VF-8RD5WN'}], value: 34000000, currency: 'IRR'}
   ]);
+  await expect.poll(recentLists).toMatchObject([
+    initialList,
+    {
+      items: [
+        {item_id: 'VF-7K2M4Q', index: 0},
+        {item_id: 'VF-3HX9TP', index: 1}
+      ]
+    }
+  ]);
+  expect(await events('select_item')).toMatchObject([
+    {item_list_id: 'recent', items: [{item_id: 'VF-8RD5WN', index: 0}]}
+  ]);
   expect(
     await page.evaluate(() => JSON.parse(localStorage.getItem('vendra-recently-viewed')))
-  ).toEqual(['VF-8RD5WN', 'VF-7K2M4Q']);
+  ).toEqual(['VF-8RD5WN', 'VF-7K2M4Q', 'VF-3HX9TP']);
 });
 
 test('the storefront reports the contract’s events, and nothing personal', async ({page}, info) => {

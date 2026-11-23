@@ -22,7 +22,7 @@ import {vfFeatures} from '../../store/store-config.js';
 import {VF_CATEGORY_COPY, VF_CATEGORY_ITEM} from '../categories.js';
 import {usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
-import {vfSelectItem, vfShowList} from '../../../platform/browser/list-tracking.js';
+import {vfReportList, vfSelectItem} from '../../../platform/browser/list-tracking.js';
 import {vfRuntime} from '../../../platform/browser/runtime.js';
 
 // A shared counter quote supplies validated choices through the product route.
@@ -88,16 +88,26 @@ export function useProduct(props) {
     });
   }, [product]);
 
+  const recent = vfRecentlyViewed()
+    .filter(id => id !== product.id)
+    .slice(0, 4)
+    .map(vfProduct);
+  const reportedRecent = React.useRef([]);
+  React.useEffect(() => {
+    reportedRecent.current = vfReportList('recent', recent, reportedRecent.current);
+  }, [recent]);
+
   return vals(page, {
     selection,
     select,
+    recent,
     added: confirmation?.routeKey === routeKey ? confirmation.line : null,
     setAdded: line => setConfirmation(line ? {routeKey, line} : null),
     toasts
   });
 }
 
-function vals(page, {selection, select, added, setAdded, toasts}) {
+function vals(page, {selection, select, recent, added, setAdded, toasts}) {
   const fa = page.props.lang === 'fa';
   const L = fa ? 'fa' : 'en';
   const savedItems = vfSavedItems(page);
@@ -112,11 +122,6 @@ function vals(page, {selection, select, added, setAdded, toasts}) {
   const {qty: quantity} = line;
   const size = VF_SIZES.find(item => item.id === line.size);
   const care = product.care?.[L] || C.careT;
-  const recent = vfRecentlyViewed()
-    .filter(x => x !== product.id)
-    .slice(0, 4)
-    .map(vfProduct);
-  vfShowList(page, 'recent', recent);
   page.head = vfProductHead(product, L, details.description?.paragraphs[0] ?? '');
   const showToast = content => {
     toasts.clear();
@@ -186,7 +191,7 @@ function vals(page, {selection, select, added, setAdded, toasts}) {
     },
     recentLabel: C.recentA + ' ' + C.recentB,
     productId: product.id,
-    hasRecent: vfRecentlyViewed().some(x => x !== product.id),
+    hasRecent: recent.length > 0,
     available: product.inStock !== false,
     stock: product.stock,
     // No more than the shop has left (nine at most, as before).
