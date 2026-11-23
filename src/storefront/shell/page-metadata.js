@@ -13,10 +13,9 @@ import {vfTenant} from '../../platform/tenant/tenant.js';
 
 // Build metadata for both the Next.js export and browser navigation. A page can supply its own
 // preview image, price and structured data. Canonical and alternate URLs come from the route.
-export function vfPageHead(page, heading) {
+export function vfPageHead(page, heading, head = page.head || {}) {
   const lang = vfLocale(page.props.lang).code;
   const tenant = vfTenant(page.props.tenant);
-  const head = page.head || {};
   const image = head.image?.src
     ? head.image
     : {
