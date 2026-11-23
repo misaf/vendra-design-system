@@ -66,7 +66,7 @@ for (const lang of ['en', 'fa']) {
   assert.ok(saved.renderVals().href.shop.endsWith('/shop/'));
   assert.equal(saved.renderVals().restore, undefined);
   const {logic: search} = loadPage('search', {lang});
-  search.state.q = 'no-such-flower';
+  search.renderVals().setQ('no-such-flower');
   assert.equal(search.renderVals().noResults, true);
   search.renderVals().clearSearch();
   assert.equal(search.renderVals().empty, true);

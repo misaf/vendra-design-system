@@ -33,6 +33,59 @@ test('shop price analytics report the settled range and cancel on navigation', a
   expect(await priceEvents()).toMatchObject([settled]);
 });
 
+test('search reports settled typing and restores result impressions from browser history', async ({
+  page
+}) => {
+  const start = new Date('2026-10-05T09:00:00+03:30');
+  await page.clock.install({time: start});
+  await openSite(page, 'search', 'en', {q: 'VF-7K2M4Q'});
+  await page.clock.pauseAt(new Date(start.getTime() + 60_000));
+
+  const events = name =>
+    page.evaluate(
+      name =>
+        window.__vfRuntime.track.log.filter(
+          event =>
+            event.event === name && (name !== 'view_item_list' || event.item_list_id === 'search')
+        ),
+      name
+    );
+  const search = page.getByRole('searchbox');
+  const firstList = {items: [{item_id: 'VF-7K2M4Q'}]};
+  const orchidList = {items: [{item_id: 'VF-8RD5WN'}]};
+  await expect.poll(() => events('view_item_list')).toMatchObject([firstList]);
+  expect(await events('search')).toEqual([]);
+
+  await search.fill('or');
+  await search.fill('orchid');
+  await expect(search).toHaveValue('orchid');
+  await expect(page.locator('.vf-search-name')).toHaveText(['VF-8RD5WN']);
+  await page.clock.runFor(999);
+  expect(await events('search')).toEqual([]);
+  expect(await events('view_item_list')).toMatchObject([firstList]);
+  await page.clock.runFor(1);
+  const settled = [{search_term: 'orchid', results: 1}];
+  expect(await events('search')).toMatchObject(settled);
+  expect(await events('view_item_list')).toMatchObject([firstList, orchidList]);
+
+  await search.fill('rose');
+  await expect(page).toHaveURL(/q=rose/);
+  await page.evaluate(() => {
+    const url = new URL(location.href);
+    url.searchParams.set('q', 'VF-9FA2KE');
+    history.pushState(null, '', url);
+  });
+  await expect(search).toHaveValue('VF-9FA2KE');
+  await expect
+    .poll(() => events('view_item_list'))
+    .toMatchObject([firstList, orchidList, {items: [{item_id: 'VF-9FA2KE'}]}]);
+  await page.goBack();
+  await expect(search).toHaveValue('rose');
+  await expect.poll(() => events('view_item_list')).toHaveLength(4);
+  await page.clock.runFor(1000);
+  expect(await events('search')).toMatchObject(settled);
+});
+
 test('product and recent-list analytics follow navigation across configuration changes', async ({
   page
 }) => {
