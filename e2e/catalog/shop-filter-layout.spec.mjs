@@ -3,6 +3,25 @@ import {openSite, scanAxe} from '../helpers.mjs';
 
 test.use({hasTouch: true});
 
+test('widening to the shop sidebar closes the filter dialog', async ({page}) => {
+  await page.setViewportSize({width: 1023, height: 844});
+  await openSite(page, 'shop', 'en');
+  const opener = page.getByRole('button', {name: 'Filters', exact: true});
+  const dialog = page.getByRole('dialog', {name: 'Filters', exact: true});
+  await opener.click();
+  await expect(dialog).toBeVisible();
+
+  await page.setViewportSize({width: 1024, height: 844});
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByRole('slider', {name: /Minimum/})).toBeVisible();
+
+  await page.setViewportSize({width: 1023, height: 844});
+  await expect(opener).toBeVisible();
+  await expect(dialog).toHaveCount(0);
+  await opener.click();
+  await expect(dialog).toBeVisible();
+});
+
 for (const lang of ['en', 'fa']) {
   for (const viewport of [
     {width: 390, height: 844},

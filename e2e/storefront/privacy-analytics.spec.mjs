@@ -1,6 +1,38 @@
 import {test, expect} from '@playwright/test';
 import {NO_CONSENT, choiceTile, openSite, openFooterGroup, scanAxe} from '../helpers.mjs';
 
+test('shop price analytics report the settled range and cancel on navigation', async ({page}) => {
+  const start = new Date('2026-10-05T09:00:00+03:30');
+  await page.clock.install({time: start});
+  await page.setViewportSize({width: 1280, height: 844});
+  await openSite(page, 'shop', 'en');
+  await page.clock.pauseAt(new Date(start.getTime() + 60_000));
+
+  const priceEvents = () =>
+    page.evaluate(() =>
+      window.__vfRuntime.track.log.filter(
+        event => event.event === 'filter' && event.filter_id === 'price'
+      )
+    );
+  const minimum = page.getByRole('slider', {name: /Minimum/});
+  await minimum.press('ArrowUp');
+  await expect(page).toHaveURL(/min=100000/);
+  await minimum.press('ArrowUp');
+  await expect(page).toHaveURL(/min=200000/);
+  await page.clock.runFor(799);
+  expect(await priceEvents()).toEqual([]);
+  await page.clock.runFor(1);
+  const settled = {value: expect.stringMatching(/^200000-/), action: 'add'};
+  expect(await priceEvents()).toMatchObject([settled]);
+
+  await minimum.press('ArrowUp');
+  await expect(page).toHaveURL(/min=300000/);
+  await page.evaluate(() => window.__vfSite.navigate({view: 'home'}));
+  await expect(page.locator('.vf-home-top')).toBeVisible();
+  await page.clock.runFor(800);
+  expect(await priceEvents()).toMatchObject([settled]);
+});
+
 test('product and recent-list analytics follow navigation across configuration changes', async ({
   page
 }) => {

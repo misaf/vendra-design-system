@@ -1,4 +1,5 @@
 // Page behavior. Edit here, then run npm run build.
+import React from 'react';
 import {vfSavedItems} from '../../customer/saved-items.js';
 import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
@@ -13,41 +14,48 @@ import {VF_STORE, vfFeatures} from '../../store/store-config.js';
 import {VF_CATEGORY_COPY, VF_SHOP_OCCASIONS, VF_SHOP_OCCASION_COPY} from '../categories.js';
 import {vfDayMonth, vfDayName} from '../../delivery/time.js';
 import {page as pageItems} from '../pagination.js';
-import {useLifecycle, usePageLogic} from '../../shell/page-state.js';
+import {usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 import {vfSelectItem, vfShowList} from '../../../platform/browser/list-tracking.js';
 import {VF_CATEGORY_SLUGS} from '../product-categories.js';
 import {vfRuntime} from '../../../platform/browser/runtime.js';
 const VF_CATS = ['all', ...VF_CATEGORY_SLUGS];
-// The page: its state (applied at once, as the logic reads it back), effects and the values
-// its View renders.
 export function useShop(props) {
-  const page = usePageLogic(props, page => {
-    page.state = {
-      cat: 'all',
-      chips: [],
-      sort: 'featured',
-      favs: ['VF-8RD5WN']
-    };
-  });
+  const page = usePageLogic(props);
+  const [filterOpen, setFilterOpen] = React.useState(false);
+  const priceTimer = React.useRef(null);
   useStorefrontPage(page);
-  useLifecycle(page, {
-    didMount() {
-      // The Filters dialog belongs to the compact layout (below 1024px, CSS); widening the window
-      // to the sidebar closes it.
-      page._shopMedia = window.matchMedia('(width >= 1024px)');
-      page._shopResize = () => page._shopMedia.matches && page.setState({filterOpen: false});
-      page._shopMedia.addEventListener('change', page._shopResize);
-    },
-    willUnmount() {
-      clearTimeout(page._priceTimer);
-      page._shopMedia.removeEventListener('change', page._shopResize);
+  React.useEffect(() => {
+    // Widening to the sidebar layout closes the compact Filters dialog.
+    const media = window.matchMedia('(width >= 1024px)');
+    const closeOnWide = event => {
+      if (event.matches) setFilterOpen(false);
+    };
+    media.addEventListener('change', closeOnWide);
+    return () => {
+      media.removeEventListener('change', closeOnWide);
+      clearTimeout(priceTimer.current);
+      priceTimer.current = null;
+    };
+  }, []);
+
+  const view = vals(page, {filterOpen, setFilterOpen});
+  return {
+    ...view,
+    setPrice([min, max]) {
+      view.setPrice([min, max]);
+      // The slider reports every step of a drag; the range counts once it rests.
+      clearTimeout(priceTimer.current);
+      priceTimer.current = setTimeout(() => reportShopFilter('price', min + '-' + max, true), 800);
     }
-  });
-  return vals(page);
+  };
 }
 
-function vals(page) {
+// Filters set here are reported as they change; FilterBar reports the ones removed from its row.
+const reportShopFilter = (filterId, value, on) =>
+  vfRuntime.track.event('filter', {filter_id: filterId, value, action: on ? 'add' : 'remove'});
+
+function vals(page, {filterOpen, setFilterOpen}) {
   const fa = page.props.lang === 'fa';
   const L = fa ? 'fa' : 'en';
   const savedItems = vfSavedItems(page, ['VF-8RD5WN']);
@@ -66,9 +74,6 @@ function vals(page) {
   const days = vfDeliveryDays(VF_ZONES[0].id);
   const date = days.some(d => d.iso === s.date && !d.soldOut && !d.pastCutoff) ? s.date : '';
   const dayLabel = d => vfDayName(d, fa) + vfSeparator(fa) + vfDayMonth(d.date, fa);
-  // Filters set here are reported as they change; FilterBar reports the ones removed from its row.
-  const filterUsed = (filterId, value, on) =>
-    vfRuntime.track.event('filter', {filter_id: filterId, value, action: on ? 'add' : 'remove'});
   const change = patch => {
     const next = {
       ...route,
@@ -170,15 +175,9 @@ function vals(page) {
   return {
     ...S,
     migration: C.migration,
-    filterOpen: !!page.state.filterOpen,
-    openFilters: () =>
-      page.setState({
-        filterOpen: true
-      }),
-    closeFilters: () =>
-      page.setState({
-        filterOpen: false
-      }),
+    filterOpen,
+    openFilters: () => setFilterOpen(true),
+    closeFilters: () => setFilterOpen(false),
     // FilterBar moves focus along the filters as they go; after the last one, to the result count.
     activeFilters: activeFilters.map(filter => ({
       id: filter.id,
@@ -199,7 +198,7 @@ function vals(page) {
       });
       // The button goes away with the filters, so focus moves to the updated result count
       // (the filters dialog keeps focus while it is open).
-      if (!page.state.filterOpen) VF_NAV.focusById('vf-shop-count');
+      if (!filterOpen) VF_NAV.focusById('vf-shop-count');
     },
     filtersLabel: activeFilters.length
       ? C.migration.filters + ' (' + n(activeFilters.length) + ')'
@@ -216,15 +215,12 @@ function vals(page) {
         min,
         max
       });
-      // The slider reports every step of a drag; the range counts once it rests.
-      clearTimeout(page._priceTimer);
-      page._priceTimer = setTimeout(() => filterUsed('price', min + '-' + max, true), 800);
     },
     occasionOptions: ['all', ...VF_SHOP_OCCASIONS].map(id => ({
       label: id === 'all' ? VF_CATEGORY_COPY[L].all : VF_SHOP_OCCASION_COPY[L][id],
       on: s.occasion === id,
       pick: () => {
-        filterUsed('occasion', id, id !== 'all');
+        reportShopFilter('occasion', id, id !== 'all');
         change({
           occasion: id
         });
@@ -249,7 +245,7 @@ function vals(page) {
       }))
     ],
     setDate: value => {
-      filterUsed('date', value || undefined, !!value);
+      reportShopFilter('date', value || undefined, !!value);
       change({
         date: value
       });
@@ -257,7 +253,7 @@ function vals(page) {
     showResults: C.showResults.replace('{count}', C.designCount(list.length)),
     inStock,
     setStock: value => {
-      filterUsed('stock', undefined, !!value);
+      reportShopFilter('stock', undefined, !!value);
       change({
         stock: value
       });
@@ -286,7 +282,7 @@ function vals(page) {
         on,
         off: !on,
         pick: () => {
-          filterUsed('category', id, id !== 'all');
+          reportShopFilter('category', id, id !== 'all');
           change({
             cat: id
           });
@@ -300,7 +296,7 @@ function vals(page) {
         label: C.chipLabels[id].replace('{price}', S.m(VF_UNDER_PRICE)),
         on,
         toggle: () => {
-          filterUsed(id, undefined, !on);
+          reportShopFilter(id, undefined, !on);
           change({
             filters: on ? s.chips.filter(x => x !== id) : [...s.chips, id]
           });
