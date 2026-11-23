@@ -33,6 +33,8 @@ Hooks that use [`usePageLogic`](../src/storefront/shell/page-state.js) share a m
 
 The [VM page harness](../tests/page-script.mjs) concatenates source files from its own lists after stripping imports and exports. Its React stand-in skips effects and drains completion callbacks inside `setState`. Tests can invoke lifecycle handlers and rerender the hook explicitly. Those tests cover stateful scenarios with controlled globals. Use a mounted React component or a storefront browser flow to verify commit timing, DOM work, and lifecycle behavior.
 
+`useStorefrontPage` restores the session and emits the bag or checkout view event from a mount effect. A separate effect reports lists after each commit and schedules metadata, focus, and announcements. Its cleanup cancels the pending update when a newer render commits or the screen unmounts.
+
 When migrating a consumer away from the page lifecycle, extract the pure state transitions first and test them with direct imports from their owning modules. For example, [the delivery rules suite](../src/storefront/delivery/delivery-rules.test.mjs) imports the same validation and scheduling modules as the app. Check both immediate state reads and post-commit callbacks in a browser before changing hook timing.
 
 ### Import boundaries
