@@ -16,7 +16,8 @@ for (const lang of ['en', 'fa']) {
     c.sessionStorage.getItem = () => stored || null;
     c.vfRuntime.api = {live: false};
     c.window.addEventListener = c.document.addEventListener = () => {};
-    site.lifecycle.didMount();
+    site.runEffect('mountStorefrontSession');
+    site.runEffect('commitStorefrontSession');
     assert.ok(stored, 'initial handover is saved on mount without an edit');
     setAddress(c, `/${lang}/${view}/`);
     const restored = new c.Logic({lang});
@@ -27,7 +28,7 @@ for (const lang of ['en', 'fa']) {
       throw new Error('Storage full');
     };
     assert.doesNotThrow(
-      () => site.lifecycle.didMount(),
+      () => site.runEffect('commitStorefrontSession'),
       'blocked session storage does not crash mount'
     );
   }

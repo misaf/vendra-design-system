@@ -1,4 +1,5 @@
 // Page behavior. Edit here, then run npm run build.
+import React from 'react';
 import {
   vfAccountLocale,
   vfAccountPhone,
@@ -40,7 +41,7 @@ import {
   vfRouteUrl
 } from '../shell/routing.js';
 import {vfOnServer} from '../../platform/browser/environment.js';
-import {useLifecycle, usePageLogic} from '../shell/page-state.js';
+import {usePageLogic} from '../shell/page-state.js';
 import {vfRuntime} from '../../platform/browser/runtime.js';
 import {createSavedSync} from '../customer/saved/saved-sync.js';
 import {vfPersistSession, vfReadSession, vfSessionCustomer} from './session-storage.js';
@@ -160,6 +161,9 @@ export function useStorefrontSession(props) {
     page.state = vfSiteInitial(page.props);
     // Customers who signed out while this page was open.
     page._signedOut = new Set();
+    page.setMounted = mounted => {
+      page._mounted = mounted;
+    };
     page.savedSync = createSavedSync(page);
 
     page.syncCustomer = ({continueCheckout = false} = {}) => {
@@ -321,42 +325,40 @@ export function useStorefrontSession(props) {
         page.navigate(initial.routeInfo, true);
     };
   });
-  useLifecycle(page, {
-    didMount() {
+  React.useEffect(
+    function mountStorefrontSession() {
       window.__vfSite = page;
-      page._mounted = true;
+      page.setMounted(true);
       page.savedSync.load();
-      page._customerChanged = event => {
+      const customerChanged = event => {
         if (event.key === 'vf-account-phone' || event.key == null) page.syncCustomer();
       };
-      window.addEventListener('storage', page._customerChanged);
-      page._click = event => {
+      const trackContactClick = event => {
         const chat = event.target.closest?.('a[href]');
         if (chat && VF_STORE.whatsapp && chat.href.startsWith(VF_STORE.whatsapp))
           vfRuntime.track.event('contact_whatsapp');
       };
-      document.addEventListener('click', page._click);
-      if (page._restored) {
-        vfPersistSession(VF_SESSION, page.state);
-        vfReportPageView(page);
-      }
+      window.addEventListener('storage', customerChanged);
+      document.addEventListener('click', trackContactClick);
+      return () => {
+        page.setMounted(false);
+        page.savedSync.reset();
+        window.removeEventListener('storage', customerChanged);
+        document.removeEventListener('click', trackContactClick);
+        if (window.__vfSite === page) delete window.__vfSite;
+      };
     },
-    didUpdate() {
-      if (!page._restored) return;
-      vfReportPageView(page);
-      if (page.state.customerId !== vfCustomerId()) {
-        page.syncCustomer();
-        return;
-      }
-      vfPersistSession(VF_SESSION, page.state);
-    },
-    willUnmount() {
-      page._mounted = false;
-      page.savedSync.reset();
-      window.removeEventListener('storage', page._customerChanged);
-      document.removeEventListener('click', page._click);
-      if (window.__vfSite === page) delete window.__vfSite;
+    [page]
+  );
+  // Session state lives on the page object, so persist it after every commit.
+  React.useEffect(function commitStorefrontSession() {
+    if (!page._restored) return;
+    vfReportPageView(page);
+    if (page.state.customerId !== vfCustomerId()) {
+      page.syncCustomer();
+      return;
     }
+    vfPersistSession(VF_SESSION, page.state);
   });
   return vals(page);
 }
