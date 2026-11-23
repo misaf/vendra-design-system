@@ -118,7 +118,7 @@ for (const lang of ['en', 'fa']) {
   const announcePrices = bag._announcePrices;
   let announced = [];
   bag._announcePrices = changes => announcePrices((announced = changes));
-  bag.lifecycle.didMount();
+  vm.runInContext('vfOpenBag', bc)(bag);
   assert.deepEqual(
     plain(announced),
     current.map((line, index) => ({id: line.id, from: stale[index].unit, to: line.unit})),

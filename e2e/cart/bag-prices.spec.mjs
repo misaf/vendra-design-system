@@ -31,6 +31,20 @@ for (const lang of ['en', 'fa']) {
     await expect(
       page.getByRole('status').filter({hasText: fa ? 'قیمت‌های سبد' : 'Prices in your bag'})
     ).toHaveCount(1);
+    const cartViews = () =>
+      page.evaluate(() =>
+        window.__vfRuntime.track.log.filter(event => event.event === 'view_cart')
+      );
+    const view = {
+      currency: 'IRR',
+      items: current.map(line => ({
+        item_id: line.token,
+        price: line.unit * 10,
+        quantity: line.qty
+      })),
+      value: current.reduce((total, line) => total + line.unit * line.qty, 0) * 10
+    };
+    expect(await cartViews()).toMatchObject([view]);
     expect(await scanAxe(page)).toEqual([]);
     // Continuing means the customer saw the new prices: their notices are done.
     await page
@@ -40,5 +54,6 @@ for (const lang of ['en', 'fa']) {
       .click();
     await expect(page).toHaveURL(/step=delivery/);
     expect(await page.evaluate(() => window.__vfSite.state.priceChanges)).toEqual({});
+    expect(await cartViews()).toMatchObject([view]);
   });
 }
