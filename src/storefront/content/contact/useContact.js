@@ -1,4 +1,5 @@
 // Page behavior. Edit here, then run npm run build.
+import React from 'react';
 import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {vfAccountLoad, vfAccountPhone} from '../../customer/account-data.js';
@@ -8,7 +9,7 @@ import {vfDirections} from '../../delivery/location.js';
 import {vfShell} from '../../shell/shell-props.js';
 import {VF_STORE, vfLiveStore} from '../../store/store-config.js';
 import {vfHoursNotices, vfHoursText, vfOpeningStatus} from '../../store/store-hours.js';
-import {useLifecycle, usePageLogic} from '../../shell/page-state.js';
+import {usePageLogic} from '../../shell/page-state.js';
 import {vfNow} from '../../../platform/browser/environment.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 import {vfFloristData} from '../../shell/structured-data.js';
@@ -56,17 +57,14 @@ export function useContact(props) {
       };
     };
   });
+  const [, refreshHours] = React.useReducer(tick => tick + 1, 0);
   useStorefrontPage(page);
-  // The open/closed line follows the clock: re-render each minute while the page is open.
-  useLifecycle(page, {
-    didMount() {
-      page.setState(vfContactPrefill());
-      page._clockTimer = setInterval(() => page.setState({clock: Date.now()}), 60_000);
-    },
-    willUnmount() {
-      clearInterval(page._clockTimer);
-    }
-  });
+  React.useEffect(() => {
+    // Read the profile after the storefront has restored the browser session.
+    page.setState(vfContactPrefill());
+    const interval = setInterval(refreshHours, 60_000);
+    return () => clearInterval(interval);
+  }, [page]);
   return vals(page);
 }
 
