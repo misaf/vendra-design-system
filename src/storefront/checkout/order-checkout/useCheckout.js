@@ -1,4 +1,5 @@
 // Page behavior. Edit here, then run npm run build.
+import React from 'react';
 import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {
@@ -35,7 +36,7 @@ import {
   vfWalletChange,
   vfWalletOf
 } from '../../customer/wallet.js';
-import {useLifecycle, usePageLogic} from '../../shell/page-state.js';
+import {usePageLogic} from '../../shell/page-state.js';
 import {vfNow} from '../../../platform/browser/environment.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 import {vfRuntime} from '../../../platform/browser/runtime.js';
@@ -68,21 +69,21 @@ export function useCheckout(props) {
     };
   });
   useStorefrontPage(page);
-  useLifecycle(page, {
-    didMount() {
-      const route = vfPageRoute(page.props);
-      if (route.paymentOrder !== undefined)
-        page._paymentReturn = setTimeout(
-          () => vfVerifyPayment(page, route.paymentOrder, route.paymentResult),
-          0
-        );
+  React.useEffect(
+    function startPaymentReturn() {
+      const {paymentOrder, paymentResult} = vfPageRoute(page.props);
+      const timer =
+        paymentOrder === undefined
+          ? undefined
+          : setTimeout(() => vfVerifyPayment(page, paymentOrder, paymentResult), 0);
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(page._paymentTimer);
+        page._paymentCheck = null;
+      };
     },
-    willUnmount() {
-      clearTimeout(page._paymentReturn);
-      clearTimeout(page._paymentTimer);
-      page._paymentCheck = null;
-    }
-  });
+    [page]
+  );
   return checkoutViewProps(page);
 }
 

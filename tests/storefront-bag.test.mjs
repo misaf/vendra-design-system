@@ -16,7 +16,8 @@ for (const lang of ['en', 'fa']) {
     c.sessionStorage.getItem = () => stored || null;
     c.vfRuntime.api = {live: false};
     c.window.addEventListener = c.document.addEventListener = () => {};
-    site.lifecycle.didMount();
+    site.runEffect('mountStorefrontSession');
+    site.runEffect('commitStorefrontSession');
     assert.ok(stored, 'initial handover is saved on mount without an edit');
     setAddress(c, `/${lang}/${view}/`);
     const restored = new c.Logic({lang});
@@ -27,7 +28,7 @@ for (const lang of ['en', 'fa']) {
       throw new Error('Storage full');
     };
     assert.doesNotThrow(
-      () => site.lifecycle.didMount(),
+      () => site.runEffect('commitStorefrontSession'),
       'blocked session storage does not crash mount'
     );
   }
@@ -118,7 +119,7 @@ for (const lang of ['en', 'fa']) {
   const announcePrices = bag._announcePrices;
   let announced = [];
   bag._announcePrices = changes => announcePrices((announced = changes));
-  bag.lifecycle.didMount();
+  vm.runInContext('vfOpenBag', bc)(bag);
   assert.deepEqual(
     plain(announced),
     current.map((line, index) => ({id: line.id, from: stale[index].unit, to: line.unit})),

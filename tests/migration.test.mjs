@@ -136,7 +136,7 @@ function page(name, c, props = {}) {
     storage.set('vf-account-phone', first);
     session.set(key, JSON.stringify({customerId: first, saved: [a], bag: []}));
     const site = page('site', c);
-    site.lifecycle.didMount();
+    site.runEffect('mountStorefrontSession');
     assert.deepEqual([...site.state.saved], [a], 'legacy data is restored for its owner');
 
     const {toggleSave} = site.renderVals().store;
@@ -171,7 +171,7 @@ function page(name, c, props = {}) {
     assert.equal(site.state.announcement, '');
     assert.deepEqual(JSON.parse(storage.get('vendra-saved-map')), {[b]: 902});
 
-    site.lifecycle.didUpdate();
+    site.runEffect('commitStorefrontSession');
     const persisted = JSON.parse(session.get(key));
     assert.deepEqual(persisted.saved, [b], 'the top-level list remains readable');
     assert.deepEqual(persisted.customers[first].saved, [a, 'VF-8RD5WN']);
@@ -179,7 +179,7 @@ function page(name, c, props = {}) {
     c.vfAccountSignOut();
     site.syncCustomer();
     assert.equal(storage.has('vendra-saved-map'), false);
-    site.lifecycle.didUpdate();
+    site.runEffect('commitStorefrontSession');
     assert.deepEqual(Object.keys(JSON.parse(session.get(key)).customers), ['guest']);
     requests.at(-1).respond(wishlist(a, 901));
     await flush();
@@ -445,7 +445,7 @@ function page(name, c, props = {}) {
     const returned = page('checkout', c, {
       routeInfo: {view: 'checkout', paymentOrder: id, paymentResult: result}
     });
-    returned.lifecycle.didMount();
+    returned.runEffect('startPaymentReturn');
     timers.pop()(); // Start the payment check once the route has mounted.
     return returned;
   };

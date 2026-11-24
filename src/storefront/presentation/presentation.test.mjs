@@ -64,13 +64,13 @@ function presentation(settings = {}) {
 }
 {
   const {page, timers} = presentation({displayMode: 'tv', slideSeconds: 15});
-  page.lifecycle.didMount();
+  const unmount = page.runEffect('mountPresentation');
   assert.ok([...timers.values()].some(timer => timer.ms === 15000));
   page.setState({panel: 'tools'});
   page.renderVals();
-  page.lifecycle.didUpdate();
+  page.runEffect('syncPresentation');
   assert.equal(timers.size, 0, 'seller dialogs pause playback');
-  page.lifecycle.willUnmount();
+  unmount();
   assert.equal(timers.size, 0, 'unmount releases every playback timer');
 }
 console.log('Passed decoded image handoff, failure retention, slideshow timing and cleanup.');
@@ -246,7 +246,7 @@ console.log('Passed named collections and configuration transfer without PIN or 
     }
   };
   const flush = () => new Promise(resolve => setImmediate(resolve));
-  page.lifecycle.didMount();
+  const unmount = page.runEffect('mountPresentation');
 
   page.renderVals().openScan();
   page.renderVals().closePanel();
@@ -259,7 +259,7 @@ console.log('Passed named collections and configuration transfer without PIN or 
   assert.equal(video.srcObject, streams[1], 'the reopened camera keeps its stream');
 
   page.setState({panel: 'tools'});
-  page.lifecycle.didUpdate();
+  page.runEffect('syncPresentation');
   assert.equal(streams[1].stopped, 1, 'leaving scan through another panel stops the camera');
   assert.equal(video.srcObject, null);
   page.renderVals().openScan();
@@ -277,7 +277,7 @@ console.log('Passed named collections and configuration transfer without PIN or 
     'a stale detector cannot schedule another read'
   );
 
-  page.lifecycle.willUnmount();
+  unmount();
   assert.equal(streams[2].stopped, 1);
   assert.equal(video.srcObject, null);
   assert.equal(timers.size, 0, 'unmount cancels the scan timer');

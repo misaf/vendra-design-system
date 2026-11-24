@@ -18,6 +18,15 @@ test('a card-to-card order says its payment is being confirmed, and offers an ac
     .first()
     .click();
   await page.fill('#vf-last4', '6037');
+  const starts = await page.evaluate(() =>
+    window.__vfRuntime.track.log.filter(event => event.event === 'begin_checkout')
+  );
+  expect(starts).toMatchObject([
+    {
+      items: [{item_id: 'VF-7K2M4Q'}, {item_id: 'VF-8RD5WN'}],
+      value: expect.any(Number)
+    }
+  ]);
   await page
     .getByRole('button', {name: 'I’ve paid — place order'})
     .locator('visible=true')
@@ -132,6 +141,11 @@ test('a return link for an order this tab doesn’t hold says not to pay twice',
     'href',
     'tel:+989129333034'
   );
+  expect(
+    await page.evaluate(() =>
+      window.__vfRuntime.track.log.some(event => event.event === 'begin_checkout')
+    )
+  ).toBe(false);
   expect(await scanAxe(page)).toEqual([]);
 });
 

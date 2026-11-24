@@ -1,4 +1,5 @@
 // Page behavior. Edit here, then run npm run build.
+import React from 'react';
 import {vfCopy} from './copy.js';
 import {vfOrderMessage} from '../../checkout/order-message.js';
 import {vfAccountLoad, vfAccountPhone} from '../../customer/account-data.js';
@@ -48,7 +49,7 @@ import {vfPageRoute, vfRouteUrl} from '../../shell/routing.js';
 import {VF_STORE, vfFeatures, vfPaymentMethods} from '../../store/store-config.js';
 import {vfDayMonth, vfDayName, vfSlotLabel} from '../../delivery/time.js';
 import {VF_NAV} from '../../../platform/browser/page-focus.js';
-import {useLifecycle, usePageLogic} from '../../shell/page-state.js';
+import {usePageLogic} from '../../shell/page-state.js';
 import {vfNow} from '../../../platform/browser/environment.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 import {vfRuntime} from '../../../platform/browser/runtime.js';
@@ -56,6 +57,7 @@ import {vfRuntime} from '../../../platform/browser/runtime.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
 // its View renders.
 export function useBag(props) {
+  const priceTimer = React.useRef(null);
   const page = usePageLogic(props, page => {
     page.state = {
       lines: vfSampleBag(),
@@ -112,8 +114,8 @@ export function useBag(props) {
         .join(' ');
       // After the page's own heading announcement (made 40ms after a new view renders), so a
       // navigation into the bag doesn't replace it.
-      clearTimeout(page._priceTimer);
-      page._priceTimer = setTimeout(() => {
+      clearTimeout(priceTimer.current);
+      priceTimer.current = setTimeout(() => {
         const st = page.props.store;
         if (st && st.announce) st.announce(text);
         else page.setState({vfAnnouncement: text});
@@ -152,36 +154,36 @@ export function useBag(props) {
     };
   });
   useStorefrontPage(page);
-  const openBag = () => {
-    page._prefillSender();
-    const st = page.props.store;
-    // Prices repriced before the bag opened (on loading the session, or by checkout) are announced
-    // here too, beside any found now.
-    if (!page._reprice().length) {
-      const pending = (st ? st.priceChanges : page.state.priceChanges) || {};
-      const changes = Object.entries(pending).map(([id, change]) => ({id, ...change}));
-      if (changes.length) page._announcePrices(changes);
-    }
-    const lines = vfRepriceLines(st ? st.bag : page.state.lines).lines;
-    if ((page.state.step || vfPageRoute(page.props).step || 'bag') === 'bag')
-      vfRuntime.track.event('view_cart', {
-        items: vfLineItems(lines),
-        value: lines.reduce((sum, line) => sum + line.unit * line.qty, 0)
-      });
-  };
-  useLifecycle(page, {
-    didMount() {
-      // The exported bag mounts before the browser's saved bag has been restored.
-      if (page.props.ready !== false) openBag();
+  const ready = props.ready !== false;
+  React.useEffect(() => {
+    // The exported bag mounts before the browser's saved bag has been restored.
+    if (ready) vfOpenBag(page);
+  }, [page, ready]);
+  React.useEffect(
+    () => () => {
+      clearTimeout(priceTimer.current);
+      priceTimer.current = null;
     },
-    didUpdate(previous) {
-      if (previous.ready === false && page.props.ready) openBag();
-    },
-    willUnmount() {
-      clearTimeout(page._priceTimer);
-    }
-  });
+    []
+  );
   return vals(page);
+}
+
+function vfOpenBag(page) {
+  page._prefillSender();
+  const st = page.props.store;
+  // Prices repriced before opening, during session restore or checkout, are announced too.
+  if (!page._reprice().length) {
+    const pending = (st ? st.priceChanges : page.state.priceChanges) || {};
+    const changes = Object.entries(pending).map(([id, change]) => ({id, ...change}));
+    if (changes.length) page._announcePrices(changes);
+  }
+  const lines = vfRepriceLines(st ? st.bag : page.state.lines).lines;
+  if ((page.state.step || vfPageRoute(page.props).step || 'bag') === 'bag')
+    vfRuntime.track.event('view_cart', {
+      items: vfLineItems(lines),
+      value: lines.reduce((sum, line) => sum + line.unit * line.qty, 0)
+    });
 }
 
 function deliverySelectionChanged(delivery, day, slot) {

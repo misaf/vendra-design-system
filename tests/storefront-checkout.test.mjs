@@ -62,7 +62,7 @@ for (const lang of ['en', 'fa']) {
   assert.equal(returned.shellText.brand, vm.runInContext('VF_STORE', c).brand[lang]);
   let savedSession;
   c.sessionStorage.setItem = (key, value) => (savedSession = value);
-  site.lifecycle.didUpdate();
+  site.runEffect('commitStorefrontSession');
   assert.deepEqual(JSON.parse(savedSession).paymentDraft, draft);
   site.renderVals().store.clear();
   assert.deepEqual(plain(site.state.paymentDraft), {
@@ -156,7 +156,7 @@ console.log(
           })
       };
       c.window.addEventListener = c.document.addEventListener = () => {};
-      site.lifecycle.didMount();
+      site.runEffect('mountStorefrontSession');
       const change = id => {
         const promise = site.renderVals().store.toggleSave(id);
         return {...writes.at(-1), promise};
@@ -319,7 +319,7 @@ console.log(
     assert.equal(tracked.hasOrder, true);
     let session;
     c.sessionStorage.setItem = (_, value) => (session = value);
-    site.lifecycle.didUpdate();
+    site.runEffect('commitStorefrontSession');
     c.sessionStorage.getItem = () => session;
     assert.equal(new c.Logic({lang}).state.orders.length, 2, 'history survives a reload');
 
@@ -412,7 +412,7 @@ console.log(
       saveItem: () => Promise.resolve(),
       unsaveItem: () => Promise.resolve()
     };
-    saved.lifecycle.didMount();
+    saved.runEffect('mountStorefrontSession');
     const removed = saved.state.saved[0];
     await saved.renderVals().store.toggleSave('VF-7K2M4Q');
     await saved.renderVals().store.toggleSave(removed);
@@ -559,7 +559,7 @@ for (const lang of ['en', 'fa']) {
   site.renderVals().store.complete({...first, id: 'VN-31002', customerId: '09120000000'});
   assert.equal(site.state.lastOrder, null, 'late completion stays with its original owner');
   assert.equal(site.state.customers['09120000000'].orders.length, 2);
-  site.lifecycle.didUpdate();
+  site.runEffect('commitStorefrontSession');
   const reloaded = new c.Logic({lang});
   assert.equal(reloaded.state.customerId, '09121111111');
   assert.equal(reloaded.state.orders.length, 0);
@@ -581,7 +581,7 @@ for (const lang of ['en', 'fa']) {
     ['guest'],
     'a late completion after sign-out keeps nothing of that customer'
   );
-  site.lifecycle.didUpdate();
+  site.runEffect('commitStorefrontSession');
   assert.doesNotMatch([...session.values()].join('\n'), /Private address A|PRIVATE-A|VN-3100/);
   assert.deepEqual(Object.keys(new c.Logic({lang}).state.customers), ['guest']);
   login('09121111111');
