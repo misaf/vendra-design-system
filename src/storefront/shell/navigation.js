@@ -80,10 +80,6 @@ export function vfShellNavigation(self, page) {
   VF_ROUTES.forEach(r => {
     href[r] = vfRoutePath({lang: L, view: r, ...VF_ROUTE_EXTRA[r]});
   });
-  const close = () =>
-    self.setState({
-      vfMenu: false
-    });
   const isCurrent = {
     home: page === 'home',
     shop: ['shop', 'product'].includes(page),
@@ -110,9 +106,7 @@ export function vfShellNavigation(self, page) {
     .map(r => ({
       label: T[r],
       current: isCurrent[r],
-      href: href[r],
-      // Closes the drawer; the link itself navigates (React Aria's router).
-      close
+      href: href[r]
     }));
   const policyLink = doc => ({
     href: vfRouteUrl({lang: L, view: 'policy', id: doc})
@@ -250,13 +244,7 @@ export function vfShellNavigation(self, page) {
       self.setState({vfAnnouncementClosed: true});
     },
     vfAnnouncement: st.vfAnnouncement || '',
-    menuOpen: !!st.vfMenu,
     footer,
-    openMenu: () =>
-      self.setState({
-        vfMenu: true
-      }),
-    closeMenu: close,
     menuItems,
     features,
     hasLang: VF_STORE.languages.length > 1,
