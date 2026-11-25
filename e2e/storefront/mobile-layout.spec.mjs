@@ -171,17 +171,24 @@ for (const lang of ['en', 'fa']) {
     await page.evaluate(() =>
       document.querySelector('.vf-shell-header').setAttribute('data-e2e', '1')
     );
-    await page
+    const menu = page
       .locator('.vf-shell-header')
-      .getByRole('button', {name: lang === 'en' ? 'Menu' : 'منو', exact: true})
-      .click();
-    await expect(page.getByRole('dialog')).toBeVisible();
+      .getByRole('button', {name: lang === 'en' ? 'Menu' : 'منو', exact: true});
+    const drawer = page.getByRole('dialog');
+    await menu.click();
+    await expect(drawer).toBeVisible();
     for (const [width, tier] of [...TIERS, ...[...TIERS].reverse()]) {
       await page.setViewportSize({width, height: 900});
       if (tier === 'desktop') await expect(page.getByRole('dialog')).toHaveCount(0);
       await expectTier(page, width, tier, lang);
     }
     await expect(page.locator('.vf-shell-header[data-e2e]')).toHaveCount(1);
+    await expect(drawer).toHaveCount(0);
+    await menu.click();
+    await expect(drawer).toBeVisible();
+    await drawer.getByRole('link', {name: lang === 'en' ? 'Contact' : 'تماس', exact: true}).click();
+    await expect(page).toHaveURL(/\/contact\//);
+    await expect(drawer).toHaveCount(0);
   });
 }
 

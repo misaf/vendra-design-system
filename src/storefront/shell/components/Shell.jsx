@@ -84,11 +84,13 @@ export function Shell({v, content, sticky, bare = false, quiet = false, enclosed
   });
   // The menu drawer belongs to the compact header: an open one closes when the window widens to
   // the desktop header (1024px), e.g. a tablet turned to landscape.
-  const {menuOpen, closeMenu} = v;
+  const [menuOpen, setMenuOpen] = React.useState(false);
   React.useEffect(() => {
     if (!menuOpen) return;
     const wide = window.matchMedia('(width >= 1024px)');
-    const change = () => wide.matches && closeMenu();
+    const change = () => {
+      if (wide.matches) setMenuOpen(false);
+    };
     wide.addEventListener('change', change);
     change();
     return () => wide.removeEventListener('change', change);
@@ -213,15 +215,15 @@ export function Shell({v, content, sticky, bare = false, quiet = false, enclosed
               onLanguageChange={v.setLang}
               onPickAlternativeLanguage={v.otherLang?.pick}
               menuLabel={v.shellText?.menu}
-              onOpenMenu={v.openMenu}
+              onOpenMenu={() => setMenuOpen(true)}
             />
           )
         }
         menu={
           !enclosed && (
             <StorefrontMenu
-              open={v.menuOpen}
-              onClose={v.closeMenu}
+              open={menuOpen}
+              onClose={() => setMenuOpen(false)}
               title={v.shellText?.brand}
               closeLabel={v.shellText?.closeMenu}
               navigationLabel={v.shellText?.mainNav}
