@@ -1,4 +1,4 @@
-// Page behavior. Edit here, then run npm run build.
+import React from 'react';
 import {VF_JCATS, VF_POSTS} from '../journal-content.js';
 import {vfJournalImage} from '../journal-images.js';
 import {vfSeparator} from '../../pricing/formatting.js';
@@ -17,30 +17,19 @@ function vfPostSearchIndex(post, lang) {
   if (!indexes.has(post)) indexes.set(post, searchIndex(post[lang].join(' ')));
   return indexes.get(post);
 }
-// The page: its state (applied at once, as the logic reads it back), effects and the values
-// its View renders.
 export function useJournal(props) {
-  const page = usePageLogic(props, page => {
-    page.state = {
-      cat: 'all',
-      q: ''
-    };
-  });
+  const page = usePageLogic(props);
   useStorefrontPage(page, 'journal');
-  return vals(page);
-}
-
-function vals(page) {
+  const [{category, query}, setFilters] = React.useState({category: 'all', query: ''});
   const S = vfShell(page, 'journal');
   const fa = S.fa;
   const L = S.lang;
-  const s = page.state;
   const C = vfCopy(S);
-  const route = vfPageRoute(page.props);
+  const route = vfPageRoute(props);
   const all = VF_POSTS.filter(
     p =>
-      (s.cat === 'all' || p.cat === s.cat) &&
-      (!s.q.trim() || matchesSearch(vfPostSearchIndex(p, L), s.q))
+      (category === 'all' || p.cat === category) &&
+      (!query.trim() || matchesSearch(vfPostSearchIndex(p, L), query))
   ).map(p => {
     const c = VF_JCATS.find(x => x[0] === p.cat);
     return {
@@ -62,26 +51,16 @@ function vals(page) {
   const list = all.slice((current - 1) * size, current * size);
   const pageHref = number => vfRouteUrl({view: 'journal', lang: L, page: number});
   // A new filter or search starts again from the first page, replacing the history entry.
-  const firstPage = () => {
-    if (current > 1 && page.props.go) page.props.go({view: 'journal', lang: L}, true);
+  const updateFilters = patch => {
+    setFilters(filters => ({...filters, ...patch}));
+    if (current > 1) props.go?.({view: 'journal', lang: L}, true);
   };
   return {
     ...S,
     migration: C.migration,
-    q: s.q,
-    setQ: value => {
-      page.setState({
-        q: value
-      });
-      firstPage();
-    },
-    clear: () => {
-      page.setState({
-        q: '',
-        cat: 'all'
-      });
-      firstPage();
-    },
+    q: query,
+    setQ: value => updateFilters({query: value}),
+    clear: () => updateFilters({query: '', category: 'all'}),
     loading: route.demo === 'loading',
     noStories: !all.length,
     t: {
@@ -90,13 +69,8 @@ function vals(page) {
     },
     cats: [...VF_JCATS, ['updates', 'Updates', 'خبرها']].map(c => ({
       label: fa ? c[2] : c[1],
-      on: s.cat === c[0],
-      pick: () => {
-        page.setState({
-          cat: c[0]
-        });
-        firstPage();
-      }
+      on: category === c[0],
+      pick: () => updateFilters({category: c[0]})
     })),
     // The first page leads with a featured story; later pages are all in the grid.
     hasLead: route.demo !== 'loading' && current === 1 && list.length > 0,
@@ -107,9 +81,7 @@ function vals(page) {
       pageCount: route.demo === 'loading' ? 1 : pageCount,
       href: pageHref,
       // In the site, a page changes in place (the router scrolls to the top).
-      onChange: page.props.go
-        ? number => page.props.go({view: 'journal', lang: L, page: number})
-        : undefined
+      onChange: props.go ? number => props.go({view: 'journal', lang: L, page: number}) : undefined
     }
   };
 }

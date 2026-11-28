@@ -284,9 +284,11 @@ test('the journal splits its stories across pages, keeping the page in the URL',
   await expect(pages.getByRole('link', {name: 'Page 2'})).toHaveAttribute('aria-current', 'page');
   await page.reload();
   await expect(stories).toHaveCount(3);
-  // A search starts again from the first page.
+  // A search replaces page two with page one without adding to browser history.
+  const historyLength = await page.evaluate(() => history.length);
   await page.getByRole('searchbox', {name: 'Search stories'}).fill('a');
   await expect(page).not.toHaveURL(/page=/);
+  expect(await page.evaluate(() => history.length)).toBe(historyLength);
   // Persian pages count in Persian digits.
   await openSite(page, 'journal', 'fa');
   await expect(
