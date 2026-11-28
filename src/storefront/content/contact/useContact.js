@@ -58,7 +58,9 @@ export function useContact(props) {
     };
   });
   const [, refreshHours] = React.useReducer(tick => tick + 1, 0);
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'contact', {
+    structuredData: [vfFloristData(props.lang === 'fa' ? 'fa' : 'en')]
+  });
   React.useEffect(() => {
     // Read the profile after the storefront has restored the browser session.
     page.setState(vfContactPrefill());
@@ -70,8 +72,6 @@ export function useContact(props) {
 
 function vals(page) {
   const S = vfShell(page, 'contact');
-  // Search engines read the studio's address, hours and phone as a Florist (structured-data.js).
-  page.head = {structuredData: [vfFloristData(S.lang)]};
   const s = page.state;
   const C = vfCopy(S);
   const invalid = page._invalid();

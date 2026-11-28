@@ -11,7 +11,7 @@ import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 // its View renders.
 export function usePolicy(props) {
   const page = usePageLogic(props, page => {});
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'policy');
   return vals(page);
 }
 

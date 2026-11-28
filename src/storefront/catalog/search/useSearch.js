@@ -19,7 +19,7 @@ export function useSearch(props) {
   const [previewQuery, setPreviewQuery] = React.useState(() => route.q || '');
   const query = go ? route.q || '' : previewQuery;
   const page = usePageLogic(props);
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'search');
 
   const pending = React.useRef(null);
   const listedQuery = React.useRef('');

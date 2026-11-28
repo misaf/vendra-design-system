@@ -56,7 +56,6 @@ export function vfShellNavigation(self, page) {
   const props = self.props,
     st = self.state || {},
     store = props.store;
-  self._vfPage = page;
   const fa = props.lang === 'fa';
   const features = vfFeatures();
   // Pages a store can turn off, and their links with them.

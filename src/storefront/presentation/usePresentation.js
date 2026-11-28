@@ -223,7 +223,7 @@ export function usePresentation(props) {
       );
     };
   });
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'presentation');
   React.useEffect(
     function mountPresentation() {
       page.setUnmounted(false);

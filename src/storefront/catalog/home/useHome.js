@@ -23,7 +23,9 @@ import {vfRuntime} from '../../../platform/browser/runtime.js';
 // its View renders.
 export function useHome(props) {
   const page = usePageLogic(props, page => {});
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'home', {
+    structuredData: [vfFloristData(props.lang === 'fa' ? 'fa' : 'en')]
+  });
   return vals(page);
 }
 
@@ -32,8 +34,6 @@ function vals(page) {
   const L = fa ? 'fa' : 'en';
   const savedItems = vfSavedItems(page);
   const S = vfShell(page, 'home');
-  // Search engines read the studio's address, hours and phone as a Florist (structured-data.js).
-  page.head = {structuredData: [vfFloristData(L)]};
   const C = vfCopy(S);
   const inStock = VF_PRODUCTS.filter(p => p.inStock !== false);
   const featured = VF_STORE.featuredProducts

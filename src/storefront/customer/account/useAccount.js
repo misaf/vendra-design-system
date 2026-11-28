@@ -49,7 +49,7 @@ export function useAccount(props) {
       topUpDone: ''
     };
   });
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'account');
 
   const savedItems = vfSavedItems(page, VF_ACCOUNT_SAVED);
   const S = vfShell(page, 'account'),

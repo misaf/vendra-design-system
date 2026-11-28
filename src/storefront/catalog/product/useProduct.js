@@ -89,7 +89,7 @@ export function useProduct(props) {
   const page = usePageLogic(props);
   const shell = vfShell(page, 'product');
   const head = vfProductHead(product, shell.lang, details.description?.paragraphs[0] ?? '');
-  useStorefrontPage(page, head);
+  useStorefrontPage(page, 'product', head);
 
   const viewedId = React.useRef(null);
   React.useEffect(() => {

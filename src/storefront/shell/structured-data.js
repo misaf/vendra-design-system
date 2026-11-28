@@ -1,7 +1,7 @@
 // schema.org structured data (JSON-LD) for storefront pages: the product and its offer, the
-// breadcrumb trail, the studio as a Florist, the FAQ and journal articles. Pages put the objects in
-// `page.head.structuredData`; VF_SEO writes them into the prerendered <head> (headHtml) and keeps
-// them current in the browser (syncHead). Every value comes from the store's data passed in or from
+// breadcrumb trail, the studio as a Florist, the FAQ and journal articles. Routes and screens
+// pass these objects as structuredData when composing the document head.
+// Every value comes from the store's data passed in or from
 // VF_STORE, so a tenant's own catalogue, address and hours show up without code changes.
 import {vfAbsoluteUrl} from '../../platform/browser/environment.js';
 import {VF_STORE} from '../store/store-config.js';

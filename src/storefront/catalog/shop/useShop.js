@@ -24,7 +24,7 @@ export function useShop(props) {
   const page = usePageLogic(props);
   const [filterOpen, setFilterOpen] = React.useState(false);
   const priceTimer = React.useRef(null);
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'shop');
   React.useEffect(() => {
     // Widening to the sidebar layout closes the compact Filters dialog.
     const media = window.matchMedia('(width >= 1024px)');

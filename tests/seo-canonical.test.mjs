@@ -16,9 +16,7 @@ function head(address) {
   try {
     const route = vfReadRoute(url);
     const lang = route.lang || 'en';
-    const tags = VF_SEO.headTags(
-      vfPageHead({_vfPage: route.view, props: {lang, routeInfo: route}}, 'Heading')
-    );
+    const tags = VF_SEO.headTags(vfPageHead({lang, routeInfo: route}, route.view, 'Heading'));
     const canonical = tags.links.find(link => link.rel === 'canonical')?.href;
     const alternates = Object.fromEntries(
       tags.links.filter(link => link.rel === 'alternate').map(link => [link.hreflang, link.href])

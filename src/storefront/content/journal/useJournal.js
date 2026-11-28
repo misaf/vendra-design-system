@@ -26,7 +26,7 @@ export function useJournal(props) {
       q: ''
     };
   });
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'journal');
   return vals(page);
 }
 
