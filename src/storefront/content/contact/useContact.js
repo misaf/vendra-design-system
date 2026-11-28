@@ -1,4 +1,3 @@
-// Page behavior. Edit here, then run npm run build.
 import React from 'react';
 import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
@@ -22,8 +21,7 @@ function vfContactPrefill() {
   const {profile} = vfAccountLoad(phone);
   return {name: profile.name || '', phone, email: profile.email || ''};
 }
-// The page: its state (applied at once, as the logic reads it back), effects and the values
-// its View renders.
+
 const FIELDS = [
   ['name', 'vf-cname'],
   ['phone', 'vf-cphone'],
@@ -32,49 +30,46 @@ const FIELDS = [
 ];
 
 export function useContact(props) {
-  const page = usePageLogic(props, page => {
-    page.state = {
-      sent: false,
-      email: '',
-      apiError: '',
-      apiFields: {},
-      busy: false,
-      msg: '',
-      name: '',
-      phone: '',
-      submitted: false,
-      mapFailed: false,
-      ...vfContactPrefill()
-    };
-    // The studio replies by text or WhatsApp, so a mobile is needed unless the visitor leaves an email instead.
-    page._invalid = () => {
-      const s = page.state;
-      const email = s.email.trim();
-      return {
-        phone: s.phone.trim() || !email ? !vfMobile(s.phone) : false,
-        email: !!email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email),
-        msg: !s.msg.trim()
-      };
-    };
+  const page = usePageLogic(props, () => {});
+  const [form, setForm] = React.useState({
+    draft: /** @type {Partial<Record<'name' | 'phone' | 'email' | 'msg', string>>} */ ({}),
+    sent: false,
+    apiError: '',
+    apiFields: /** @type {Record<string, string>} */ ({}),
+    busy: false,
+    submitted: false
   });
+  const pending = React.useRef(false);
+  const [mapFailed, setMapFailed] = React.useState(false);
   const [, refreshHours] = React.useReducer(tick => tick + 1, 0);
   useStorefrontPage(page, 'contact', {
     structuredData: [vfFloristData(props.lang === 'fa' ? 'fa' : 'en')]
   });
   React.useEffect(() => {
-    // Read the profile after the storefront has restored the browser session.
-    page.setState(vfContactPrefill());
     const interval = setInterval(refreshHours, 60_000);
     return () => clearInterval(interval);
-  }, [page]);
-  return vals(page);
-}
+  }, []);
 
-function vals(page) {
   const S = vfShell(page, 'contact');
-  const s = page.state;
   const C = vfCopy(S);
-  const invalid = page._invalid();
+  // Restore defaults from the signed-in profile once the browser session is ready.
+  // A customer edit takes precedence, including an explicitly cleared field.
+  const {name, phone, email, msg} = {
+    name: '',
+    phone: '',
+    email: '',
+    msg: '',
+    ...(props.ready !== false ? vfContactPrefill() : {}),
+    ...form.draft
+  };
+  const replyEmail = email.trim();
+  const replyPhone = vfMobile(phone);
+  // The studio needs a valid mobile unless the visitor leaves an email instead.
+  const invalid = {
+    phone: (phone.trim() || !replyEmail) && !replyPhone,
+    email: !!replyEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(replyEmail),
+    msg: !msg.trim()
+  };
   const studio = VF_STORE.studio;
   const now = vfNow();
   // Neshan, Balad and Google Maps, in the order the page's language prefers; the map pin opens the first.
@@ -91,18 +86,18 @@ function vals(page) {
       ]
     : [];
   const localErrors = Object.fromEntries(
-    FIELDS.filter(([key]) => s.submitted && invalid[key]).map(([key]) => [key, C[key + 'Err']])
+    FIELDS.filter(([key]) => form.submitted && invalid[key]).map(([key]) => [key, C[key + 'Err']])
   );
-  const fieldErrors = {...localErrors, ...s.apiFields};
+  const fieldErrors = {...localErrors, ...form.apiFields};
   const problems = FIELDS.filter(([key]) => fieldErrors[key]).map(([key, target]) => ({
     text: fieldErrors[key],
     target
   }));
   const field = key => value =>
-    page.setState(current => {
+    setForm(current => {
       const apiFields = {...current.apiFields};
       delete apiFields[key];
-      return {[key]: value, apiFields};
+      return {...current, draft: {...current.draft, [key]: value}, apiFields};
     });
   // The studio on a read-only map (PlacesMap), with the store's tiles.
   const placesView = {
@@ -111,7 +106,7 @@ function vals(page) {
     tiles: {url: VF_STORE.map.tiles, attribution: VF_STORE.map.attribution},
     center: VF_STORE.map.center,
     zoom: VF_STORE.map.zoom,
-    fail: () => page.setState({mapFailed: true})
+    fail: () => setMapFailed(true)
   };
   return {
     ...S,
@@ -144,81 +139,82 @@ function vals(page) {
         .../** @type {{status?: {open: boolean, text: string}, details?: string[]}} */ (extra || {})
       }))
       .filter(row => row.value),
-    studioMap: directions.length > 0 && !s.mapFailed,
+    studioMap: directions.length > 0 && !mapFailed,
     hasDirections: directions.length > 0,
     directions,
-    apiError: s.apiError,
-    busy: s.busy,
-    email: s.email,
+    apiError: form.apiError,
+    busy: form.busy,
+    email,
     setEmail: field('email'),
     emailErr: fieldErrors.email,
-    sent: s.sent,
-    notSent: !s.sent,
+    sent: form.sent,
+    notSent: !form.sent,
     editMessage: () => {
-      page.setState({
-        sent: false
-      });
+      setForm(current => ({...current, sent: false}));
       VF_NAV.focusById('vf-cmsg');
     },
-    name: s.name,
+    name,
     nameErr: fieldErrors.name,
-    phone: s.phone,
+    phone,
     setName: field('name'),
     setPhone: field('phone'),
     phoneHint: C.phoneHint,
     phoneErr: fieldErrors.phone,
-    msg: s.msg,
+    msg,
     setMsg: field('msg'),
     msgErr: fieldErrors.msg,
     // After a failed send, what to fix in form order, each linking to its field.
     problems,
-    send: () => {
-      page.setState({
-        submitted: true
-      });
+    send: async () => {
+      if (pending.current) return;
       // One problem goes straight to its field; several go to the summary that lists them.
       const wrong = FIELDS.filter(([key]) => invalid[key]);
       if (wrong.length) {
+        setForm(current => ({...current, submitted: true}));
         VF_NAV.focusById(wrong.length > 1 ? 'vf-contact-errors' : wrong[0][1]);
         return;
       }
-      const success = () => {
-        page.setState({
-          sent: true,
-          busy: false,
+      const api = vfRuntime.api;
+      if (!api) return;
+      if (api.live) {
+        pending.current = true;
+        setForm(current => ({
+          ...current,
+          busy: true,
+          submitted: true,
           apiFields: {},
-          apiError: '',
-          submitted: false
-        });
-        VF_NAV.focusById('vf-contact-success');
-      };
-      if (!vfRuntime.api.live) {
-        success();
-        return;
-      }
-      page.setState({
-        busy: true,
-        apiFields: {},
-        apiError: ''
-      });
-      return vfRuntime.api
-        .inquiry({
-          name: s.name.trim(),
-          phone: s.phone ? vfMobile(s.phone) : null,
-          email: s.email.trim(),
-          message: s.msg.trim(),
-          occasion: 'contact',
-          preferredLocale: vfRuntime.api.preferredLocale()
-        })
-        .then(success)
-        .catch(error => {
+          apiError: ''
+        }));
+        try {
+          await api.inquiry({
+            name: name.trim(),
+            phone: phone ? replyPhone : null,
+            email: replyEmail,
+            message: msg.trim(),
+            occasion: 'contact',
+            preferredLocale: api.preferredLocale()
+          });
+        } catch (error) {
           const {fields, apiError} = vfInquiryFailure(error, S.lang);
           const wrong = FIELDS.filter(([key]) => fields[key]);
-          page.setState({busy: false, apiFields: fields, apiError});
+          setForm(current => ({...current, busy: false, apiFields: fields, apiError}));
           VF_NAV.focusById(
             wrong.length > 1 ? 'vf-contact-errors' : wrong[0]?.[1] || 'vf-contact-api-error'
           );
-        });
+          return;
+        } finally {
+          pending.current = false;
+        }
+      }
+      setForm(current => ({
+        ...current,
+        sent: true,
+        busy: false,
+        apiFields: {},
+        apiError: '',
+        submitted: false
+      }));
+      VF_NAV.focusById('vf-contact-success');
     }
   };
 }

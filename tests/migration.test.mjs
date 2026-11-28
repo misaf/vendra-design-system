@@ -497,9 +497,10 @@ function page(name, c, props = {}) {
   contact.renderVals().setMsg('Keep this draft');
   contact.renderVals().setPhone('09121234567');
   await contact.renderVals().send();
-  assert.equal(contact.state.sent, false);
-  assert.equal(contact.state.msg, 'Keep this draft');
-  assert.ok(contact.state.apiError);
+  const failedContact = contact.renderVals();
+  assert.equal(failedContact.sent, false);
+  assert.equal(failedContact.msg, 'Keep this draft');
+  assert.ok(failedContact.apiError);
   // With an API base, an order goes out as a Checkout request; a failed request places nothing.
   const live = checkoutWithDelivery({view: 'checkout'});
   live.renderVals().setLast4('1234');

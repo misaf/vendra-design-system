@@ -54,7 +54,7 @@ test('a wedding inquiry lists what it still needs, each linking to its field', a
   await expect(page.locator('#vf-wphone')).toBeFocused();
 });
 
-test('contact fills in a signed-in customer', async ({page}) => {
+test('contact prefills signed-in customer details and respects edits', async ({page}) => {
   await page.addInitScript(() => {
     localStorage.setItem('vf-account-phone', '09125649438');
     const key = 'vf-account:09125649438';
@@ -71,7 +71,12 @@ test('contact fills in a signed-in customer', async ({page}) => {
   await openSite(page, 'contact', 'fa');
   await expect(page.locator('#vf-cname')).toHaveValue('شیرین احمدی');
   await expect(page.locator('#vf-cphone')).toHaveValue('09125649438');
-  await expect(page.locator('#vf-cemail')).toHaveValue('shirin@example.com');
+  const email = page.locator('#vf-cemail');
+  await expect(email).toHaveValue('shirin@example.com');
+  await email.clear();
+  await page.locator('#vf-cmsg').fill('A question for the studio.');
+  await expect(email).toHaveValue('');
+  await expect(page.locator('#vf-cphone')).toHaveValue('09125649438');
   await expect(page.locator('.ag-select')).toHaveCount(0);
 });
 
