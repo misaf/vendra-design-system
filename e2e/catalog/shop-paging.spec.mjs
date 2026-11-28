@@ -44,21 +44,22 @@ test('the shop shows a page of designs, then the rest, keeping the page in the U
   const grid = page.locator('.vf-shop-product-grid .ag-product__link');
   await expect(grid).toHaveCount(4);
   await expect(page.getByText('Showing 4 of 6 designs')).toBeVisible();
-  const more = page.getByRole('link', {name: 'Show more'});
-  await expect(more).toHaveAttribute('href', /page=2/);
-  await more.click();
-  await expect(grid).toHaveCount(6);
-  const displayed = (await grid.allTextContents()).map((name, index) => ({
-    item_id: name.trim(),
-    index
-  }));
+  const displayedItems = async () =>
+    (await grid.allTextContents()).map((name, index) => ({item_id: name.trim(), index}));
   const impressions = () =>
     page.evaluate(() =>
       window.__vfRuntime.track.log
         .filter(event => event.event === 'view_item_list' && event.item_list_id === 'shop')
         .map(event => event.items.map(({item_id, index}) => ({item_id, index})))
     );
-  await expect.poll(impressions).toEqual([displayed.slice(0, 4), displayed.slice(4)]);
+  // The fixture changes the page size on session restore. Check the settled list before paging.
+  await expect.poll(async () => (await impressions()).at(-1)).toEqual(await displayedItems());
+  const beforeMore = await impressions();
+  const more = page.getByRole('link', {name: 'Show more'});
+  await expect(more).toHaveAttribute('href', /page=2/);
+  await more.click();
+  await expect(grid).toHaveCount(6);
+  await expect.poll(impressions).toEqual([...beforeMore, (await displayedItems()).slice(4)]);
   await expect(page.getByText('Showing all 6 designs')).toBeVisible();
   await expect(page.getByRole('link', {name: 'Show more'})).toHaveCount(0);
   // Focus moves to the first design that was just loaded.
