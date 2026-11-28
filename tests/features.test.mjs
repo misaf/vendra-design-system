@@ -31,7 +31,7 @@ ctx.window = {React: {}, innerWidth: 1280};
 vm.createContext(ctx);
 vm.runInContext(
   sharedLogic +
-    '\nObject.assign(this, {vfLatin, phone, vfNormalizeToken, VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteUrl, vfRecentlyViewed, vfRememberViewed, vfShowList, vfReportLists, vfSelectItem, analytics});',
+    '\nObject.assign(this, {vfLatin, phone, vfNormalizeToken, VF_STORE, vfBalanceDiscountOn, vfBalanceDiscount, vfTopUpAmount, vfTopUpError, vfWalletOf, vfWalletChange, vfAccountLoad, VF_PRODUCTS, vfFindProduct, vfProductIds, vfLineToken, vfNormalizeToken, vfDeliveryDays, vfDeliveryDate, vfDeliveryWhen, vfPromoCheck, vfTotals, vfSummaryRows, vfValidLocation, vfPinLocation, vfLocationText, vfReadRoute, vfRouteUrl, vfRecentlyViewed, vfRememberViewed, vfReportList, vfSelectItem, analytics});',
   ctx
 );
 
@@ -333,11 +333,13 @@ console.warn = warn;
 // Product lists: reported after the render that showed them, once per set of products; a list
 // that grew ("Show more") reports only what it added; a card reports where it was opened from.
 const [first, second, third] = ctx.VF_PRODUCTS;
-const listPage = {};
+let reported = [];
+const report = products => {
+  reported = ctx.vfReportList('shop', products, reported);
+};
 const lists = () => track.log.filter(e => e.event === 'view_item_list');
 const listCount = lists().length;
-ctx.vfShowList(listPage, 'shop', [first, second]);
-ctx.vfReportLists(listPage);
+report([first, second]);
 assert.equal(lists().length, listCount + 1);
 assert.deepEqual(
   JSON.parse(JSON.stringify(lists().at(-1))),
@@ -356,11 +358,9 @@ assert.deepEqual(
   'items are product codes with their place in the list, priced in Rial'
 );
 assert.equal(lists().at(-1).items[0].item_id, first.id);
-ctx.vfShowList(listPage, 'shop', [first, second]);
-ctx.vfReportLists(listPage);
+report([first, second]);
 assert.equal(lists().length, listCount + 1, 'a re-render of the same list sends nothing');
-ctx.vfShowList(listPage, 'shop', [first, second, third]);
-ctx.vfReportLists(listPage);
+report([first, second, third]);
 assert.deepEqual(
   lists()
     .at(-1)
@@ -368,12 +368,10 @@ assert.deepEqual(
   [[third.id, 2]],
   '"Show more" reports only the added products'
 );
-ctx.vfShowList(listPage, 'shop', [third, first]);
-ctx.vfReportLists(listPage);
+report([third, first]);
 assert.equal(lists().at(-1).items.length, 2, 'a new order (sort, filter) reports the whole list');
-ctx.vfReportLists(listPage);
-ctx.vfShowList(listPage, 'shop', [third, first]);
-ctx.vfReportLists(listPage);
+report([]);
+report([third, first]);
 assert.equal(lists().length, listCount + 4, 'a list that left the page counts when it comes back');
 ctx.vfSelectItem('recent', second, 3)();
 assert.deepEqual(JSON.parse(JSON.stringify(track.log.at(-1))), {

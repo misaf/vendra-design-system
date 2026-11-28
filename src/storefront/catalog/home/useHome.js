@@ -16,7 +16,7 @@ import {VF_JCATS, VF_POSTS} from '../../content/journal-content.js';
 import {usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 import {vfFloristData} from '../../shell/structured-data.js';
-import {vfSelectItem, vfShowList} from '../../../platform/browser/list-tracking.js';
+import {useListImpressions, vfSelectItem} from '../../../platform/browser/list-tracking.js';
 import {vfStoredValue} from '../../../platform/browser/environment.js';
 import {vfRuntime} from '../../../platform/browser/runtime.js';
 // The page: its state (applied at once, as the logic reads it back), effects and the values
@@ -26,10 +26,6 @@ export function useHome(props) {
   useStorefrontPage(page, 'home', {
     structuredData: [vfFloristData(props.lang === 'fa' ? 'fa' : 'en')]
   });
-  return vals(page);
-}
-
-function vals(page) {
   const fa = page.props.lang === 'fa';
   const L = fa ? 'fa' : 'en';
   const savedItems = vfSavedItems(page);
@@ -41,8 +37,8 @@ function vals(page) {
     .filter(Boolean);
   const others = inStock.filter(p => !featured.includes(p));
   const studio = others.length >= 4 ? others : inStock;
-  vfShowList(page, 'home_featured', featured);
-  vfShowList(page, 'home_studio', studio);
+  useListImpressions('home_featured', featured);
+  useListImpressions('home_studio', studio);
   const card = list => (p, index) => ({
     select: vfSelectItem(list, p, index),
     fav: savedItems.ids.includes(p.id),

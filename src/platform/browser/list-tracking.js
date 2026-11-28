@@ -2,6 +2,7 @@
 // is shown, select_item when one of its cards is opened. A list keeps one id and an English name
 // in every language, so reports compare lists rather than translations. Items are the products'
 // codes (vfRuntime.track.item) with their position in the list.
+import React from 'react';
 import {vfRuntime} from './runtime.js';
 
 export const VF_LISTS = {
@@ -40,21 +41,10 @@ export function vfReportList(id, products, before = []) {
   return ids;
 }
 
-// A page records the lists it renders (in its vals) and useStorefrontPage reports them after the
-// render commits, so rendering (and the build's prerender) sends nothing. A list is reported when
-// its products change; when it only grew ("Show more"), just the added products; a list that
-// leaves the page counts again when it comes back.
-export function vfShowList(page, id, products) {
-  (page._vfListsShown = page._vfListsShown || {})[id] = products;
-}
-export function vfReportLists(page) {
-  const shown = page._vfListsShown || {};
-  const reported = (page._vfListsReported = page._vfListsReported || {});
-  page._vfListsShown = {};
-  Object.keys(reported).forEach(id => {
-    if (!shown[id]) delete reported[id];
-  });
-  Object.keys(shown).forEach(id => {
-    reported[id] = vfReportList(id, shown[id], reported[id]);
-  });
+// Track the committed products for this list for as long as its screen is mounted.
+export function useListImpressions(id, products) {
+  const reported = React.useRef([]);
+  React.useEffect(() => {
+    reported.current = vfReportList(id, products, reported.current);
+  }, [id, products]);
 }

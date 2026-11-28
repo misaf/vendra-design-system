@@ -16,7 +16,7 @@ import {vfDayMonth, vfDayName} from '../../delivery/time.js';
 import {page as pageItems} from '../pagination.js';
 import {usePageLogic} from '../../shell/page-state.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
-import {vfSelectItem, vfShowList} from '../../../platform/browser/list-tracking.js';
+import {useListImpressions, vfSelectItem} from '../../../platform/browser/list-tracking.js';
 import {VF_CATEGORY_SLUGS} from '../product-categories.js';
 import {vfRuntime} from '../../../platform/browser/runtime.js';
 const VF_CATS = ['all', ...VF_CATEGORY_SLUGS];
@@ -39,7 +39,8 @@ export function useShop(props) {
     };
   }, []);
 
-  const view = vals(page, {filterOpen, setFilterOpen});
+  const {impressionProducts, ...view} = vals(page, {filterOpen, setFilterOpen});
+  useListImpressions('shop', impressionProducts);
   return {
     ...view,
     setPrice([min, max]) {
@@ -109,7 +110,6 @@ function vals(page, {filterOpen, setFilterOpen}) {
   if (s.sort === 'low') list = [...list].sort((a, b) => a.price - b.price);
   if (s.sort === 'high') list = [...list].sort((a, b) => b.price - a.price);
   const paged = pageItems(list, route.page, VF_STORE.shopPageSize);
-  vfShowList(page, 'shop', demo ? [] : paged.items);
   const activeFilters = [
     ...(s.occasion !== 'all'
       ? [
@@ -175,6 +175,7 @@ function vals(page, {filterOpen, setFilterOpen}) {
   return {
     ...S,
     migration: C.migration,
+    impressionProducts: demo ? [] : paged.items,
     filterOpen,
     openFilters: () => setFilterOpen(true),
     closeFilters: () => setFilterOpen(false),
