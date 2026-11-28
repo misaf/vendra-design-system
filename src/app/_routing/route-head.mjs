@@ -105,12 +105,10 @@ export function routeHead(path, {base = '/', origin = '', lang: fallbackLang} = 
         ]
       };
     const head = vfPageHead(
-      {
-        props: {lang, tenant: VF_STORE.tenant, routeInfo: route},
-        _vfPage: route.view,
-        head: details
-      },
-      title
+      {lang, tenant: VF_STORE.tenant, routeInfo: route},
+      route.view,
+      title,
+      details
     );
     return {tags: VF_SEO.headTags(head), route};
   } finally {

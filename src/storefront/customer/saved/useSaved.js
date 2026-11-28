@@ -22,7 +22,7 @@ export function useSaved(props) {
       added: null
     };
   });
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'saved');
   return vals(page);
 }
 

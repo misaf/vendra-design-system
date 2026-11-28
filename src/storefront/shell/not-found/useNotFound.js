@@ -8,7 +8,7 @@ import {useStorefrontPage} from '../page-lifecycle.js';
 // its View renders.
 export function useNotFound(props) {
   const page = usePageLogic(props, page => {});
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'notfound');
   return vals(page);
 }
 

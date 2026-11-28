@@ -17,6 +17,22 @@ for (const address of [
   });
 }
 
+test('document metadata follows in-app navigation', async ({page}) => {
+  await openSite(page, 'home', 'en');
+  const canonical = page.locator('link[rel="canonical"]');
+  const structuredData = page.locator('script[type="application/ld+json"][data-ag-seo]');
+  await expect.poll(() => structuredData.textContent()).toContain('"@type":"Florist"');
+
+  await page.evaluate(() => window.__vfSite.navigate({view: 'faq'}));
+  await expect(canonical).toHaveAttribute('href', /\/en\/faq\/$/);
+  await expect.poll(() => structuredData.textContent()).toContain('"@type":"FAQPage"');
+
+  await page.evaluate(() => window.__vfSite.navigate({view: 'shop', sort: 'low'}));
+  await expect(canonical).toHaveAttribute('href', /\/en\/shop\/$/);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex, follow');
+  await expect(structuredData).toHaveCount(0);
+});
+
 test('the site says when the connection drops and when it is back', async ({page, context}) => {
   await openSite(page, 'shop', 'fa');
   const band = page.locator('.ag-offline');

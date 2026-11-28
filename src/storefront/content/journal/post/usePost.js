@@ -60,7 +60,7 @@ export function usePost(props) {
     missing = id !== 'morning-at-the-studio' && !post,
     loading = route.demo === 'loading';
   const cover = post && vfJournalImage(post.image);
-  useStorefrontPage(page, vfPostHead(post, L, cover) ?? undefined);
+  useStorefrontPage(page, 'post', vfPostHead(post, L, cover) ?? undefined);
 
   const origin = React.useSyncExternalStore(
     subscribeToOrigin,

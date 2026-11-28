@@ -10,7 +10,7 @@ import {useStorefrontPage} from '../page-lifecycle.js';
 // its View renders.
 export function useError(props) {
   const page = usePageLogic(props, page => {});
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'error');
   return vals(page);
 }
 

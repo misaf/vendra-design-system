@@ -68,7 +68,7 @@ export function useCheckout(props) {
       page.props.store?.setPaymentDraft?.({method, last4, ref, receiptAmount});
     };
   });
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'checkout');
   React.useEffect(
     function startPaymentReturn() {
       const {paymentOrder, paymentResult} = vfPageRoute(page.props);

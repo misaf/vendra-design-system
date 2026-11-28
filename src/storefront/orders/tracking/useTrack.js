@@ -39,7 +39,7 @@ export function useTrack(props) {
       reorderMode: 'add'
     };
   });
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'track');
   const view = vals(page);
   const orderId = vfPageRoute(props).id;
   React.useEffect(() => {

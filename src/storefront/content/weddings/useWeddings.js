@@ -38,7 +38,7 @@ export function useWeddings(props) {
       budget: ''
     };
   });
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'weddings');
   return vals(page);
 }
 

@@ -8,11 +8,6 @@ import {vfFaqData} from '../../shell/structured-data.js';
 // its View renders.
 export function useFaq(props) {
   const page = usePageLogic(props, page => {});
-  useStorefrontPage(page);
-  return vals(page);
-}
-
-function vals(page) {
   const S = vfShell(page, 'faq');
   const C = vfCopy(S);
   const groups = C.groups.map(([id, title, items]) => ({
@@ -26,7 +21,7 @@ function vals(page) {
     }))
   }));
   // Search engines read the questions and answers as an FAQPage (structured-data.js).
-  page.head = {structuredData: [vfFaqData(groups)]};
+  useStorefrontPage(page, 'faq', {structuredData: [vfFaqData(groups)]});
   return {
     ...S,
     t: {

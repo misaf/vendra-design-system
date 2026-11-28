@@ -9,7 +9,7 @@ import {vfPageHead} from './page-metadata.js';
 import {VF_SEO} from './seo.js';
 import {vfTenant} from '../../platform/tenant/tenant.js';
 
-export function useStorefrontPage(page, pageHead) {
+export function useStorefrontPage(page, view, pageHead) {
   const previousHeading = React.useRef(null);
 
   React.useEffect(() => {
@@ -20,11 +20,11 @@ export function useStorefrontPage(page, pageHead) {
   // Report lists after they commit. Metadata and focus wait for the latest committed DOM.
   React.useEffect(() => {
     vfReportLists(page);
-    const timer = setTimeout(() => vfAnnounce(page, pageHead, previousHeading), 40);
+    const timer = setTimeout(() => vfAnnounce(page, view, pageHead, previousHeading), 40);
     return () => clearTimeout(timer);
   });
 }
-function vfAnnounce(page, pageHead, previousHeading) {
+function vfAnnounce(page, view, pageHead, previousHeading) {
   // Language and direction never wait for a heading (loading states have none).
   const locale = vfLocale(page.props.lang);
   const lang = locale.code;
@@ -39,7 +39,7 @@ function vfAnnounce(page, pageHead, previousHeading) {
   const identity = title + lang + tenant;
   // The head follows the route, not only the heading: a shop whose filters change keeps its h1
   // but gains or loses noindex, its canonical and its alternates. syncHead only writes changes.
-  const head = vfPageHead(page, title, pageHead);
+  const head = vfPageHead(page.props, view, title, pageHead);
   if (page.props.updateHead) page.props.updateHead(head);
   else VF_SEO.syncHead(head);
   if (identity === previousHeading.current) return;

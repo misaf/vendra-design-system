@@ -153,7 +153,7 @@ export function useBag(props) {
       page._update({sender: profile.name || '', senderPhone: phone});
     };
   });
-  useStorefrontPage(page);
+  useStorefrontPage(page, 'bag');
   const ready = props.ready !== false;
   React.useEffect(() => {
     // The exported bag mounts before the browser's saved bag has been restored.
