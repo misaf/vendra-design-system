@@ -3,7 +3,6 @@ import React from 'react';
 import {vfBrandHead} from '../store/brand.js';
 import {vfLocale} from '../store/store-config.js';
 import {vfRuntime} from '../../platform/browser/runtime.js';
-import {vfReportLists} from '../../platform/browser/list-tracking.js';
 import {VF_NAV} from '../../platform/browser/page-focus.js';
 import {vfPageHead} from './page-metadata.js';
 import {VF_SEO} from './seo.js';
@@ -17,9 +16,8 @@ export function useStorefrontPage(page, view, pageHead) {
     vfRuntime.rendered = 'hydrated';
   }, [page]);
 
-  // Report lists after they commit. Metadata and focus wait for the latest committed DOM.
+  // Metadata and focus wait for the latest committed DOM.
   React.useEffect(() => {
-    vfReportLists(page);
     const timer = setTimeout(() => vfAnnounce(page, view, pageHead, previousHeading), 40);
     return () => clearTimeout(timer);
   });

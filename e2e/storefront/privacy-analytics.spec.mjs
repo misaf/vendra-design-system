@@ -33,6 +33,30 @@ test('shop price analytics report the settled range and cancel on navigation', a
   expect(await priceEvents()).toMatchObject([settled]);
 });
 
+test('home and shop report visible product lists', async ({page}) => {
+  const impressions = () =>
+    page.evaluate(() =>
+      window.__vfRuntime.track.log.filter(event => event.event === 'view_item_list')
+    );
+  await openSite(page, 'home', 'en');
+  await expect
+    .poll(async () => (await impressions()).map(event => event.item_list_id))
+    .toEqual(['home_featured', 'home_studio']);
+
+  await page.evaluate(() => window.__vfSite.navigate({view: 'shop'}));
+  const products = page.locator('.vf-shop-product-grid .ag-product__link');
+  const shopImpressions = async () =>
+    (await impressions())
+      .filter(event => event.item_list_id === 'shop')
+      .map(event => event.items.map(({item_id, index}) => ({item_id, index})));
+  await expect(products).toHaveCount(6);
+  const displayed = (await products.allTextContents()).map((name, index) => ({
+    item_id: name.trim(),
+    index
+  }));
+  await expect.poll(shopImpressions).toEqual([displayed]);
+});
+
 test('search reports settled typing and restores result impressions from browser history', async ({
   page
 }) => {
