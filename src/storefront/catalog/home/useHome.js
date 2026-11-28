@@ -1,4 +1,4 @@
-// Page behavior. Edit here, then run npm run build.
+import React from 'react';
 import {vfSavedItems} from '../../customer/saved-items.js';
 import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
@@ -19,10 +19,9 @@ import {vfFloristData} from '../../shell/structured-data.js';
 import {useListImpressions, vfSelectItem} from '../../../platform/browser/list-tracking.js';
 import {vfStoredValue} from '../../../platform/browser/environment.js';
 import {vfRuntime} from '../../../platform/browser/runtime.js';
-// The page: its state (applied at once, as the logic reads it back), effects and the values
-// its View renders.
+
 export function useHome(props) {
-  const page = usePageLogic(props, page => {});
+  const page = usePageLogic(props, () => {});
   useStorefrontPage(page, 'home', {
     structuredData: [vfFloristData(props.lang === 'fa' ? 'fa' : 'en')]
   });
@@ -31,6 +30,7 @@ export function useHome(props) {
   const savedItems = vfSavedItems(page);
   const S = vfShell(page, 'home');
   const C = vfCopy(S);
+  const newsletter = useNewsletter(S.features.newsletter && props.ready !== false, C, L);
   const inStock = VF_PRODUCTS.filter(p => p.inStock !== false);
   const featured = VF_STORE.featuredProducts
     .map(id => inStock.find(p => p.id === id))
@@ -92,52 +92,64 @@ export function useHome(props) {
           };
         })
       : [],
-    newsletter: S.features.newsletter && newsletter(page, S, C, L)
+    newsletter: S.features.newsletter && newsletter
   };
 }
 
-// The newsletter band: the draft lives in page state; a finished sign-up is remembered on this device.
-function newsletter(page, S, C, L) {
-  const news = page.state.vfNews || {};
-  const signedUp = news.done || vfStoredValue('vf-newsletter') || '';
-  const accountPhone = vfAccountPhone();
-  const profile = accountPhone ? vfAccountLoad(accountPhone, L).profile : {};
-  const draft = news.draft ?? profile.email ?? '';
+function useNewsletter(readCustomerData, copy, lang) {
+  const [submission, setSubmission] = React.useState(
+    /** @type {{draft?: string, sending?: boolean, done?: string, error?: 'invalid' | 'failed'}} */ ({})
+  );
+  const pending = React.useRef(false);
+  const signedUp = submission.done || (readCustomerData && vfStoredValue('vf-newsletter')) || '';
+  const accountPhone = readCustomerData && vfAccountPhone();
+  const profile = accountPhone ? vfAccountLoad(accountPhone, lang).profile : {};
+  const draft = submission.draft ?? profile.email ?? '';
+
+  React.useEffect(() => {
+    // Only focus a new confirmation, after it has rendered. Reloads restore it without moving focus.
+    if (submission.done) document.getElementById('vf-news-done')?.focus();
+  }, [submission.done]);
+
   return {
     open: !signedUp,
     done: !!signedUp,
-    doneText: (vfLiveStore() ? C.newsDone : C.newsDemo).replace(
+    doneText: (vfLiveStore() ? copy.newsDone : copy.newsDemo).replace(
       '{email}',
       '\u2066' + signedUp + '\u2069'
     ),
     draft,
-    sending: !!news.sending,
-    error: news.error || undefined,
-    setDraft: value => page.setState({vfNews: {...news, draft: value, error: ''}}),
-    submit: event => {
-      event && event.preventDefault && event.preventDefault();
-      if (news.sending) return;
+    sending: !!submission.sending,
+    error: submission.error && {invalid: copy.newsError, failed: copy.newsFailed}[submission.error],
+    setDraft: value => setSubmission(current => ({...current, draft: value, error: undefined})),
+    submit: async event => {
+      event?.preventDefault();
+      // An Enter press can submit again before React commits the disabled button.
+      if (pending.current) return;
       const email = draft.trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        page.setState({vfNews: {...news, draft, error: C.newsError}});
+        setSubmission({...submission, draft, error: 'invalid'});
         VF_NAV.focusById('vf-news-email');
         return;
       }
-      page.setState({vfNews: {...news, draft, error: '', sending: true}});
-      vfRuntime.api.newsletter(email, profile.name).then(
-        () => {
-          try {
-            localStorage.setItem('vf-newsletter', email);
-          } catch {}
-          vfRuntime.track.event('generate_lead', {lead_source: 'newsletter'});
-          page.setState({vfNews: {done: email}});
-          VF_NAV.focusById('vf-news-done');
-        },
-        () => {
-          page.setState({vfNews: {...news, draft, sending: false, error: C.newsFailed}});
-          VF_NAV.focusById('vf-news-email');
-        }
-      );
+      const api = vfRuntime.api;
+      if (!api) return;
+      pending.current = true;
+      setSubmission({...submission, draft, error: undefined, sending: true});
+      try {
+        await api.newsletter(email, profile.name);
+      } catch {
+        setSubmission(current => ({...current, sending: false, error: 'failed'}));
+        VF_NAV.focusById('vf-news-email');
+        return;
+      } finally {
+        pending.current = false;
+      }
+      try {
+        localStorage.setItem('vf-newsletter', email);
+      } catch {}
+      vfRuntime.track?.event('generate_lead', {lead_source: 'newsletter'});
+      setSubmission({done: email});
     }
   };
 }
