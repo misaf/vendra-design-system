@@ -1,4 +1,4 @@
-// Page behavior. Edit here, then run npm run build.
+import React from 'react';
 import {VF_NAV} from '../../../platform/browser/page-focus.js';
 import {vfCopy} from './copy.js';
 import {VF_PRODUCT_PLACEHOLDER} from '../../catalog/catalog.js';
@@ -10,8 +10,7 @@ import {vfLiveStore} from '../../store/store-config.js';
 import {useStorefrontPage} from '../../shell/page-lifecycle.js';
 import {vfInquiryFailure} from '../../../platform/browser/integrations/api-errors.js';
 import {vfRuntime} from '../../../platform/browser/runtime.js';
-// The page: its state (applied at once, as the logic reads it back), effects and the values
-// its View renders.
+
 const FIELDS = [
   ['name', 'vf-wname'],
   ['email', 'vf-wemail'],
@@ -20,34 +19,33 @@ const FIELDS = [
 ];
 
 export function useWeddings(props) {
-  const page = usePageLogic(props, page => {
-    page.state = {
-      sent: false,
-      email: '',
-      apiError: '',
-      apiFields: {},
-      busy: false,
-      name: '',
-      phone: '',
-      e1: false,
-      e2: false,
-      guests: '',
-      wDate: '',
-      notes: '',
-      type: '',
-      budget: ''
-    };
-  });
+  const page = usePageLogic(props, () => {});
   useStorefrontPage(page, 'weddings');
-  return vals(page);
-}
-
-function vals(page) {
   const S = vfShell(page, 'weddings');
-  const s = page.state;
+  const [form, setForm] = React.useState({
+    sent: false,
+    email: '',
+    apiError: '',
+    apiFields: /** @type {Record<string, string>} */ ({}),
+    busy: false,
+    name: '',
+    phone: '',
+    invalidName: false,
+    invalidPhone: false,
+    guests: '',
+    wDate: '',
+    notes: '',
+    type: '',
+    budget: ''
+  });
+  const pending = React.useRef(false);
   const C = vfCopy(S);
-  const localErrors = {name: s.e1 ? C.nameErr : undefined, phone: s.e2 ? C.phoneErr : undefined};
-  const fieldErrors = {...localErrors, ...s.apiFields};
+  const localErrors = {
+    name: form.invalidName ? C.nameErr : undefined,
+    phone: form.invalidPhone ? C.phoneErr : undefined
+  };
+  /** @type {Record<string, string | undefined>} */
+  const fieldErrors = {...localErrors, ...form.apiFields};
   const problems = FIELDS.filter(([key]) => fieldErrors[key]).map(([key, target]) => ({
     text: fieldErrors[key],
     target
@@ -55,10 +53,10 @@ function vals(page) {
   const field =
     (key, apiKey = key, clear = {}) =>
     value =>
-      page.setState(current => {
+      setForm(current => {
         const apiFields = {...current.apiFields};
         delete apiFields[apiKey];
-        return {[key]: value, ...clear, apiFields};
+        return {...current, [key]: value, ...clear, apiFields};
       });
   return {
     ...S,
@@ -73,9 +71,9 @@ function vals(page) {
       alt: C.galleryTitle + ' ' + S.n(n)
     })),
     process: C.steps,
-    guests: s.guests,
+    guests: form.guests,
     setGuests: field('guests', 'msg'),
-    wDate: s.wDate,
+    wDate: form.wDate,
     setWDate: field('wDate', 'msg'),
     today: (() => {
       const d = vfNow();
@@ -93,86 +91,78 @@ function vals(page) {
       body: x[2],
       price: x[3]
     })),
-    apiError: s.apiError,
-    busy: s.busy,
-    email: s.email,
+    apiError: form.apiError,
+    busy: form.busy,
+    email: form.email,
     setEmail: field('email'),
-    sent: s.sent,
-    notSent: !s.sent,
+    sent: form.sent,
+    notSent: !form.sent,
     editMessage: () => {
-      page.setState({
-        sent: false
-      });
+      setForm(current => ({...current, sent: false}));
       VF_NAV.focusById('vf-wname');
     },
-    name: s.name,
-    setName: field('name', 'name', {e1: false}),
+    name: form.name,
+    setName: field('name', 'name', {invalidName: false}),
     nameErr: fieldErrors.name,
-    phone: s.phone,
-    setPhone: field('phone', 'phone', {e2: false}),
+    phone: form.phone,
+    setPhone: field('phone', 'phone', {invalidPhone: false}),
     phoneErr: fieldErrors.phone,
     // After a failed send, what to fix in form order, each linking to its field.
     problems,
     emailErr: fieldErrors.email,
     msgErr: fieldErrors.msg,
-    type: s.type,
-    budget: s.budget,
+    type: form.type,
+    budget: form.budget,
     setType: field('type', 'msg'),
     setBudget: field('budget', 'msg'),
-    notes: s.notes,
+    notes: form.notes,
     setNotes: field('notes', 'msg'),
     types: C.types,
     budgets: C.budgets,
-    send: () => {
-      const e1 = !s.name.trim(),
-        e2 = !vfMobile(s.phone);
-      if (e1 || e2) {
-        page.setState({
-          e1,
-          e2
-        });
+    send: async () => {
+      if (pending.current) return;
+      const invalidName = !form.name.trim();
+      const phone = vfMobile(form.phone);
+      const invalidPhone = !phone;
+      if (invalidName || invalidPhone) {
+        setForm(current => ({...current, invalidName, invalidPhone}));
         // One problem goes straight to its field; both go to the summary that lists them.
-        VF_NAV.focusById(e1 && e2 ? 'vf-wedding-errors' : e1 ? 'vf-wname' : 'vf-wphone');
+        VF_NAV.focusById(
+          invalidName && invalidPhone ? 'vf-wedding-errors' : invalidName ? 'vf-wname' : 'vf-wphone'
+        );
         return;
       }
-      const success = () => {
-        page.setState({
-          sent: true,
-          busy: false,
-          apiFields: {},
-          apiError: ''
-        });
-        VF_NAV.focusById('vf-weddings-success');
-      };
-      if (!vfRuntime.api.live) {
-        success();
-        return;
-      }
-      page.setState({
-        busy: true,
-        apiFields: {},
-        apiError: ''
-      });
-      return vfRuntime.api
-        .inquiry({
-          name: s.name || '',
-          phone: s.phone ? vfMobile(s.phone) : null,
-          email: s.email || '',
-          message:
-            [s.type, s.wDate, s.budget, s.guests, s.notes].filter(Boolean).join(' · ') ||
-            'Wedding inquiry',
-          occasion: 'weddings',
-          preferredLocale: vfRuntime.api.preferredLocale()
-        })
-        .then(success)
-        .catch(error => {
+      const api = vfRuntime.api;
+      if (!api) return;
+      if (api.live) {
+        pending.current = true;
+        setForm(current => ({...current, busy: true, apiFields: {}, apiError: ''}));
+        try {
+          await api.inquiry({
+            name: form.name,
+            phone,
+            email: form.email,
+            message:
+              [form.type, form.wDate, form.budget, form.guests, form.notes]
+                .filter(Boolean)
+                .join(' · ') || 'Wedding inquiry',
+            occasion: 'weddings',
+            preferredLocale: api.preferredLocale()
+          });
+        } catch (error) {
           const {fields, apiError} = vfInquiryFailure(error, S.lang);
           const wrong = FIELDS.filter(([key]) => fields[key]);
-          page.setState({busy: false, apiFields: fields, apiError});
+          setForm(current => ({...current, busy: false, apiFields: fields, apiError}));
           VF_NAV.focusById(
             wrong.length > 1 ? 'vf-wedding-errors' : wrong[0]?.[1] || 'vf-wedding-api-error'
           );
-        });
+          return;
+        } finally {
+          pending.current = false;
+        }
+      }
+      setForm(current => ({...current, sent: true, busy: false, apiFields: {}, apiError: ''}));
+      VF_NAV.focusById('vf-weddings-success');
     }
   };
 }
