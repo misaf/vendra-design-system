@@ -21,11 +21,11 @@ test('document metadata follows in-app navigation', async ({page}) => {
   await openSite(page, 'home', 'en');
   const canonical = page.locator('link[rel="canonical"]');
   const structuredData = page.locator('script[type="application/ld+json"][data-ag-seo]');
-  await expect(structuredData).toContainText('"@type":"Florist"');
+  await expect.poll(() => structuredData.textContent()).toContain('"@type":"Florist"');
 
   await page.evaluate(() => window.__vfSite.navigate({view: 'faq'}));
   await expect(canonical).toHaveAttribute('href', /\/en\/faq\/$/);
-  await expect(structuredData).toContainText('"@type":"FAQPage"');
+  await expect.poll(() => structuredData.textContent()).toContain('"@type":"FAQPage"');
 
   await page.evaluate(() => window.__vfSite.navigate({view: 'shop', sort: 'low'}));
   await expect(canonical).toHaveAttribute('href', /\/en\/shop\/$/);
