@@ -77,6 +77,7 @@ for (const lang of ['en', 'fa']) {
     await page.evaluate(() => window.__weddingReject(new Error('Local test failure')));
     await expect(send).toBeEnabled();
     await expect(page.getByRole('alert').filter({hasText: copy.integrationError})).toBeVisible();
+    await expect(page.locator('#vf-wedding-api-error')).toBeFocused();
     await expect(notes).toHaveValue('White flowers, garden venue.');
     await send.click();
     await expect(send).toBeDisabled();

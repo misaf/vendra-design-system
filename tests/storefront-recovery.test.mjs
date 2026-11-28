@@ -87,13 +87,14 @@ for (const lang of ['en', 'fa']) {
   assert.equal(contact.state.sent, false);
   assert.equal(contact.state.msg, 'Demo message');
   const {logic: wedding} = loadPage('weddings', {lang});
-  wedding.setState({name: 'Demo', phone: '1234567890'});
-  wedding.renderVals().send();
-  assert.equal(wedding.state.e2, true);
-  assert.equal(wedding.state.sent, false);
-  wedding.state.phone = '۰۹۱۲۰۰۰۰۰۰۰';
-  wedding.renderVals().send();
-  assert.equal(wedding.state.sent, true);
+  wedding.renderVals().setName('Demo');
+  wedding.renderVals().setPhone('1234567890');
+  await wedding.renderVals().send();
+  assert.ok(wedding.renderVals().phoneErr);
+  assert.equal(wedding.renderVals().sent, false);
+  wedding.renderVals().setPhone('۰۹۱۲۰۰۰۰۰۰۰');
+  await wedding.renderVals().send();
+  assert.equal(wedding.renderVals().sent, true);
 }
 console.log(
   'Passed missing-order recovery, saved/search recovery, editable success states and mobile validation in both languages.'
