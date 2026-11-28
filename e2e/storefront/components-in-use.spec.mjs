@@ -6,10 +6,18 @@ import {choiceTile, openSite, scanAxe} from '../helpers.mjs';
 
 test('announcement bar closes for the rest of the session', async ({page}) => {
   await page.clock.setFixedTime(new Date('2026-10-05T09:00:00+03:30'));
+  // A dismissal from a previous announcement must not hide the current message.
+  await page.addInitScript(() => {
+    if (!sessionStorage.getItem('vf-announcement-closed'))
+      sessionStorage.setItem('vf-announcement-closed', 'An earlier announcement');
+  });
   await openSite(page, 'home', 'en');
   const bar = page.getByRole('region', {name: 'Store news'});
   await expect(bar).toContainText('same-day delivery in Karaj');
   await bar.getByRole('button', {name: 'Dismiss message'}).click();
+  await expect(bar).toHaveCount(0);
+  await page.getByRole('link', {name: 'Shop', exact: true}).filter({visible: true}).first().click();
+  await expect(page).toHaveURL(/\/shop\//);
   await expect(bar).toHaveCount(0);
   await openSite(page, 'shop', 'fa');
   await expect(page.getByRole('region', {name: 'خبر فروشگاه'})).toHaveCount(0);
