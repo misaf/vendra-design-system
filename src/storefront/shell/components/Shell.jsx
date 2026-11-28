@@ -21,6 +21,20 @@ import {useVfDensity, useVfRemoteNavigation} from '../../../platform/browser/tv.
 import {vfRuntime} from '../../../platform/browser/runtime.js';
 import {vfLocale} from '../../store/store-config.js';
 
+const announcementStorageKey = 'vf-announcement-closed';
+
+function readDismissedAnnouncement() {
+  try {
+    return sessionStorage.getItem(announcementStorageKey);
+  } catch {
+    return null;
+  }
+}
+
+// Read the tab's dismissal after hydration. The Shell handles dismissals made on this page.
+const subscribeToDismissedAnnouncement = () => () => {};
+const getInitialDismissedAnnouncement = () => null;
+
 export function Shell({v, content, sticky, bare = false, quiet = false, enclosedCheckout = null}) {
   const enclosed = !!enclosedCheckout;
   const brandAssets = {...v.brandAssets};
@@ -95,6 +109,22 @@ export function Shell({v, content, sticky, bare = false, quiet = false, enclosed
     change();
     return () => wide.removeEventListener('change', change);
   }, [menuOpen]);
+  const [dismissedAnnouncement, setDismissedAnnouncement] = React.useState(null);
+  const storedDismissal = React.useSyncExternalStore(
+    subscribeToDismissedAnnouncement,
+    readDismissedAnnouncement,
+    getInitialDismissedAnnouncement
+  );
+  const announcementDismissed =
+    v.announcementKey != null &&
+    (v.announcementKey === dismissedAnnouncement || v.announcementKey === storedDismissal);
+  const dismissAnnouncement = () => {
+    setDismissedAnnouncement(v.announcementKey);
+    // Keyed by the message, so a new announcement shows again.
+    try {
+      sessionStorage.setItem(announcementStorageKey, v.announcementKey);
+    } catch {}
+  };
   // TV mode (docs/STOREFRONT.md): the density for the overlays, and the remote's arrow keys. The
   // presentation sets its own density and handles its own keys.
   const density = useVfDensity();
@@ -153,11 +183,12 @@ export function Shell({v, content, sticky, bare = false, quiet = false, enclosed
           ) : null
         }
         announcement={
-          !enclosed && (
+          !enclosed &&
+          !announcementDismissed && (
             <StorefrontAnnouncement
               label={v.shellText?.news}
               closeLabel={v.shellText?.dismissNews}
-              onClose={v.closeAnnouncement}
+              onClose={dismissAnnouncement}
               text={v.announcement}
               phoneText={v.announcementPhone}
               link={v.announcementLink}

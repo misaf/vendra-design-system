@@ -15,7 +15,7 @@ import {VF_CATEGORY_COPY} from '../catalog/categories.js';
 import {VF_SHELL} from './shell.js';
 import {vfDayMonth, vfDayName} from '../delivery/time.js';
 import {VF_NAV} from '../../platform/browser/page-focus.js';
-import {vfNow, vfStoredValue} from '../../platform/browser/environment.js';
+import {vfNow} from '../../platform/browser/environment.js';
 
 // When an order placed now arrives in the first zone: today until its cut-off, otherwise the next
 // open day ('' when none is open). sameDay says whether it is today.
@@ -37,18 +37,15 @@ export function vfNextDelivery(lang) {
   };
 }
 // The store's announcement in this language (its shorter phone version with `phone`, when it has one),
-// or '' once the visitor has closed it this session. {delivery} becomes when an order placed now
-// arrives; {freeDelivery} the free-delivery threshold.
+// or '' when the store has no message. {delivery} becomes when an order placed now arrives;
+// {freeDelivery} becomes the free-delivery threshold.
 export function vfAnnouncementSource(lang, phone) {
   const announcement = VF_STORE.announcement;
   return (announcement && ((phone && announcement.mobile?.[lang]) || announcement[lang])) || '';
 }
-export function vfAnnouncementText(lang, st, phone = false) {
+function vfAnnouncementText(lang, phone = false) {
   const text = vfAnnouncementSource(lang, phone);
-  if (!text || st.vfAnnouncementClosed) return '';
-  try {
-    if (vfStoredValue('vf-announcement-closed', true) === VF_STORE.announcement.en) return '';
-  } catch {}
+  if (!text) return '';
   return text
     .replace('{delivery}', vfNextDelivery(lang).text)
     .replace('{freeDelivery}', VF_MONEY(VF_FREE_DELIVERY_THRESHOLD, lang === 'fa'))
@@ -226,8 +223,9 @@ export function vfShellNavigation(self, page) {
     },
     standalone: !props.store,
     // Both versions render; CSS shows the phone one below 768px.
-    announcement: vfAnnouncementText(L, st),
-    announcementPhone: vfAnnouncementText(L, st, true),
+    announcement: vfAnnouncementText(L),
+    announcementPhone: vfAnnouncementText(L, true),
+    announcementKey: VF_STORE.announcement?.en,
     // While same-day delivery is open, a delivery announcement links to the same-day designs.
     announcementLink:
       vfAnnouncementSource(L).includes('{delivery}') && vfNextDelivery(L).sameDay
@@ -236,13 +234,6 @@ export function vfShellNavigation(self, page) {
             href: vfRouteUrl({view: 'shop', lang: L, cat: 'all', filters: ['same']})
           }
         : null,
-    closeAnnouncement: () => {
-      // Keyed by the message, so a new announcement shows again.
-      try {
-        sessionStorage.setItem('vf-announcement-closed', VF_STORE.announcement.en);
-      } catch {}
-      self.setState({vfAnnouncementClosed: true});
-    },
     vfAnnouncement: st.vfAnnouncement || '',
     footer,
     menuItems,
