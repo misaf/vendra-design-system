@@ -170,7 +170,11 @@ for (const lang of ['en', 'fa']) {
     const pendingText = lang === 'en' ? 'Subscribing…' : 'در حال عضویت…';
     const announcements = page.locator('[data-live-announcer] [role="img"]');
     await email.fill('rose@example.com');
-    await submit.click();
+    // Submit twice in one browser turn, before the pending button state can commit.
+    await email.evaluate(input => {
+      input.form.requestSubmit();
+      input.form.requestSubmit();
+    });
     await expect(pending).toHaveText(pendingText);
     await email.press('Enter');
     expect(await page.evaluate(() => window.__newsletterSubmission.calls)).toBe(1);
